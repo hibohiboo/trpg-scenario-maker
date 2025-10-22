@@ -18,20 +18,48 @@ TRPG Scenario Makerは、TRPGのシナリオ作成を支援するフロントエ
 
 ## 技術スタック
 
-- **パッケージマネージャ**: Bun 1.3.1+
-- **ビルドツール**: Turbo (monorepo管理)
-- **テストフレームワーク**: Vitest
-- **デプロイ先**: GitHub Pages
+### コア
+
+- **React**: 19.2.0
+- **TypeScript**: 型安全性
+- **Vite (Rolldown)**: 高速ビルドツール
+
+### 開発環境
+
+- **Bun**: 1.3.1+ (パッケージマネージャー)
+- **Turbo**: 2.5.8 (モノレポ管理)
+- **Vitest**: 4.0.1 (テストフレームワーク)
+
+### コード品質
+
+- **ESLint**: 9.38.0 (リンター)
+- **Prettier**: 3.6.2 (フォーマッター)
+- **TypeScript ESLint**: 型チェック対応
+
+### デプロイ
+
+- **GitHub Pages**: 自動デプロイ (GitHub Actions)
 
 ## プロジェクト構成
 
 ```
 trpg-scenario-maker/
-├── apps/           # アプリケーション（フロントエンド）
-├── packages/       # 共通ライブラリ・コンポーネント
-├── package.json    # ルートパッケージ設定
-├── turbo.json      # Turboビルド設定
-└── readme.md       # このファイル
+├── apps/
+│   └── frontend/              # Reactフロントエンドアプリケーション
+│       ├── src/               # ソースコード
+│       ├── public/            # 静的ファイル
+│       ├── dist/              # ビルド出力（GitHub Pages公開用）
+│       ├── vite.config.ts     # Vite設定
+│       └── package.json
+├── packages/
+│   ├── eslint-config-custom/  # 共通ESLint設定
+│   └── tsconfig/              # 共通TypeScript設定
+├── .github/
+│   └── workflows/
+│       └── gh-pages.yml       # GitHub Pages自動デプロイ設定
+├── package.json               # ルートパッケージ設定（workspace管理）
+├── turbo.json                 # Turboビルド設定
+└── readme.md                  # このファイル
 ```
 
 ## セットアップ
@@ -44,7 +72,7 @@ trpg-scenario-maker/
 
 ```bash
 # リポジトリのクローン
-git clone https://github.com/yourusername/trpg-scenario-maker.git
+git clone https://github.com/hibohiboo/trpg-scenario-maker.git
 cd trpg-scenario-maker
 
 # 依存関係のインストール
@@ -85,11 +113,18 @@ bun run ncu
 
 ## デプロイ
 
-このプロジェクトはGitHub Pagesでの公開を想定しています。
+このプロジェクトはGitHub Pagesで自動公開されます。
 
-1. GitHub Actionsワークフローを設定（`.github/workflows/deploy.yml`）
-2. リポジトリ設定でGitHub Pagesを有効化
-3. `main`ブランチへのプッシュで自動デプロイ
+### 自動デプロイの仕組み
+
+1. `main`ブランチにプッシュすると、GitHub Actions（`.github/workflows/gh-pages.yml`）が自動実行
+2. `bun install` → `bun run build` で `apps/frontend/dist` にビルド
+3. ビルド成果物を自動的にGitHub Pagesへデプロイ
+4. https://hibohiboo.github.io/trpg-scenario-maker/ で公開
+
+### 手動デプロイ
+
+GitHub Actionsのワークフローページから手動実行も可能です。
 
 ## ライセンス
 
@@ -101,9 +136,11 @@ Issue報告やPull Requestを歓迎します。
 
 ## ロードマップ
 
-- [ ] 基本的なシナリオエディタUI
-- [ ] キャラクター・場所・アイテム管理機能
+- [x] GitHub Pages公開設定
+- [ ] シナリオ一覧
 - [ ] シナリオフロー可視化機能
+- [ ] - [ ] 基本的なシナリオエディタUI
+- [ ] キャラクター・場所・アイテム管理機能
+
 - [ ] データのエクスポート/インポート
 - [ ] テンプレート機能
-- [ ] GitHub Pages公開設定
