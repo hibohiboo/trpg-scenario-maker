@@ -2,6 +2,8 @@
 
 TRPGシナリオを可視化しながら作成できるWebアプリケーション
 
+https://hibohiboo.github.io/trpg-scenario-maker/
+
 ## 概要
 
 TRPG Scenario Makerは、TRPGのシナリオ作成を支援するフロントエンドアプリケーションです。シナリオの構造を視覚的に整理し、キャラクター・場所・イベントなどの要素を関連付けながら、効率的にシナリオを組み立てることができます。
