@@ -27,7 +27,7 @@
       "devDependencies": {
         "@trpg-scenario-maker/eslint-config-custom": "workspace:*",
         "@trpg-scenario-maker/tsconfig": "workspace:*",
-        "eslint": "^9.38.0",
+        "eslint": "catalog:testing",
       },
     },
     "packages/eslint-config-custom": {
@@ -66,8 +66,7 @@
   },
   "catalogs": {
     "testing": {
-      "jest": "30.0.0",
-      "testing-library": "14.0.0",
+      "eslint": "^9.38.0",
     },
   },
   "packages": {

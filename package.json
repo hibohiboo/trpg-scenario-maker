@@ -46,8 +46,7 @@
     },
     "catalogs": {
       "testing": {
-        "jest": "30.0.0",
-        "testing-library": "14.0.0"
+        "eslint": "^9.38.0"
       }
     }
   },
