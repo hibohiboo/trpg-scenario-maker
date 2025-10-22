@@ -1,27 +1,22 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import {format} from 'date-fns'
-import './App.css'
+import { format } from 'date-fns';
+import { useState } from 'react';
+import reactLogo from './assets/react.svg';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
+        <a href="https://vite.dev" target="_blank"></a>
         <a href="https://react.dev" target="_blank">
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
+        <button onClick={() => setCount((c) => c + 1)}>count is {count}</button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
@@ -31,7 +26,7 @@ function App() {
       </p>
       <p>{format(new Date(), 'yyyy-MM-dd HH:mm:ss')}</p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

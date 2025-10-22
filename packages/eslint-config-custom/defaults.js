@@ -24,8 +24,7 @@ export default defineConfig({
     ...compat.extends('plugin:sonarjs/recommended-legacy'),
     prettierConfig,
   ],
-  plugins: { import: importPlugin,
-    'unused-imports': unuserdPlugin, sonarjs },
+  plugins: { import: importPlugin, 'unused-imports': unuserdPlugin, sonarjs },
   rules: {
     'linebreak-style': ['error', 'unix'],
     semi: ['error', 'always'],

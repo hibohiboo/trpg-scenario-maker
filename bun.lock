@@ -21,12 +21,13 @@
       "version": "0.0.0",
       "dependencies": {
         "date-fns": "^4.1.0",
-        "react": "^19.2.0",
-        "react-dom": "^19.2.0",
+        "react": "catalog:",
+        "react-dom": "catalog:",
       },
       "devDependencies": {
         "@trpg-scenario-maker/eslint-config-custom": "workspace:*",
         "@trpg-scenario-maker/tsconfig": "workspace:*",
+        "eslint": "^9.38.0",
       },
     },
     "packages/eslint-config-custom": {
@@ -58,6 +59,16 @@
   },
   "overrides": {
     "vite": "npm:rolldown-vite@7.1.19",
+  },
+  "catalog": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+  },
+  "catalogs": {
+    "testing": {
+      "jest": "30.0.0",
+      "testing-library": "14.0.0",
+    },
   },
   "packages": {
     "@babel/code-frame": ["@babel/code-frame@7.27.1", "", { "dependencies": { "@babel/helper-validator-identifier": "^7.27.1", "js-tokens": "^4.0.0", "picocolors": "^1.1.1" } }, "sha512-cjQ7ZlQ0Mv3b47hABuTevyTuYN4i+loJKGeV9flcCgIK37cCXRh+L1bd3iBHlynerhQ7BhCkn2BPbQUL+rGqFg=="],

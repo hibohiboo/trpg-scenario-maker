@@ -22,9 +22,9 @@ export default defineConfig({
     ...compat.extends(
       'plugin:@conarti/eslint-plugin-feature-sliced/recommended',
     ),
-    reactHooks.configs['recommended-latest'],
     reactRefresh.configs.vite,
   ],
+  plugins: { 'react-hooks': reactHooks },
   rules: {
     'react-refresh/only-export-components': [
       'warn',
