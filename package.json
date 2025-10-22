@@ -25,15 +25,16 @@
   },
   "devDependencies": {
     "@types/node": "^24.9.1",
-    "prettier": "^3.6.2",
-    "turbo": "^2.5.8",
-    "@vitejs/plugin-react": "^5.0.4",
-    "vite": "npm:rolldown-vite@7.1.19",
-    "vite-tsconfig-paths": "^6.0.0-beta.4",
-    "vitest": "^4.0.1",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
-    "babel-plugin-react-compiler": "^19.1.0-rc.3"
+    "@vitejs/plugin-react": "^5.0.4",
+    "babel-plugin-react-compiler": "^19.1.0-rc.3",
+    "prettier": "^3.6.2",
+    "turbo": "^2.5.8",
+    "typescript": "^5.9.3",
+    "vite": "npm:rolldown-vite@7.1.19",
+    "vite-tsconfig-paths": "^6.0.0-beta.4",
+    "vitest": "^4.0.1"
   },
   "workspaces": {
     "packages": [
@@ -42,11 +43,15 @@
     ],
     "catalog": {
       "react": "^19.2.0",
-      "react-dom": "^19.2.0"
+      "react-dom": "^19.2.0",
+      "react-router": "^7.9.4"
     },
     "catalogs": {
       "testing": {
         "eslint": "^9.38.0"
+      },
+      "building": {
+        "typescript": "^5.9.3"
       }
     }
   },
