@@ -1,8 +1,11 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
+const basePath = 'trpg-scenario-maker';
+
 // https://vite.dev/config/
 export default defineConfig({
+  base: `/${basePath}/`,
   plugins: [
     react({
       babel: {
