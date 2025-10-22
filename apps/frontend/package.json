@@ -1,0 +1,25 @@
+{
+  "name": "@trpg-scenario-maker/frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "date-fns": "^4.1.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@trpg-scenario-maker/eslint-config-custom": "workspace:*",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "babel-plugin-react-compiler": "^19.1.0-rc.3",
+    "globals": "^16.4.0",
+    "typescript": "~5.9.3"
+  }
+}

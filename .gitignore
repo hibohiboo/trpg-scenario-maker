@@ -1,0 +1,9 @@
+node_modules
+dist
+# Turborepo
+.turbo
+.config
+npm-cache
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+node_modules
