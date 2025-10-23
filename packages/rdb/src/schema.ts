@@ -1,4 +1,4 @@
-import { pgSchema, uuid, text, varchar, timestamp } from 'drizzle-orm/pg-core';
+import { pgSchema, uuid, text, timestamp } from 'drizzle-orm/pg-core';
 
 export const mySchema = pgSchema('trpg-scenario-maker');
 
@@ -10,3 +10,5 @@ export const scenariosTable = mySchema.table('scenarios', {
     .notNull()
     .$onUpdate(() => new Date()),
 });
+
+export type InsertScenario = typeof scenariosTable.$inferInsert;

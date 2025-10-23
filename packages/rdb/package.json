@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "type": "module",
   "private": true,
+  "exports": {
+    "./*": "./src/*.ts"
+  },
   "scripts": {
     "ncu": "ncu -u",
     "generate": "drizzle-kit generate",

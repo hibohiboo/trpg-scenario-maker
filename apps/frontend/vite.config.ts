@@ -16,6 +16,9 @@ export default defineConfig({
     }),
     tailwindcss(),
   ],
+  optimizeDeps: {
+    exclude: ['@electric-sql/pglite'],
+  },
   resolve: {
     alias: {
       '@': path.join(__dirname, './src'),
