@@ -18,14 +18,7 @@ export interface ScenarioState {
 }
 
 const initialState: ScenarioState = {
-  scenarios: [
-    {
-      id: '1',
-      title: '古城の謎',
-      createdAt: '2025-01-15T10:00:00',
-      updatedAt: '2025-01-20T15:30:00',
-    },
-  ],
+  scenarios: [],
   isLoading: false,
   isCreateModalOpen: false,
   isEditModalOpen: false,
