@@ -2,6 +2,7 @@ import { createScenario } from '@trpg-scenario-maker/rdb/queries/insert';
 import { scenarioToString } from '@trpg-scenario-maker/schema';
 import type { Scenario } from '@trpg-scenario-maker/ui/scenario/types';
 import { useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import { readScenarioAction } from '../actions/read';
 import {
@@ -61,8 +62,8 @@ export const usePage = () => {
     // TODO: API呼び出し実装
     console.log('Creating scenario:', createTitle);
     await createScenario({
-      title: 'サンプルシナリオ',
-      id: '4388aac2-bcc3-4dbd-ab39-50700eded5a5',
+      title: createTitle,
+      id: uuidv4(),
     });
     dispatch(readScenarioAction());
   };
