@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.9.2",
+    "@trpg-scenario-maker/schema": "workspace:*",
     "@trpg-scenario-maker/ui": "workspace:*",
     "date-fns": "catalog:",
     "react": "catalog:",

@@ -1,3 +1,5 @@
+import { scenarioToString } from '@trpg-scenario-maker/schema';
+import type { Scenario } from '@trpg-scenario-maker/ui/scenario/types';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import {
   scenariosSelector,
@@ -20,7 +22,6 @@ import {
   openDeleteModal,
   closeDeleteModal,
 } from '../model/scenarioSlice';
-import type { Scenario } from '../model/scenarioSlice';
 
 export const usePage = () => {
   const dispatch = useAppDispatch();
@@ -55,7 +56,7 @@ export const usePage = () => {
   };
 
   const handleEdit = (scenario: Scenario) => {
-    dispatch(openEditModal(scenario));
+    dispatch(openEditModal(scenarioToString(scenario)));
   };
 
   const handleCloseEditModal = () => {
@@ -72,7 +73,7 @@ export const usePage = () => {
   };
 
   const handleDelete = (scenario: Scenario) => {
-    dispatch(openDeleteModal(scenario));
+    dispatch(openDeleteModal(scenarioToString(scenario)));
   };
 
   const handleCloseDeleteModal = () => {

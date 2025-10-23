@@ -22,6 +22,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@reduxjs/toolkit": "^2.9.2",
+        "@trpg-scenario-maker/schema": "workspace:*",
         "@trpg-scenario-maker/ui": "workspace:*",
         "date-fns": "catalog:",
         "react": "catalog:",
@@ -55,6 +56,18 @@
         "typescript-eslint": "^8.46.2",
       },
     },
+    "packages/schema": {
+      "name": "@trpg-scenario-maker/schema",
+      "dependencies": {
+        "valibot": "^1.0.0",
+      },
+      "devDependencies": {
+        "@trpg-scenario-maker/eslint-config-custom": "workspace:*",
+        "@trpg-scenario-maker/tsconfig": "workspace:*",
+        "eslint": "catalog:testing",
+        "typescript": "catalog:building",
+      },
+    },
     "packages/tsconfig": {
       "name": "@trpg-scenario-maker/tsconfig",
       "devDependencies": {
@@ -64,6 +77,7 @@
     "packages/ui": {
       "name": "@trpg-scenario-maker/ui",
       "dependencies": {
+        "@trpg-scenario-maker/schema": "workspace:*",
         "date-fns": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:",
@@ -387,6 +401,8 @@
     "@trpg-scenario-maker/eslint-config-custom": ["@trpg-scenario-maker/eslint-config-custom@workspace:packages/eslint-config-custom"],
 
     "@trpg-scenario-maker/frontend": ["@trpg-scenario-maker/frontend@workspace:apps/frontend"],
+
+    "@trpg-scenario-maker/schema": ["@trpg-scenario-maker/schema@workspace:packages/schema"],
 
     "@trpg-scenario-maker/tsconfig": ["@trpg-scenario-maker/tsconfig@workspace:packages/tsconfig"],
 
@@ -1295,6 +1311,8 @@
     "uri-js": ["uri-js@4.4.1", "", { "dependencies": { "punycode": "^2.1.0" } }, "sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg=="],
 
     "use-sync-external-store": ["use-sync-external-store@1.6.0", "", { "peerDependencies": { "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-Pp6GSwGP/NrPIrxVFAIkOQeyw8lFenOHijQWkUTrDvrF4ALqylP2C/KCkeS9dpUM3KvYRQhna5vt7IL95+ZQ9w=="],
+
+    "valibot": ["valibot@1.1.0", "", { "peerDependencies": { "typescript": ">=5" }, "optionalPeers": ["typescript"] }, "sha512-Nk8lX30Qhu+9txPYTwM0cFlWLdPFsFr6LblzqIySfbZph9+BFsAHsNvHOymEviUepeIW6KFHzpX8TKhbptBXXw=="],
 
     "vite": ["rolldown-vite@7.1.19", "", { "dependencies": { "@oxc-project/runtime": "0.95.0", "fdir": "^6.5.0", "lightningcss": "^1.30.2", "picomatch": "^4.0.3", "postcss": "^8.5.6", "rolldown": "1.0.0-beta.44", "tinyglobby": "^0.2.15" }, "optionalDependencies": { "fsevents": "~2.3.3" }, "peerDependencies": { "@types/node": "^20.19.0 || >=22.12.0", "esbuild": "^0.25.0", "jiti": ">=1.21.0", "less": "^4.0.0", "sass": "^1.70.0", "sass-embedded": "^1.70.0", "stylus": ">=0.54.8", "sugarss": "^5.0.0", "terser": "^5.16.0", "tsx": "^4.8.1", "yaml": "^2.4.2" }, "optionalPeers": ["@types/node", "esbuild", "jiti", "less", "sass", "sass-embedded", "stylus", "sugarss", "terser", "tsx", "yaml"], "bin": { "vite": "bin/vite.js" } }, "sha512-4TRFlbv0F8zE0EbaSAuzHEGlBRRTSaMd3QP8Qz0VTeSb6Z+kpCXSAw2k2QimTuDCJSxdYItcjZjWXtn0j6ksTg=="],
 

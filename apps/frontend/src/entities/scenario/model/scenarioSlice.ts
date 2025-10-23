@@ -1,34 +1,29 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import { stringToScenario } from '@trpg-scenario-maker/schema';
+import type { ScenarioString } from '@trpg-scenario-maker/schema';
 
-export interface Scenario {
-  id: string;
-  title: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface ScenarioStatee {
-  scenarios: Scenario[];
+export interface ScenarioState {
+  scenarios: ScenarioString[];
   isLoading: boolean;
   isCreateModalOpen: boolean;
   isEditModalOpen: boolean;
   isDeleteModalOpen: boolean;
   createTitle: string;
   editTitle: string;
-  editingScenario: Scenario | null;
-  deletingScenario: Scenario | null;
+  editingScenario: ScenarioString | null;
+  deletingScenario: ScenarioString | null;
   isSubmitting: boolean;
   isDeleting: boolean;
 }
 
-const initialState: ScenarioStatee = {
+const initialState: ScenarioState = {
   scenarios: [
     {
       id: '1',
       title: '古城の謎',
-      createdAt: new Date('2025-01-15T10:00:00'),
-      updatedAt: new Date('2025-01-20T15:30:00'),
+      createdAt: '2025-01-15T10:00:00',
+      updatedAt: '2025-01-20T15:30:00',
     },
   ],
   isLoading: false,
@@ -58,7 +53,7 @@ export const scenarioSlice = createSlice({
     setCreateTitle: (state, action: PayloadAction<string>) => {
       state.createTitle = action.payload;
     },
-    openEditModal: (state, action: PayloadAction<Scenario>) => {
+    openEditModal: (state, action: PayloadAction<ScenarioString>) => {
       state.isEditModalOpen = true;
       state.editingScenario = action.payload;
       state.editTitle = action.payload.title;
@@ -71,7 +66,7 @@ export const scenarioSlice = createSlice({
     setEditTitle: (state, action: PayloadAction<string>) => {
       state.editTitle = action.payload;
     },
-    openDeleteModal: (state, action: PayloadAction<Scenario>) => {
+    openDeleteModal: (state, action: PayloadAction<ScenarioString>) => {
       state.isDeleteModalOpen = true;
       state.deletingScenario = action.payload;
     },
@@ -108,7 +103,7 @@ const stateSelector = (state: RootState) => state[scenarioSlice.reducerPath];
 
 export const scenariosSelector = createSelector(
   stateSelector,
-  (c) => c.scenarios ?? [],
+  (c) => c.scenarios.map(stringToScenario) ?? [],
 );
 
 export const isLoadingSelector = createSelector(
@@ -141,14 +136,12 @@ export const editTitleSelector = createSelector(
   (c) => c.editTitle,
 );
 
-export const editingScenarioSelector = createSelector(
-  stateSelector,
-  (c) => c.editingScenario,
+export const editingScenarioSelector = createSelector(stateSelector, (c) =>
+  c.editingScenario ? stringToScenario(c.editingScenario) : null,
 );
 
-export const deletingScenarioSelector = createSelector(
-  stateSelector,
-  (c) => c.deletingScenario,
+export const deletingScenarioSelector = createSelector(stateSelector, (c) =>
+  c.deletingScenario ? stringToScenario(c.deletingScenario) : null,
 );
 
 export const isSubmittingSelector = createSelector(
