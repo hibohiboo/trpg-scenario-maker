@@ -66,6 +66,7 @@ export const usePage = () => {
       id: uuidv4(),
     });
     dispatch(readScenarioAction());
+    dispatch(closeCreateModal());
   };
 
   const handleEdit = (scenario: Scenario) => {
