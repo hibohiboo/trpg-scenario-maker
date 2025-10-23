@@ -1,12 +1,12 @@
 {
-  "id": "ef4c1f90-1272-401a-a2ed-d44c2489ffb1",
+  "id": "93fe7fd3-d866-4272-9c84-7e65f1143c19",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "trpg-scenario-maker.scenarios": {
+    "public.scenarios": {
       "name": "scenarios",
-      "schema": "trpg-scenario-maker",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
@@ -44,9 +44,7 @@
     }
   },
   "enums": {},
-  "schemas": {
-    "trpg-scenario-maker": "trpg-scenario-maker"
-  },
+  "schemas": {},
   "sequences": {},
   "roles": {},
   "policies": {},

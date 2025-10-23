@@ -1,6 +1,4 @@
-CREATE SCHEMA "trpg-scenario-maker";
---> statement-breakpoint
-CREATE TABLE "trpg-scenario-maker"."scenarios" (
+CREATE TABLE "scenarios" (
 	"id" uuid PRIMARY KEY NOT NULL,
 	"title" text NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,

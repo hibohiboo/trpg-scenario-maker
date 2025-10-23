@@ -1,8 +1,6 @@
-import { pgSchema, uuid, text, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, timestamp } from 'drizzle-orm/pg-core';
 
-export const mySchema = pgSchema('trpg-scenario-maker');
-
-export const scenariosTable = mySchema.table('scenarios', {
+export const scenariosTable = pgTable('scenarios', {
   id: uuid().primaryKey(),
   title: text('title').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),

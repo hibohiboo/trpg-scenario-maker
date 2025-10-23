@@ -10,12 +10,14 @@ function App() {
   useEffect(() => {
     (async () => {
       await runMigrate();
-      await createScenario({
-        title: 'サンプルシナリオ',
-        id: '4388aac2-bcc3-4dbd-ab39-50700eded5a5',
-      });
       const scenarios = await getScenarios();
       console.log('scenarios', scenarios);
+      if (scenarios.length === 0) {
+        await createScenario({
+          title: 'サンプルシナリオ',
+          id: '4388aac2-bcc3-4dbd-ab39-50700eded5a5',
+        });
+      }
     })();
   }, []);
   return (
