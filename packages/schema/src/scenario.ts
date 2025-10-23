@@ -19,7 +19,7 @@ export const ScenarioSchema = v.object({
  * シナリオスキーマ（string型）
  * API層やRedux Stateで使用するスキーマ
  */
-export const ScenarioStringSchema = v.object({
+export const SerializableScenarioSchema = v.object({
   /** シナリオID */
   id: v.string(),
   /** シナリオタイトル */
@@ -46,7 +46,9 @@ export type Scenario = v.InferOutput<typeof ScenarioSchema>;
 /**
  * シナリオの型（string型）
  */
-export type ScenarioString = v.InferOutput<typeof ScenarioStringSchema>;
+export type SerializableScenario = v.InferOutput<
+  typeof SerializableScenarioSchema
+>;
 
 /**
  * シナリオ作成・更新用の入力データ型
@@ -56,7 +58,7 @@ export type ScenarioFormData = v.InferOutput<typeof ScenarioFormDataSchema>;
 /**
  * Scenario（Date型）をScenarioString（string型）に変換
  */
-export function scenarioToString(scenario: Scenario): ScenarioString {
+export function scenarioToString(scenario: Scenario): SerializableScenario {
   return {
     id: scenario.id,
     title: scenario.title,
@@ -68,7 +70,9 @@ export function scenarioToString(scenario: Scenario): ScenarioString {
 /**
  * ScenarioString（string型）をScenario（Date型）に変換
  */
-export function stringToScenario(scenarioString: ScenarioString): Scenario {
+export function stringToScenario(
+  scenarioString: SerializableScenario,
+): Scenario {
   return {
     id: scenarioString.id,
     title: scenarioString.title,
@@ -81,8 +85,8 @@ export function stringToScenario(scenarioString: ScenarioString): Scenario {
  * パース時にstring型に変換するスキーマ
  * API等から取得したデータをScenarioString型に変換する
  */
-export const parseToScenarioString = (data: unknown): ScenarioString => {
-  return v.parse(ScenarioStringSchema, data);
+export const parseToScenarioString = (data: unknown): SerializableScenario => {
+  return v.parse(SerializableScenarioSchema, data);
 };
 
 /**
@@ -91,7 +95,7 @@ export const parseToScenarioString = (data: unknown): ScenarioString => {
  */
 export const parseToScenario = (data: unknown): Scenario => {
   // まずScenarioStringとしてパース
-  const scenarioString = v.parse(ScenarioStringSchema, data);
+  const scenarioString = v.parse(SerializableScenarioSchema, data);
   // その後Date型に変換
   return stringToScenario(scenarioString);
 };

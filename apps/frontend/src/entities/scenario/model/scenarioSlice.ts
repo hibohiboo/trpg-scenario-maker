@@ -1,18 +1,18 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { stringToScenario } from '@trpg-scenario-maker/schema';
-import type { ScenarioString } from '@trpg-scenario-maker/schema';
+import type { SerializableScenario } from '@trpg-scenario-maker/schema';
 
 export interface ScenarioState {
-  scenarios: ScenarioString[];
+  scenarios: SerializableScenario[];
   isLoading: boolean;
   isCreateModalOpen: boolean;
   isEditModalOpen: boolean;
   isDeleteModalOpen: boolean;
   createTitle: string;
   editTitle: string;
-  editingScenario: ScenarioString | null;
-  deletingScenario: ScenarioString | null;
+  editingScenario: SerializableScenario | null;
+  deletingScenario: SerializableScenario | null;
   isSubmitting: boolean;
   isDeleting: boolean;
 }
@@ -53,7 +53,7 @@ export const scenarioSlice = createSlice({
     setCreateTitle: (state, action: PayloadAction<string>) => {
       state.createTitle = action.payload;
     },
-    openEditModal: (state, action: PayloadAction<ScenarioString>) => {
+    openEditModal: (state, action: PayloadAction<SerializableScenario>) => {
       state.isEditModalOpen = true;
       state.editingScenario = action.payload;
       state.editTitle = action.payload.title;
@@ -66,7 +66,7 @@ export const scenarioSlice = createSlice({
     setEditTitle: (state, action: PayloadAction<string>) => {
       state.editTitle = action.payload;
     },
-    openDeleteModal: (state, action: PayloadAction<ScenarioString>) => {
+    openDeleteModal: (state, action: PayloadAction<SerializableScenario>) => {
       state.isDeleteModalOpen = true;
       state.deletingScenario = action.payload;
     },

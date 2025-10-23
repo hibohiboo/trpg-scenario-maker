@@ -1,9 +1,9 @@
 export {
   ScenarioSchema,
-  ScenarioStringSchema,
+  SerializableScenarioSchema,
   ScenarioFormDataSchema,
   type Scenario,
-  type ScenarioString,
+  type SerializableScenario,
   type ScenarioFormData,
   scenarioToString,
   stringToScenario,

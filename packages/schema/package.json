@@ -9,7 +9,7 @@
   },
   "scripts": {
     "ncu": "ncu -u",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint": "eslint . ",
     "test": "vitest"
   },
   "dependencies": {
