@@ -2,6 +2,7 @@ import { createSelector, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { stringToScenario } from '@trpg-scenario-maker/schema';
 import type { SerializableScenario } from '@trpg-scenario-maker/schema';
+import { readScenarioAction } from '../actions/read';
 
 export interface ScenarioState {
   scenarios: SerializableScenario[];
@@ -76,6 +77,12 @@ export const scenarioSlice = createSlice({
     setIsLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(readScenarioAction.fulfilled, (state, action) => {
+      state.scenarios = action.payload;
+      state.isLoading = false;
+    });
   },
 });
 export const {

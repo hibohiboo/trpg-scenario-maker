@@ -1,6 +1,9 @@
+import { createScenario } from '@trpg-scenario-maker/rdb/queries/insert';
 import { scenarioToString } from '@trpg-scenario-maker/schema';
 import type { Scenario } from '@trpg-scenario-maker/ui/scenario/types';
+import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
+import { readScenarioAction } from '../actions/read';
 import {
   scenariosSelector,
   isLoadingSelector,
@@ -26,6 +29,10 @@ import {
 export const usePage = () => {
   const dispatch = useAppDispatch();
 
+  useEffect(() => {
+    dispatch(readScenarioAction());
+  }, []);
+
   const scenarios = useAppSelector(scenariosSelector);
   const isLoading = useAppSelector(isLoadingSelector);
   const isCreateModalOpen = useAppSelector(isCreateModalOpenSelector);
@@ -50,9 +57,14 @@ export const usePage = () => {
     dispatch(setCreateTitle(title));
   };
 
-  const handleCreateSubmit = () => {
+  const handleCreateSubmit = async () => {
     // TODO: API呼び出し実装
     console.log('Creating scenario:', createTitle);
+    await createScenario({
+      title: 'サンプルシナリオ',
+      id: '4388aac2-bcc3-4dbd-ab39-50700eded5a5',
+    });
+    dispatch(readScenarioAction());
   };
 
   const handleEdit = (scenario: Scenario) => {
@@ -67,7 +79,7 @@ export const usePage = () => {
     dispatch(setEditTitle(title));
   };
 
-  const handleEditSubmit = () => {
+  const handleEditSubmit = async () => {
     // TODO: API呼び出し実装
     console.log('Editing scenario:', editingScenario?.id, editTitle);
   };

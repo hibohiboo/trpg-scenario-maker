@@ -6,6 +6,7 @@ export async function getScenarios() {
     .select({
       id: scenariosTable.id,
       title: scenariosTable.title,
+      createdAt: scenariosTable.createdAt,
       updatedAt: scenariosTable.updatedAt,
     })
     .from(scenariosTable);
