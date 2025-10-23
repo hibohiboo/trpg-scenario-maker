@@ -1,1 +1,1 @@
-export { Page as ScenarioPage } from './ui/Page';
+export { ScenarioPage } from './ui/Page';
