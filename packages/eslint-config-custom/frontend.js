@@ -34,6 +34,13 @@ export default defineConfig({
 
     'no-alert': 'off',
     'no-console': 'off',
+    // Redux Toolkit uses immer internally to allow "mutating" state
+    'no-param-reassign': [
+      'error',
+      { props: true, ignorePropertyModificationsFor: ['state'] },
+    ],
+    // Allow TO DO comments for future implementation
+    'sonarjs/todo-tag': 'warn',
   },
   languageOptions: {
     ecmaVersion: 2022,

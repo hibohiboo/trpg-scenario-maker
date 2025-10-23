@@ -6,28 +6,28 @@ export const Page = () => {
   return (
     <ScenarioPage
       scenarios={vm.scenarios}
-      isLoading={false}
-      isCreateModalOpen={false}
-      isEditModalOpen={false}
-      isDeleteModalOpen={false}
-      createTitle=""
-      editTitle=""
-      editingScenario={null}
-      deletingScenario={null}
-      isSubmitting={false}
-      isDeleting={false}
-      onCreateNew={() => {}}
-      onCloseCreateModal={() => {}}
-      onCreateTitleChange={() => {}}
-      onCreateSubmit={() => {}}
-      onEdit={() => {}}
-      onCloseEditModal={() => {}}
-      onEditTitleChange={() => {}}
-      onEditSubmit={() => {}}
-      onDelete={() => {}}
-      onCloseDeleteModal={() => {}}
-      onDeleteConfirm={() => {}}
-      onClick={() => {}}
+      isLoading={vm.isLoading}
+      isCreateModalOpen={vm.isCreateModalOpen}
+      isEditModalOpen={vm.isEditModalOpen}
+      isDeleteModalOpen={vm.isDeleteModalOpen}
+      createTitle={vm.createTitle}
+      editTitle={vm.editTitle}
+      editingScenario={vm.editingScenario}
+      deletingScenario={vm.deletingScenario}
+      isSubmitting={vm.isSubmitting}
+      isDeleting={vm.isDeleting}
+      onCreateNew={vm.onCreateNew}
+      onCloseCreateModal={vm.onCloseCreateModal}
+      onCreateTitleChange={vm.onCreateTitleChange}
+      onCreateSubmit={vm.onCreateSubmit}
+      onEdit={vm.onEdit}
+      onCloseEditModal={vm.onCloseEditModal}
+      onEditTitleChange={vm.onEditTitleChange}
+      onEditSubmit={vm.onEditSubmit}
+      onDelete={vm.onDelete}
+      onCloseDeleteModal={vm.onCloseDeleteModal}
+      onDeleteConfirm={vm.onDeleteConfirm}
+      onClick={vm.onClick}
     />
   );
 };
