@@ -1,2 +1,2 @@
 @import '@trpg-scenario-maker/ui/tailwind.css';
-@source "../../../packages/ui/**/*.{js,ts,jsx,tsx,mdx}";
+@source "../../../packages/ui/**/*.{tsx}";
