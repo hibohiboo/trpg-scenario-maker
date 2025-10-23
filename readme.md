@@ -36,6 +36,12 @@ TRPG Scenario Makerは、TRPGのシナリオ作成を支援するフロントエ
 - **Prettier**: 3.6.2 (フォーマッター)
 - **TypeScript ESLint**: 型チェック対応
 
+### UIコンポーネント開発
+
+- **Storybook**: 9.1.13 (コンポーネントカタログ)
+- **Tailwind CSS**: 4.1.15 (スタイリング)
+- **React Icons**: 5.5.0 (アイコンライブラリ)
+
 ### デプロイ
 
 - **GitHub Pages**: 自動デプロイ (GitHub Actions)
@@ -52,6 +58,7 @@ trpg-scenario-maker/
 │       ├── vite.config.ts     # Vite設定
 │       └── package.json
 ├── packages/
+│   ├── ui/                    # UIコンポーネントライブラリ（Storybook対応）
 │   ├── eslint-config-custom/  # 共通ESLint設定
 │   └── tsconfig/              # 共通TypeScript設定
 ├── .github/
@@ -86,6 +93,17 @@ bun install
 ```bash
 bun run dev
 ```
+
+### Storybookの起動
+
+UIコンポーネントをStorybookで確認・開発できます:
+
+```bash
+cd packages/ui
+bun run dev
+```
+
+http://localhost:6006 でStorybookが起動します。
 
 ### ビルド
 

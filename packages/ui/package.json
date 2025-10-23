@@ -18,7 +18,8 @@
     "react-icons": "^5.5.0",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "react-router": "catalog:"
+    "react-router": "catalog:",
+    "date-fns": "catalog:"
   },
   "devDependencies": {
     "@storybook/addon-docs": "9.1.13",
@@ -26,6 +27,7 @@
     "@storybook/addon-onboarding": "^9.1.13",
     "@storybook/addon-vitest": "9.1.13",
     "@storybook/react-vite": "^9.1.13",
+    "@storybook/test": "^8.6.14",
     "@storybook/testing-library": "^0.2.2",
     "@tailwindcss/postcss": "^4.1.15",
     "@trpg-scenario-maker/eslint-config-custom": "workspace:*",
