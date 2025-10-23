@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react';
+import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 
 const basePath = 'trpg-scenario-maker';
@@ -13,6 +14,14 @@ export default defineConfig({
       },
     }),
   ],
+  resolve: {
+    alias: {
+      '@trpg-scenario-maker/ui/tailwind.css': resolve(
+        __dirname,
+        '../../packages/ui/src/styles/tailwind.css',
+      ),
+    },
+  },
   build: {
     rollupOptions: {
       output: {

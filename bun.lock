@@ -21,6 +21,7 @@
       "name": "@trpg-scenario-maker/frontend",
       "version": "0.0.0",
       "dependencies": {
+        "@trpg-scenario-maker/ui": "workspace:*",
         "date-fns": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:",

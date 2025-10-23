@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@trpg-scenario-maker/ui": "workspace:*",
     "date-fns": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:"
