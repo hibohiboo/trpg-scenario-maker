@@ -2,7 +2,7 @@ import type { Scenario } from '@trpg-scenario-maker/ui/scenario/types';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import { readScenarioAction } from '../actions/read';
-import { scenariosSelector, isLoadingSelector } from '../model/scenarioSlice';
+import { scenariosSelector, scenarioSlice } from '../model/scenarioSlice';
 
 export const useScenarioList = () => {
   const dispatch = useAppDispatch();
@@ -12,7 +12,7 @@ export const useScenarioList = () => {
   }, [dispatch]);
 
   const scenarios = useAppSelector(scenariosSelector);
-  const isLoading = useAppSelector(isLoadingSelector);
+  const isLoading = useAppSelector((state) => state[scenarioSlice.reducerPath].isLoading);
 
   const handleClick = (scenario: Scenario) => {
     // TODO: 詳細画面への遷移実装

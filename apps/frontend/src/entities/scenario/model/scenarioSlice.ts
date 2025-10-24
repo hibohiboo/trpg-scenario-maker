@@ -143,57 +143,31 @@ export const {
   closeDeleteModal,
 } = scenarioSlice.actions;
 
+// 複雑な派生状態のみセレクタとして定義
+// シンプルな値は各フックで直接アクセスする
+
 const stateSelector = (state: RootState) => state[scenarioSlice.reducerPath];
 
+/**
+ * シナリオ一覧のセレクタ（デシリアライズが必要な複雑な変換）
+ */
 export const scenariosSelector = createSelector(
   stateSelector,
-  (c) => c.scenarios.map(stringToScenario) ?? [],
+  (state) => state.scenarios.map(stringToScenario),
 );
 
-export const isLoadingSelector = createSelector(
+/**
+ * 編集中のシナリオのセレクタ（デシリアライズが必要な複雑な変換）
+ */
+export const editingScenarioSelector = createSelector(
   stateSelector,
-  (c) => c.isLoading,
+  (state) => (state.editingScenario ? stringToScenario(state.editingScenario) : null),
 );
 
-export const isCreateModalOpenSelector = createSelector(
+/**
+ * 削除対象のシナリオのセレクタ（デシリアライズが必要な複雑な変換）
+ */
+export const deletingScenarioSelector = createSelector(
   stateSelector,
-  (c) => c.isCreateModalOpen,
-);
-
-export const isEditModalOpenSelector = createSelector(
-  stateSelector,
-  (c) => c.isEditModalOpen,
-);
-
-export const isDeleteModalOpenSelector = createSelector(
-  stateSelector,
-  (c) => c.isDeleteModalOpen,
-);
-
-export const createTitleSelector = createSelector(
-  stateSelector,
-  (c) => c.createTitle,
-);
-
-export const editTitleSelector = createSelector(
-  stateSelector,
-  (c) => c.editTitle,
-);
-
-export const editingScenarioSelector = createSelector(stateSelector, (c) =>
-  c.editingScenario ? stringToScenario(c.editingScenario) : null,
-);
-
-export const deletingScenarioSelector = createSelector(stateSelector, (c) =>
-  c.deletingScenario ? stringToScenario(c.deletingScenario) : null,
-);
-
-export const isSubmittingSelector = createSelector(
-  stateSelector,
-  (c) => c.isSubmitting,
-);
-
-export const isDeletingSelector = createSelector(
-  stateSelector,
-  (c) => c.isDeleting,
+  (state) => (state.deletingScenario ? stringToScenario(state.deletingScenario) : null),
 );

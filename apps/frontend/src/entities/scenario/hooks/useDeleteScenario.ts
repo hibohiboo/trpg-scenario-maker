@@ -3,9 +3,8 @@ import type { Scenario } from '@trpg-scenario-maker/ui/scenario/types';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import { deleteScenarioAction } from '../actions/delete';
 import {
-  isDeleteModalOpenSelector,
+  scenarioSlice,
   deletingScenarioSelector,
-  isDeletingSelector,
   openDeleteModal,
   closeDeleteModal,
 } from '../model/scenarioSlice';
@@ -13,9 +12,9 @@ import {
 export const useDeleteScenario = () => {
   const dispatch = useAppDispatch();
 
-  const isOpen = useAppSelector(isDeleteModalOpenSelector);
+  const isOpen = useAppSelector((state) => state[scenarioSlice.reducerPath].isDeleteModalOpen);
   const deletingScenario = useAppSelector(deletingScenarioSelector);
-  const isDeleting = useAppSelector(isDeletingSelector);
+  const isDeleting = useAppSelector((state) => state[scenarioSlice.reducerPath].isDeleting);
 
   const open = (scenario: Scenario) => {
     dispatch(openDeleteModal(scenarioToString(scenario)));

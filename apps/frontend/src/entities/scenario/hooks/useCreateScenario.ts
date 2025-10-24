@@ -1,9 +1,7 @@
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import { createScenarioAction } from '../actions/create';
 import {
-  isCreateModalOpenSelector,
-  createTitleSelector,
-  isSubmittingSelector,
+  scenarioSlice,
   openCreateModal,
   closeCreateModal,
   setCreateTitle,
@@ -12,9 +10,9 @@ import {
 export const useCreateScenario = () => {
   const dispatch = useAppDispatch();
 
-  const isOpen = useAppSelector(isCreateModalOpenSelector);
-  const title = useAppSelector(createTitleSelector);
-  const isSubmitting = useAppSelector(isSubmittingSelector);
+  const isOpen = useAppSelector((state) => state[scenarioSlice.reducerPath].isCreateModalOpen);
+  const title = useAppSelector((state) => state[scenarioSlice.reducerPath].createTitle);
+  const isSubmitting = useAppSelector((state) => state[scenarioSlice.reducerPath].isSubmitting);
 
   const open = () => {
     dispatch(openCreateModal());
