@@ -2,7 +2,10 @@ import { createSelector, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { stringToScenario } from '@trpg-scenario-maker/schema';
 import type { SerializableScenario } from '@trpg-scenario-maker/schema';
+import { createScenarioAction } from '../actions/create';
+import { deleteScenarioAction } from '../actions/delete';
 import { readScenarioAction } from '../actions/read';
+import { updateScenarioAction } from '../actions/update';
 
 export interface ScenarioState {
   scenarios: SerializableScenario[];
@@ -68,21 +71,59 @@ export const scenarioSlice = createSlice({
       state.isDeleteModalOpen = false;
       state.deletingScenario = null;
     },
-    setIsSubmitting: (state, action: PayloadAction<boolean>) => {
-      state.isSubmitting = action.payload;
-    },
-    setIsDeleting: (state, action: PayloadAction<boolean>) => {
-      state.isDeleting = action.payload;
-    },
-    setIsLoading: (state, action: PayloadAction<boolean>) => {
-      state.isLoading = action.payload;
-    },
   },
   extraReducers: (builder) => {
-    builder.addCase(readScenarioAction.fulfilled, (state, action) => {
-      state.scenarios = action.payload;
-      state.isLoading = false;
-    });
+    // Read (一覧取得)
+    builder
+      .addCase(readScenarioAction.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(readScenarioAction.fulfilled, (state, action) => {
+        state.scenarios = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(readScenarioAction.rejected, (state) => {
+        state.isLoading = false;
+      });
+
+    // Create (新規作成)
+    builder
+      .addCase(createScenarioAction.pending, (state) => {
+        state.isSubmitting = true;
+      })
+      .addCase(createScenarioAction.fulfilled, (state) => {
+        state.isSubmitting = false;
+        // readScenarioActionが後続で呼ばれるため、scenariosの更新はそちらで行う
+      })
+      .addCase(createScenarioAction.rejected, (state) => {
+        state.isSubmitting = false;
+      });
+
+    // Update (更新)
+    builder
+      .addCase(updateScenarioAction.pending, (state) => {
+        state.isSubmitting = true;
+      })
+      .addCase(updateScenarioAction.fulfilled, (state) => {
+        state.isSubmitting = false;
+        // readScenarioActionが後続で呼ばれるため、scenariosの更新はそちらで行う
+      })
+      .addCase(updateScenarioAction.rejected, (state) => {
+        state.isSubmitting = false;
+      });
+
+    // Delete (削除)
+    builder
+      .addCase(deleteScenarioAction.pending, (state) => {
+        state.isDeleting = true;
+      })
+      .addCase(deleteScenarioAction.fulfilled, (state) => {
+        state.isDeleting = false;
+        // readScenarioActionが後続で呼ばれるため、scenariosの更新はそちらで行う
+      })
+      .addCase(deleteScenarioAction.rejected, (state) => {
+        state.isDeleting = false;
+      });
   },
 });
 export const {
@@ -94,9 +135,6 @@ export const {
   setEditTitle,
   openDeleteModal,
   closeDeleteModal,
-  setIsSubmitting,
-  setIsDeleting,
-  setIsLoading,
 } = scenarioSlice.actions;
 
 const stateSelector = (state: RootState) => state[scenarioSlice.reducerPath];

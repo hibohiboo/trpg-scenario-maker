@@ -1,126 +1,49 @@
-import { scenarioToString } from '@trpg-scenario-maker/schema';
-import type { Scenario } from '@trpg-scenario-maker/ui/scenario/types';
-import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
-import { createScenarioAction } from '../actions/create';
-import { deleteScenarioAction } from '../actions/delete';
-import { readScenarioAction } from '../actions/read';
-import { updateScenarioAction } from '../actions/update';
-import {
-  scenariosSelector,
-  isLoadingSelector,
-  isCreateModalOpenSelector,
-  isEditModalOpenSelector,
-  isDeleteModalOpenSelector,
-  createTitleSelector,
-  editTitleSelector,
-  editingScenarioSelector,
-  deletingScenarioSelector,
-  isSubmittingSelector,
-  isDeletingSelector,
-  openCreateModal,
-  closeCreateModal,
-  setCreateTitle,
-  openEditModal,
-  closeEditModal,
-  setEditTitle,
-  openDeleteModal,
-  closeDeleteModal,
-} from '../model/scenarioSlice';
+import { useCreateScenario } from './useCreateScenario';
+import { useDeleteScenario } from './useDeleteScenario';
+import { useEditScenario } from './useEditScenario';
+import { useScenarioList } from './useScenarioList';
 
+/**
+ * シナリオページ全体の状態とロジックを統合するフック
+ * 各機能ごとの専用フックを組み合わせて、ページレベルのインターフェースを提供する
+ */
 export const usePage = () => {
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(readScenarioAction());
-  }, []);
-
-  const scenarios = useAppSelector(scenariosSelector);
-  const isLoading = useAppSelector(isLoadingSelector);
-  const isCreateModalOpen = useAppSelector(isCreateModalOpenSelector);
-  const isEditModalOpen = useAppSelector(isEditModalOpenSelector);
-  const isDeleteModalOpen = useAppSelector(isDeleteModalOpenSelector);
-  const createTitle = useAppSelector(createTitleSelector);
-  const editTitle = useAppSelector(editTitleSelector);
-  const editingScenario = useAppSelector(editingScenarioSelector);
-  const deletingScenario = useAppSelector(deletingScenarioSelector);
-  const isSubmitting = useAppSelector(isSubmittingSelector);
-  const isDeleting = useAppSelector(isDeletingSelector);
-
-  const handleCreateNew = () => {
-    dispatch(openCreateModal());
-  };
-
-  const handleCloseCreateModal = () => {
-    dispatch(closeCreateModal());
-  };
-
-  const handleCreateTitleChange = (title: string) => {
-    dispatch(setCreateTitle(title));
-  };
-
-  const handleCreateSubmit = async () => {
-    dispatch(createScenarioAction({ title: createTitle }));
-  };
-
-  const handleEdit = (scenario: Scenario) => {
-    dispatch(openEditModal(scenarioToString(scenario)));
-  };
-
-  const handleCloseEditModal = () => {
-    dispatch(closeEditModal());
-  };
-
-  const handleEditTitleChange = (title: string) => {
-    dispatch(setEditTitle(title));
-  };
-
-  const handleEditSubmit = async () => {
-    if (!editingScenario?.id) return;
-    dispatch(updateScenarioAction({ id: editingScenario.id, title: editTitle }));
-  };
-
-  const handleDelete = (scenario: Scenario) => {
-    dispatch(openDeleteModal(scenarioToString(scenario)));
-  };
-
-  const handleCloseDeleteModal = () => {
-    dispatch(closeDeleteModal());
-  };
-
-  const handleDeleteConfirm = () => {
-    if (!deletingScenario?.id) return;
-    dispatch(deleteScenarioAction({ id: deletingScenario.id }));
-  };
-
-  const handleClick = (scenario: Scenario) => {
-    // TODO: 詳細画面への遷移実装
-    console.log('Clicked scenario:', scenario.id);
-  };
+  // 各機能専用のフックを使用
+  const list = useScenarioList();
+  const create = useCreateScenario();
+  const edit = useEditScenario();
+  const deleteScenario = useDeleteScenario();
 
   return {
-    scenarios,
-    isLoading,
-    isCreateModalOpen,
-    isEditModalOpen,
-    isDeleteModalOpen,
-    createTitle,
-    editTitle,
-    editingScenario,
-    deletingScenario,
-    isSubmitting,
-    isDeleting,
-    onCreateNew: handleCreateNew,
-    onCloseCreateModal: handleCloseCreateModal,
-    onCreateTitleChange: handleCreateTitleChange,
-    onCreateSubmit: handleCreateSubmit,
-    onEdit: handleEdit,
-    onCloseEditModal: handleCloseEditModal,
-    onEditTitleChange: handleEditTitleChange,
-    onEditSubmit: handleEditSubmit,
-    onDelete: handleDelete,
-    onCloseDeleteModal: handleCloseDeleteModal,
-    onDeleteConfirm: handleDeleteConfirm,
-    onClick: handleClick,
+    // 一覧表示
+    scenarios: list.scenarios,
+    isLoading: list.isLoading,
+    onClick: list.onClick,
+
+    // 作成モーダル
+    isCreateModalOpen: create.isOpen,
+    createTitle: create.title,
+    isSubmitting: create.isSubmitting,
+    onCreateNew: create.open,
+    onCloseCreateModal: create.close,
+    onCreateTitleChange: create.setTitle,
+    onCreateSubmit: create.submit,
+
+    // 編集モーダル
+    isEditModalOpen: edit.isOpen,
+    editTitle: edit.title,
+    editingScenario: edit.editingScenario,
+    onEdit: edit.open,
+    onCloseEditModal: edit.close,
+    onEditTitleChange: edit.setTitle,
+    onEditSubmit: edit.submit,
+
+    // 削除モーダル
+    isDeleteModalOpen: deleteScenario.isOpen,
+    deletingScenario: deleteScenario.deletingScenario,
+    isDeleting: deleteScenario.isDeleting,
+    onDelete: deleteScenario.open,
+    onCloseDeleteModal: deleteScenario.close,
+    onDeleteConfirm: deleteScenario.confirm,
   };
 };

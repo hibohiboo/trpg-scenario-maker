@@ -1,0 +1,27 @@
+import type { Scenario } from '@trpg-scenario-maker/ui/scenario/types';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
+import { readScenarioAction } from '../actions/read';
+import { scenariosSelector, isLoadingSelector } from '../model/scenarioSlice';
+
+export const useScenarioList = () => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(readScenarioAction());
+  }, [dispatch]);
+
+  const scenarios = useAppSelector(scenariosSelector);
+  const isLoading = useAppSelector(isLoadingSelector);
+
+  const handleClick = (scenario: Scenario) => {
+    // TODO: 詳細画面への遷移実装
+    console.log('Clicked scenario:', scenario.id);
+  };
+
+  return {
+    scenarios,
+    isLoading,
+    onClick: handleClick,
+  };
+};
