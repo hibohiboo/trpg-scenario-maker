@@ -1,7 +1,7 @@
 import type { Scenario } from '@trpg-scenario-maker/ui/scenario/types';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
-import { readScenarioAction } from '../actions/read';
+import { getCountSample, readScenarioAction } from '../actions/read';
 import { scenariosSelector, scenarioSlice } from '../model/scenarioSlice';
 
 export const useScenarioList = () => {
@@ -9,10 +9,15 @@ export const useScenarioList = () => {
 
   useEffect(() => {
     dispatch(readScenarioAction());
+    (async () => {
+      console.log('scenario count', await getCountSample());
+    })();
   }, [dispatch]);
 
   const scenarios = useAppSelector(scenariosSelector);
-  const isLoading = useAppSelector((state) => state[scenarioSlice.reducerPath].isLoading);
+  const isLoading = useAppSelector(
+    (state) => state[scenarioSlice.reducerPath].isLoading,
+  );
 
   const handleClick = (scenario: Scenario) => {
     // TODO: 詳細画面への遷移実装

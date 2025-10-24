@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { getScenarios } from '@trpg-scenario-maker/rdb';
+import { getScenarioCount, getScenarios } from '@trpg-scenario-maker/rdb';
 import {
   scenarioToString,
   type SerializableScenario,
@@ -12,3 +12,8 @@ export const readScenarioAction = createAsyncThunk<
   const scenarios = await getScenarios();
   return scenarios.map(scenarioToString);
 });
+
+export const getCountSample = async () => {
+  const cnt = await getScenarioCount();
+  return cnt;
+};
