@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import { createScenarioAction } from '../actions/create';
 import { readScenarioAction } from '../actions/read';
+import { updateScenarioAction } from '../actions/update';
 import {
   scenariosSelector,
   isLoadingSelector,
@@ -74,8 +75,8 @@ export const usePage = () => {
   };
 
   const handleEditSubmit = async () => {
-    // TODO: API呼び出し実装
-    console.log('Editing scenario:', editingScenario?.id, editTitle);
+    if (!editingScenario?.id) return;
+    dispatch(updateScenarioAction({ id: editingScenario.id, title: editTitle }));
   };
 
   const handleDelete = (scenario: Scenario) => {
