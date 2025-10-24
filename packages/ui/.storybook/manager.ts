@@ -4,7 +4,7 @@ import { themes } from 'storybook/theming';
 addons.setConfig({
   theme: {
     ...themes.dark,
-    brandTitle: 'Age of Hero UI',
+    brandTitle: 'TRPG Scenario Maker UI',
     brandUrl: 'https://github.com/hibohiboo/age-of-hero/packages/ui',
     brandTarget: '_blank',
   },
