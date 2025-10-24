@@ -1,9 +1,8 @@
-import { createScenario } from '@trpg-scenario-maker/rdb/queries/insert';
 import { scenarioToString } from '@trpg-scenario-maker/schema';
 import type { Scenario } from '@trpg-scenario-maker/ui/scenario/types';
 import { useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
+import { createScenarioAction } from '../actions/create';
 import { readScenarioAction } from '../actions/read';
 import {
   scenariosSelector,
@@ -59,14 +58,7 @@ export const usePage = () => {
   };
 
   const handleCreateSubmit = async () => {
-    // TODO: API呼び出し実装
-    console.log('Creating scenario:', createTitle);
-    await createScenario({
-      title: createTitle,
-      id: uuidv4(),
-    });
-    dispatch(readScenarioAction());
-    dispatch(closeCreateModal());
+    dispatch(createScenarioAction({ title: createTitle }));
   };
 
   const handleEdit = (scenario: Scenario) => {

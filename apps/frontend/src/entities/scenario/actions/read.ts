@@ -10,6 +10,5 @@ export const readScenarioAction = createAsyncThunk<
   void
 >('readScenario', async (_) => {
   const scenarios = await getScenarios();
-
   return scenarios.map(scenarioToString);
 });
