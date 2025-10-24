@@ -1,2 +1,2 @@
-export { Page as ScenarioPage } from './ui/Page';
+export { Page as ScenarioPage } from './containers/Page';
 export { scenarioSlice } from './model/scenarioSlice';
