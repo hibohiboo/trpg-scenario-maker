@@ -3,6 +3,7 @@ import type { Scenario } from '@trpg-scenario-maker/ui/scenario/types';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import { createScenarioAction } from '../actions/create';
+import { deleteScenarioAction } from '../actions/delete';
 import { readScenarioAction } from '../actions/read';
 import { updateScenarioAction } from '../actions/update';
 import {
@@ -88,8 +89,8 @@ export const usePage = () => {
   };
 
   const handleDeleteConfirm = () => {
-    // TODO: API呼び出し実装
-    console.log('Deleting scenario:', deletingScenario?.id);
+    if (!deletingScenario?.id) return;
+    dispatch(deleteScenarioAction({ id: deletingScenario.id }));
   };
 
   const handleClick = (scenario: Scenario) => {
