@@ -1,5 +1,5 @@
-import { db } from '../db/db';
-import { scenariosTable } from '../schema';
+import { db } from '../..';
+import { scenariosTable } from '../../schema';
 
 export async function getScenarios() {
   return db

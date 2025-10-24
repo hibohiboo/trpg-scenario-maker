@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { getScenarios } from '@trpg-scenario-maker/rdb/queries/select';
+import { getScenarios } from '@trpg-scenario-maker/rdb';
 import {
   scenarioToString,
   type SerializableScenario,

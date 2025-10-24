@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { createScenario } from '@trpg-scenario-maker/rdb/queries/insert';
+import { createScenario } from '@trpg-scenario-maker/rdb';
 import { v4 as uuidv4 } from 'uuid';
 import { closeCreateModal } from '../model/scenarioSlice';
 import { readScenarioAction } from './read';

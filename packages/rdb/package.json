@@ -4,7 +4,8 @@
   "type": "module",
   "private": true,
   "exports": {
-    "./*": "./src/*.ts"
+    "./*": "./src/*.ts",
+    ".": "./src/index.ts"
   },
   "scripts": {
     "ncu": "ncu -u",
