@@ -1,3 +1,4 @@
+import { desc } from 'drizzle-orm';
 import { db } from '../..';
 import { scenariosTable } from '../../schema';
 
@@ -9,5 +10,6 @@ export async function getScenarios() {
       createdAt: scenariosTable.createdAt,
       updatedAt: scenariosTable.updatedAt,
     })
-    .from(scenariosTable);
+    .from(scenariosTable)
+    .orderBy(desc(scenariosTable.updatedAt));
 }
