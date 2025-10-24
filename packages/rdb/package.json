@@ -10,7 +10,6 @@
   "scripts": {
     "ncu": "ncu -u",
     "generate": "drizzle-kit generate",
-    "migrate": "cross-env DOTENV_CONFIG_PATH=.env.dev drizzle-kit migrate",
     "compile": "bun run compile-migrations.mts"
   },
   "devDependencies": {
