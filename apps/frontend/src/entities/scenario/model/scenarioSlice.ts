@@ -91,9 +91,10 @@ export const scenarioSlice = createSlice({
       .addCase(createScenarioAction.pending, (state) => {
         state.isSubmitting = true;
       })
-      .addCase(createScenarioAction.fulfilled, (state) => {
+      .addCase(createScenarioAction.fulfilled, (state, action) => {
         state.isSubmitting = false;
-        // readScenarioActionが後続で呼ばれるため、scenariosの更新はそちらで行う
+        // 楽観的UI更新: 作成したシナリオを先頭に追加
+        state.scenarios.unshift(action.payload);
       })
       .addCase(createScenarioAction.rejected, (state) => {
         state.isSubmitting = false;
@@ -104,9 +105,13 @@ export const scenarioSlice = createSlice({
       .addCase(updateScenarioAction.pending, (state) => {
         state.isSubmitting = true;
       })
-      .addCase(updateScenarioAction.fulfilled, (state) => {
+      .addCase(updateScenarioAction.fulfilled, (state, action) => {
         state.isSubmitting = false;
-        // readScenarioActionが後続で呼ばれるため、scenariosの更新はそちらで行う
+        // 楽観的UI更新: 更新されたシナリオで置き換え
+        const index = state.scenarios.findIndex((s) => s.id === action.payload.id);
+        if (index !== -1) {
+          state.scenarios[index] = action.payload;
+        }
       })
       .addCase(updateScenarioAction.rejected, (state) => {
         state.isSubmitting = false;
@@ -117,9 +122,10 @@ export const scenarioSlice = createSlice({
       .addCase(deleteScenarioAction.pending, (state) => {
         state.isDeleting = true;
       })
-      .addCase(deleteScenarioAction.fulfilled, (state) => {
+      .addCase(deleteScenarioAction.fulfilled, (state, action) => {
         state.isDeleting = false;
-        // readScenarioActionが後続で呼ばれるため、scenariosの更新はそちらで行う
+        // 楽観的UI更新: 削除されたシナリオを配列から除外
+        state.scenarios = state.scenarios.filter((s) => s.id !== action.payload);
       })
       .addCase(deleteScenarioAction.rejected, (state) => {
         state.isDeleting = false;

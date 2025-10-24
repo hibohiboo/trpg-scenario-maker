@@ -3,8 +3,10 @@ import { db } from '../..';
 import { scenariosTable } from '../../schema';
 
 export async function updateScenario(id: string, data: { title: string }) {
-  await db
+  const [result] = await db
     .update(scenariosTable)
     .set({ title: data.title, updatedAt: new Date() })
-    .where(eq(scenariosTable.id, id));
+    .where(eq(scenariosTable.id, id))
+    .returning();
+  return result;
 }
