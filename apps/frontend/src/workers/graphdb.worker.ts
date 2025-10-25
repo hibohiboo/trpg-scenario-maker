@@ -2,7 +2,8 @@ import {
   initializeDatabase,
   executeQuery,
   closeDatabase,
-} from "@trpg-scenario-maker/graphdb";
+} from '@trpg-scenario-maker/graphdb';
+import { readFSVFile } from '@trpg-scenario-maker/graphdb/db';
 
 // リクエスト/レスポンス型
 export interface GraphDBWorkerRequest {
@@ -21,7 +22,7 @@ export interface GraphDBWorkerResponse {
 // ハンドラー関数の型
 type HandlerFunction = (
   payload: unknown,
-) => Promise<Omit<GraphDBWorkerResponse, "type">>;
+) => Promise<Omit<GraphDBWorkerResponse, 'type'>>;
 
 // ハンドラーマップ
 const handlers = new Map<string, HandlerFunction>();
@@ -29,18 +30,18 @@ const handlers = new Map<string, HandlerFunction>();
 /**
  * データベース初期化ハンドラー
  */
-handlers.set("init", async () => {
+handlers.set('init', async () => {
   await initializeDatabase();
-  return { success: true, data: { message: "Database initialized" } };
+  return { success: true, data: { message: 'Database initialized' } };
 });
 
 /**
  * クエリ実行ハンドラー
  */
-handlers.set("execute", async (payload: unknown) => {
+handlers.set('execute', async (payload: unknown) => {
   const { query } = payload as { query: string };
   if (!query) {
-    throw new Error("Query is required");
+    throw new Error('Query is required');
   }
 
   const data = await executeQuery(query);
@@ -48,17 +49,31 @@ handlers.set("execute", async (payload: unknown) => {
 });
 
 /**
+ * ローカルストレージへの永続化ハンドラー
+ */
+handlers.set('save', async (payload: unknown) => {
+  const { query, filename } = payload as { query: string; filename: string };
+  if (!query || !filename) {
+    throw new Error('Query and filename are required');
+  }
+
+  await executeQuery(query);
+
+  return { success: true, data: readFSVFile(filename) };
+});
+
+/**
  * データベースクローズハンドラー
  */
-handlers.set("close", async () => {
+handlers.set('close', async () => {
   await closeDatabase();
-  return { success: true, data: { message: "Database closed" } };
+  return { success: true, data: { message: 'Database closed' } };
 });
 
 // Workerメッセージハンドラー
 const { self } = globalThis;
 self.addEventListener(
-  "message",
+  'message',
   async (event: MessageEvent<GraphDBWorkerRequest & { id: number }>) => {
     const { type, id, payload } = event.data;
 
@@ -77,7 +92,7 @@ self.addEventListener(
         error instanceof Error ? error.message : String(error);
       self.postMessage({
         id,
-        type: "error",
+        type: 'error',
         error: errorMessage,
         originalType: type,
       } satisfies GraphDBWorkerResponse & { id: number });

@@ -43,6 +43,31 @@ class GraphDBWorkerClient extends BaseWorkerClient<
   }
 
   /**
+   * クエリを実行
+   */
+  async save(): Promise<void> {
+    const nodeFilename = '/node.csv';
+    const nodeResponse = await this.sendRequest<GraphDBWorkerResponse>({
+      type: 'save',
+      payload: {
+        filename: nodeFilename,
+        query: `COPY (MATCH (n) RETURN n) TO '${nodeFilename}' (header=false);`,
+      },
+    });
+    localStorage.setItem('graphdb_node_backup', nodeResponse.data as string);
+
+    const relFilename = '/relation.csv';
+    const relResponse = await this.sendRequest<GraphDBWorkerResponse>({
+      type: 'save',
+      payload: {
+        filename: relFilename,
+        query: `COPY (MATCH (a)-[e]->(b) RETURN a, e, b) TO '${relFilename}' (header=false);`,
+      },
+    });
+    localStorage.setItem('graphdb_rel_backup', relResponse.data as string);
+  }
+
+  /**
    * データベースをクローズ
    */
   async close(): Promise<void> {

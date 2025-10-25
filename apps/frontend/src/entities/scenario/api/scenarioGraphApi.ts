@@ -6,4 +6,7 @@ export const scenarioGraphApi = {
     graphdbWorkerClient.execute(`
       CREATE (s:Scenario {id: '${params.id}', title: '${params.title}'})
     `),
+  save: async () => {
+    await graphdbWorkerClient.save();
+  },
 } as const;

@@ -1,7 +1,8 @@
 // eslint-disable-next-line camelcase
 import kuzu_wasm from '@kuzu/kuzu-wasm';
-import type { Database, Connection } from '@kuzu/kuzu-wasm';
+import type { Database, Connection, KuzuModule } from '@kuzu/kuzu-wasm';
 
+let kuzu: KuzuModule | null = null;
 let db: Database | null = null;
 let connection: Connection | null = null;
 
@@ -53,7 +54,7 @@ async function createSchema(): Promise<void> {
  */
 export async function initializeDatabase(): Promise<void> {
   // Kùzu WASMモジュールを初期化
-  const kuzu = await kuzu_wasm();
+  kuzu = await kuzu_wasm();
 
   // インメモリデータベースを作成
   db = await kuzu.Database();
@@ -95,6 +96,13 @@ export async function executeQuery(query: string): Promise<unknown> {
   }
 
   return JSON.parse(result.table.toString());
+}
+
+export function readFSVFile(path: string): string {
+  if (!kuzu) {
+    throw new Error('Kùzu FS is not initialized');
+  }
+  return kuzu.FS.readFile(path, { encoding: 'utf8' });
 }
 
 /**
