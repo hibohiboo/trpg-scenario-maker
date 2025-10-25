@@ -68,16 +68,6 @@ export function SceneEditor({
       )}
 
       <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <h3 className="mb-4 text-lg font-semibold">シーンフロー</h3>
-        <SceneFlowCanvas
-          scenes={scenes}
-          connections={connections}
-          onConnectionAdd={onAddConnection}
-          onConnectionDelete={onDeleteConnection}
-        />
-      </div>
-
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
         <h3 className="mb-4 text-lg font-semibold">シーン一覧</h3>
         <div className="space-y-2">
           {scenes.map((scene) => (
@@ -94,7 +84,9 @@ export function SceneEditor({
                     </span>
                   )}
                 </h4>
-                <p className="mt-1 text-sm text-gray-600">{scene.description}</p>
+                <p className="mt-1 text-sm text-gray-600">
+                  {scene.description}
+                </p>
               </div>
               <div className="flex gap-2">
                 <button
@@ -118,6 +110,15 @@ export function SceneEditor({
             </p>
           )}
         </div>
+      </div>
+      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+        <h3 className="mb-4 text-lg font-semibold">シーンフロー</h3>
+        <SceneFlowCanvas
+          scenes={scenes}
+          connections={connections}
+          onConnectionAdd={onAddConnection}
+          onConnectionDelete={onDeleteConnection}
+        />
       </div>
     </div>
   );
