@@ -71,6 +71,20 @@ export function getConnection(): Connection {
 }
 
 /**
+ * クエリを実行してJSONデータを返す
+ */
+export async function executeQuery(query: string): Promise<unknown> {
+  if (!connection) {
+    throw new Error(
+      'Database connection not initialized. Call initializeDatabase first.',
+    );
+  }
+
+  const result = await connection.execute(query);
+  return JSON.parse(result.table.toString());
+}
+
+/**
  * データベースを閉じる
  */
 export async function closeDatabase(): Promise<void> {

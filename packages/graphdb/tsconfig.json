@@ -1,0 +1,9 @@
+{
+  "extends": "@trpg-scenario-maker/tsconfig/tsconfig.frontend.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
