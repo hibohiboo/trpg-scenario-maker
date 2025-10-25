@@ -1,11 +1,11 @@
 import { Provider } from 'react-redux';
-import { ScenarioPage } from '../page/scenario';
+import Router from './Router';
 import { store } from './store';
 
 function App() {
   return (
     <Provider store={store}>
-      <ScenarioPage />
+      <Router />
     </Provider>
   );
 }

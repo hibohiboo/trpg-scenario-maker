@@ -31,6 +31,7 @@
         "react": "catalog:",
         "react-dom": "catalog:",
         "react-redux": "^9.2.0",
+        "react-router": "catalog:",
         "uuid": "^13.0.0",
       },
       "devDependencies": {
