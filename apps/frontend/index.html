@@ -7,6 +7,9 @@
     <title>frontend</title>
   </head>
   <body>
+    <!-- Github Pages で@kuzu/kuzu-wasmを使うため、SharedArrayBuffer を使えるようにheaderにcross-origin設定を付与  -->
+    <script src="/coi-serviceworker.js"></script>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

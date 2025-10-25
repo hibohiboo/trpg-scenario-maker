@@ -11,10 +11,11 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.9.2",
-    "@trpg-scenario-maker/rdb": "workspace:*",
     "@trpg-scenario-maker/graphdb": "workspace:*",
+    "@trpg-scenario-maker/rdb": "workspace:*",
     "@trpg-scenario-maker/schema": "workspace:*",
     "@trpg-scenario-maker/ui": "workspace:*",
+    "coi-serviceworker": "^0.1.7",
     "date-fns": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
