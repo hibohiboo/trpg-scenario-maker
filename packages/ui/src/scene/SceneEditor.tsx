@@ -80,7 +80,7 @@ export function SceneEditor({
                   {scene.title}
                   {scene.isMasterScene && (
                     <span className="ml-2 rounded-full bg-green-100 px-2 py-1 text-xs text-green-800">
-                      開始シーン
+                      マスターシーン
                     </span>
                   )}
                 </h4>

@@ -164,7 +164,7 @@ export const MasterSceneHighlight: Story = {
       {
         id: '1',
         title: 'スタート（マスターシーン）',
-        description: '開始シーンは緑色で表示されます',
+        description: 'マスターシーンは緑色で表示されます',
         isMasterScene: true,
       },
       {
