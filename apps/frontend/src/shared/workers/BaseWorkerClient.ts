@@ -9,7 +9,9 @@ export abstract class BaseWorkerClient<
   TResponse extends BaseWorkerResponse,
 > {
   protected worker: Worker | null = null;
+
   private messageId = 0;
+
   private pendingRequests = new Map<
     number,
     { resolve: (value: unknown) => void; reject: (error: Error) => void }
@@ -34,7 +36,10 @@ export abstract class BaseWorkerClient<
     });
 
     // Workerからのレスポンスハンドラー設定
-    this.worker.addEventListener('message', this.handleWorkerMessage.bind(this));
+    this.worker.addEventListener(
+      'message',
+      this.handleWorkerMessage.bind(this),
+    );
     this.worker.addEventListener('error', this.handleWorkerError.bind(this));
 
     // 初期化処理（サブクラスでオーバーライド可能）
@@ -44,6 +49,7 @@ export abstract class BaseWorkerClient<
   /**
    * 初期化時の追加処理（サブクラスでオーバーライド）
    */
+  // eslint-disable-next-line class-methods-use-this
   protected async onInitialize(): Promise<void> {
     // デフォルトでは何もしない
   }
@@ -87,11 +93,12 @@ export abstract class BaseWorkerClient<
   protected sendRequest<T extends TResponse>(request: TRequest): Promise<T> {
     if (!this.worker) {
       return Promise.reject(
-        new Error(`${this.constructor.name} is not initialized`)
+        new Error(`${this.constructor.name} is not initialized`),
       );
     }
 
-    const id = this.messageId++;
+    const id = this.messageId + 1;
+    this.messageId = id;
 
     return new Promise<T>((resolve, reject) => {
       this.pendingRequests.set(id, {
