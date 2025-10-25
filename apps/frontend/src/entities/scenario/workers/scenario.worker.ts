@@ -8,20 +8,22 @@ import {
 import { runMigrate } from '@trpg-scenario-maker/rdb/db/runMigrate';
 import type { NewScenario, Scenario } from '@trpg-scenario-maker/rdb/schema';
 
-export type UpdateScenario = Pick<NewScenario, 'title'>;
-// Workerメッセージの型定義
-export type DBWorkerRequest =
+export type UpdateScenarioData = Pick<NewScenario, 'title'>;
+
+// シナリオWorkerのリクエスト型
+export type ScenarioWorkerRequest =
   | { type: 'migrate' }
   | { type: 'getScenarios' }
   | { type: 'getScenarioCount' }
   | { type: 'createScenario'; payload: NewScenario }
   | {
       type: 'updateScenario';
-      payload: { id: string; data: UpdateScenario };
+      payload: { id: string; data: UpdateScenarioData };
     }
   | { type: 'deleteScenario'; payload: { id: string } };
 
-export type DBWorkerResponse =
+// シナリオWorkerのレスポンス型
+export type ScenarioWorkerResponse =
   | { type: 'migrate'; success: true }
   | { type: 'getScenarios'; data: Scenario[] }
   | { type: 'getScenarioCount'; data: number }
@@ -34,11 +36,11 @@ export type DBWorkerResponse =
 const { self } = globalThis;
 self.addEventListener(
   'message',
-  async (event: MessageEvent<DBWorkerRequest & { id: number }>) => {
+  async (event: MessageEvent<ScenarioWorkerRequest & { id: number }>) => {
     const { type, id } = event.data;
 
     try {
-      let response: DBWorkerResponse;
+      let response: ScenarioWorkerResponse;
 
       switch (type) {
         case 'migrate': {
@@ -93,7 +95,7 @@ self.addEventListener(
         type: 'error',
         error: errorMessage,
         originalType: type,
-      } satisfies DBWorkerResponse & { id: number });
+      } satisfies ScenarioWorkerResponse & { id: number });
     }
   },
 );

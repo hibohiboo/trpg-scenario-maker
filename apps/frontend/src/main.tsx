@@ -1,12 +1,12 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './app/App';
-import { dbWorkerClient } from './shared/workers/dbWorkerClient';
+import { scenarioWorkerClient } from './entities/scenario/workers/scenarioWorkerClient';
 
 import './index.css';
 
 // WebWorkerを初期化してマイグレーション実行
-await dbWorkerClient.initialize();
+await scenarioWorkerClient.initialize();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
