@@ -5,7 +5,7 @@ import {
   getScenarios as getScenariosQuery,
   updateScenario as updateScenarioQuery,
 } from '@trpg-scenario-maker/rdb';
-import type { NewScenario, Scenario } from '@trpg-scenario-maker/rdb/schema';
+import type { NewScenario } from '@trpg-scenario-maker/rdb/schema';
 
 export type UpdateScenarioData = Pick<NewScenario, 'title'>;
 
@@ -50,27 +50,3 @@ export const scenarioHandlers = [
     },
   },
 ];
-
-// 型定義のエクスポート（クライアント側で使用）
-export interface ScenarioHandlers {
-  'scenario:getList': {
-    request: void;
-    response: Scenario[];
-  };
-  'scenario:getCount': {
-    request: void;
-    response: number;
-  };
-  'scenario:create': {
-    request: NewScenario;
-    response: Scenario;
-  };
-  'scenario:update': {
-    request: { id: string; data: UpdateScenarioData };
-    response: Scenario;
-  };
-  'scenario:delete': {
-    request: { id: string };
-    response: void;
-  };
-}

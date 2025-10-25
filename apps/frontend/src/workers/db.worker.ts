@@ -63,6 +63,3 @@ self.addEventListener(
     }
   },
 );
-function getScenarioCountQuery() {
-  throw new Error('Function not implemented.');
-}
