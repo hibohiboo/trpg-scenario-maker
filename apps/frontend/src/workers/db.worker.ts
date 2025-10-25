@@ -16,7 +16,7 @@ export type DBWorkerRequest =
   | { type: 'createScenario'; payload: NewScenario }
   | {
       type: 'updateScenario';
-      payload: { id: string; data: Partial<NewScenario> };
+      payload: { id: string; data: Pick<NewScenario, 'title'> };
     }
   | { type: 'deleteScenario'; payload: { id: string } };
 
