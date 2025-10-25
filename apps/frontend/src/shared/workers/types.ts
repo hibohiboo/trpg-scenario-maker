@@ -16,10 +16,10 @@ export interface BaseWorkerResponse {
 /**
  * Worker内部で使用するメッセージ型（ID付き）
  */
-export interface WorkerMessageWithId<T extends BaseWorkerRequest> extends T {
+export type WorkerMessageWithId<T extends BaseWorkerRequest> = T & {
   id: number;
-}
+};
 
-export interface WorkerResponseWithId<T extends BaseWorkerResponse> extends T {
+export type WorkerResponseWithId<T extends BaseWorkerResponse> = T & {
   id: number;
-}
+};
