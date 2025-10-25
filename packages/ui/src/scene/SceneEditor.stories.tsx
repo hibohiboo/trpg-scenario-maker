@@ -67,8 +67,8 @@ const initialScenes: Scene[] = [
 ];
 
 const initialConnections: SceneConnection[] = [
-  { id: '1-2', source: '1', target: '2', order: 1 },
-  { id: '2-3', source: '2', target: '3', order: 2 },
+  { id: '1-2', source: '1', target: '2' },
+  { id: '2-3', source: '2', target: '3' },
 ];
 
 export const Default: Story = {
@@ -217,13 +217,13 @@ export const WithComplexFlow: Story = {
     ];
 
     const complexConnections: SceneConnection[] = [
-      { id: '1-2', source: '1', target: '2', order: 1 },
-      { id: '1-3', source: '1', target: '3', order: 2 },
-      { id: '2-4', source: '2', target: '4', order: 3 },
-      { id: '3-5', source: '3', target: '5', order: 3 },
-      { id: '4-6', source: '4', target: '6', order: 4 },
-      { id: '5-6', source: '5', target: '6', order: 4 },
-      { id: '6-7', source: '6', target: '7', order: 5 },
+      { id: '1-2', source: '1', target: '2' },
+      { id: '1-3', source: '1', target: '3' },
+      { id: '2-4', source: '2', target: '4' },
+      { id: '3-5', source: '3', target: '5' },
+      { id: '4-6', source: '4', target: '6' },
+      { id: '5-6', source: '5', target: '6' },
+      { id: '6-7', source: '6', target: '7' },
     ];
 
     const [scenes, setScenes] = useState<Scene[]>(complexScenes);

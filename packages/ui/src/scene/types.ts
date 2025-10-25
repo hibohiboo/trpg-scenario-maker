@@ -9,7 +9,6 @@ export interface SceneConnection {
   id: string;
   source: string;
   target: string;
-  order?: number;
 }
 
 export interface SceneEditorProps {

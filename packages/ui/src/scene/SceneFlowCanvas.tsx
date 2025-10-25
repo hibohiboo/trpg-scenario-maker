@@ -53,12 +53,9 @@ export function SceneFlowCanvas({
     id: conn.id,
     source: conn.source,
     target: conn.target,
-    label: conn.order ? `順序: ${conn.order}` : undefined,
     type: 'smoothstep',
     animated: true,
     style: { stroke: '#6366f1', strokeWidth: 2 },
-    labelStyle: { fill: '#4f46e5', fontWeight: 600 },
-    labelBgStyle: { fill: '#e0e7ff', fillOpacity: 0.9 },
   }));
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -95,12 +92,9 @@ export function SceneFlowCanvas({
       id: conn.id,
       source: conn.source,
       target: conn.target,
-      label: conn.order ? `順序: ${conn.order}` : undefined,
       type: 'smoothstep',
       animated: true,
       style: { stroke: '#6366f1', strokeWidth: 2 },
-      labelStyle: { fill: '#4f46e5', fontWeight: 600 },
-      labelBgStyle: { fill: '#e0e7ff', fillOpacity: 0.9 },
     }));
     setEdges(newEdges);
   }, [connections, setEdges]);

@@ -32,20 +32,18 @@ export class SceneApi {
   ): Promise<SceneConnection[]> {
     const query = `
       MATCH (s:Scenario {id: '${scenarioId}'})-[:HAS_SCENE]->(scene1:Scene)-[r:NEXT_SCENE]->(scene2:Scene)
-      RETURN scene1.id AS source, scene2.id AS target, r.order AS order
+      RETURN scene1.id AS source, scene2.id AS target
     `;
     const result = await graphdbWorkerClient.execute<
       Array<{
         source: string;
         target: string;
-        order?: number;
       }>
     >(query);
     return result.map((item) => ({
       id: `${item.source}-${item.target}`,
       source: item.source,
       target: item.target,
-      order: item.order,
     }));
   }
 
@@ -156,18 +154,16 @@ export class SceneApi {
   static async createConnection(
     connection: Omit<SceneConnection, 'id'>,
   ): Promise<SceneConnection> {
-    const orderClause = connection.order ? `{order: ${connection.order}}` : '';
     const query = `
       MATCH (source:Scene {id: '${connection.source}'}), (target:Scene {id: '${connection.target}'})
-      CREATE (source)-[r:NEXT_SCENE ${orderClause}]->(target)
-      RETURN '${connection.source}-${connection.target}' AS id, '${connection.source}' AS source, '${connection.target}' AS target, r.order AS order
+      CREATE (source)-[r:NEXT_SCENE]->(target)
+      RETURN '${connection.source}-${connection.target}' AS id, '${connection.source}' AS source, '${connection.target}' AS target
     `;
     const result = await graphdbWorkerClient.execute<
       Array<{
         id: string;
         source: string;
         target: string;
-        order?: number;
       }>
     >(query);
 

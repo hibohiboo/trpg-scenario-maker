@@ -71,10 +71,10 @@ const sampleScenes: Scene[] = [
 ];
 
 const sampleConnections: SceneConnection[] = [
-  { id: '1-2', source: '1', target: '2', order: 1 },
-  { id: '2-3', source: '2', target: '3', order: 2 },
-  { id: '3-4', source: '3', target: '4', order: 3 },
-  { id: '4-5', source: '4', target: '5', order: 4 },
+  { id: '1-2', source: '1', target: '2' },
+  { id: '2-3', source: '2', target: '3' },
+  { id: '3-4', source: '3', target: '4' },
+  { id: '4-5', source: '4', target: '5' },
 ];
 
 export const Default: Story = {
@@ -124,9 +124,9 @@ export const ComplexFlow: Story = {
     ],
     connections: [
       ...sampleConnections,
-      { id: '3-6', source: '3', target: '6', order: 3 },
-      { id: '6-7', source: '6', target: '7', order: 4 },
-      { id: '7-5', source: '7', target: '5', order: 5 },
+      { id: '3-6', source: '3', target: '6' },
+      { id: '6-7', source: '6', target: '7' },
+      { id: '7-5', source: '7', target: '5' },
     ],
   },
 };
@@ -153,7 +153,6 @@ export const ManyScenes: Story = {
       id: `${i + 1}-${i + 2}`,
       source: `${i + 1}`,
       target: `${i + 2}`,
-      order: i + 1,
     })),
   },
 };
@@ -181,8 +180,8 @@ export const MasterSceneHighlight: Story = {
       },
     ],
     connections: [
-      { id: '1-2', source: '1', target: '2', order: 1 },
-      { id: '1-3', source: '1', target: '3', order: 2 },
+      { id: '1-2', source: '1', target: '2' },
+      { id: '1-3', source: '1', target: '3' },
     ],
   },
 };

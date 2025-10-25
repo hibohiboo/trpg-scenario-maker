@@ -43,8 +43,7 @@ async function createSchema(): Promise<void> {
   // シーンの順序関係（通常の遷移）
   await connection.execute(`
     CREATE REL TABLE NEXT_SCENE (
-        FROM Scene TO Scene,
-        order INT64
+        FROM Scene TO Scene
     )
   `);
 }
