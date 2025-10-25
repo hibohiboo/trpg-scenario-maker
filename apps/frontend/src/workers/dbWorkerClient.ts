@@ -80,7 +80,8 @@ class DBWorkerClient {
       return Promise.reject(new Error('DBWorkerClient is not initialized'));
     }
 
-    const id = this.messageId++;
+    const id = this.messageId + 1;
+    this.messageId = id;
 
     return new Promise<T>((resolve, reject) => {
       this.pendingRequests.set(id, {
@@ -92,8 +93,17 @@ class DBWorkerClient {
   }
 
   /**
-   * シナリオ一覧を取得
+   * Workerを終了
    */
+  terminate(): void {
+    if (this.worker) {
+      this.worker.terminate();
+      this.worker = null;
+      this.pendingRequests.clear();
+    }
+  }
+
+  // ----- ここからDB操作メソッド -----
   async getScenarios(): Promise<Scenario[]> {
     const response = await this.sendRequest<{
       type: 'getScenarios';
@@ -104,9 +114,6 @@ class DBWorkerClient {
     return response.data;
   }
 
-  /**
-   * シナリオ数を取得
-   */
   async getScenarioCount(): Promise<number> {
     const response = await this.sendRequest<{
       type: 'getScenarioCount';
@@ -117,9 +124,6 @@ class DBWorkerClient {
     return response.data;
   }
 
-  /**
-   * シナリオを作成
-   */
   async createScenario(scenario: NewScenario): Promise<Scenario> {
     const response = await this.sendRequest<{
       type: 'createScenario';
@@ -131,9 +135,6 @@ class DBWorkerClient {
     return response.data;
   }
 
-  /**
-   * シナリオを更新
-   */
   async updateScenario(
     id: string,
     data: Partial<NewScenario>,
@@ -148,25 +149,11 @@ class DBWorkerClient {
     return response.data;
   }
 
-  /**
-   * シナリオを削除
-   */
   async deleteScenario(id: string): Promise<void> {
     await this.sendRequest<{ type: 'deleteScenario'; success: true }>({
       type: 'deleteScenario',
       payload: { id },
     });
-  }
-
-  /**
-   * Workerを終了
-   */
-  terminate(): void {
-    if (this.worker) {
-      this.worker.terminate();
-      this.worker = null;
-      this.pendingRequests.clear();
-    }
   }
 }
 
