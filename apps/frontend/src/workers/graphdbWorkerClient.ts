@@ -3,6 +3,7 @@ import type {
   GraphDBWorkerRequest,
   GraphDBWorkerResponse,
 } from './graphdb.worker';
+import DBWorker from './graphdb.worker?worker';
 
 /**
  * GraphDBWorkerクライアント
@@ -12,8 +13,13 @@ class GraphDBWorkerClient extends BaseWorkerClient<
   GraphDBWorkerResponse
 > {
   // eslint-disable-next-line class-methods-use-this
-  protected getWorkerUrl(): URL {
-    return new URL('./graphdb.worker.ts', import.meta.url);
+  protected getWorkerUrl(): URL | (new () => Worker) {
+    // 開発環境では new URL() を使用（HMR対応）
+    if (import.meta.env.DEV) {
+      return new URL('./graphdb.worker.ts', import.meta.url);
+    }
+    // 本番ビルドでは ?worker インポートを使用
+    return DBWorker;
   }
 
   /**

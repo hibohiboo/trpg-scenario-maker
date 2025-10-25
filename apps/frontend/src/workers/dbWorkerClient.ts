@@ -1,5 +1,6 @@
 import { BaseWorkerClient } from './BaseWorkerClient';
 import type { DBWorkerRequest, DBWorkerResponse } from './db.worker';
+import DBWorker from './db.worker?worker';
 
 /**
  * DBWorkerクライアント（汎用）
@@ -10,8 +11,13 @@ class DBWorkerClient extends BaseWorkerClient<
   DBWorkerResponse
 > {
   // eslint-disable-next-line class-methods-use-this
-  protected getWorkerUrl(): URL {
-    return new URL('./db.worker.ts', import.meta.url);
+  protected getWorkerUrl(): URL | (new () => Worker) {
+    // 開発環境では new URL() を使用（HMR対応）
+    if (import.meta.env.DEV) {
+      return new URL('./db.worker.ts', import.meta.url);
+    }
+    // 本番ビルドでは ?worker インポートを使用
+    return DBWorker;
   }
 
   /**

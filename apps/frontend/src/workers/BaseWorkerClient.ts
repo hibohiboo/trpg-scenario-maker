@@ -18,9 +18,9 @@ export abstract class BaseWorkerClient<
   >();
 
   /**
-   * Worker URLを返す（サブクラスで実装）
+   * Worker URL/コンストラクタを返す（サブクラスで実装）
    */
-  protected abstract getWorkerUrl(): URL;
+  protected abstract getWorkerUrl(): URL | (new () => Worker);
 
   /**
    * Workerを初期化
@@ -31,9 +31,11 @@ export abstract class BaseWorkerClient<
     }
 
     // Workerインスタンス作成
-    this.worker = new Worker(this.getWorkerUrl(), {
-      type: 'module',
-    });
+    const workerUrl = this.getWorkerUrl();
+    this.worker =
+      typeof workerUrl === 'function'
+        ? new workerUrl()
+        : new Worker(workerUrl, { type: 'module' });
 
     // Workerからのレスポンスハンドラー設定
     this.worker.addEventListener(
