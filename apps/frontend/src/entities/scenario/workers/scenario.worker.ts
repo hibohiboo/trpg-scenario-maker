@@ -5,14 +5,12 @@ import {
   getScenarios as getScenariosQuery,
   updateScenario as updateScenarioQuery,
 } from '@trpg-scenario-maker/rdb';
-import { runMigrate } from '@trpg-scenario-maker/rdb/db/runMigrate';
 import type { NewScenario, Scenario } from '@trpg-scenario-maker/rdb/schema';
 
 export type UpdateScenarioData = Pick<NewScenario, 'title'>;
 
 // シナリオWorkerのリクエスト型
 export type ScenarioWorkerRequest =
-  | { type: 'migrate' }
   | { type: 'getScenarios' }
   | { type: 'getScenarioCount' }
   | { type: 'createScenario'; payload: NewScenario }
@@ -24,7 +22,6 @@ export type ScenarioWorkerRequest =
 
 // シナリオWorkerのレスポンス型
 export type ScenarioWorkerResponse =
-  | { type: 'migrate'; success: true }
   | { type: 'getScenarios'; data: Scenario[] }
   | { type: 'getScenarioCount'; data: number }
   | { type: 'createScenario'; data: Scenario }
@@ -43,12 +40,6 @@ self.addEventListener(
       let response: ScenarioWorkerResponse;
 
       switch (type) {
-        case 'migrate': {
-          await runMigrate();
-          response = { type: 'migrate', success: true };
-          break;
-        }
-
         case 'getScenarios': {
           const scenarios = await getScenariosQuery();
           response = { type: 'getScenarios', data: scenarios };

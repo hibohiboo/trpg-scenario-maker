@@ -18,13 +18,6 @@ class ScenarioWorkerClient extends BaseWorkerClient<
   }
 
   /**
-   * 初期化時にマイグレーションを実行
-   */
-  protected async onInitialize(): Promise<void> {
-    await this.sendRequest({ type: 'migrate' });
-  }
-
-  /**
    * シナリオ一覧を取得
    */
   async getScenarios(): Promise<Scenario[]> {
