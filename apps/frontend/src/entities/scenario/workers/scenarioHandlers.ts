@@ -7,7 +7,7 @@ import {
 } from '@trpg-scenario-maker/rdb';
 import type { NewScenario } from '@trpg-scenario-maker/rdb/schema';
 
-export type UpdateScenarioData = Pick<NewScenario, 'title'>;
+type UpdateScenarioData = Pick<NewScenario, 'title'>;
 
 // ===== シナリオ操作ハンドラー =====
 // 循環依存を避けるため、ハンドラーを配列形式でエクスポート
