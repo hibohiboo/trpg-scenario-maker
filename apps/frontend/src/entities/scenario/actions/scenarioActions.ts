@@ -4,7 +4,7 @@ import {
   type SerializableScenario,
 } from '@trpg-scenario-maker/schema';
 import { v4 as uuidv4 } from 'uuid';
-import { dbWorkerClient } from '@/shared/workers/dbWorkerClient';
+import { dbWorkerClient } from '@/workers/dbWorkerClient';
 import {
   closeCreateModal,
   closeDeleteModal,
