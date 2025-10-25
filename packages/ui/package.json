@@ -16,11 +16,12 @@
   },
   "dependencies": {
     "@trpg-scenario-maker/schema": "workspace:*",
-    "react-icons": "^5.5.0",
+    "@xyflow/react": "^12.9.0",
+    "date-fns": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "react-router": "catalog:",
-    "date-fns": "catalog:"
+    "react-icons": "^5.5.0",
+    "react-router": "catalog:"
   },
   "devDependencies": {
     "@storybook/addon-docs": "9.1.15",

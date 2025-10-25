@@ -39,6 +39,14 @@ async function createSchema(): Promise<void> {
       FROM Scenario TO Scene
     )
   `);
+
+  // シーンの順序関係（通常の遷移）
+  await connection.execute(`
+    CREATE REL TABLE NEXT_SCENE (
+        FROM Scene TO Scene,
+        order INT64
+    )
+  `);
 }
 
 /**
@@ -81,6 +89,12 @@ export async function executeQuery(query: string): Promise<unknown> {
   }
 
   const result = await connection.execute(query);
+
+  // result.tableが存在しない場合は空配列を返す
+  if (!result.table) {
+    return [];
+  }
+
   return JSON.parse(result.table.toString());
 }
 

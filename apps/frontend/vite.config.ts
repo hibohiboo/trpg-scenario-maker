@@ -7,7 +7,7 @@ const basePath = 'trpg-scenario-maker';
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: `/${basePath}`,
+  base: `/${basePath}/`,
   define: {
     BASE_PATH: `${JSON.stringify(basePath)}`,
   },
