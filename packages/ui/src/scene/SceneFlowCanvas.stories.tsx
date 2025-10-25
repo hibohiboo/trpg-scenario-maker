@@ -157,3 +157,32 @@ export const ManyScenes: Story = {
     })),
   },
 };
+
+export const MasterSceneHighlight: Story = {
+  args: {
+    scenes: [
+      {
+        id: '1',
+        title: 'スタート（マスターシーン）',
+        description: '開始シーンは緑色で表示されます',
+        isMasterScene: true,
+      },
+      {
+        id: '2',
+        title: '通常シーン1',
+        description: '通常のシーン',
+        isMasterScene: false,
+      },
+      {
+        id: '3',
+        title: '通常シーン2',
+        description: '通常のシーン',
+        isMasterScene: false,
+      },
+    ],
+    connections: [
+      { id: '1-2', source: '1', target: '2', order: 1 },
+      { id: '1-3', source: '1', target: '3', order: 2 },
+    ],
+  },
+};

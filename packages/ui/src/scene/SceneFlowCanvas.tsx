@@ -38,6 +38,14 @@ export function SceneFlowCanvas({
     type: scene.isMasterScene ? 'input' : 'default',
     data: { label: scene.title },
     position: { x: 250 * (index % 3), y: 150 * Math.floor(index / 3) },
+    style: scene.isMasterScene
+      ? {
+          backgroundColor: '#dcfce7',
+          border: '2px solid #16a34a',
+          borderRadius: '8px',
+          padding: '10px',
+        }
+      : undefined,
   }));
 
   // ReactFlowのEdge形式に変換
@@ -64,6 +72,14 @@ export function SceneFlowCanvas({
           x: 250 * (index % 3),
           y: 150 * Math.floor(index / 3),
         },
+        style: scene.isMasterScene
+          ? {
+              backgroundColor: '#dcfce7',
+              border: '2px solid #16a34a',
+              borderRadius: '8px',
+              padding: '10px',
+            }
+          : undefined,
       };
     });
     setNodes(newNodes);
