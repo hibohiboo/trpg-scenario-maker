@@ -1,7 +1,7 @@
 import { scenarioToString } from '@trpg-scenario-maker/schema';
 import type { Scenario } from '@trpg-scenario-maker/ui/scenario/types';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
-import { updateScenarioAction } from '../actions/update';
+import { updateScenarioAction } from '../actions/scenarioActions';
 import {
   scenarioSlice,
   editingScenarioSelector,
@@ -13,10 +13,16 @@ import {
 export const useEditScenario = () => {
   const dispatch = useAppDispatch();
 
-  const isOpen = useAppSelector((state) => state[scenarioSlice.reducerPath].isEditModalOpen);
-  const title = useAppSelector((state) => state[scenarioSlice.reducerPath].editTitle);
+  const isOpen = useAppSelector(
+    (state) => state[scenarioSlice.reducerPath].isEditModalOpen,
+  );
+  const title = useAppSelector(
+    (state) => state[scenarioSlice.reducerPath].editTitle,
+  );
   const editingScenario = useAppSelector(editingScenarioSelector);
-  const isSubmitting = useAppSelector((state) => state[scenarioSlice.reducerPath].isSubmitting);
+  const isSubmitting = useAppSelector(
+    (state) => state[scenarioSlice.reducerPath].isSubmitting,
+  );
 
   const open = (scenario: Scenario) => {
     dispatch(openEditModal(scenarioToString(scenario)));

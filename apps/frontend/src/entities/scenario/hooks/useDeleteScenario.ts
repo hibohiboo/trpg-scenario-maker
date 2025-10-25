@@ -1,7 +1,7 @@
 import { scenarioToString } from '@trpg-scenario-maker/schema';
 import type { Scenario } from '@trpg-scenario-maker/ui/scenario/types';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
-import { deleteScenarioAction } from '../actions/delete';
+import { deleteScenarioAction } from '../actions/scenarioActions';
 import {
   scenarioSlice,
   deletingScenarioSelector,
@@ -12,9 +12,13 @@ import {
 export const useDeleteScenario = () => {
   const dispatch = useAppDispatch();
 
-  const isOpen = useAppSelector((state) => state[scenarioSlice.reducerPath].isDeleteModalOpen);
+  const isOpen = useAppSelector(
+    (state) => state[scenarioSlice.reducerPath].isDeleteModalOpen,
+  );
   const deletingScenario = useAppSelector(deletingScenarioSelector);
-  const isDeleting = useAppSelector((state) => state[scenarioSlice.reducerPath].isDeleting);
+  const isDeleting = useAppSelector(
+    (state) => state[scenarioSlice.reducerPath].isDeleting,
+  );
 
   const open = (scenario: Scenario) => {
     dispatch(openDeleteModal(scenarioToString(scenario)));

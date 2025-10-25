@@ -1,7 +1,7 @@
 import type { Scenario } from '@trpg-scenario-maker/ui/scenario/types';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
-import { getCountSample, readScenarioAction } from '../actions/read';
+import { getCountSample, readScenarioAction } from '../actions/scenarioActions';
 import { scenariosSelector, scenarioSlice } from '../model/scenarioSlice';
 
 export const useScenarioList = () => {

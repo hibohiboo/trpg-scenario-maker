@@ -2,10 +2,12 @@ import { createSelector, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { stringToScenario } from '@trpg-scenario-maker/schema';
 import type { SerializableScenario } from '@trpg-scenario-maker/schema';
-import { createScenarioAction } from '../actions/create';
-import { deleteScenarioAction } from '../actions/delete';
-import { readScenarioAction } from '../actions/read';
-import { updateScenarioAction } from '../actions/update';
+import {
+  updateScenarioAction,
+  readScenarioAction,
+  deleteScenarioAction,
+  createScenarioAction,
+} from '../actions/scenarioActions';
 
 export interface ScenarioState {
   scenarios: SerializableScenario[];
@@ -108,7 +110,9 @@ export const scenarioSlice = createSlice({
       .addCase(updateScenarioAction.fulfilled, (state, action) => {
         state.isSubmitting = false;
         // 楽観的UI更新: 更新されたシナリオで置き換え
-        const index = state.scenarios.findIndex((s) => s.id === action.payload.id);
+        const index = state.scenarios.findIndex(
+          (s) => s.id === action.payload.id,
+        );
         if (index !== -1) {
           state.scenarios[index] = action.payload;
         }
@@ -125,7 +129,9 @@ export const scenarioSlice = createSlice({
       .addCase(deleteScenarioAction.fulfilled, (state, action) => {
         state.isDeleting = false;
         // 楽観的UI更新: 削除されたシナリオを配列から除外
-        state.scenarios = state.scenarios.filter((s) => s.id !== action.payload);
+        state.scenarios = state.scenarios.filter(
+          (s) => s.id !== action.payload,
+        );
       })
       .addCase(deleteScenarioAction.rejected, (state) => {
         state.isDeleting = false;
@@ -151,17 +157,15 @@ const stateSelector = (state: RootState) => state[scenarioSlice.reducerPath];
 /**
  * シナリオ一覧のセレクタ（デシリアライズが必要な複雑な変換）
  */
-export const scenariosSelector = createSelector(
-  stateSelector,
-  (state) => state.scenarios.map(stringToScenario),
+export const scenariosSelector = createSelector(stateSelector, (state) =>
+  state.scenarios.map(stringToScenario),
 );
 
 /**
  * 編集中のシナリオのセレクタ（デシリアライズが必要な複雑な変換）
  */
-export const editingScenarioSelector = createSelector(
-  stateSelector,
-  (state) => (state.editingScenario ? stringToScenario(state.editingScenario) : null),
+export const editingScenarioSelector = createSelector(stateSelector, (state) =>
+  state.editingScenario ? stringToScenario(state.editingScenario) : null,
 );
 
 /**
@@ -169,5 +173,6 @@ export const editingScenarioSelector = createSelector(
  */
 export const deletingScenarioSelector = createSelector(
   stateSelector,
-  (state) => (state.deletingScenario ? stringToScenario(state.deletingScenario) : null),
+  (state) =>
+    state.deletingScenario ? stringToScenario(state.deletingScenario) : null,
 );
