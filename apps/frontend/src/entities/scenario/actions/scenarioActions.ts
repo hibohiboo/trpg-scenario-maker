@@ -1,16 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
-  createScenario,
-  deleteScenario,
-  getScenarioCount,
-  getScenarios,
-  updateScenario,
-} from '@trpg-scenario-maker/rdb';
-import {
   scenarioToString,
   type SerializableScenario,
 } from '@trpg-scenario-maker/schema';
 import { v4 as uuidv4 } from 'uuid';
+import { dbWorkerClient } from '@/workers/dbWorkerClient';
 import {
   closeCreateModal,
   closeDeleteModal,
@@ -22,7 +16,7 @@ export const createScenarioAction = createAsyncThunk<
   { title: string },
   { dispatch: AppDispatch }
 >('createScenario', async (payload, { dispatch }) => {
-  const newScenario = await createScenario({
+  const newScenario = await dbWorkerClient.createScenario({
     title: payload.title,
     id: uuidv4(),
   });
@@ -34,7 +28,7 @@ export const updateScenarioAction = createAsyncThunk<
   { id: string; title: string },
   { dispatch: AppDispatch }
 >('updateScenario', async (payload, { dispatch }) => {
-  const updatedScenario = await updateScenario(payload.id, {
+  const updatedScenario = await dbWorkerClient.updateScenario(payload.id, {
     title: payload.title,
   });
   dispatch(closeEditModal());
@@ -45,7 +39,7 @@ export const deleteScenarioAction = createAsyncThunk<
   { id: string },
   { dispatch: AppDispatch }
 >('deleteScenario', async (payload, { dispatch }) => {
-  await deleteScenario(payload.id);
+  await dbWorkerClient.deleteScenario(payload.id);
   dispatch(closeDeleteModal());
   return payload.id;
 });
@@ -53,11 +47,11 @@ export const readScenarioAction = createAsyncThunk<
   SerializableScenario[],
   void
 >('readScenario', async (_) => {
-  const scenarios = await getScenarios();
+  const scenarios = await dbWorkerClient.getScenarios();
   return scenarios.map(scenarioToString);
 });
 
 export const getCountSample = async () => {
-  const cnt = await getScenarioCount();
+  const cnt = await dbWorkerClient.getScenarioCount();
   return cnt;
 };

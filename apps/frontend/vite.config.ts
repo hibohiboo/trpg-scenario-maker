@@ -24,6 +24,10 @@ export default defineConfig({
       '@': path.join(__dirname, './src'),
     },
   },
+  worker: {
+    format: 'es',
+    plugins: () => [],
+  },
   build: {
     rollupOptions: {
       output: {

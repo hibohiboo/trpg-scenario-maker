@@ -9,4 +9,5 @@ export const scenariosTable = pgTable('scenarios', {
     .$onUpdate(() => new Date()),
 });
 
-export type InsertScenario = typeof scenariosTable.$inferInsert;
+export type NewScenario = typeof scenariosTable.$inferInsert;
+export type Scenario = typeof scenariosTable.$inferSelect;
