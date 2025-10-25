@@ -166,6 +166,23 @@ export function SceneFlowCanvas({
 
   return (
     <div className="relative" style={{ width: '100%', height: '600px' }}>
+      <style>{`
+        .react-flow__handle {
+          width: 12px !important;
+          height: 12px !important;
+          border: 2px solid #6366f1 !important;
+          background: white !important;
+        }
+        .react-flow__handle:hover {
+          width: 16px !important;
+          height: 16px !important;
+          background: #6366f1 !important;
+        }
+        .react-flow__node:hover .react-flow__handle {
+          width: 14px !important;
+          height: 14px !important;
+        }
+      `}</style>
       <div className="absolute left-4 top-4 z-10 rounded-lg bg-white p-3 text-sm shadow-md">
         <p className="font-semibold text-gray-700">操作方法：</p>
         <ul className="mt-1 space-y-1 text-gray-600">
