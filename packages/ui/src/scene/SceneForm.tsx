@@ -77,7 +77,7 @@ export function SceneForm({ scene, onSubmit, onCancel }: SceneFormProps) {
           htmlFor="is-master-scene"
           className="ml-2 block text-sm text-gray-900"
         >
-          開始シーンに設定
+          マスターシーン
         </label>
       </div>
 
