@@ -1,5 +1,9 @@
 import type { NewScenario, Scenario } from '@trpg-scenario-maker/rdb/schema';
-import type { DBWorkerRequest, DBWorkerResponse } from './db.worker';
+import type {
+  DBWorkerRequest,
+  DBWorkerResponse,
+  UpdateScenario,
+} from './db.worker';
 
 class DBWorkerClient {
   private worker: Worker | null = null;
@@ -135,10 +139,7 @@ class DBWorkerClient {
     return response.data;
   }
 
-  async updateScenario(
-    id: string,
-    data: Partial<NewScenario>,
-  ): Promise<Scenario> {
+  async updateScenario(id: string, data: UpdateScenario): Promise<Scenario> {
     const response = await this.sendRequest<{
       type: 'updateScenario';
       data: Scenario;
