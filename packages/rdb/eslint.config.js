@@ -1,4 +1,4 @@
-import customConfig from '@trpg-scenario-maker/eslint-config-custom/backend.js';
+import customConfig from '@trpg-scenario-maker/eslint-config-custom/worker.js';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig([

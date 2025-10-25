@@ -14,8 +14,6 @@ export default [
       },
     },
     rules: {
-      // バックエンド固有のルール
-      'no-console': 'off', // サーバーログ用
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
