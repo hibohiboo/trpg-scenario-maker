@@ -1,5 +1,5 @@
 import type { Scenario } from '@trpg-scenario-maker/rdb/schema';
-import { dbWorkerClient } from '@/shared/workers/dbWorkerClient';
+import { dbWorkerClient } from '@/workers/dbWorkerClient';
 
 /**
  * シナリオAPI
