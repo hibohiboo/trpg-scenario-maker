@@ -54,6 +54,11 @@ export function SceneFlowCanvas({
     source: conn.source,
     target: conn.target,
     label: conn.order ? `順序: ${conn.order}` : undefined,
+    type: 'smoothstep',
+    animated: true,
+    style: { stroke: '#6366f1', strokeWidth: 2 },
+    labelStyle: { fill: '#4f46e5', fontWeight: 600 },
+    labelBgStyle: { fill: '#e0e7ff', fillOpacity: 0.9 },
   }));
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -91,6 +96,11 @@ export function SceneFlowCanvas({
       source: conn.source,
       target: conn.target,
       label: conn.order ? `順序: ${conn.order}` : undefined,
+      type: 'smoothstep',
+      animated: true,
+      style: { stroke: '#6366f1', strokeWidth: 2 },
+      labelStyle: { fill: '#4f46e5', fontWeight: 600 },
+      labelBgStyle: { fill: '#e0e7ff', fillOpacity: 0.9 },
     }));
     setEdges(newEdges);
   }, [connections, setEdges]);
@@ -155,7 +165,15 @@ export function SceneFlowCanvas({
   );
 
   return (
-    <div style={{ width: '100%', height: '600px' }}>
+    <div className="relative" style={{ width: '100%', height: '600px' }}>
+      <div className="absolute left-4 top-4 z-10 rounded-lg bg-white p-3 text-sm shadow-md">
+        <p className="font-semibold text-gray-700">操作方法：</p>
+        <ul className="mt-1 space-y-1 text-gray-600">
+          <li>• ノードをドラッグして移動</li>
+          <li>• ノードの端からドラッグして接続</li>
+          <li>• 接続線を選択してDeleteで削除</li>
+        </ul>
+      </div>
       <ReactFlow
         nodes={nodes}
         edges={edges}
