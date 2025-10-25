@@ -8,7 +8,7 @@ import './index.css';
 // DBWorkerを初期化（マイグレーション自動実行）
 await dbWorkerClient.initialize();
 
-// GraphDBWorkerを初期化
+// GraphDBWorkerを初期化 ローカルストレージからデータを読み込み
 await graphdbWorkerClient.initialize();
 
 createRoot(document.getElementById('root')!).render(

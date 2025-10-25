@@ -3,7 +3,7 @@ import {
   executeQuery,
   closeDatabase,
 } from '@trpg-scenario-maker/graphdb';
-import { readFSVFile } from '@trpg-scenario-maker/graphdb/db';
+import { readFSVFile, writeFSVFile } from '@trpg-scenario-maker/graphdb/db';
 
 // リクエスト/レスポンス型
 export interface GraphDBWorkerRequest {
@@ -52,14 +52,31 @@ handlers.set('execute', async (payload: unknown) => {
  * ローカルストレージへの永続化ハンドラー
  */
 handlers.set('save', async (payload: unknown) => {
-  const { query, filename } = payload as { query: string; filename: string };
-  if (!query || !filename) {
-    throw new Error('Query and filename are required');
+  const { query, path } = payload as { query: string; path: string };
+  if (!query || !path) {
+    throw new Error('Query and path are required');
   }
 
   await executeQuery(query);
 
-  return { success: true, data: readFSVFile(filename) };
+  return { success: true, data: readFSVFile(path) };
+});
+
+handlers.set('load', async (payload: unknown) => {
+  const { query, path, content } = payload as {
+    query: string;
+    path: string;
+    content: string;
+  };
+  if (!content) return { success: true, data: { message: 'Data loaded skip' } };
+  if (!query || !path) {
+    throw new Error('Content and path are required');
+  }
+
+  await writeFSVFile(path, content);
+  await executeQuery(query);
+
+  return { success: true, data: { message: 'Data loaded successfully' } };
 });
 
 /**

@@ -27,6 +27,7 @@ class GraphDBWorkerClient extends BaseWorkerClient<
    */
   protected async onInitialize(): Promise<void> {
     await this.sendRequest({ type: 'init' });
+    await this.load();
   }
 
   /**
@@ -42,29 +43,54 @@ class GraphDBWorkerClient extends BaseWorkerClient<
     return response.data as T;
   }
 
-  /**
-   * クエリを実行
-   */
-  async save(): Promise<void> {
-    const nodeFilename = '/node.csv';
+  private async saveNode(tableName: string): Promise<void> {
+    const nodeFilename = `/${tableName}.csv`;
     const nodeResponse = await this.sendRequest<GraphDBWorkerResponse>({
       type: 'save',
       payload: {
-        filename: nodeFilename,
-        query: `COPY (MATCH (n) RETURN n) TO '${nodeFilename}' (header=false);`,
+        path: nodeFilename,
+        query: `COPY (MATCH (n:${tableName}) RETURN n.*) TO '${nodeFilename}' (header=false);`,
       },
     });
-    localStorage.setItem('graphdb_node_backup', nodeResponse.data as string);
+    localStorage.setItem(nodeFilename, nodeResponse.data as string);
+  }
 
-    const relFilename = '/relation.csv';
-    const relResponse = await this.sendRequest<GraphDBWorkerResponse>({
+  private async saveEdge(tableName: string): Promise<void> {
+    const edgeFilename = `/${tableName}.csv`;
+    const edgeResponse = await this.sendRequest<GraphDBWorkerResponse>({
       type: 'save',
       payload: {
-        filename: relFilename,
-        query: `COPY (MATCH (a)-[e]->(b) RETURN a, e, b) TO '${relFilename}' (header=false);`,
+        path: edgeFilename,
+        query: `COPY (MATCH (a)-[f:${tableName}]->(b) RETURN a.id, b.id) TO '${edgeFilename}' (header=false, delim='|');`,
       },
     });
-    localStorage.setItem('graphdb_rel_backup', relResponse.data as string);
+    localStorage.setItem(edgeFilename, edgeResponse.data as string);
+  }
+
+  async save(): Promise<void> {
+    await this.saveNode('Scenario');
+    await this.saveNode('Scene');
+    await this.saveEdge('HAS_SCENE');
+    await this.saveEdge('NEXT_SCENE');
+  }
+
+  private async loadTable(tableName: string): Promise<void> {
+    const path = `/${tableName}.csv`;
+    await this.sendRequest<GraphDBWorkerResponse>({
+      type: 'load',
+      payload: {
+        path,
+        query: `COPY ${tableName} FROM '${path}'`,
+        content: localStorage.getItem(path) ?? '',
+      },
+    });
+  }
+
+  async load(): Promise<void> {
+    await this.loadTable('Scenario');
+    await this.loadTable('Scene');
+    await this.loadTable('HAS_SCENE');
+    await this.loadTable('NEXT_SCENE');
   }
 
   /**

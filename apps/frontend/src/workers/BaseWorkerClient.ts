@@ -34,7 +34,8 @@ export abstract class BaseWorkerClient<
     const workerUrl = this.getWorkerUrl();
     this.worker =
       typeof workerUrl === 'function'
-        ? new workerUrl()
+        ? // eslint-disable-next-line new-cap
+          new workerUrl()
         : new Worker(workerUrl, { type: 'module' });
 
     // Workerからのレスポンスハンドラー設定

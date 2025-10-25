@@ -105,6 +105,12 @@ export function readFSVFile(path: string): string {
   return kuzu.FS.readFile(path, { encoding: 'utf8' });
 }
 
+export function writeFSVFile(path: string, content: string): void {
+  if (!kuzu) {
+    throw new Error('Kùzu FS is not initialized');
+  }
+  kuzu.FS.writeFile(path, content);
+}
 /**
  * データベースを閉じる
  */
