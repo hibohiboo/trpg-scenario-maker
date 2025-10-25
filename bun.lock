@@ -66,9 +66,12 @@
         "drizzle-orm": "^0.44.6",
       },
       "devDependencies": {
+        "@trpg-scenario-maker/eslint-config-custom": "workspace:*",
+        "@trpg-scenario-maker/tsconfig": "workspace:*",
         "cross-env": "^10.1.0",
         "dotenv": "^17.2.3",
         "drizzle-kit": "^0.31.5",
+        "eslint": "catalog:testing",
       },
     },
     "packages/schema": {

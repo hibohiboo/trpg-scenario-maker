@@ -4,19 +4,19 @@ import {
   type SerializableScenario,
 } from '@trpg-scenario-maker/schema';
 import { v4 as uuidv4 } from 'uuid';
+import { scenarioApi } from '../api/scenarioApi';
 import {
   closeCreateModal,
   closeDeleteModal,
   closeEditModal,
 } from '../model/scenarioSlice';
-import { scenarioWorkerClient } from '../workers/scenarioWorkerClient';
 
 export const createScenarioAction = createAsyncThunk<
   SerializableScenario,
   { title: string },
   { dispatch: AppDispatch }
 >('createScenario', async (payload, { dispatch }) => {
-  const newScenario = await scenarioWorkerClient.createScenario({
+  const newScenario = await scenarioApi.create({
     title: payload.title,
     id: uuidv4(),
   });
@@ -28,7 +28,7 @@ export const updateScenarioAction = createAsyncThunk<
   { id: string; title: string },
   { dispatch: AppDispatch }
 >('updateScenario', async (payload, { dispatch }) => {
-  const updatedScenario = await scenarioWorkerClient.updateScenario(payload.id, {
+  const updatedScenario = await scenarioApi.update(payload.id, {
     title: payload.title,
   });
   dispatch(closeEditModal());
@@ -39,7 +39,7 @@ export const deleteScenarioAction = createAsyncThunk<
   { id: string },
   { dispatch: AppDispatch }
 >('deleteScenario', async (payload, { dispatch }) => {
-  await scenarioWorkerClient.deleteScenario(payload.id);
+  await scenarioApi.delete(payload.id);
   dispatch(closeDeleteModal());
   return payload.id;
 });
@@ -47,11 +47,11 @@ export const readScenarioAction = createAsyncThunk<
   SerializableScenario[],
   void
 >('readScenario', async (_) => {
-  const scenarios = await scenarioWorkerClient.getScenarios();
+  const scenarios = await scenarioApi.getList();
   return scenarios.map(scenarioToString);
 });
 
 export const getCountSample = async () => {
-  const cnt = await scenarioWorkerClient.getScenarioCount();
+  const cnt = await scenarioApi.getCount();
   return cnt;
 };

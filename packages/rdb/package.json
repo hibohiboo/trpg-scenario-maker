@@ -8,6 +8,7 @@
     ".": "./src/index.ts"
   },
   "scripts": {
+    "lint": "eslint .",
     "ncu": "ncu -u",
     "generate": "drizzle-kit generate",
     "compile": "bun run compile-migrations.mts"
@@ -15,7 +16,10 @@
   "devDependencies": {
     "cross-env": "^10.1.0",
     "dotenv": "^17.2.3",
-    "drizzle-kit": "^0.31.5"
+    "drizzle-kit": "^0.31.5",
+    "@trpg-scenario-maker/eslint-config-custom": "workspace:*",
+    "@trpg-scenario-maker/tsconfig": "workspace:*",
+    "eslint": "catalog:testing"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.3.11",
