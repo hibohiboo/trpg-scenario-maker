@@ -14,7 +14,7 @@ import {
   type OnNodesChange,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import type { Scene, SceneConnection } from './types';
 
 interface SceneFlowCanvasProps {
@@ -48,8 +48,36 @@ export function SceneFlowCanvas({
     label: conn.order ? `順序: ${conn.order}` : undefined,
   }));
 
-  const [nodes, , onNodesChange] = useNodesState(initialNodes);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  // propsが変更されたらノードとエッジを更新
+  useEffect(() => {
+    const newNodes: Node[] = scenes.map((scene, index) => {
+      // 既存のノードの位置を保持
+      const existingNode = nodes.find((n) => n.id === scene.id);
+      return {
+        id: scene.id,
+        type: scene.isMasterScene ? 'input' : 'default',
+        data: { label: scene.title },
+        position: existingNode?.position || {
+          x: 250 * (index % 3),
+          y: 150 * Math.floor(index / 3),
+        },
+      };
+    });
+    setNodes(newNodes);
+  }, [scenes, setNodes]);
+
+  useEffect(() => {
+    const newEdges: Edge[] = connections.map((conn) => ({
+      id: conn.id,
+      source: conn.source,
+      target: conn.target,
+      label: conn.order ? `順序: ${conn.order}` : undefined,
+    }));
+    setEdges(newEdges);
+  }, [connections, setEdges]);
 
   const handleConnect: OnConnect = useCallback(
     (connection: Connection) => {
