@@ -182,7 +182,7 @@ export function SceneFlowCanvas({
         <ul className="mt-1 space-y-1 text-gray-600">
           <li>• ノードをドラッグして移動</li>
           <li>• ノードの端からドラッグして接続</li>
-          <li>• 接続線を選択してDeleteで削除</li>
+          <li>• 接続線を選択して Backspace キーで削除</li>
         </ul>
       </div>
       <ReactFlow
