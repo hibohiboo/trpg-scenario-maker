@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './app/App';
-import { dbWorkerClient } from './workers/dbWorkerClient';
+import { dbWorkerClient } from './shared/workers/dbWorkerClient';
 
 import './index.css';
 

@@ -8,6 +8,7 @@ import {
 import { runMigrate } from '@trpg-scenario-maker/rdb/db/runMigrate';
 import type { NewScenario, Scenario } from '@trpg-scenario-maker/rdb/schema';
 
+export type UpdateScenario = Pick<NewScenario, 'title'>;
 // Workerメッセージの型定義
 export type DBWorkerRequest =
   | { type: 'migrate' }
@@ -16,7 +17,7 @@ export type DBWorkerRequest =
   | { type: 'createScenario'; payload: NewScenario }
   | {
       type: 'updateScenario';
-      payload: { id: string; data: Pick<NewScenario, 'title'> };
+      payload: { id: string; data: UpdateScenario };
     }
   | { type: 'deleteScenario'; payload: { id: string } };
 
