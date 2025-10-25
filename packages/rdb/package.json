@@ -23,6 +23,6 @@
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.3.11",
-    "drizzle-orm": "^0.44.6"
+    "drizzle-orm": "^0.44.7"
   }
 }
