@@ -27,7 +27,15 @@ class GraphDBWorkerClient extends BaseWorkerClient<
    */
   protected async onInitialize(): Promise<void> {
     await this.sendRequest({ type: 'init' });
+    await this.createSchema();
     await this.load();
+  }
+
+  /**
+   * データベースをクローズ
+   */
+  async close(): Promise<void> {
+    await this.sendRequest({ type: 'close' });
   }
 
   /**
@@ -41,6 +49,51 @@ class GraphDBWorkerClient extends BaseWorkerClient<
       payload: { query },
     });
     return response.data as T;
+  }
+
+  async save(): Promise<void> {
+    await this.saveNode('Scenario');
+    await this.saveNode('Scene');
+    await this.saveEdge('HAS_SCENE');
+    await this.saveEdge('NEXT_SCENE');
+  }
+
+  async load(): Promise<void> {
+    await this.loadTable('Scenario');
+    await this.loadTable('Scene');
+    await this.loadTable('HAS_SCENE');
+    await this.loadTable('NEXT_SCENE');
+  }
+
+  private async createSchema(): Promise<void> {
+    // ノードテーブル
+    await this.execute(`
+      CREATE NODE TABLE Scenario (
+        id STRING,
+        title STRING,
+        PRIMARY KEY (id)
+      )
+    `);
+    await this.execute(`
+      CREATE NODE TABLE Scene (
+        id STRING,
+        title STRING,
+        isMasterScene BOOL,
+        description STRING,
+        PRIMARY KEY (id)
+      )
+    `);
+    // リレーションテーブル
+    await this.execute(`
+      CREATE REL TABLE HAS_SCENE (
+        FROM Scenario TO Scene
+      )
+    `);
+    await this.execute(`
+      CREATE REL TABLE NEXT_SCENE (
+          FROM Scene TO Scene
+      )
+    `);
   }
 
   private async saveNode(tableName: string): Promise<void> {
@@ -67,13 +120,6 @@ class GraphDBWorkerClient extends BaseWorkerClient<
     localStorage.setItem(edgeFilename, edgeResponse.data as string);
   }
 
-  async save(): Promise<void> {
-    await this.saveNode('Scenario');
-    await this.saveNode('Scene');
-    await this.saveEdge('HAS_SCENE');
-    await this.saveEdge('NEXT_SCENE');
-  }
-
   private async loadTable(tableName: string): Promise<void> {
     const path = `/${tableName}.csv`;
     await this.sendRequest<GraphDBWorkerResponse>({
@@ -84,20 +130,6 @@ class GraphDBWorkerClient extends BaseWorkerClient<
         content: localStorage.getItem(path) ?? '',
       },
     });
-  }
-
-  async load(): Promise<void> {
-    await this.loadTable('Scenario');
-    await this.loadTable('Scene');
-    await this.loadTable('HAS_SCENE');
-    await this.loadTable('NEXT_SCENE');
-  }
-
-  /**
-   * データベースをクローズ
-   */
-  async close(): Promise<void> {
-    await this.sendRequest({ type: 'close' });
   }
 }
 
