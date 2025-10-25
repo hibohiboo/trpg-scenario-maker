@@ -13,7 +13,8 @@ TRPG Scenario Makerは、TRPGのシナリオ作成を支援するフロントエ
 - **ビジュアルエディタ**: シナリオの流れをフローチャートやマインドマップのように可視化
 - **要素管理**: キャラクター、場所、アイテム、イベントなどを一元管理
 - **オフライン動作**: バックエンド不要、ブラウザのみで完結
-- **データ保存**: ローカルストレージ
+- **データ保存**: IndexedDB（PGlite）による本格的なリレーショナルDB
+- **高パフォーマンス**: Web WorkerによるマルチスレッドDB操作
 - **GitHub Pages対応**: 無料で公開・共有可能
 
 ## 技術スタック
@@ -23,6 +24,13 @@ TRPG Scenario Makerは、TRPGのシナリオ作成を支援するフロントエ
 - **React**: 19.2.0
 - **TypeScript**: 型安全性
 - **Vite (Rolldown)**: 高速ビルドツール
+
+### データベース・ストレージ
+
+- **PGlite**: ブラウザ内PostgreSQL（IndexedDB backend）
+- **Drizzle ORM**: 型安全なORMライブラリ
+- **Web Worker**: バックグラウンドスレッドでのDB操作
+- **IndexedDB**: ブラウザローカルストレージ
 
 ### 開発環境
 
@@ -52,12 +60,18 @@ TRPG Scenario Makerは、TRPGのシナリオ作成を支援するフロントエ
 trpg-scenario-maker/
 ├── apps/
 │   └── frontend/              # Reactフロントエンドアプリケーション
-│       ├── src/               # ソースコード
+│       ├── src/
+│       │   ├── workers/       # Web Worker実装（DB操作）
+│       │   ├── entities/      # エンティティ層（ドメインロジック）
+│       │   └── ...
 │       ├── public/            # 静的ファイル
 │       ├── dist/              # ビルド出力（GitHub Pages公開用）
 │       ├── vite.config.ts     # Vite設定
 │       └── package.json
 ├── packages/
+│   ├── rdb/                   # データベース層（PGlite + Drizzle）
+│   │   ├── src/db/            # DB接続・マイグレーション
+│   │   └── src/queries/       # クエリ関数群
 │   ├── ui/                    # UIコンポーネントライブラリ（Storybook対応）
 │   ├── eslint-config-custom/  # 共通ESLint設定
 │   └── tsconfig/              # 共通TypeScript設定
@@ -152,13 +166,74 @@ MIT
 
 Issue報告やPull Requestを歓迎します。
 
+## アーキテクチャ
+
+### Web Worker + IndexedDBアーキテクチャ
+
+このアプリケーションは、メインスレッドをブロックせずに高速なデータベース操作を実現するため、Web Workerアーキテクチャを採用しています。
+
+```
+┌─────────────────────────────────────────────┐
+│  Frontend (Main Thread)                     │
+│  ┌─────────────┐       ┌─────────────────┐  │
+│  │ React UI    │◄─────►│ Redux Store     │  │
+│  └─────────────┘       └────────┬────────┘  │
+│                                 │           │
+│                        ┌────────▼────────┐  │
+│                        │ dbWorkerClient  │  │
+│                        └────────┬────────┘  │
+└─────────────────────────────────┼───────────┘
+                                  │ postMessage
+                         ┌────────▼────────┐
+                         │  Web Worker     │
+                         │  (db.worker.ts) │
+                         └────────┬────────┘
+                                  │
+                         ┌────────▼────────┐
+                         │  PGlite         │
+                         │  (PostgreSQL)   │
+                         └────────┬────────┘
+                                  │
+                         ┌────────▼────────┐
+                         │  IndexedDB      │
+                         └─────────────────┘
+```
+
+**主要コンポーネント:**
+
+- **[db.worker.ts](apps/frontend/src/workers/db.worker.ts)**: Web Workerメインファイル（ハンドラー登録・メッセージ処理）
+- **[dbWorkerClient.ts](apps/frontend/src/workers/dbWorkerClient.ts)**: Workerクライアント（メインスレッド側のインターフェース）
+- **[BaseWorkerClient.ts](apps/frontend/src/workers/BaseWorkerClient.ts)**: 汎用Workerクライアント基底クラス
+- **[scenarioHandlers.ts](apps/frontend/src/entities/scenario/workers/scenarioHandlers.ts)**: シナリオエンティティのハンドラー定義
+
+**データフロー例:**
+
+```typescript
+// 1. Reactコンポーネントからディスパッチ
+dispatch(fetchScenarios());
+
+// 2. Redux Thunkが scenarioApi を呼び出し
+const scenarios = await scenarioApi.getList();
+
+// 3. dbWorkerClient がWorkerにリクエスト送信
+dbWorkerClient.request('scenario:getList');
+
+// 4. Worker内でハンドラー実行（PGlite経由でIndexedDB操作）
+const result = await selectScenarios();
+
+// 5. レスポンスがメインスレッドに返却され、Storeが更新される
+```
+
+詳細は [apps/frontend/README.md](apps/frontend/README.md) を参照してください。
+
 ## ロードマップ
 
 - [x] GitHub Pages公開設定
-- [ ] シナリオ一覧
+- [x] Web Worker + IndexedDBアーキテクチャ実装
+- [x] PGlite + Drizzle ORM統合
+- [x] シナリオ一覧UI実装
 - [ ] シナリオフロー可視化機能
-- [ ] - [ ] 基本的なシナリオエディタUI
+- [ ] 基本的なシナリオエディタUI
 - [ ] キャラクター・場所・アイテム管理機能
-
 - [ ] データのエクスポート/インポート
 - [ ] テンプレート機能
