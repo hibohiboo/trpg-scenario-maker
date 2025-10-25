@@ -17,7 +17,7 @@ export default defineConfig({
     tailwindcss(),
   ],
   optimizeDeps: {
-    exclude: ['@electric-sql/pglite'],
+    exclude: ['@electric-sql/pglite', '@kuzu/kuzu-wasm'],
   },
   resolve: {
     alias: {
@@ -27,6 +27,12 @@ export default defineConfig({
   worker: {
     format: 'es',
     plugins: () => [],
+  },
+  server: {
+    headers: {
+      'Cross-Origin-Opener-Policy': 'same-origin',
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+    },
   },
   build: {
     rollupOptions: {

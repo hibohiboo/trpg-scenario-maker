@@ -1,0 +1,22 @@
+{
+  "name": "@trpg-scenario-maker/graphdb",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    "./*": "./src/*.ts",
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "ncu": "ncu -u"
+  },
+  "devDependencies": {
+    "@trpg-scenario-maker/eslint-config-custom": "workspace:*",
+    "@trpg-scenario-maker/tsconfig": "workspace:*",
+    "eslint": "catalog:testing"
+  },
+  "dependencies": {
+    "@kuzu/kuzu-wasm": "^0.7.0"
+  }
+}
