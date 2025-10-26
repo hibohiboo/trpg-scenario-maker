@@ -43,7 +43,6 @@ export async function executeQuery(query: string): Promise<unknown> {
   }
 
   const result = await connection.execute(query);
-
   // result.tableが存在しない場合は空配列を返す
   if (!result.table) {
     return [];

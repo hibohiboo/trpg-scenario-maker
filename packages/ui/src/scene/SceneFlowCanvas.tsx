@@ -15,7 +15,9 @@ import {
   type OnNodesChange,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { FiX } from 'react-icons/fi';
+import { Remark } from 'react-remark';
 import type { Scene, SceneConnection } from './types';
 
 const nodeWidth = 172;
@@ -69,6 +71,9 @@ export function SceneFlowCanvas({
   onConnectionAdd,
   onConnectionDelete,
 }: SceneFlowCanvasProps) {
+  // 選択されたシーンの状態
+  const [selectedScene, setSelectedScene] = useState<Scene | null>(null);
+
   // ReactFlowのNode形式に変換
   const initialNodes: Node[] = scenes.map((scene, index) => ({
     id: scene.id,
@@ -206,6 +211,20 @@ export function SceneFlowCanvas({
     [onNodesChange, nodes, scenes, onNodesUpdate],
   );
 
+  const handleNodeClick = useCallback(
+    (_event: React.MouseEvent, node: Node) => {
+      const scene = scenes.find((s) => s.id === node.id);
+      if (scene) {
+        setSelectedScene(scene);
+      }
+    },
+    [scenes],
+  );
+
+  const handleCloseSidebar = useCallback(() => {
+    setSelectedScene(null);
+  }, []);
+
   return (
     <div className="relative" style={{ width: '100%', height: '600px' }}>
       <style>{`
@@ -258,12 +277,35 @@ export function SceneFlowCanvas({
         onNodesChange={handleNodesChange}
         onEdgesChange={handleEdgesChange}
         onConnect={handleConnect}
+        onNodeClick={handleNodeClick}
         fitView
       >
         <Background />
         <Controls />
         <MiniMap />
       </ReactFlow>
+      {selectedScene && (
+        <div className="absolute right-0 top-0 flex h-full w-96 flex-col border-l border-gray-200 bg-white shadow-xl">
+          <div className="flex items-center justify-between border-b border-gray-200 p-4">
+            <h2 className="text-lg font-semibold text-gray-900">
+              {selectedScene.title}
+            </h2>
+            <button
+              onClick={handleCloseSidebar}
+              className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+              type="button"
+              aria-label="閉じる"
+            >
+              <FiX size={20} />
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto p-4">
+            <div className="prose prose-sm max-w-none">
+              <Remark>{selectedScene.description}</Remark>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

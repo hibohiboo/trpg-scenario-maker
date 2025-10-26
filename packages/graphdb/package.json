@@ -9,12 +9,16 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "ncu": "ncu -u"
+    "ncu": "ncu -u",
+    "test": "vitest"
   },
   "devDependencies": {
     "@trpg-scenario-maker/eslint-config-custom": "workspace:*",
     "@trpg-scenario-maker/tsconfig": "workspace:*",
-    "eslint": "catalog:testing"
+    "@vitest/browser": "^4.0.3",
+    "apache-arrow": "^21.1.0",
+    "eslint": "catalog:testing",
+    "uuid": "^13.0.0"
   },
   "dependencies": {
     "@kuzu/kuzu-wasm": "^0.7.0"

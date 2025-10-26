@@ -1,4 +1,5 @@
 import { executeQuery } from '..';
+import { escapeCypherString } from '../utils/escapeCypherString';
 
 const RELATION_DELIMITER = '|';
 
@@ -38,8 +39,8 @@ export const sceneGraphRepository = {
     description: string;
     isMasterScene: boolean;
   }) {
-    const escapedTitle = params.title.replace(/'/g, "\\'");
-    const escapedDescription = params.description.replace(/'/g, "\\'");
+    const escapedTitle = escapeCypherString(params.title);
+    const escapedDescription = escapeCypherString(params.description);
 
     return executeQuery(`
       MATCH (s:Scenario {id: '${params.scenarioId}'})
@@ -65,11 +66,11 @@ export const sceneGraphRepository = {
   }) {
     const setClauses: string[] = [];
     if (params.title !== undefined) {
-      setClauses.push(`scene.title = '${params.title.replace(/'/g, "\\'")}'`);
+      setClauses.push(`scene.title = '${escapeCypherString(params.title)}'`);
     }
     if (params.description !== undefined) {
       setClauses.push(
-        `scene.description = '${params.description.replace(/'/g, "\\'")}'`,
+        `scene.description = '${escapeCypherString(params.description)}'`,
       );
     }
     if (params.isMasterScene !== undefined) {
