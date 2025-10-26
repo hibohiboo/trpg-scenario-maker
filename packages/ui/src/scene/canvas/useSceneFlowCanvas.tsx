@@ -145,6 +145,16 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
     setSelectedScene(null);
   }, []);
 
+  // 選択中のシーンの情報を最新のscenesから更新
+  useEffect(() => {
+    if (selectedScene) {
+      const updatedScene = scenes.find((s) => s.id === selectedScene.id);
+      if (updatedScene) {
+        setSelectedScene(updatedScene);
+      }
+    }
+  }, [scenes, selectedScene]);
+
   return {
     selectedScene,
     nodes,
