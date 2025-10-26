@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from '@storybook/test';
 import { useState } from 'react';
+import { Layout } from '../common';
 import { ScenarioPage } from './ScenarioPage';
 import type { Scenario } from './types';
 
@@ -11,6 +12,13 @@ const meta = {
     layout: 'fullscreen',
   },
   tags: ['autodocs'],
+  decorators: [
+    (Story) => (
+      <Layout>
+        <Story />
+      </Layout>
+    ),
+  ],
 } satisfies Meta<typeof ScenarioPage>;
 
 export default meta;

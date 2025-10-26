@@ -3,7 +3,6 @@ import {
   Button,
   Loading,
   ErrorMessage,
-  Layout,
 } from '@trpg-scenario-maker/ui';
 import { useScenarioDetailPage } from '../hooks/useScenarioDetailPage';
 
@@ -32,7 +31,7 @@ export default function Page() {
   }
 
   return (
-    <Layout>
+    <>
       <h1 className="mb-6 text-3xl font-bold">シナリオ編集</h1>
       <Button onClick={handleSave} variant="secondary" className="mb-4">
         保存
@@ -48,6 +47,6 @@ export default function Page() {
         onUpdateConnection={handleUpdateConnection}
         onDeleteConnection={handleDeleteConnection}
       />
-    </Layout>
+    </>
   );
 }

@@ -1,7 +1,6 @@
 import { DeleteConfirmModal } from './DeleteConfirmModal';
 import { ScenarioForm } from './ScenarioForm';
 import { ScenarioList } from './ScenarioList';
-import { Layout } from '../common';
 import type { Scenario, ScenarioFormData } from './types';
 
 export interface ScenarioPageProps {
@@ -83,7 +82,7 @@ export function ScenarioPage({
   onClick,
 }: ScenarioPageProps) {
   return (
-    <Layout>
+    <>
       <ScenarioList
         scenarios={scenarios}
         isLoading={isLoading}
@@ -174,6 +173,6 @@ export function ScenarioPage({
           isDeleting={isDeleting}
         />
       )}
-    </Layout>
+    </>
   );
 }

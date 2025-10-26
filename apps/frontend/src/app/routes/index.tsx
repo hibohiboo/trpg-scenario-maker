@@ -1,4 +1,5 @@
-import { createBrowserRouter } from 'react-router';
+import { Layout } from '@trpg-scenario-maker/ui';
+import { createBrowserRouter, Outlet } from 'react-router';
 import { ScenarioPage } from '@/page/scenario';
 import { ScenarioDetailPage } from '@/page/scenarioDetail';
 import { readScenarioAction } from '@/entities/scenario/actions/scenarioActions';
@@ -9,6 +10,11 @@ export const createRouter = (_: { dispatch: AppDispatch }) =>
     [
       {
         path: '/',
+        element: (
+          <Layout>
+            <Outlet />
+          </Layout>
+        ),
         children: [
           {
             path: '',
