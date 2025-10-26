@@ -1,4 +1,9 @@
-import { SceneEditor, Button } from '@trpg-scenario-maker/ui';
+import {
+  SceneEditor,
+  Button,
+  Loading,
+  ErrorMessage,
+} from '@trpg-scenario-maker/ui';
 import { useScenarioDetailPage } from '../hooks/useScenarioDetailPage';
 
 export default function Page() {
@@ -18,11 +23,11 @@ export default function Page() {
   } = useScenarioDetailPage();
 
   if (isLoading) {
-    return <div className="p-8">読み込み中...</div>;
+    return <Loading />;
   }
 
   if (error) {
-    return <div className="p-8 text-red-600">エラー: {error}</div>;
+    return <ErrorMessage error={error} title="シナリオの読み込みエラー" />;
   }
 
   return (
