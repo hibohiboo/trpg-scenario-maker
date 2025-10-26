@@ -29,8 +29,10 @@ TRPG Scenario Makerは、TRPGのシナリオ作成を支援するフロントエ
 
 - **PGlite**: ブラウザ内PostgreSQL（IndexedDB backend）
 - **Drizzle ORM**: 型安全なORMライブラリ
+- **DuckDB-Wasm**: ブラウザ内グラフデータベース（LocalStorage backend）
 - **Web Worker**: バックグラウンドスレッドでのDB操作
-- **IndexedDB**: ブラウザローカルストレージ
+- **IndexedDB**: ブラウザローカルストレージ（RDB用）
+- **LocalStorage**: ブラウザストレージ（GraphDB用）
 
 ### 開発環境
 
@@ -72,6 +74,8 @@ trpg-scenario-maker/
 │   ├── rdb/                   # データベース層（PGlite + Drizzle）
 │   │   ├── src/db/            # DB接続・マイグレーション
 │   │   └── src/queries/       # クエリ関数群
+│   ├── graphdb/               # グラフデータベース層（DuckDB-Wasm）
+│   │   └── src/schemas.ts     # グラフスキーマ定義
 │   ├── ui/                    # UIコンポーネントライブラリ（Storybook対応）
 │   ├── eslint-config-custom/  # 共通ESLint設定
 │   └── tsconfig/              # 共通TypeScript設定
@@ -226,13 +230,155 @@ const result = await selectScenarios();
 
 詳細は [apps/frontend/README.md](apps/frontend/README.md) を参照してください。
 
+### GraphDB（グラフデータベース）アーキテクチャ
+
+シナリオの構造（シーン間の関連性）を効率的に管理するため、RDB（PGlite）に加えてグラフデータベース（DuckDB-Wasm）を併用しています。
+
+#### データ管理の役割分担
+
+- **RDB（PGlite + IndexedDB）**: シナリオ・キャラクター・アイテムなどのマスターデータ
+- **GraphDB（DuckDB-Wasm + LocalStorage）**: シーンの繋がり・関連性（グラフ構造）
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  Frontend (Main Thread)                                                      │
+│  ┌─────────────┐       ┌──────────────────────┐                              │
+│  │ React UI    │◄─────►│ Scene Graph          │                              │
+│  └─────────────┘       └──────────┬───────────┘                              │
+│                                   │                                          │
+│                      ┌────────────▼───────────┐       ┌────────────────────┐ │
+│                      │ graphdbWorkerClient    │◄─────►│  LocalStorage      │ │
+│                      └────┬───────────────────┘       │  (CSV形式保存/復元) │ │
+│                           │                           └────────────────────┘ │
+│                           │                                                  │
+└───────────────────────────┼──────────────────────────────────────────────────┘
+                            │ postMessage
+                   ┌────────▼────────┐
+                   │  Web Worker     │
+                   │(graphdb.worker) │
+                   └────────┬────────┘
+                            │
+                   ┌────────▼────────┐       ┌────────────────────────────┐
+                   │  DuckDB-Wasm    │◄─────►│  VFS (Virtual File System) │
+                   │  (Graph Query)  │       │  (CSV形式保存/復元)         │
+                   └─────────────────┘       └────────────────────────────┘
+```
+
+#### GraphDBスキーマ
+
+グラフデータベースのスキーマは [packages/graphdb/src/schemas.ts](packages/graphdb/src/schemas.ts) で定義されています。
+
+**ノード（Node）:**
+
+- `Scenario`: シナリオノード（id, title）
+- `Scene`: シーンノード（id, title, description, isMasterScene）
+
+**リレーション（Relationship）:**
+
+- `HAS_SCENE`: Scenario → Scene（シナリオがシーンを所有）
+- `NEXT_SCENE`: Scene → Scene（シーン間の遷移）
+
+#### GraphDBの初期化と永続化
+
+**初期化フロー ([main.tsx:11-12](apps/frontend/src/main.tsx#L11-L12)):**
+
+```typescript
+// GraphDBWorkerを初期化（LocalStorageからデータを読み込み）
+await graphdbWorkerClient.initialize();
+```
+
+**LocalStorageへの保存 ([graphdbWorkerClient.ts:58-63](apps/frontend/src/workers/graphdbWorkerClient.ts#L58-L63)):**
+
+```typescript
+async save(): Promise<void> {
+  await Promise.all(nodes.map((schema) => this.saveNode(schema.name)));
+  await Promise.all(
+    relationships.map((schema) => this.saveEdge(schema.name)),
+  );
+}
+```
+
+- ノードとエッジのデータをCSV形式でLocalStorageに保存
+- ページ再読み込み時に自動復元
+
+#### Cypher風クエリによるグラフ操作
+
+DuckDB-WasmでCypher風のクエリを使用してグラフを操作します。
+
+**シーン取得の例 ([sceneApi.ts:11-25](apps/frontend/src/entities/scene/api/sceneApi.ts#L11-L25)):**
+
+```typescript
+const query = `
+  MATCH (s:Scenario {id: '${scenarioId}'})-[:HAS_SCENE]->(scene:Scene)
+  RETURN scene.id AS id, scene.title AS title,
+         scene.description AS description,
+         scene.isMasterScene AS isMasterScene
+`;
+const result = await graphdbWorkerClient.execute<Scene[]>(query);
+```
+
+**シーン作成の例 ([sceneApi.ts:61-71](apps/frontend/src/entities/scene/api/sceneApi.ts#L61-L71)):**
+
+```typescript
+const query = `
+  MATCH (s:Scenario {id: '${scenarioId}'})
+  CREATE (scene:Scene {
+    id: '${id}',
+    title: '${escapedTitle}',
+    description: '${escapedDescription}',
+    isMasterScene: ${scene.isMasterScene}
+  })
+  CREATE (s)-[:HAS_SCENE]->(scene)
+  RETURN scene.*
+`;
+```
+
+**シーン間接続の取得 ([sceneApi.ts:30-48](apps/frontend/src/entities/scene/api/sceneApi.ts#L30-L48)):**
+
+```typescript
+const query = `
+  MATCH (s:Scenario {id: '${scenarioId}'})-[:HAS_SCENE]->(scene1:Scene)
+        -[r:NEXT_SCENE]->(scene2:Scene)
+  RETURN scene1.id AS source, scene2.id AS target
+`;
+```
+
+#### 使用例
+
+**シーングラフの取得と更新 ([useScenarioDetailPage.ts:10-12](apps/frontend/src/page/scenarioDetail/hooks/useScenarioDetailPage.ts#L10-L12)):**
+
+```typescript
+useEffect(() => {
+  // シナリオグラフをGraphDBに登録
+  scenarioGraphApi.create(data);
+}, [id, data]);
+
+// シーンとその接続を取得
+const { scenes, connections, isLoading, error } = useSceneList(id);
+
+// 保存
+const handleSave = async () => {
+  await scenarioGraphApi.save();
+  alert('シナリオが保存されました');
+};
+```
+
+#### GraphDB採用理由
+
+1. **グラフクエリの効率性**: シーン間の複雑な関連を直感的に表現・取得
+2. **パフォーマンス**: ツリー構造やネットワーク構造の探索が高速
+3. **柔軟性**: 新しい関連タイプ（条件分岐、並列シーンなど）を容易に追加可能
+4. **可視化との親和性**: React FlowなどのUI可視化ライブラリとの連携が容易
+
 ## ロードマップ
 
 - [x] GitHub Pages公開設定
 - [x] Web Worker + IndexedDBアーキテクチャ実装
 - [x] PGlite + Drizzle ORM統合
+- [x] DuckDB-Wasm + GraphDB統合
 - [x] シナリオ一覧UI実装
-- [ ] シナリオフロー可視化機能
+- [x] シーングラフ基本機能実装
+- [ ] シナリオフロー可視化機能（React Flow統合）
 - [ ] 基本的なシナリオエディタUI
 - [ ] キャラクター・場所・アイテム管理機能
 - [ ] データのエクスポート/インポート
