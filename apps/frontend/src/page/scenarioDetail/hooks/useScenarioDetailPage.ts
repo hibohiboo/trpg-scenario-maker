@@ -26,7 +26,7 @@ export const useScenarioDetailPage = () => {
   } = useSceneOperations();
   const handleSave = async () => {
     await scenarioGraphApi.save();
-    alert('シナリオが保存されました');
+    alert('シナリオを保存しました');
   };
   return {
     id,
