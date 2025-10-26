@@ -29,7 +29,7 @@ TRPG Scenario Makerは、TRPGのシナリオ作成を支援するフロントエ
 
 - **PGlite**: ブラウザ内PostgreSQL（IndexedDB backend）
 - **Drizzle ORM**: 型安全なORMライブラリ
-- **DuckDB-Wasm**: ブラウザ内グラフデータベース（LocalStorage backend）
+- **Kuzu-Wasm**: ブラウザ内グラフデータベース（LocalStorage backend）
 - **Web Worker**: バックグラウンドスレッドでのDB操作
 - **IndexedDB**: ブラウザローカルストレージ（RDB用）
 - **LocalStorage**: ブラウザストレージ（GraphDB用）
@@ -232,12 +232,12 @@ const result = await selectScenarios();
 
 ### GraphDB（グラフデータベース）アーキテクチャ
 
-シナリオの構造（シーン間の関連性）を効率的に管理するため、RDB（PGlite）に加えてグラフデータベース（DuckDB-Wasm）を併用しています。
+シナリオの構造（シーン間の関連性）を効率的に管理するため、RDB（PGlite）に加えてグラフデータベース（Kuzu-Wasm）を併用しています。
 
 #### データ管理の役割分担
 
 - **RDB（PGlite + IndexedDB）**: シナリオ・キャラクター・アイテムなどのマスターデータ
-- **GraphDB（DuckDB-Wasm + LocalStorage）**: シーンの繋がり・関連性（グラフ構造）
+- **GraphDB（Kuzu-Wasm + LocalStorage）**: シーンの繋がり・関連性（グラフ構造）
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -259,7 +259,7 @@ const result = await selectScenarios();
                    └────────┬────────┘
                             │
                    ┌────────▼────────┐       ┌────────────────────────────┐
-                   │  DuckDB-Wasm    │◄─────►│  VFS (Virtual File System) │
+                   │  Kuzu-Wasm      │◄─────►│  VFS (Virtual File System) │
                    │  (Graph Query)  │       │  (CSV形式保存/復元)         │
                    └─────────────────┘       └────────────────────────────┘
 ```
@@ -301,9 +301,9 @@ async save(): Promise<void> {
 - ノードとエッジのデータをCSV形式でLocalStorageに保存
 - ページ再読み込み時に自動復元
 
-#### Cypher風クエリによるグラフ操作
+#### Cypherクエリによるグラフ操作
 
-DuckDB-WasmでCypher風のクエリを使用してグラフを操作します。
+Kuzu-WasmはCypherクエリ言語をサポートしており、グラフを直感的に操作できます。
 
 **シーン取得の例 ([sceneApi.ts:11-25](apps/frontend/src/entities/scene/api/sceneApi.ts#L11-L25)):**
 
@@ -375,7 +375,7 @@ const handleSave = async () => {
 - [x] GitHub Pages公開設定
 - [x] Web Worker + IndexedDBアーキテクチャ実装
 - [x] PGlite + Drizzle ORM統合
-- [x] DuckDB-Wasm + GraphDB統合
+- [x] Kuzu-Wasm + GraphDB統合
 - [x] シナリオ一覧UI実装
 - [x] シーングラフ基本機能実装
 - [ ] シナリオフロー可視化機能（React Flow統合）
