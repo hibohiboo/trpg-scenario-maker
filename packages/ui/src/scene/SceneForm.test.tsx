@@ -206,7 +206,7 @@ describe('SceneForm - 接続フィルタリング', () => {
     );
   });
 
-  it('有効なシーンを選択して接続を追加できる', async () => {
+  it('ドロップダウンを選択したら接続が追加される', async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
     const onConnectionAdd = vi.fn();
@@ -225,10 +225,6 @@ describe('SceneForm - 接続フィルタリング', () => {
     const selects = screen.getAllByRole('combobox');
     const nextSceneSelect = selects[1]; // Second select is for next scenes
     await user.selectOptions(nextSceneSelect, '2');
-
-    const addButtons = screen.getAllByRole('button', { name: '追加' });
-    const nextSceneAddButton = addButtons[1]; // Second add button is for next scenes
-    await user.click(nextSceneAddButton);
 
     expect(onConnectionAdd).toHaveBeenCalledWith({
       source: '1',

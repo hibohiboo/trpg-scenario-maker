@@ -11,7 +11,7 @@
   "scripts": {
     "ncu": "ncu -u",
     "dev": "storybook dev -p 6006",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint": "eslint .",
     "test": "vitest"
   },
   "dependencies": {

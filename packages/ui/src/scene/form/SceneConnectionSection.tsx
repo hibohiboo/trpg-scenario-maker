@@ -22,12 +22,14 @@ export function SceneConnectionSection({
   placeholderText,
   inputClassName,
 }: SceneConnectionSectionProps) {
-  const [selectedSceneId, setSelectedSceneId] = useState('');
+  const [resetKey, setResetKey] = useState(0);
 
-  const handleAddConnection = () => {
-    if (selectedSceneId && onConnectionAdd) {
-      onConnectionAdd(selectedSceneId);
-      setSelectedSceneId('');
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const sceneId = e.target.value;
+    if (sceneId && onConnectionAdd) {
+      onConnectionAdd(sceneId);
+      // Reset the select by updating the key
+      setResetKey((prev) => prev + 1);
     }
   };
 
@@ -57,29 +59,19 @@ export function SceneConnectionSection({
         </ul>
       )}
       {onConnectionAdd && availableScenes.length > 0 && (
-        <div className="flex gap-2">
-          <select
-            value={selectedSceneId}
-            onChange={(e) => setSelectedSceneId(e.target.value)}
-            className={inputClassName}
-          >
-            <option value="">{placeholderText}</option>
-            {availableScenes.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.title}
-              </option>
-            ))}
-          </select>
-          <Button
-            type="button"
-            variant="success"
-            size="sm"
-            onClick={handleAddConnection}
-            disabled={!selectedSceneId}
-          >
-            追加
-          </Button>
-        </div>
+        <select
+          key={resetKey}
+          onChange={handleSelectChange}
+          className={inputClassName}
+          defaultValue=""
+        >
+          <option value="">{placeholderText}</option>
+          {availableScenes.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.title}
+            </option>
+          ))}
+        </select>
       )}
     </div>
   );

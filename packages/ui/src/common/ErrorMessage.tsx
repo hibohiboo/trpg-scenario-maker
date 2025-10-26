@@ -26,6 +26,10 @@ interface ErrorMessageProps {
    */
   retryLabel?: string;
 }
+const getErrorMessage = (error: string | Error | undefined) =>
+  typeof error === 'string'
+    ? error
+    : error?.message || '不明なエラーが発生しました';
 
 export function ErrorMessage({
   error,
@@ -35,8 +39,7 @@ export function ErrorMessage({
   onRetry,
   retryLabel = '再試行',
 }: ErrorMessageProps) {
-  const errorMessage =
-    typeof error === 'string' ? error : error?.message || '不明なエラーが発生しました';
+  const errorMessage = getErrorMessage(error);
 
   const content: ReactNode = (
     <div
