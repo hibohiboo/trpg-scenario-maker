@@ -303,11 +303,16 @@ React Flowを使用したシーン間の関係性を視覚的に表示・編集�
 - **自動整列機能**: dagreアルゴリズムによる階層的レイアウト
   - 縦方向整列（Top to Bottom）
   - 横方向整列（Left to Right）
+- **シーン詳細表示**: サイドバーでシーン説明を表示
+  - **Markdown対応**: GitHub Flavored Markdown（GFM）でシーン説明を記述可能
+  - 見出し、リスト、表、コードブロックなど豊富な表現をサポート
 
 **使用技術:**
 
 - [@xyflow/react](https://reactflow.dev/) - フローチャートUI
 - [@dagrejs/dagre](https://github.com/dagrejs/dagre) - 自動レイアウトアルゴリズム
+- [react-markdown](https://github.com/remarkjs/react-markdown) - Markdownレンダリング
+- [remark-gfm](https://github.com/remarkjs/remark-gfm) - GitHub Flavored Markdownサポート
 
 ## ロードマップ
 
