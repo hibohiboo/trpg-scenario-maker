@@ -17,7 +17,8 @@ import {
 import '@xyflow/react/dist/style.css';
 import { useCallback, useEffect, useState } from 'react';
 import { FiX } from 'react-icons/fi';
-import { Remark } from 'react-remark';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import type { Scene, SceneConnection } from './types';
 
 const nodeWidth = 172;
@@ -301,7 +302,9 @@ export function SceneFlowCanvas({
           </div>
           <div className="flex-1 overflow-y-auto p-4">
             <div className="prose prose-sm max-w-none">
-              <Remark>{selectedScene.description}</Remark>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {selectedScene.description}
+              </ReactMarkdown>
             </div>
           </div>
         </div>

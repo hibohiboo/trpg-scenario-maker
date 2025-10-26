@@ -11,7 +11,7 @@ export const scenarioGraphRepository = {
   async create(params: { id: string; title: string }) {
     const escapedTitle = escapeCypherString(params.title);
 
-    const [ret] = (await executeQuery(`
+    const result = (await executeQuery(`
       CREATE (s:Scenario {id: '${params.id}', title: '${escapedTitle}'})
       RETURN s
     `)) as {
@@ -22,6 +22,9 @@ export const scenarioGraphRepository = {
         title: string;
       };
     }[];
+    const [ret] = result;
+    if (!ret) return undefined;
+
     return ret.s;
   },
 
