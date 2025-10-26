@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { SceneFlowCanvas } from './SceneFlowCanvas';
 import { SceneForm } from './SceneForm';
+import { Button } from '../common';
 import type { SceneEditorProps, Scene } from './types';
 
 export function SceneEditor({
@@ -40,15 +41,15 @@ export function SceneEditor({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">シーン編集</h2>
-        <button
+        <Button
           onClick={() => {
             setEditingScene(undefined);
             setIsFormOpen(true);
           }}
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+          variant="primary"
         >
           シーンを追加
-        </button>
+        </Button>
       </div>
 
       {isFormOpen && (
@@ -89,18 +90,20 @@ export function SceneEditor({
                 </p>
               </div>
               <div className="flex gap-2">
-                <button
+                <Button
                   onClick={() => handleEditScene(scene)}
-                  className="rounded-md bg-blue-100 px-3 py-1 text-sm text-blue-700 hover:bg-blue-200"
+                  variant="success"
+                  size="sm"
                 >
                   編集
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => onDeleteScene(scene.id)}
-                  className="rounded-md bg-red-100 px-3 py-1 text-sm text-red-700 hover:bg-red-200"
+                  variant="danger"
+                  size="sm"
                 >
                   削除
-                </button>
+                </Button>
               </div>
             </div>
           ))}

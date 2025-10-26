@@ -1,4 +1,4 @@
-import { SceneEditor } from '@trpg-scenario-maker/ui';
+import { SceneEditor, Button } from '@trpg-scenario-maker/ui';
 import { useScenarioDetailPage } from '../hooks/useScenarioDetailPage';
 
 export default function Page() {
@@ -28,12 +28,9 @@ export default function Page() {
   return (
     <div className="container mx-auto p-8">
       <h1 className="mb-6 text-3xl font-bold">シナリオ編集</h1>
-      <button
-        onClick={handleSave}
-        className="mb-4 rounded-md bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-300 cursor-pointer"
-      >
+      <Button onClick={handleSave} variant="primary" className="mb-4">
         保存
-      </button>
+      </Button>
       <SceneEditor
         scenarioId={id}
         scenes={scenes}

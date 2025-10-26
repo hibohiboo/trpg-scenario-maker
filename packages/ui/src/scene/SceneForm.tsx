@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { Button } from '../common';
 import type { Scene } from './types';
 
 interface SceneFormProps {
@@ -10,10 +11,6 @@ interface SceneFormProps {
 const inputClassName =
   'mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500';
 const labelClassName = 'block text-sm font-medium text-gray-700';
-const buttonClassName =
-  'rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600';
-const cancelButtonClassName =
-  'rounded-md bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-300';
 
 // eslint-disable-next-line complexity
 export function SceneForm({ scene, onSubmit, onCancel }: SceneFormProps) {
@@ -82,17 +79,13 @@ export function SceneForm({ scene, onSubmit, onCancel }: SceneFormProps) {
       </div>
 
       <div className="flex gap-2">
-        <button type="submit" className={buttonClassName}>
+        <Button type="submit" variant="primary">
           {submitLabel}
-        </button>
+        </Button>
         {onCancel && (
-          <button
-            type="button"
-            onClick={onCancel}
-            className={cancelButtonClassName}
-          >
+          <Button type="button" onClick={onCancel} variant="secondary">
             キャンセル
-          </button>
+          </Button>
         )}
       </div>
     </form>
