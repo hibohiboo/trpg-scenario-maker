@@ -39,7 +39,16 @@ export function SceneForm(props: SceneFormProps) {
         inputClassName={inputClassName}
         labelClassName={labelClassName}
       />
-
+      <div className="flex gap-2">
+        <Button type="submit" variant="primary">
+          {submitLabel}
+        </Button>
+        {onCancel && (
+          <Button type="button" onClick={onCancel} variant="secondary">
+            キャンセル
+          </Button>
+        )}
+      </div>
       {scene && (
         <SceneConnectionsSection
           nextScenes={nextScenes}
@@ -52,17 +61,6 @@ export function SceneForm(props: SceneFormProps) {
           inputClassName={inputClassName}
         />
       )}
-
-      <div className="flex gap-2">
-        <Button type="submit" variant="primary">
-          {submitLabel}
-        </Button>
-        {onCancel && (
-          <Button type="button" onClick={onCancel} variant="secondary">
-            キャンセル
-          </Button>
-        )}
-      </div>
     </form>
   );
 }
