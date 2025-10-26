@@ -18,6 +18,7 @@ describe('SceneEvent Schema', () => {
     });
 
     it('全てのイベントタイプを受け付ける', () => {
+      // 網羅性テスト: SceneEventTypeの全ケースをテストして型定義との整合性を保証
       const eventTypes: SceneEventType[] = [
         'start',
         'conversation',
@@ -44,19 +45,20 @@ describe('SceneEvent Schema', () => {
       });
     });
 
-    it('orderは0以上の整数である必要がある', () => {
-      const validOrders = [0, 1, 10, 100];
+    it.each([
+      { order: 0, description: '0' },
+      { order: 1, description: '1' },
+      { order: 10, description: '10' },
+      { order: 100, description: '100' },
+    ])('orderが$descriptionの場合は成功', ({ order }) => {
+      const event = {
+        id: 'event-1',
+        type: 'start' as SceneEventType,
+        content: 'テスト',
+        order,
+      };
 
-      validOrders.forEach((order) => {
-        const event = {
-          id: 'event-1',
-          type: 'start',
-          content: 'テスト',
-          order,
-        };
-
-        expect(() => parseSceneEventSchema(event)).not.toThrow();
-      });
+      expect(() => parseSceneEventSchema(event)).not.toThrow();
     });
 
     it('idが文字列でない場合はエラー', () => {
