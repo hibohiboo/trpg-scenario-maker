@@ -86,26 +86,24 @@ class GraphDBWorkerClient extends BaseWorkerClient<
 
   private async saveNode(tableName: string): Promise<void> {
     const nodeFilename = `/${tableName}.csv`;
-    const nodeResponse = await this.sendRequest<GraphDBWorkerResponse>({
+    await this.sendRequest<GraphDBWorkerResponse>({
       type: 'save',
       payload: {
         path: nodeFilename,
         query: `COPY (MATCH (n:${tableName}) RETURN n.*) TO '${nodeFilename}' (header=false);`,
       },
     });
-    localStorage.setItem(nodeFilename, nodeResponse.data as string);
   }
 
   private async saveEdge(tableName: string): Promise<void> {
     const edgeFilename = `/${tableName}.csv`;
-    const edgeResponse = await this.sendRequest<GraphDBWorkerResponse>({
+    await this.sendRequest<GraphDBWorkerResponse>({
       type: 'save',
       payload: {
         path: edgeFilename,
         query: `COPY (MATCH (a)-[f:${tableName}]->(b) RETURN a.id, b.id) TO '${edgeFilename}' (header=false, delim='|');`,
       },
     });
-    localStorage.setItem(edgeFilename, edgeResponse.data as string);
   }
 
   private async loadTable(tableName: string): Promise<void> {
@@ -115,7 +113,6 @@ class GraphDBWorkerClient extends BaseWorkerClient<
       payload: {
         path,
         query: `COPY ${tableName} FROM '${path}'`,
-        content: localStorage.getItem(path) ?? '',
       },
     });
   }

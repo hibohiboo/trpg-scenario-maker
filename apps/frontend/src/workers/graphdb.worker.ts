@@ -4,6 +4,8 @@ import {
   closeDatabase,
   readFSVFile,
   writeFSVFile,
+  setItem,
+  getItem,
 } from '@trpg-scenario-maker/graphdb';
 import { scenarioGraphHandlers } from '@/entities/scenario/workers/scenarioGraphHandlers';
 import { sceneGraphHandlers } from '@/entities/scene/workers/sceneGraphHandlers';
@@ -52,7 +54,7 @@ handlers.set('execute', async (payload: unknown) => {
 });
 
 /**
- * ローカルストレージへの永続化ハンドラー
+ * IndexedDBへの永続化ハンドラー
  */
 handlers.set('save', async (payload: unknown) => {
   const { query, path } = payload as { query: string; path: string };
@@ -60,23 +62,38 @@ handlers.set('save', async (payload: unknown) => {
     throw new Error('Query and path are required');
   }
 
+  // クエリを実行してCSVファイルを生成
   await executeQuery(query);
 
-  return { success: true, data: readFSVFile(path) };
+  // ファイルシステムからデータを読み取り
+  const content = readFSVFile(path);
+
+  // IndexedDBに保存
+  await setItem(path, content);
+
+  return { success: true, data: { message: 'Data saved successfully' } };
 });
 
 handlers.set('load', async (payload: unknown) => {
-  const { query, path, content } = payload as {
+  const { query, path } = payload as {
     query: string;
     path: string;
-    content: string;
   };
-  if (!content) return { success: true, data: { message: 'Data loaded skip' } };
   if (!query || !path) {
-    throw new Error('Content and path are required');
+    throw new Error('Query and path are required');
   }
 
+  // IndexedDBからデータを取得
+  const content = await getItem(path);
+
+  if (!content) {
+    return { success: true, data: { message: 'Data loaded skip' } };
+  }
+
+  // ファイルシステムに書き込み
   await writeFSVFile(path, content);
+
+  // クエリを実行してデータをロード
   await executeQuery(query);
 
   return { success: true, data: { message: 'Data loaded successfully' } };
