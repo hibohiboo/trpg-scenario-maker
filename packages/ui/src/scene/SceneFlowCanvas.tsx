@@ -301,7 +301,20 @@ export function SceneFlowCanvas({
             </button>
           </div>
           <div className="flex-1 overflow-y-auto p-4">
-            <div className="prose prose-sm max-w-none">
+            <div className="markdown prose prose-sm max-w-none">
+              <style>{`
+                .markdown {
+                  h1 { font-size: 1.8rem; }
+                  h2 { font-size: 1.5rem; }
+                  table { 
+                    border-collapse: collapse;
+                    td,th {
+                      border: solid 1px #000;
+                      padding: 0.1rem 0.5rem;
+                    }
+                  }
+                }
+              `}</style>
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {selectedScene.description}
               </ReactMarkdown>
