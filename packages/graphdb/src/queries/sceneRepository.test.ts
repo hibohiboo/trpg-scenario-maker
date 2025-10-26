@@ -27,7 +27,7 @@ vi.mock('@kuzu/kuzu-wasm', async () => {
     },
   };
 });
-describe('sceneGraphRepository', () => {
+describe('sceneGraphRepositoryでescapeCypherStringを通してマークダウンがパースできるかのテスト', () => {
   beforeAll(async () => {
     await initializeDatabase();
     const { nodes, relationships } = graphDbSchemas;
@@ -132,32 +132,29 @@ const code = "example";
       expect(target.description).toBe(updatedMarkdown);
     });
 
-    it.todo(
-      'シングルクォートとバックスラッシュを含むテキストを扱える',
-      async () => {
-        const scenarioId = uuidv4();
-        await scenarioGraphRepository.create({
-          id: scenarioId,
-          title: 'テストシナリオ',
-        });
+    it('シングルクォートとバックスラッシュを含むテキストを扱える', async () => {
+      const scenarioId = uuidv4();
+      await scenarioGraphRepository.create({
+        id: scenarioId,
+        title: 'テストシナリオ',
+      });
 
-        const sceneId = uuidv4();
-        const specialDescription = `It's a test with 'quotes' and backslash: \\
+      const sceneId = uuidv4();
+      const specialDescription = `It's a test with 'quotes' and backslash: \\
 And multiple lines
 With special chars: \t\r\n`;
 
-        const result = await sceneGraphRepository.createScene({
-          scenarioId,
-          id: sceneId,
-          title: "Scene with 'quotes'",
-          description: specialDescription,
-          isMasterScene: false,
-        });
+      const result = await sceneGraphRepository.createScene({
+        scenarioId,
+        id: sceneId,
+        title: "Scene with 'quotes'",
+        description: specialDescription,
+        isMasterScene: false,
+      });
 
-        const [target] = result as any;
-        expect(result).toHaveLength(1);
-        expect(target.description).toBe(specialDescription);
-      },
-    );
+      const [target] = result as any;
+      expect(result).toHaveLength(1);
+      expect(target.description).toBe(specialDescription);
+    });
   });
 });

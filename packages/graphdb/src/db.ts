@@ -49,7 +49,6 @@ export async function executeQuery(query: string): Promise<unknown> {
   }
 
   const jsonString = result.table.toString();
-  console.log(jsonString);
 
   return JSON.parse(jsonString);
 }
