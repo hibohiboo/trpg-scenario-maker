@@ -2,8 +2,9 @@ import {
   initializeDatabase,
   executeQuery,
   closeDatabase,
+  readFSVFile,
+  writeFSVFile,
 } from '@trpg-scenario-maker/graphdb';
-import { readFSVFile, writeFSVFile } from '@trpg-scenario-maker/graphdb/db';
 
 // リクエスト/レスポンス型
 export interface GraphDBWorkerRequest {

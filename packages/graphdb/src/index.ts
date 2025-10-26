@@ -3,5 +3,8 @@ export {
   getConnection,
   executeQuery,
   closeDatabase,
-} from "./db";
-export { runExample } from "./example";
+  readFSVFile,
+  writeFSVFile,
+} from './db';
+export { runExample } from './example';
+export { graphDbSchemas } from './schemas';

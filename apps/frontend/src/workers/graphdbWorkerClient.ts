@@ -1,9 +1,13 @@
+import { graphDbSchemas } from '@trpg-scenario-maker/graphdb';
 import { BaseWorkerClient } from './BaseWorkerClient';
 import type {
   GraphDBWorkerRequest,
   GraphDBWorkerResponse,
 } from './graphdb.worker';
 import DBWorker from './graphdb.worker?worker';
+
+const { nodes, relationships } = graphDbSchemas;
+const schemas = [...nodes, ...relationships];
 
 /**
  * GraphDBWorkerクライアント
@@ -52,48 +56,18 @@ class GraphDBWorkerClient extends BaseWorkerClient<
   }
 
   async save(): Promise<void> {
-    await this.saveNode('Scenario');
-    await this.saveNode('Scene');
-    await this.saveEdge('HAS_SCENE');
-    await this.saveEdge('NEXT_SCENE');
+    await Promise.all(nodes.map((schema) => this.saveNode(schema.name)));
+    await Promise.all(
+      relationships.map((schema) => this.saveEdge(schema.name)),
+    );
   }
 
   async load(): Promise<void> {
-    await this.loadTable('Scenario');
-    await this.loadTable('Scene');
-    await this.loadTable('HAS_SCENE');
-    await this.loadTable('NEXT_SCENE');
+    await Promise.all(schemas.map((schema) => this.loadTable(schema.name)));
   }
 
   private async createSchema(): Promise<void> {
-    // ノードテーブル
-    await this.execute(`
-      CREATE NODE TABLE Scenario (
-        id STRING,
-        title STRING,
-        PRIMARY KEY (id)
-      )
-    `);
-    await this.execute(`
-      CREATE NODE TABLE Scene (
-        id STRING,
-        title STRING,
-        isMasterScene BOOL,
-        description STRING,
-        PRIMARY KEY (id)
-      )
-    `);
-    // リレーションテーブル
-    await this.execute(`
-      CREATE REL TABLE HAS_SCENE (
-        FROM Scenario TO Scene
-      )
-    `);
-    await this.execute(`
-      CREATE REL TABLE NEXT_SCENE (
-          FROM Scene TO Scene
-      )
-    `);
+    await Promise.all(schemas.map((schema) => this.execute(schema.query)));
   }
 
   private async saveNode(tableName: string): Promise<void> {
