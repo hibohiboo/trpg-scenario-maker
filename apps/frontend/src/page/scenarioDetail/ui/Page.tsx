@@ -1,5 +1,4 @@
 import { SceneEditor } from '@trpg-scenario-maker/ui';
-import { scenarioGraphApi } from '@/entities/scenario';
 import { useScenarioDetailPage } from '../hooks/useScenarioDetailPage';
 
 export default function Page() {
@@ -15,6 +14,7 @@ export default function Page() {
     handleAddConnection,
     handleUpdateConnection,
     handleDeleteConnection,
+    handleSave,
   } = useScenarioDetailPage();
 
   if (isLoading) {
@@ -29,10 +29,7 @@ export default function Page() {
     <div className="container mx-auto p-8">
       <h1 className="mb-6 text-3xl font-bold">シナリオ編集</h1>
       <button
-        onClick={async () => {
-          const ret = await scenarioGraphApi.save();
-          console.log('Save result:', ret);
-        }}
+        onClick={handleSave}
         className="mb-4 rounded-md bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-300 cursor-pointer"
       >
         保存

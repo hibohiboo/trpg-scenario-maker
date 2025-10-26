@@ -24,7 +24,10 @@ export const useScenarioDetailPage = () => {
     handleUpdateConnection,
     handleDeleteConnection,
   } = useSceneOperations();
-
+  const handleSave = async () => {
+    await scenarioGraphApi.save();
+    alert('シナリオが保存されました');
+  };
   return {
     id,
     scenes,
@@ -37,5 +40,6 @@ export const useScenarioDetailPage = () => {
     handleAddConnection,
     handleUpdateConnection,
     handleDeleteConnection,
+    handleSave,
   };
 };
