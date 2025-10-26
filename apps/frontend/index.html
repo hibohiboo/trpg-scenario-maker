@@ -1,16 +1,45 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <title>TRPG Scenario Maker</title>
+    <style>
+      .spinner-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #ccc;
+        border-top: 4px solid #2196f3;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
   </head>
   <body>
     <!-- Github Pages で@kuzu/kuzu-wasmを使うため、SharedArrayBuffer を使えるようにheaderにcross-origin設定を付与  -->
     <script src="/coi-serviceworker.js"></script>
 
-    <div id="root"></div>
+    <div id="root">
+      <div class="spinner-container">
+        <div>
+          Loading...
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
