@@ -36,13 +36,16 @@ export const useSceneForm = (props: SceneFormProps) => {
     onConnectionAdd,
     onSubmit,
   } = props;
+
   const connectVM = useSceneConnections({
     scene,
     scenes,
     connections,
     onConnectionAdd,
   });
+
   const stateVM = useSceneState(scene);
+
   const { title, description, isMasterScene } = stateVM;
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
