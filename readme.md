@@ -31,10 +31,9 @@ TRPG Scenario Makerは、TRPGのシナリオ作成を支援するフロントエ
 
 - **PGlite**: ブラウザ内PostgreSQL（IndexedDB backend）
 - **Drizzle ORM**: 型安全なORMライブラリ
-- **Kuzu-Wasm**: ブラウザ内グラフデータベース（LocalStorage backend）
+- **Kuzu-Wasm**: ブラウザ内グラフデータベース（IndexedDB backend）
 - **Web Worker**: バックグラウンドスレッドでのDB操作
-- **IndexedDB**: ブラウザローカルストレージ（RDB用）
-- **LocalStorage**: ブラウザストレージ（GraphDB用）
+- **IndexedDB**: ブラウザローカルストレージ（RDB・GraphDB共通）
 
 ### 開発環境
 
@@ -242,7 +241,7 @@ const result = await selectScenarios();
 #### データ管理の役割分担
 
 - **RDB（PGlite + IndexedDB）**: シナリオ・キャラクター・アイテムなどのマスターデータ
-- **GraphDB（Kuzu-Wasm + LocalStorage）**: シーンの繋がり・関連性（グラフ構造）
+- **GraphDB（Kuzu-Wasm + IndexedDB）**: シーンの繋がり・関連性（グラフ構造）
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -251,10 +250,9 @@ const result = await selectScenarios();
 │  │ React UI    │◄─────►│ Scene Graph          │                              │
 │  └─────────────┘       └──────────┬───────────┘                              │
 │                                   │                                          │
-│                      ┌────────────▼───────────┐       ┌────────────────────┐ │
-│                      │ graphdbWorkerClient    │◄─────►│  LocalStorage      │ │
-│                      └────┬───────────────────┘       │  (CSV形式保存/復元) │ │
-│                           │                           └────────────────────┘ │
+│                      ┌────────────▼───────────┐                              │
+│                      │ graphdbWorkerClient    │                              │
+│                      └────┬───────────────────┘                              │
 │                           │                                                  │
 └───────────────────────────┼──────────────────────────────────────────────────┘
                             │ postMessage
@@ -263,20 +261,31 @@ const result = await selectScenarios();
                    │(graphdb.worker) │
                    └────────┬────────┘
                             │
-                   ┌────────▼────────┐       ┌────────────────────────────┐
-                   │  Kuzu-Wasm      │◄─────►│  VFS (Virtual File System) │
-                   │  (Graph Query)  │       │  (CSV形式保存/復元)         │
-                   └─────────────────┘       └────────────────────────────┘
+                   ┌────────▼────────┐       ┌───────────────────────────┐
+                   │  Kuzu-Wasm      │       │  IndexedDB Storage        │
+                   │  (Graph Query)  │◄─────►│  (CSV形式保存/復元)        │
+                   └────────┬────────┘       └───────────────────────────┘
+                            │
+                   ┌────────▼───────────────────┐
+                   │  VFS (Virtual File System) │
+                   │  (メモリ内一時ストレージ)    │
+                   └────────────────────────────┘
 ```
 
 **主要コンポーネント:**
 
-**グラフデータベースのスキーマ [packages/graphdb/src/schemas.ts](packages/graphdb/src/schemas.ts)**
-**LocalStorageへの保存 ([graphdbWorkerClient.ts:58-63](apps/frontend/src/workers/graphdbWorkerClient.ts#L58-L63)):**
-**シーン取得の例 ([sceneApi.ts:11-25](frontend/src/entities/scene/api/sceneApi.ts#L11-L25)):**
-**シーン作成の例 ([sceneApi.ts:61-71](sceneApi.ts#L61-L71)):**
-**シーン間接続の取得 ([sceneApi.ts:30-48](apps/frontend/src/entities/scene/api/sceneApi.ts#L30-L48)):**
-**シーングラフの取得と更新 ([useScenarioDetailPage.ts:10-12](apps/frontend/src/page/scenarioDetail/hooks/useScenarioDetailPage.ts#L10-L12)):**
+- **[graphdb.worker.ts](apps/frontend/src/workers/graphdb.worker.ts)**: GraphDB WebWorkerメインファイル
+- **[graphdbWorkerClient.ts](apps/frontend/src/workers/graphdbWorkerClient.ts)**: GraphDB Workerクライアント
+- **[indexedDBStorage.ts](packages/graphdb/src/indexedDBStorage.ts)**: IndexedDBストレージユーティリティ
+- **[sceneGraphHandlers.ts](apps/frontend/src/entities/scene/workers/sceneGraphHandlers.ts)**: シーングラフ操作ハンドラー
+
+**永続化の仕組み:**
+
+GraphDBのデータはCSV形式でIndexedDBに保存されます。WebWorker内で以下の処理を実行：
+
+1. **保存**: Kuzu-WasmからCSVエクスポート → IndexedDBに保存
+2. **読込**: IndexedDBからCSV取得 → Kuzu-Wasmにインポート
+3. **クエリ実行**: メモリ内VFSで高速なグラフクエリ処理
 
 詳細な実装（スキーマ、クエリ例、API使用例）は [apps/frontend/README.md](apps/frontend/README.md) を参照してください。
 

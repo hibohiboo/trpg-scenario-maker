@@ -455,11 +455,11 @@ bun run typecheck
 **初期化フロー ([main.tsx:11-12](src/main.tsx#L11-L12)):**
 
 ```typescript
-// GraphDBWorkerを初期化（LocalStorageからデータを読み込み）
+// GraphDBWorkerを初期化（IndexedDBからデータを読み込み）
 await graphdbWorkerClient.initialize();
 ```
 
-**LocalStorageへの保存 ([graphdbWorkerClient.ts:58-63](src/workers/graphdbWorkerClient.ts#L58-L63)):**
+**IndexedDBへの保存 ([graphdbWorkerClient.ts:72-77](src/workers/graphdbWorkerClient.ts#L72-L77)):**
 
 ```typescript
 async save(): Promise<void> {
@@ -470,8 +470,55 @@ async save(): Promise<void> {
 }
 ```
 
-- ノードとエッジのデータをCSV形式でLocalStorageに保存
+**永続化の仕組み ([graphdb.worker.ts:59-100](src/workers/graphdb.worker.ts#L59-L100)):**
+
+WebWorker内でIndexedDBを使用してデータを永続化：
+
+```typescript
+// 保存ハンドラー
+handlers.set('save', async (payload: unknown) => {
+  const { query, path } = payload as { query: string; path: string };
+
+  // クエリを実行してCSVファイルを生成
+  await executeQuery(query);
+
+  // ファイルシステムからデータを読み取り
+  const content = readFSVFile(path);
+
+  // IndexedDBに保存
+  await setItem(path, content);
+
+  return { success: true, data: { message: 'Data saved successfully' } };
+});
+
+// 読み込みハンドラー
+handlers.set('load', async (payload: unknown) => {
+  const { query, path } = payload as { query: string; path: string };
+
+  // IndexedDBからデータを取得
+  const content = await getItem(path);
+
+  if (!content) {
+    return { success: true, data: { message: 'Data loaded skip' } };
+  }
+
+  // ファイルシステムに書き込み
+  await writeFSVFile(path, content);
+
+  // クエリを実行してデータをロード
+  await executeQuery(query);
+
+  return { success: true, data: { message: 'Data loaded successfully' } };
+});
+```
+
+**主要な利点:**
+
+- ノードとエッジのデータをCSV形式でIndexedDBに保存（WebWorker内で完結）
 - ページ再読み込み時に自動復元
+- localStorageの容量制限（5-10MB）を超える大容量データに対応
+- 非同期APIによる高速な読み書き
+- クライアント側は永続化処理を意識せず、Worker側に完全委譲
 
 ### リポジトリパターンによるGraphDB操作
 
