@@ -4,7 +4,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { SceneForm } from './SceneForm';
 import type { Scene, SceneConnection } from './types';
 
-describe('SceneForm - Connection filtering', () => {
+describe('SceneForm - 接続フィルタリング', () => {
   const scenes: Scene[] = [
     {
       id: '1',
@@ -32,7 +32,7 @@ describe('SceneForm - Connection filtering', () => {
     },
   ];
 
-  it('should not allow selecting current scene as next scene', () => {
+  it('現在のシーンを次のシーンとして選択できない', () => {
     const onSubmit = vi.fn();
     const onConnectionAdd = vi.fn();
     const connections: SceneConnection[] = [];
@@ -58,7 +58,7 @@ describe('SceneForm - Connection filtering', () => {
     );
   });
 
-  it('should not allow selecting current scene as previous scene', () => {
+  it('現在のシーンを前のシーンとして選択できない', () => {
     const onSubmit = vi.fn();
     const onConnectionAdd = vi.fn();
     const connections: SceneConnection[] = [];
@@ -84,7 +84,7 @@ describe('SceneForm - Connection filtering', () => {
     );
   });
 
-  it('should not show already connected next scenes in dropdown', () => {
+  it('既に接続済みの次のシーンがドロップダウンに表示されない', () => {
     const onSubmit = vi.fn();
     const onConnectionAdd = vi.fn();
     const connections: SceneConnection[] = [
@@ -116,7 +116,7 @@ describe('SceneForm - Connection filtering', () => {
     );
   });
 
-  it('should not show already connected previous scenes in dropdown', () => {
+  it('既に接続済みの前のシーンがドロップダウンに表示されない', () => {
     const onSubmit = vi.fn();
     const onConnectionAdd = vi.fn();
     const connections: SceneConnection[] = [
@@ -148,7 +148,7 @@ describe('SceneForm - Connection filtering', () => {
     );
   });
 
-  it('should prevent loop: next scene cannot be selected as previous scene', () => {
+  it('ループ防止: 次のシーンを前のシーンとして選択できない', () => {
     const onSubmit = vi.fn();
     const onConnectionAdd = vi.fn();
     // Scene 1 -> Scene 2 (existing connection)
@@ -177,7 +177,7 @@ describe('SceneForm - Connection filtering', () => {
     );
   });
 
-  it('should prevent loop: previous scene cannot be selected as next scene', () => {
+  it('ループ防止: 前のシーンを次のシーンとして選択できない', () => {
     const onSubmit = vi.fn();
     const onConnectionAdd = vi.fn();
     // Scene 2 -> Scene 1 (existing connection)
@@ -206,7 +206,7 @@ describe('SceneForm - Connection filtering', () => {
     );
   });
 
-  it('should allow adding connection when valid scene is selected', async () => {
+  it('有効なシーンを選択して接続を追加できる', async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
     const onConnectionAdd = vi.fn();
