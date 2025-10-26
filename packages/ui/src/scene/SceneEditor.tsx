@@ -1,7 +1,7 @@
 import { useState } from 'react';
+import { Button } from '../common';
 import { SceneFlowCanvas } from './SceneFlowCanvas';
 import { SceneForm } from './SceneForm';
-import { Button } from '../common';
 import type { SceneEditorProps, Scene } from './types';
 
 export function SceneEditor({
@@ -59,11 +59,14 @@ export function SceneEditor({
           </h3>
           <SceneForm
             scene={editingScene}
+            scenes={scenes}
+            connections={connections}
             onSubmit={editingScene ? handleUpdateScene : handleAddScene}
             onCancel={() => {
               setIsFormOpen(false);
               setEditingScene(undefined);
             }}
+            onConnectionDelete={onDeleteConnection}
           />
         </div>
       )}
