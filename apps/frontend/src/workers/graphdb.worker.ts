@@ -6,6 +6,7 @@ import {
   writeFSVFile,
 } from '@trpg-scenario-maker/graphdb';
 import { scenarioGraphHandlers } from '@/entities/scenario/workers/scenarioGraphHandlers';
+import { sceneGraphHandlers } from '@/entities/scene/workers/sceneGraphHandlers';
 
 // リクエスト/レスポンス型
 export interface GraphDBWorkerRequest {
@@ -91,6 +92,11 @@ handlers.set('close', async () => {
 
 // シナリオグラフハンドラーを登録
 scenarioGraphHandlers.forEach(({ type, handler }) => {
+  handlers.set(type, handler);
+});
+
+// シーングラフハンドラーを登録
+sceneGraphHandlers.forEach(({ type, handler }) => {
   handlers.set(type, handler);
 });
 

@@ -9,3 +9,4 @@ export {
 export { runExample } from './example';
 export { graphDbSchemas } from './schemas';
 export { scenarioGraphRepository } from './queries/scenarioRepository';
+export { sceneGraphRepository } from './queries/sceneRepository';
