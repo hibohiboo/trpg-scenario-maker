@@ -5,11 +5,12 @@ import { dbWorkerClient } from './workers/dbWorkerClient';
 import { graphdbWorkerClient } from './workers/graphdbWorkerClient';
 import './index.css';
 
-// DBWorkerを初期化（マイグレーション自動実行）
-await dbWorkerClient.initialize();
-
-// GraphDBWorkerを初期化 ローカルストレージからデータを読み込み
-await graphdbWorkerClient.initialize();
+await Promise.allSettled([
+  // DBWorkerを初期化（マイグレーション自動実行）
+  dbWorkerClient.initialize(),
+  // GraphDBWorkerを初期化 ローカルストレージからデータを読み込み
+  graphdbWorkerClient.initialize(),
+]);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
