@@ -60,21 +60,23 @@ export function SceneForm({
         .filter((item) => item.scene !== undefined)
     : [];
 
-  // 選択可能な次のシーン（現在のシーン、既に接続済みのシーンを除外）
+  // 選択可能な次のシーン（現在のシーン、既に接続済みのシーン、前のシーンを除外してループ防止）
   const availableNextScenes = scene
     ? scenes.filter(
         (s) =>
           s.id !== scene.id &&
-          !nextScenes.some((ns) => ns.scene?.id === s.id),
+          !nextScenes.some((ns) => ns.scene?.id === s.id) &&
+          !previousScenes.some((ps) => ps.scene?.id === s.id),
       )
     : [];
 
-  // 選択可能な前のシーン（現在のシーン、既に接続済みのシーンを除外）
+  // 選択可能な前のシーン（現在のシーン、既に接続済みのシーン、次のシーンを除外してループ防止）
   const availablePreviousScenes = scene
     ? scenes.filter(
         (s) =>
           s.id !== scene.id &&
-          !previousScenes.some((ps) => ps.scene?.id === s.id),
+          !previousScenes.some((ps) => ps.scene?.id === s.id) &&
+          !nextScenes.some((ns) => ns.scene?.id === s.id),
       )
     : [];
 
