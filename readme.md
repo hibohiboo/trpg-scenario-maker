@@ -289,6 +289,26 @@ GraphDBのデータはCSV形式でIndexedDBに保存されます。WebWorker内�
 
 詳細な実装（スキーマ、クエリ例、API使用例）は [apps/frontend/README.md](apps/frontend/README.md) を参照してください。
 
+## 機能
+
+### シナリオフロー可視化
+
+React Flowを使用したシーン間の関係性を視覚的に表示・編集できます。
+
+**主な機能:**
+
+- ノードのドラッグ&ドロップによる配置
+- ノード間の接続線作成・削除
+- マスターシーンの視覚的区別（緑色のハイライト）
+- **自動整列機能**: dagreアルゴリズムによる階層的レイアウト
+  - 縦方向整列（Top to Bottom）
+  - 横方向整列（Left to Right）
+
+**使用技術:**
+
+- [@xyflow/react](https://reactflow.dev/) - フローチャートUI
+- [@dagrejs/dagre](https://github.com/dagrejs/dagre) - 自動レイアウトアルゴリズム
+
 ## ロードマップ
 
 - [x] GitHub Pages公開設定
@@ -298,6 +318,7 @@ GraphDBのデータはCSV形式でIndexedDBに保存されます。WebWorker内�
 - [x] シナリオ一覧UI実装
 - [x] シーングラフ基本機能実装
 - [x] シナリオフロー可視化機能（React Flow統合）
+- [x] シナリオフロー自動整列機能（dagre統合）
 - [ ] 基本的なシナリオエディタUI
 - [ ] キャラクター・場所・アイテム管理機能
 - [ ] データのエクスポート/インポート
