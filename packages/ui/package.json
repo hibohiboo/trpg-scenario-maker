@@ -12,6 +12,7 @@
     "ncu": "ncu -u",
     "dev": "storybook dev -p 6006",
     "lint": "eslint .",
+    "type-check": "tsc -b",
     "test": "vitest"
   },
   "dependencies": {
