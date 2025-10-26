@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button } from '../common';
+import { Button, Modal } from '..';
 import { SceneFlowCanvas } from './SceneFlowCanvas';
 import { SceneForm } from './SceneForm';
 import type { SceneEditorProps, Scene } from './types';
@@ -52,25 +52,28 @@ export function SceneEditor({
         </Button>
       </div>
 
-      {isFormOpen && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-          <h3 className="mb-4 text-lg font-semibold">
-            {editingScene ? 'シーンを編集' : '新しいシーンを作成'}
-          </h3>
-          <SceneForm
-            scene={editingScene}
-            scenes={scenes}
-            connections={connections}
-            onSubmit={editingScene ? handleUpdateScene : handleAddScene}
-            onCancel={() => {
-              setIsFormOpen(false);
-              setEditingScene(undefined);
-            }}
-            onConnectionDelete={onDeleteConnection}
-            onConnectionAdd={onAddConnection}
-          />
-        </div>
-      )}
+      <Modal
+        isOpen={isFormOpen}
+        onClose={() => {
+          setIsFormOpen(false);
+          setEditingScene(undefined);
+        }}
+        title={editingScene ? 'シーンを編集' : '新しいシーンを作成'}
+        size="md"
+      >
+        <SceneForm
+          scene={editingScene}
+          scenes={scenes}
+          connections={connections}
+          onSubmit={editingScene ? handleUpdateScene : handleAddScene}
+          onCancel={() => {
+            setIsFormOpen(false);
+            setEditingScene(undefined);
+          }}
+          onConnectionDelete={onDeleteConnection}
+          onConnectionAdd={onAddConnection}
+        />
+      </Modal>
 
       <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
         <h3 className="mb-4 text-lg font-semibold">シーン一覧</h3>
