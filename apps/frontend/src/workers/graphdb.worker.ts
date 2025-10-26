@@ -5,6 +5,7 @@ import {
   readFSVFile,
   writeFSVFile,
 } from '@trpg-scenario-maker/graphdb';
+import { scenarioGraphHandlers } from '@/entities/scenario/workers/scenarioGraphHandlers';
 
 // リクエスト/レスポンス型
 export interface GraphDBWorkerRequest {
@@ -86,6 +87,11 @@ handlers.set('load', async (payload: unknown) => {
 handlers.set('close', async () => {
   await closeDatabase();
   return { success: true, data: { message: 'Database closed' } };
+});
+
+// シナリオグラフハンドラーを登録
+scenarioGraphHandlers.forEach(({ type, handler }) => {
+  handlers.set(type, handler);
 });
 
 // Workerメッセージハンドラー

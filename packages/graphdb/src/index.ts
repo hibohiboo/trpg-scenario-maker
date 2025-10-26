@@ -8,3 +8,4 @@ export {
 } from './db';
 export { runExample } from './example';
 export { graphDbSchemas } from './schemas';
+export { scenarioGraphRepository } from './queries/scenarioRepository';

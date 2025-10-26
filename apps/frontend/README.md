@@ -66,12 +66,14 @@ src/
 ├── entities/                   # エンティティ層（DDD風）
 │   └── scenario/
 │       ├── workers/
-│       │   └── scenarioHandlers.ts  # シナリオエンティティのハンドラー定義
+│       │   ├── scenarioHandlers.ts      # シナリオRDB操作ハンドラー
+│       │   └── scenarioGraphHandlers.ts # シナリオグラフDB操作ハンドラー
 │       ├── api/
-│       │   └── scenarioApi.ts       # API層（Worker呼び出し）
+│       │   ├── scenarioApi.ts           # RDB API層（Worker呼び出し）
+│       │   └── scenarioGraphApi.ts      # GraphDB API層（Worker呼び出し）
 │       └── store/
-│           ├── scenarioSlice.ts     # Redux Slice
-│           └── scenarioActions.ts   # Async Thunks
+│           ├── scenarioSlice.ts         # Redux Slice
+│           └── scenarioActions.ts       # Async Thunks
 │
 └── main.tsx                    # エントリポイント（Worker初期化）
 ```
@@ -209,51 +211,45 @@ self.addEventListener('message', async (event) => {
 各エンティティのハンドラーを配列で定義します。循環依存を避けるための設計です。
 
 ```typescript
-import {
-  selectScenarios,
-  insertScenario,
-  updateScenario,
-  deleteScenario,
-  countScenarios,
-} from '@trpg-scenario-maker/rdb/queries/scenario';
+import { scenarioRepository } from '@trpg-scenario-maker/rdb';
+import type { NewScenario } from '@trpg-scenario-maker/rdb/schema';
 
 export const scenarioHandlers = [
   {
     type: 'scenario:getList',
     handler: async () => {
-      const data = await selectScenarios();
+      const data = await scenarioRepository.findAll();
+      return { data };
+    },
+  },
+  {
+    type: 'scenario:getCount',
+    handler: async () => {
+      const data = await scenarioRepository.count();
       return { data };
     },
   },
   {
     type: 'scenario:create',
     handler: async (payload: unknown) => {
-      const params = payload as { title: string; description?: string };
-      const data = await insertScenario(params);
+      const data = await scenarioRepository.create(payload as NewScenario);
       return { data };
     },
   },
   {
     type: 'scenario:update',
     handler: async (payload: unknown) => {
-      const { id, ...params } = payload as { id: number; title?: string };
-      const data = await updateScenario(id, params);
-      return { data };
+      const { id, data } = payload as { id: string; data: { title: string } };
+      const result = await scenarioRepository.update(id, data);
+      return { data: result };
     },
   },
   {
     type: 'scenario:delete',
     handler: async (payload: unknown) => {
-      const { id } = payload as { id: number };
-      await deleteScenario(id);
+      const { id } = payload as { id: string };
+      await scenarioRepository.delete(id);
       return { success: true };
-    },
-  },
-  {
-    type: 'scenario:getCount',
-    handler: async () => {
-      const data = await countScenarios();
-      return { data };
     },
   },
 ];
@@ -477,46 +473,86 @@ async save(): Promise<void> {
 - ノードとエッジのデータをCSV形式でLocalStorageに保存
 - ページ再読み込み時に自動復元
 
-### Cypherクエリによるグラフ操作
+### リポジトリパターンによるGraphDB操作
 
-Kuzu-WasmはCypherクエリ言語をサポートしており、グラフを直感的に操作できます。
+GraphDBもRDBと同様にリポジトリパターンを採用しています。クエリロジックは `packages/graphdb` 層に集約されています。
 
-**シーン取得の例 ([sceneApi.ts:11-25](src/entities/scene/api/sceneApi.ts#L11-L25)):**
+**シナリオグラフリポジトリ ([packages/graphdb/src/queries/scenarioRepository.ts](../../packages/graphdb/src/queries/scenarioRepository.ts)):**
 
 ```typescript
-const query = `
-  MATCH (s:Scenario {id: '${scenarioId}'})-[:HAS_SCENE]->(scene:Scene)
-  RETURN scene.id AS id, scene.title AS title,
-         scene.description AS description,
-         scene.isMasterScene AS isMasterScene
-`;
-const result = await graphdbWorkerClient.execute<Scene[]>(query);
+import { executeQuery } from '..';
+
+export const scenarioGraphRepository = {
+  async create(params: { id: string; title: string }) {
+    return executeQuery(`
+      CREATE (s:Scenario {id: '${params.id}', title: '${params.title}'})
+      RETURN s
+    `);
+  },
+
+  async update(params: { id: string; title: string }) {
+    return executeQuery(`
+      MATCH (s:Scenario {id: '${params.id}'})
+      SET s.title = '${params.title}'
+      RETURN s
+    `);
+  },
+
+  async delete(id: string) {
+    return executeQuery(`
+      MATCH (s:Scenario {id: '${id}'})
+      DETACH DELETE s
+    `);
+  },
+
+  async findAll() {
+    return executeQuery(`
+      MATCH (s:Scenario)
+      RETURN s
+    `);
+  },
+};
 ```
 
-**シーン作成の例 ([sceneApi.ts:61-71](src/entities/scene/api/sceneApi.ts#L61-L71)):**
+**GraphDBハンドラー ([scenarioGraphHandlers.ts](src/entities/scenario/workers/scenarioGraphHandlers.ts)):**
 
 ```typescript
-const query = `
-  MATCH (s:Scenario {id: '${scenarioId}'})
-  CREATE (scene:Scene {
-    id: '${id}',
-    title: '${escapedTitle}',
-    description: '${escapedDescription}',
-    isMasterScene: ${scene.isMasterScene}
-  })
-  CREATE (s)-[:HAS_SCENE]->(scene)
-  RETURN scene.*
-`;
+import { scenarioGraphRepository } from '@trpg-scenario-maker/graphdb';
+
+export const scenarioGraphHandlers = [
+  {
+    type: 'scenario:graph:create',
+    handler: async (payload: unknown) => {
+      const params = payload as { id: string; title: string };
+      const result = await scenarioGraphRepository.create(params);
+      return { data: result };
+    },
+  },
+  // update, delete, findAll も同様...
+];
 ```
 
-**シーン間接続の取得 ([sceneApi.ts:30-48](src/entities/scene/api/sceneApi.ts#L30-L48)):**
+**API層 ([scenarioGraphApi.ts](src/entities/scenario/api/scenarioGraphApi.ts)):**
 
 ```typescript
-const query = `
-  MATCH (s:Scenario {id: '${scenarioId}'})-[:HAS_SCENE]->(scene1:Scene)
-        -[r:NEXT_SCENE]->(scene2:Scene)
-  RETURN scene1.id AS source, scene2.id AS target
-`;
+import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
+
+export const scenarioGraphApi = {
+  create: (params: { id: string; title: string }) =>
+    graphdbWorkerClient.request('scenario:graph:create', params),
+
+  update: (params: { id: string; title: string }) =>
+    graphdbWorkerClient.request('scenario:graph:update', params),
+
+  delete: (id: string) =>
+    graphdbWorkerClient.request('scenario:graph:delete', { id }),
+
+  findAll: () => graphdbWorkerClient.request('scenario:graph:findAll'),
+
+  save: async () => {
+    await graphdbWorkerClient.save();
+  },
+};
 ```
 
 ### 使用例
@@ -541,10 +577,20 @@ const handleSave = async () => {
 
 ### GraphDB採用理由
 
+**GraphDB採用理由:**
+
 1. **グラフクエリの効率性**: シーン間の複雑な関連を直感的に表現・取得
 2. **パフォーマンス**: ツリー構造やネットワーク構造の探索が高速
 3. **柔軟性**: 新しい関連タイプ（条件分岐、並列シーンなど）を容易に追加可能
 4. **可視化との親和性**: React FlowなどのUI可視化ライブラリとの連携が容易
+
+### GraphDBとRDBのアーキテクチャ統一
+
+RDBとGraphDBで同じリポジトリパターンを採用することで、以下のメリットがあります:
+
+- **一貫性**: 学習コストの削減、コードレビューの容易化
+- **保守性**: クエリロジックがpackages層に集約、ビジネスロジックと分離
+- **テスタビリティ**: リポジトリ関数を独立してテスト可能
 
 ## ライセンス
 

@@ -55,6 +55,20 @@ class GraphDBWorkerClient extends BaseWorkerClient<
     return response.data as T;
   }
 
+  /**
+   * 汎用リクエスト送信メソッド
+   * エンティティAPIから直接使用される
+   */
+  async request<T = unknown>(type: string, payload?: unknown): Promise<T> {
+    const response = await this.sendRequest<
+      GraphDBWorkerResponse & { data: T }
+    >({
+      type,
+      payload,
+    });
+    return response.data as T;
+  }
+
   async save(): Promise<void> {
     await Promise.all(nodes.map((schema) => this.saveNode(schema.name)));
     await Promise.all(

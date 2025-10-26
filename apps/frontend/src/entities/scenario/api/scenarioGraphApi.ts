@@ -1,11 +1,36 @@
-import type { Scenario } from '@trpg-scenario-maker/rdb/schema';
 import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 
+/**
+ * シナリオのグラフDB操作API
+ * GraphDBWorkerClientを使用して、シナリオ固有のAPI操作を提供
+ */
 export const scenarioGraphApi = {
-  create: (params: { id: string; title: string }): Promise<Scenario> =>
-    graphdbWorkerClient.execute(`
-      CREATE (s:Scenario {id: '${params.id}', title: '${params.title}'})
-    `),
+  /**
+   * シナリオノードを作成
+   */
+  create: (params: { id: string; title: string }) =>
+    graphdbWorkerClient.request('scenario:graph:create', params),
+
+  /**
+   * シナリオノードを更新
+   */
+  update: (params: { id: string; title: string }) =>
+    graphdbWorkerClient.request('scenario:graph:update', params),
+
+  /**
+   * シナリオノードを削除
+   */
+  delete: (id: string) =>
+    graphdbWorkerClient.request('scenario:graph:delete', { id }),
+
+  /**
+   * 全シナリオノードを取得
+   */
+  findAll: () => graphdbWorkerClient.request('scenario:graph:findAll'),
+
+  /**
+   * データベースを永続化
+   */
   save: async () => {
     await graphdbWorkerClient.save();
   },

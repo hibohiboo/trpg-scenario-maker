@@ -2,7 +2,9 @@
 
 TRPGシナリオを可視化しながら作成できるWebアプリケーション
 
-https://hibohiboo.github.io/trpg-scenario-maker/
+[Demo Page](https://hibohiboo.github.io/trpg-scenario-maker/)
+
+[Github](https://github.com/hibohiboo/trpg-scenario-maker)
 
 ## 概要
 
@@ -73,9 +75,12 @@ trpg-scenario-maker/
 ├── packages/
 │   ├── rdb/                   # データベース層（PGlite + Drizzle）
 │   │   ├── src/db/            # DB接続・マイグレーション
-│   │   └── src/queries/       # クエリ関数群
-│   ├── graphdb/               # グラフデータベース層（DuckDB-Wasm）
-│   │   └── src/schemas.ts     # グラフスキーマ定義
+│   │   └── src/queries/       # リポジトリパターンのクエリ層
+│   │       └── scenarioRepository.ts  # シナリオCRUD操作
+│   ├── graphdb/               # グラフデータベース層（Kuzu-Wasm）
+│   │   ├── src/schemas.ts     # グラフスキーマ定義
+│   │   └── src/queries/       # リポジトリパターンのクエリ層
+│   │       └── scenarioRepository.ts  # シナリオグラフ操作
 │   ├── ui/                    # UIコンポーネントライブラリ（Storybook対応）
 │   ├── eslint-config-custom/  # 共通ESLint設定
 │   └── tsconfig/              # 共通TypeScript設定

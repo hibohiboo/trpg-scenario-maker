@@ -1,10 +1,4 @@
-import {
-  createScenario as createScenarioQuery,
-  deleteScenario as deleteScenarioQuery,
-  getScenarioCount as getScenarioCountQuery,
-  getScenarios as getScenariosQuery,
-  updateScenario as updateScenarioQuery,
-} from '@trpg-scenario-maker/rdb';
+import { scenarioRepository } from '@trpg-scenario-maker/rdb';
 import type { NewScenario } from '@trpg-scenario-maker/rdb/schema';
 
 type UpdateScenarioData = Pick<NewScenario, 'title'>;
@@ -15,21 +9,21 @@ export const scenarioHandlers = [
   {
     type: 'scenario:getList',
     handler: async () => {
-      const scenarios = await getScenariosQuery();
+      const scenarios = await scenarioRepository.findAll();
       return { data: scenarios };
     },
   },
   {
     type: 'scenario:getCount',
     handler: async () => {
-      const count = await getScenarioCountQuery();
+      const count = await scenarioRepository.count();
       return { data: count };
     },
   },
   {
     type: 'scenario:create',
     handler: async (payload: unknown) => {
-      const newScenario = await createScenarioQuery(payload as NewScenario);
+      const newScenario = await scenarioRepository.create(payload as NewScenario);
       return { data: newScenario };
     },
   },
@@ -37,7 +31,7 @@ export const scenarioHandlers = [
     type: 'scenario:update',
     handler: async (payload: unknown) => {
       const { id, data } = payload as { id: string; data: UpdateScenarioData };
-      const updatedScenario = await updateScenarioQuery(id, data);
+      const updatedScenario = await scenarioRepository.update(id, data);
       return { data: updatedScenario };
     },
   },
@@ -45,7 +39,7 @@ export const scenarioHandlers = [
     type: 'scenario:delete',
     handler: async (payload: unknown) => {
       const { id } = payload as { id: string };
-      await deleteScenarioQuery(id);
+      await scenarioRepository.delete(id);
       return { success: true };
     },
   },
