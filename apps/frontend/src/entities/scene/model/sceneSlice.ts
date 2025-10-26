@@ -17,6 +17,8 @@ export interface SceneState {
   isLoading: boolean;
   error: string | null;
   currentScenarioId: string | null;
+  isFormOpen: boolean;
+  editingScene: Scene | null;
 }
 
 const initialState: SceneState = {
@@ -25,6 +27,8 @@ const initialState: SceneState = {
   isLoading: false,
   error: null,
   currentScenarioId: null,
+  isFormOpen: false,
+  editingScene: null,
 };
 
 export const sceneSlice = createSlice({
@@ -39,6 +43,20 @@ export const sceneSlice = createSlice({
       state.connections = [];
       state.currentScenarioId = null;
       state.error = null;
+    },
+    openSceneForm: (state) => {
+      state.isFormOpen = true;
+    },
+    closeSceneForm: (state) => {
+      state.isFormOpen = false;
+      state.editingScene = null;
+    },
+    setEditingScene: (state, action: PayloadAction<Scene>) => {
+      state.editingScene = action.payload;
+      state.isFormOpen = true;
+    },
+    clearEditingScene: (state) => {
+      state.editingScene = null;
     },
   },
   extraReducers: (builder) => {
@@ -142,4 +160,11 @@ export const sceneSlice = createSlice({
   },
 });
 
-export const { setCurrentScenarioId, clearScenes } = sceneSlice.actions;
+export const {
+  setCurrentScenarioId,
+  clearScenes,
+  openSceneForm,
+  closeSceneForm,
+  setEditingScene,
+  clearEditingScene,
+} = sceneSlice.actions;

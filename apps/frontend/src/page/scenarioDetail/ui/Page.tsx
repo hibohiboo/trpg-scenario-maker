@@ -13,12 +13,17 @@ export default function Page() {
     connections,
     isLoading,
     error,
+    isFormOpen,
+    editingScene,
     handleAddScene,
     handleUpdateScene,
     handleDeleteScene,
     handleAddConnection,
     handleUpdateConnection,
     handleDeleteConnection,
+    handleOpenForm,
+    handleCloseForm,
+    handleEditScene,
     handleSave,
   } = useScenarioDetailPage();
 
@@ -40,12 +45,17 @@ export default function Page() {
         scenarioId={id}
         scenes={scenes}
         connections={connections}
+        isFormOpen={isFormOpen}
+        editingScene={editingScene}
         onAddScene={handleAddScene}
         onUpdateScene={handleUpdateScene}
         onDeleteScene={handleDeleteScene}
         onAddConnection={handleAddConnection}
         onUpdateConnection={handleUpdateConnection}
         onDeleteConnection={handleDeleteConnection}
+        onOpenForm={handleOpenForm}
+        onCloseForm={handleCloseForm}
+        onEditScene={handleEditScene}
       />
     </>
   );

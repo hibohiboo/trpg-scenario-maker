@@ -76,6 +76,8 @@ export const Default: Story = {
     const [scenes, setScenes] = useState<Scene[]>(initialScenes);
     const [connections, setConnections] =
       useState<SceneConnection[]>(initialConnections);
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    const [editingScene, setEditingScene] = useState<Scene | null>(null);
 
     const handleAddScene = (scene: Omit<Scene, 'id'>) => {
       const newScene: Scene = {
@@ -118,12 +120,26 @@ export const Default: Story = {
           scenarioId="sample-scenario"
           scenes={scenes}
           connections={connections}
+          isFormOpen={isFormOpen}
+          editingScene={editingScene}
           onAddScene={handleAddScene}
           onUpdateScene={handleUpdateScene}
           onDeleteScene={handleDeleteScene}
           onAddConnection={handleAddConnection}
           onUpdateConnection={fn()}
           onDeleteConnection={handleDeleteConnection}
+          onOpenForm={() => {
+            setEditingScene(null);
+            setIsFormOpen(true);
+          }}
+          onCloseForm={() => {
+            setIsFormOpen(false);
+            setEditingScene(null);
+          }}
+          onEditScene={(scene) => {
+            setEditingScene(scene);
+            setIsFormOpen(true);
+          }}
         />
       </div>
     );
@@ -136,12 +152,17 @@ export const Empty: Story = {
     scenarioId: 'sample-scenario',
     scenes: [],
     connections: [],
+    isFormOpen: false,
+    editingScene: null,
     onAddScene: fn(),
     onUpdateScene: fn(),
     onDeleteScene: fn(),
     onAddConnection: fn(),
     onUpdateConnection: fn(),
     onDeleteConnection: fn(),
+    onOpenForm: fn(),
+    onCloseForm: fn(),
+    onEditScene: fn(),
   },
 };
 
@@ -160,12 +181,17 @@ export const WithManyScenes: Story = {
       target: `${i + 2}`,
       order: i + 1,
     })),
+    isFormOpen: false,
+    editingScene: null,
     onAddScene: fn(),
     onUpdateScene: fn(),
     onDeleteScene: fn(),
     onAddConnection: fn(),
     onUpdateConnection: fn(),
     onDeleteConnection: fn(),
+    onOpenForm: fn(),
+    onCloseForm: fn(),
+    onEditScene: fn(),
   },
 };
 
@@ -229,6 +255,8 @@ export const WithComplexFlow: Story = {
     const [scenes, setScenes] = useState<Scene[]>(complexScenes);
     const [connections, setConnections] =
       useState<SceneConnection[]>(complexConnections);
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    const [editingScene, setEditingScene] = useState<Scene | null>(null);
 
     return (
       <div className="p-8">
@@ -236,6 +264,8 @@ export const WithComplexFlow: Story = {
           scenarioId="complex-scenario"
           scenes={scenes}
           connections={connections}
+          isFormOpen={isFormOpen}
+          editingScene={editingScene}
           onAddScene={(scene) => {
             setScenes([...scenes, { ...scene, id: `${Date.now()}` }]);
           }}
@@ -259,6 +289,18 @@ export const WithComplexFlow: Story = {
           onUpdateConnection={fn()}
           onDeleteConnection={(id) => {
             setConnections(connections.filter((c) => c.id !== id));
+          }}
+          onOpenForm={() => {
+            setEditingScene(null);
+            setIsFormOpen(true);
+          }}
+          onCloseForm={() => {
+            setIsFormOpen(false);
+            setEditingScene(null);
+          }}
+          onEditScene={(scene) => {
+            setEditingScene(scene);
+            setIsFormOpen(true);
           }}
         />
       </div>
