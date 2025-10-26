@@ -35,27 +35,15 @@ export const useSceneForm = (props: SceneFormProps) => {
     connections = [],
     onConnectionAdd,
     onSubmit,
-    onConnectionDelete,
-    onCancel,
   } = props;
-  const {
-    title,
-    setTitle,
-    description,
-    setDescription,
-    isMasterScene,
-    setIsMasterScene,
-  } = useSceneState(scene);
-
-  const {
-    nextScenes,
-    previousScenes,
-    availableNextScenes,
-    availablePreviousScenes,
-    handleAddNextScene,
-    handleAddPreviousScene,
-  } = useSceneConnections({ scene, scenes, connections, onConnectionAdd });
-
+  const connectVM = useSceneConnections({
+    scene,
+    scenes,
+    connections,
+    onConnectionAdd,
+  });
+  const stateVM = useSceneState(scene);
+  const { title, description, isMasterScene } = stateVM;
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     onSubmit({ title, description, isMasterScene });
@@ -63,22 +51,11 @@ export const useSceneForm = (props: SceneFormProps) => {
 
   const submitLabel = scene ? '更新' : '作成';
   return {
-    title,
-    setTitle,
-    description,
-    setDescription,
-    isMasterScene,
-    setIsMasterScene,
-    nextScenes,
-    previousScenes,
-    availableNextScenes,
-    availablePreviousScenes,
-    handleAddNextScene,
-    handleAddPreviousScene,
+    ...props,
+    ...stateVM,
+    ...connectVM,
     handleSubmit,
     submitLabel,
     scene,
-    onConnectionDelete,
-    onCancel,
   };
 };
