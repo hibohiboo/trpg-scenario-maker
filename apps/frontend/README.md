@@ -438,6 +438,114 @@ bun run lint
 bun run typecheck
 ```
 
+## GraphDB（グラフデータベース）実装詳細
+
+### スキーマ定義
+
+グラフデータベースのスキーマは [packages/graphdb/src/schemas.ts](../../packages/graphdb/src/schemas.ts) で定義されています。
+
+**ノード（Node）:**
+
+- `Scenario`: シナリオノード（id, title）
+- `Scene`: シーンノード（id, title, description, isMasterScene）
+
+**リレーション（Relationship）:**
+
+- `HAS_SCENE`: Scenario → Scene（シナリオがシーンを所有）
+- `NEXT_SCENE`: Scene → Scene（シーン間の遷移）
+
+### 初期化と永続化
+
+**初期化フロー ([main.tsx:11-12](src/main.tsx#L11-L12)):**
+
+```typescript
+// GraphDBWorkerを初期化（LocalStorageからデータを読み込み）
+await graphdbWorkerClient.initialize();
+```
+
+**LocalStorageへの保存 ([graphdbWorkerClient.ts:58-63](src/workers/graphdbWorkerClient.ts#L58-L63)):**
+
+```typescript
+async save(): Promise<void> {
+  await Promise.all(nodes.map((schema) => this.saveNode(schema.name)));
+  await Promise.all(
+    relationships.map((schema) => this.saveEdge(schema.name)),
+  );
+}
+```
+
+- ノードとエッジのデータをCSV形式でLocalStorageに保存
+- ページ再読み込み時に自動復元
+
+### Cypherクエリによるグラフ操作
+
+Kuzu-WasmはCypherクエリ言語をサポートしており、グラフを直感的に操作できます。
+
+**シーン取得の例 ([sceneApi.ts:11-25](src/entities/scene/api/sceneApi.ts#L11-L25)):**
+
+```typescript
+const query = `
+  MATCH (s:Scenario {id: '${scenarioId}'})-[:HAS_SCENE]->(scene:Scene)
+  RETURN scene.id AS id, scene.title AS title,
+         scene.description AS description,
+         scene.isMasterScene AS isMasterScene
+`;
+const result = await graphdbWorkerClient.execute<Scene[]>(query);
+```
+
+**シーン作成の例 ([sceneApi.ts:61-71](src/entities/scene/api/sceneApi.ts#L61-L71)):**
+
+```typescript
+const query = `
+  MATCH (s:Scenario {id: '${scenarioId}'})
+  CREATE (scene:Scene {
+    id: '${id}',
+    title: '${escapedTitle}',
+    description: '${escapedDescription}',
+    isMasterScene: ${scene.isMasterScene}
+  })
+  CREATE (s)-[:HAS_SCENE]->(scene)
+  RETURN scene.*
+`;
+```
+
+**シーン間接続の取得 ([sceneApi.ts:30-48](src/entities/scene/api/sceneApi.ts#L30-L48)):**
+
+```typescript
+const query = `
+  MATCH (s:Scenario {id: '${scenarioId}'})-[:HAS_SCENE]->(scene1:Scene)
+        -[r:NEXT_SCENE]->(scene2:Scene)
+  RETURN scene1.id AS source, scene2.id AS target
+`;
+```
+
+### 使用例
+
+**シーングラフの取得と更新 ([useScenarioDetailPage.ts:10-12](../page/scenarioDetail/hooks/useScenarioDetailPage.ts#L10-L12)):**
+
+```typescript
+useEffect(() => {
+  // シナリオグラフをGraphDBに登録
+  scenarioGraphApi.create(data);
+}, [id, data]);
+
+// シーンとその接続を取得
+const { scenes, connections, isLoading, error } = useSceneList(id);
+
+// 保存
+const handleSave = async () => {
+  await scenarioGraphApi.save();
+  alert('シナリオが保存されました');
+};
+```
+
+### GraphDB採用理由
+
+1. **グラフクエリの効率性**: シーン間の複雑な関連を直感的に表現・取得
+2. **パフォーマンス**: ツリー構造やネットワーク構造の探索が高速
+3. **柔軟性**: 新しい関連タイプ（条件分岐、並列シーンなど）を容易に追加可能
+4. **可視化との親和性**: React FlowなどのUI可視化ライブラリとの連携が容易
+
 ## ライセンス
 
 MIT
