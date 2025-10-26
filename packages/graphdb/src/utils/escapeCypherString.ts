@@ -5,6 +5,7 @@
 export const escapeCypherString = (str: string): string =>
   str
     .replace(/\\/g, '\\\\') // バックスラッシュ
+    .replace(/"/g, '\\\\"') // ダブルクォート
     .replace(/'/g, "\\'") // シングルクォート
     .replace(/\n/g, '\\\\n') // 改行
     .replace(/\r/g, '\\r') // キャリッジリターン

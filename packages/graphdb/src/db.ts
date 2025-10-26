@@ -48,7 +48,10 @@ export async function executeQuery(query: string): Promise<unknown> {
     return [];
   }
 
-  return JSON.parse(result.table.toString());
+  const jsonString = result.table.toString();
+  console.log(jsonString);
+
+  return JSON.parse(jsonString);
 }
 
 export function readFSVFile(path: string): string {
