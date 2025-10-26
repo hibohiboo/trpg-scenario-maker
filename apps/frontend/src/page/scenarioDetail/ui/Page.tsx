@@ -38,7 +38,7 @@ export default function Page() {
   return (
     <>
       <h1 className="mb-6 text-3xl font-bold">シナリオ編集</h1>
-      <Button onClick={handleSave} variant="secondary" className="mb-4">
+      <Button onClick={handleSave} variant="primary" className="mb-4">
         保存
       </Button>
       <SceneEditor
