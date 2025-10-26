@@ -6,6 +6,9 @@ export default defineConfig([
   {
     files: ['**/*.{ts,tsx}'],
     extends: [...customConfig],
+    rules: {
+      'no-console': 'off',
+    },
   },
   {
     files: ['**/*.test.ts'],
