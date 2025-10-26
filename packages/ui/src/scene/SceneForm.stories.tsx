@@ -29,11 +29,15 @@ const meta = {
     onConnectionDelete: {
       description: '接続削除時のコールバック',
     },
+    onConnectionAdd: {
+      description: '接続追加時のコールバック',
+    },
   },
   args: {
     onSubmit: fn(),
     onCancel: fn(),
     onConnectionDelete: fn(),
+    onConnectionAdd: fn(),
   },
 } satisfies Meta<typeof SceneForm>;
 

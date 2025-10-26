@@ -67,6 +67,7 @@ export function SceneEditor({
               setEditingScene(undefined);
             }}
             onConnectionDelete={onDeleteConnection}
+            onConnectionAdd={onAddConnection}
           />
         </div>
       )}

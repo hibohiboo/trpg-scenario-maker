@@ -9,6 +9,7 @@ interface SceneFormProps {
   onSubmit: (scene: Omit<Scene, 'id'>) => void;
   onCancel?: () => void;
   onConnectionDelete?: (connectionId: string) => void;
+  onConnectionAdd?: (connection: Omit<SceneConnection, 'id'>) => void;
 }
 
 const inputClassName =
@@ -23,12 +24,15 @@ export function SceneForm({
   onSubmit,
   onCancel,
   onConnectionDelete,
+  onConnectionAdd,
 }: SceneFormProps) {
   const [title, setTitle] = useState(scene?.title || '');
   const [description, setDescription] = useState(scene?.description || '');
   const [isMasterScene, setIsMasterScene] = useState(
     scene?.isMasterScene || false,
   );
+  const [selectedNextSceneId, setSelectedNextSceneId] = useState('');
+  const [selectedPreviousSceneId, setSelectedPreviousSceneId] = useState('');
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -55,6 +59,38 @@ export function SceneForm({
         }))
         .filter((item) => item.scene !== undefined)
     : [];
+
+  // 選択可能な次のシーン（現在のシーン、既に接続済みのシーンを除外）
+  const availableNextScenes = scene
+    ? scenes.filter(
+        (s) =>
+          s.id !== scene.id &&
+          !nextScenes.some((ns) => ns.scene?.id === s.id),
+      )
+    : [];
+
+  // 選択可能な前のシーン（現在のシーン、既に接続済みのシーンを除外）
+  const availablePreviousScenes = scene
+    ? scenes.filter(
+        (s) =>
+          s.id !== scene.id &&
+          !previousScenes.some((ps) => ps.scene?.id === s.id),
+      )
+    : [];
+
+  const handleAddNextScene = () => {
+    if (selectedNextSceneId && scene && onConnectionAdd) {
+      onConnectionAdd({ source: scene.id, target: selectedNextSceneId });
+      setSelectedNextSceneId('');
+    }
+  };
+
+  const handleAddPreviousScene = () => {
+    if (selectedPreviousSceneId && scene && onConnectionAdd) {
+      onConnectionAdd({ source: selectedPreviousSceneId, target: scene.id });
+      setSelectedPreviousSceneId('');
+    }
+  };
 
   const submitLabel = scene ? '更新' : '作成';
   const titleChangeHandler = (e: FormEvent<HTMLInputElement>) =>
@@ -109,14 +145,14 @@ export function SceneForm({
         </label>
       </div>
 
-      {scene && (previousScenes.length > 0 || nextScenes.length > 0) && (
+      {scene && (
         <div className="border-t pt-4 mt-4 space-y-3">
-          {previousScenes.length > 0 && (
-            <div>
-              <h3 className="text-sm font-medium text-gray-700 mb-2">
-                前のシーン
-              </h3>
-              <ul className="space-y-2">
+          <div>
+            <h3 className="text-sm font-medium text-gray-700 mb-2">
+              前のシーン
+            </h3>
+            {previousScenes.length > 0 && (
+              <ul className="space-y-2 mb-3">
                 {previousScenes.map(({ connection, scene: prevScene }) => (
                   <li
                     key={connection.id}
@@ -138,15 +174,40 @@ export function SceneForm({
                   </li>
                 ))}
               </ul>
-            </div>
-          )}
+            )}
+            {onConnectionAdd && availablePreviousScenes.length > 0 && (
+              <div className="flex gap-2">
+                <select
+                  value={selectedPreviousSceneId}
+                  onChange={(e) => setSelectedPreviousSceneId(e.target.value)}
+                  className={inputClassName}
+                >
+                  <option value="">前のシーンを選択...</option>
+                  {availablePreviousScenes.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.title}
+                    </option>
+                  ))}
+                </select>
+                <Button
+                  type="button"
+                  variant="success"
+                  size="sm"
+                  onClick={handleAddPreviousScene}
+                  disabled={!selectedPreviousSceneId}
+                >
+                  追加
+                </Button>
+              </div>
+            )}
+          </div>
 
-          {nextScenes.length > 0 && (
-            <div>
-              <h3 className="text-sm font-medium text-gray-700 mb-2">
-                次のシーン
-              </h3>
-              <ul className="space-y-2">
+          <div>
+            <h3 className="text-sm font-medium text-gray-700 mb-2">
+              次のシーン
+            </h3>
+            {nextScenes.length > 0 && (
+              <ul className="space-y-2 mb-3">
                 {nextScenes.map(({ connection, scene: nextScene }) => (
                   <li
                     key={connection.id}
@@ -168,8 +229,33 @@ export function SceneForm({
                   </li>
                 ))}
               </ul>
-            </div>
-          )}
+            )}
+            {onConnectionAdd && availableNextScenes.length > 0 && (
+              <div className="flex gap-2">
+                <select
+                  value={selectedNextSceneId}
+                  onChange={(e) => setSelectedNextSceneId(e.target.value)}
+                  className={inputClassName}
+                >
+                  <option value="">次のシーンを選択...</option>
+                  {availableNextScenes.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.title}
+                    </option>
+                  ))}
+                </select>
+                <Button
+                  type="button"
+                  variant="success"
+                  size="sm"
+                  onClick={handleAddNextScene}
+                  disabled={!selectedNextSceneId}
+                >
+                  追加
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
