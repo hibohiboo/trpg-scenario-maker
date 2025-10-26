@@ -1,5 +1,9 @@
 import { executeQuery } from '..';
 
+const RELATION_DELIMITER = '|';
+
+const relationIdToIds = (id: string) => id.split(RELATION_DELIMITER);
+
 /**
  * シーンのグラフDB操作リポジトリ
  */
@@ -20,7 +24,7 @@ export const sceneGraphRepository = {
   async getConnectionsByScenarioId(scenarioId: string) {
     return executeQuery(`
       MATCH (s:Scenario {id: '${scenarioId}'})-[:HAS_SCENE]->(scene1:Scene)-[r:NEXT_SCENE]->(scene2:Scene)
-      RETURN scene1.id AS source, scene2.id AS target
+      RETURN scene1.id + '${RELATION_DELIMITER}' + scene2.id AS id, scene1.id AS source, scene2.id AS target
     `);
   },
 
@@ -100,16 +104,17 @@ export const sceneGraphRepository = {
     return executeQuery(`
       MATCH (source:Scene {id: '${params.source}'}), (target:Scene {id: '${params.target}'})
       CREATE (source)-[r:NEXT_SCENE]->(target)
-      RETURN '${params.source}-${params.target}' AS id, '${params.source}' AS source, '${params.target}' AS target
+      RETURN '${params.source}${RELATION_DELIMITER}${params.target}' AS id, '${params.source}' AS source, '${params.target}' AS target
     `);
   },
 
   /**
    * シーン間の接続を削除
    */
-  async deleteConnection(params: { source: string; target: string }) {
+  async deleteConnection(id: string) {
+    const [source, target] = relationIdToIds(id);
     return executeQuery(`
-      MATCH (source:Scene {id: '${params.source}'})-[r:NEXT_SCENE]->(target:Scene {id: '${params.target}'})
+      MATCH (source:Scene {id: '${source}'})-[r:NEXT_SCENE]->(target:Scene {id: '${target}'})
       DELETE r
     `);
   },

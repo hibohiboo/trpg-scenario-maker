@@ -1,14 +1,12 @@
+import type { SceneConnection } from '@trpg-scenario-maker/schema/scene';
+
+export type { SceneConnection };
+
 export interface Scene {
   id: string;
   title: string;
   description: string;
   isMasterScene: boolean;
-}
-
-export interface SceneConnection {
-  id: string;
-  source: string;
-  target: string;
 }
 
 export interface SceneEditorProps {
@@ -21,7 +19,10 @@ export interface SceneEditorProps {
   onUpdateScene: (id: string, scene: Partial<Scene>) => void;
   onDeleteScene: (id: string) => void;
   onAddConnection: (connection: Omit<SceneConnection, 'id'>) => void;
-  onUpdateConnection: (id: string, connection: Partial<SceneConnection>) => void;
+  onUpdateConnection: (
+    id: string,
+    connection: Partial<SceneConnection>,
+  ) => void;
   onDeleteConnection: (id: string) => void;
   onOpenForm: () => void;
   onCloseForm: () => void;

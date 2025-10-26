@@ -1,3 +1,4 @@
+import { parseSceneConnectionSchema } from '@trpg-scenario-maker/schema/scene';
 import type { Scene, SceneConnection } from '@trpg-scenario-maker/ui';
 import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 
@@ -23,14 +24,11 @@ export const sceneGraphApi = {
   getConnectionsByScenarioId: async (
     scenarioId: string,
   ): Promise<SceneConnection[]> => {
-    const result = await graphdbWorkerClient.request<
-      Array<{ source: string; target: string }>
-    >('scene:graph:getConnectionsByScenarioId', { scenarioId });
-    return result.map((item) => ({
-      id: `${item.source}-${item.target}`,
-      source: item.source,
-      target: item.target,
-    }));
+    const result = await graphdbWorkerClient.request<Array<SceneConnection>>(
+      'scene:graph:getConnectionsByScenarioId',
+      { scenarioId },
+    );
+    return result;
   },
 
   /**
@@ -102,25 +100,15 @@ export const sceneGraphApi = {
         target: connection.target,
       },
     );
-
-    if (!result || !Array.isArray(result) || result.length === 0) {
-      throw new Error(
-        'Failed to create connection: No result returned from database',
-      );
-    }
-
-    return result[0];
+    const [r] = result;
+    return parseSceneConnectionSchema(r);
   },
 
   /**
    * シーン間の接続を削除
    */
   deleteConnection: async (id: string): Promise<void> => {
-    const [source, target] = id.split('-');
-    await graphdbWorkerClient.request('scene:graph:deleteConnection', {
-      source,
-      target,
-    });
+    await graphdbWorkerClient.request('scene:graph:deleteConnection', id);
   },
 
   /**

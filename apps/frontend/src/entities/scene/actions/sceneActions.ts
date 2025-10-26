@@ -10,14 +10,14 @@ export const readScenesAction = createAsyncThunk<Scene[], string>(
   },
 );
 
-export const readConnectionsAction = createAsyncThunk<SceneConnection[], string>(
-  'scene/readConnections',
-  async (scenarioId) => {
-    const connections =
-      await sceneGraphApi.getConnectionsByScenarioId(scenarioId);
-    return connections;
-  },
-);
+export const readConnectionsAction = createAsyncThunk<
+  SceneConnection[],
+  string
+>('scene/readConnections', async (scenarioId) => {
+  const connections =
+    await sceneGraphApi.getConnectionsByScenarioId(scenarioId);
+  return connections;
+});
 
 export const createSceneAction = createAsyncThunk<
   Scene,

@@ -8,9 +8,8 @@ export const sceneGraphHandlers = [
     type: 'scene:graph:getScenesByScenarioId',
     handler: async (payload: unknown) => {
       const { scenarioId } = payload as { scenarioId: string };
-      const result = await sceneGraphRepository.getScenesByScenarioId(
-        scenarioId,
-      );
+      const result =
+        await sceneGraphRepository.getScenesByScenarioId(scenarioId);
       return { data: result };
     },
   },
@@ -69,7 +68,7 @@ export const sceneGraphHandlers = [
   {
     type: 'scene:graph:deleteConnection',
     handler: async (payload: unknown) => {
-      const params = payload as { source: string; target: string };
+      const params = payload as string;
       await sceneGraphRepository.deleteConnection(params);
       return { success: true };
     },
