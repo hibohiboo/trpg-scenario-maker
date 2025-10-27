@@ -1,3 +1,4 @@
+import type { SceneEvent, SceneEventType } from '@trpg-scenario-maker/schema';
 import { useState, type FormEvent } from 'react';
 import type { Scene, SceneConnection } from '../types';
 import { useSceneConnections } from './useSceneConnections';
@@ -6,10 +7,19 @@ export interface SceneFormProps {
   scene?: Scene;
   scenes?: Scene[];
   connections?: SceneConnection[];
+  events?: SceneEvent[];
   onSubmit: (scene: Omit<Scene, 'id'>) => void;
   onCancel?: () => void;
   onConnectionDelete?: (connectionId: string) => void;
   onConnectionAdd?: (connection: Omit<SceneConnection, 'id'>) => void;
+  onEventAdd?: (eventData: { type: SceneEventType; content: string }) => void;
+  onEventUpdate?: (
+    eventId: string,
+    eventData: { type: SceneEventType; content: string },
+  ) => void;
+  onEventDelete?: (eventId: string) => void;
+  onEventMoveUp?: (eventId: string) => void;
+  onEventMoveDown?: (eventId: string) => void;
 }
 
 export const useSceneState = (scene?: Scene) => {

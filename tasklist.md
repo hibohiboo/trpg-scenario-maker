@@ -76,23 +76,26 @@ CREATE REL TABLE HAS_EVENT (
   - 配下のイベントアイコンを横並びで表示
   - ReactFlowのカスタムノードとして登録
 
-### 3. フロントエンド実装（編集UI）⭐ **未実装**
+### 3. フロントエンド実装（編集UI）✅ **完了**
 
-- [ ] **SceneEventFormコンポーネント作成** (`packages/ui/src/scene/SceneEventForm.tsx`)
-  - イベントタイプ選択（select/radio）
+- [x] **SceneEventFormコンポーネント作成** (`packages/ui/src/scene/SceneEventForm.tsx`)
+  - イベントタイプ選択（select）
   - イベント内容入力（textarea）
   - 保存・キャンセルボタン
+  - バリデーション（内容が空の場合のエラー表示）
 
-- [ ] **SceneFormにイベント管理セクション追加** (`packages/ui/src/scene/SceneForm.tsx`)
+- [x] **SceneFormにイベント管理セクション追加** (`packages/ui/src/scene/SceneForm.tsx`)
+  - SceneEventsSection コンポーネントを作成
   - イベント一覧表示（各イベントのアイコン、タイプ、内容）
   - イベント追加ボタン → SceneEventFormを開く
   - 各イベントの編集ボタン → SceneEventFormを開く
   - 各イベントの削除ボタン
-  - イベント順序変更UI（上下ボタンまたはドラッグ&ドロップ）
+  - イベント順序変更UI（上下ボタン）
 
-- [ ] **useSceneEventOperations Hook作成** (`apps/frontend/src/entities/sceneEvent/hooks/useSceneEventOperations.ts`)
+- [x] **useSceneEventOperations Hook作成** (`apps/frontend/src/entities/sceneEvent/hooks/useSceneEventOperations.ts`)
   - Redux actionsをラップ
   - イベント追加・更新・削除・順序変更の操作を提供
+  - moveEventUp/moveEventDown ヘルパーメソッド実装
 
 - [ ] **SceneEditor統合** (`packages/ui/src/scene/SceneEditor.tsx`)
   - SceneFormにイベント管理機能を統合
@@ -115,10 +118,10 @@ CREATE REL TABLE HAS_EVENT (
   - WithEvents: イベント付きシーンのフロー
   - WithEventsComplexFlow: 複雑な分岐を持つイベント付きフロー
 
-- [ ] **SceneEventFormストーリー作成** (`packages/ui/src/scene/SceneEventForm.stories.tsx`)
+- [x] **SceneEventFormストーリー作成** (`packages/ui/src/scene/SceneEventForm.stories.tsx`)
   - 新規作成モード
-  - 編集モード
-  - バリデーションエラー表示
+  - 編集モード（会話・戦闘・選択肢）
+  - 全イベントタイプのプレビュー
 
 ### 5. テスト・検証
 
