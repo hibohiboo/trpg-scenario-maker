@@ -14,6 +14,7 @@ const EVENT_TYPE_OPTIONS: {
   { value: 'start', label: 'スタート' },
   { value: 'conversation', label: '会話' },
   { value: 'choice', label: '選択肢' },
+  { value: 'skill_check', label: '判定' },
   { value: 'battle', label: '戦闘' },
   { value: 'treasure', label: '宝箱' },
   { value: 'trap', label: '罠' },
@@ -40,8 +41,7 @@ export const SceneEventForm: React.FC<SceneEventFormProps> = ({
     }
   }, [event]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     setError('');
 
     if (!content.trim()) {
@@ -53,7 +53,7 @@ export const SceneEventForm: React.FC<SceneEventFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="space-y-4">
       <div>
         <label
           htmlFor="event-type"
@@ -102,12 +102,13 @@ export const SceneEventForm: React.FC<SceneEventFormProps> = ({
           キャンセル
         </button>
         <button
-          type="submit"
+          type="button"
+          onClick={handleSubmit}
           className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
           {event ? '更新' : '追加'}
         </button>
       </div>
-    </form>
+    </div>
   );
 };

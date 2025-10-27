@@ -4,6 +4,7 @@ const SceneEventTypeSchema = v.picklist([
   'start',
   'conversation',
   'choice',
+  'skill_check',
   'battle',
   'treasure',
   'trap',

@@ -11,6 +11,7 @@ export default function Page() {
     id,
     scenes,
     connections,
+    events,
     isLoading,
     error,
     isFormOpen,
@@ -21,6 +22,11 @@ export default function Page() {
     handleAddConnection,
     handleUpdateConnection,
     handleDeleteConnection,
+    handleAddEvent,
+    handleUpdateEvent,
+    handleDeleteEvent,
+    handleMoveEventUp,
+    handleMoveEventDown,
     handleOpenForm,
     handleCloseForm,
     handleEditScene,
@@ -45,6 +51,7 @@ export default function Page() {
         scenarioId={id}
         scenes={scenes}
         connections={connections}
+        events={events}
         isFormOpen={isFormOpen}
         editingScene={editingScene}
         onAddScene={handleAddScene}
@@ -53,6 +60,11 @@ export default function Page() {
         onAddConnection={handleAddConnection}
         onUpdateConnection={handleUpdateConnection}
         onDeleteConnection={handleDeleteConnection}
+        onAddEvent={handleAddEvent}
+        onUpdateEvent={handleUpdateEvent}
+        onDeleteEvent={handleDeleteEvent}
+        onMoveEventUp={handleMoveEventUp}
+        onMoveEventDown={handleMoveEventDown}
         onOpenForm={handleOpenForm}
         onCloseForm={handleCloseForm}
         onEditScene={handleEditScene}

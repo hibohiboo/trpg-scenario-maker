@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from '@storybook/test';
+import type { SceneEvent } from '@trpg-scenario-maker/schema';
 import { useState } from 'react';
 import { SceneEditor } from './SceneEditor';
 import type { Scene, SceneConnection } from './types';
@@ -76,6 +77,15 @@ export const Default: Story = {
     const [scenes, setScenes] = useState<Scene[]>(initialScenes);
     const [connections, setConnections] =
       useState<SceneConnection[]>(initialConnections);
+    const [events, setEvents] = useState<Record<string, SceneEvent[]>>({
+      '1': [
+        { id: 'e1', type: 'conversation', content: 'GMの説明: 酒場は賑わっている', sortOrder: 0 },
+        { id: 'e2', type: 'skill_check', content: '感知判定: DC10', sortOrder: 1 },
+      ],
+      '2': [
+        { id: 'e3', type: 'conversation', content: '険しい山道を進む', sortOrder: 0 },
+      ],
+    });
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [editingScene, setEditingScene] = useState<Scene | null>(null);
 
@@ -114,12 +124,66 @@ export const Default: Story = {
       setConnections(connections.filter((conn) => conn.id !== id));
     };
 
+    const handleAddEvent = (sceneId: string, eventData: { type: SceneEvent['type']; content: string }) => {
+      const newEvent: SceneEvent = {
+        id: `e${Date.now()}`,
+        type: eventData.type,
+        content: eventData.content,
+        sortOrder: events[sceneId]?.length || 0,
+      };
+      setEvents({
+        ...events,
+        [sceneId]: [...(events[sceneId] || []), newEvent],
+      });
+    };
+
+    const handleUpdateEvent = (sceneId: string, eventId: string, eventData: { type: SceneEvent['type']; content: string }) => {
+      setEvents({
+        ...events,
+        [sceneId]: events[sceneId]?.map((e) =>
+          e.id === eventId ? { ...e, ...eventData } : e
+        ) || [],
+      });
+    };
+
+    const handleDeleteEvent = (sceneId: string, eventId: string) => {
+      setEvents({
+        ...events,
+        [sceneId]: events[sceneId]?.filter((e) => e.id !== eventId) || [],
+      });
+    };
+
+    const handleMoveEventUp = (sceneId: string, eventId: string) => {
+      const sceneEvents = events[sceneId] || [];
+      const index = sceneEvents.findIndex((e) => e.id === eventId);
+      if (index <= 0) return;
+
+      const newEvents = [...sceneEvents];
+      [newEvents[index - 1], newEvents[index]] = [newEvents[index], newEvents[index - 1]];
+      const reorderedEvents = newEvents.map((e, i) => ({ ...e, sortOrder: i }));
+
+      setEvents({ ...events, [sceneId]: reorderedEvents });
+    };
+
+    const handleMoveEventDown = (sceneId: string, eventId: string) => {
+      const sceneEvents = events[sceneId] || [];
+      const index = sceneEvents.findIndex((e) => e.id === eventId);
+      if (index < 0 || index >= sceneEvents.length - 1) return;
+
+      const newEvents = [...sceneEvents];
+      [newEvents[index], newEvents[index + 1]] = [newEvents[index + 1], newEvents[index]];
+      const reorderedEvents = newEvents.map((e, i) => ({ ...e, sortOrder: i }));
+
+      setEvents({ ...events, [sceneId]: reorderedEvents });
+    };
+
     return (
       <div className="p-8">
         <SceneEditor
           scenarioId="sample-scenario"
           scenes={scenes}
           connections={connections}
+          events={events}
           isFormOpen={isFormOpen}
           editingScene={editingScene}
           onAddScene={handleAddScene}
@@ -128,6 +192,11 @@ export const Default: Story = {
           onAddConnection={handleAddConnection}
           onUpdateConnection={fn()}
           onDeleteConnection={handleDeleteConnection}
+          onAddEvent={handleAddEvent}
+          onUpdateEvent={handleUpdateEvent}
+          onDeleteEvent={handleDeleteEvent}
+          onMoveEventUp={handleMoveEventUp}
+          onMoveEventDown={handleMoveEventDown}
           onOpenForm={() => {
             setEditingScene(null);
             setIsFormOpen(true);
@@ -152,6 +221,7 @@ export const Empty: Story = {
     scenarioId: 'sample-scenario',
     scenes: [],
     connections: [],
+    events: {},
     isFormOpen: false,
     editingScene: null,
     onAddScene: fn(),
@@ -160,6 +230,11 @@ export const Empty: Story = {
     onAddConnection: fn(),
     onUpdateConnection: fn(),
     onDeleteConnection: fn(),
+    onAddEvent: fn(),
+    onUpdateEvent: fn(),
+    onDeleteEvent: fn(),
+    onMoveEventUp: fn(),
+    onMoveEventDown: fn(),
     onOpenForm: fn(),
     onCloseForm: fn(),
     onEditScene: fn(),
@@ -181,6 +256,19 @@ export const WithManyScenes: Story = {
       target: `${i + 2}`,
       order: i + 1,
     })),
+    events: {
+      '1': [
+        { id: 'e1', type: 'start', content: 'シナリオ開始', sortOrder: 0 },
+        { id: 'e2', type: 'conversation', content: '導入の説明', sortOrder: 1 },
+      ],
+      '3': [
+        { id: 'e3', type: 'battle', content: 'ゴブリン x3', sortOrder: 0 },
+      ],
+      '5': [
+        { id: 'e4', type: 'treasure', content: '宝箱を発見', sortOrder: 0 },
+        { id: 'e5', type: 'trap', content: '罠の判定', sortOrder: 1 },
+      ],
+    },
     isFormOpen: false,
     editingScene: null,
     onAddScene: fn(),
@@ -189,6 +277,11 @@ export const WithManyScenes: Story = {
     onAddConnection: fn(),
     onUpdateConnection: fn(),
     onDeleteConnection: fn(),
+    onAddEvent: fn(),
+    onUpdateEvent: fn(),
+    onDeleteEvent: fn(),
+    onMoveEventUp: fn(),
+    onMoveEventDown: fn(),
     onOpenForm: fn(),
     onCloseForm: fn(),
     onEditScene: fn(),
@@ -255,6 +348,23 @@ export const WithComplexFlow: Story = {
     const [scenes, setScenes] = useState<Scene[]>(complexScenes);
     const [connections, setConnections] =
       useState<SceneConnection[]>(complexConnections);
+    const [events, setEvents] = useState<Record<string, SceneEvent[]>>({
+      '1': [
+        { id: 'e1', type: 'start', content: '冒険の始まり', sortOrder: 0 },
+        { id: 'e2', type: 'choice', content: '選択: 森へ行くか、山へ行くか', sortOrder: 1 },
+      ],
+      '4': [
+        { id: 'e3', type: 'conversation', content: '妖精との会話', sortOrder: 0 },
+        { id: 'e4', type: 'puzzle', content: '妖精の謎かけ', sortOrder: 1 },
+      ],
+      '5': [
+        { id: 'e5', type: 'conversation', content: '賢者との会話', sortOrder: 0 },
+        { id: 'e6', type: 'skill_check', content: '知識判定: DC15', sortOrder: 1 },
+      ],
+      '7': [
+        { id: 'e7', type: 'ending', content: '物語の結末', sortOrder: 0 },
+      ],
+    });
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [editingScene, setEditingScene] = useState<Scene | null>(null);
 
@@ -264,6 +374,7 @@ export const WithComplexFlow: Story = {
           scenarioId="complex-scenario"
           scenes={scenes}
           connections={connections}
+          events={events}
           isFormOpen={isFormOpen}
           editingScene={editingScene}
           onAddScene={(scene) => {
@@ -290,6 +401,34 @@ export const WithComplexFlow: Story = {
           onDeleteConnection={(id) => {
             setConnections(connections.filter((c) => c.id !== id));
           }}
+          onAddEvent={(sceneId, eventData) => {
+            const newEvent: SceneEvent = {
+              id: `e${Date.now()}`,
+              type: eventData.type,
+              content: eventData.content,
+              sortOrder: events[sceneId]?.length || 0,
+            };
+            setEvents({
+              ...events,
+              [sceneId]: [...(events[sceneId] || []), newEvent],
+            });
+          }}
+          onUpdateEvent={(sceneId, eventId, eventData) => {
+            setEvents({
+              ...events,
+              [sceneId]: events[sceneId]?.map((e) =>
+                e.id === eventId ? { ...e, ...eventData } : e
+              ) || [],
+            });
+          }}
+          onDeleteEvent={(sceneId, eventId) => {
+            setEvents({
+              ...events,
+              [sceneId]: events[sceneId]?.filter((e) => e.id !== eventId) || [],
+            });
+          }}
+          onMoveEventUp={fn()}
+          onMoveEventDown={fn()}
           onOpenForm={() => {
             setEditingScene(null);
             setIsFormOpen(true);
