@@ -1,12 +1,23 @@
-import type { SceneConnection } from '@trpg-scenario-maker/schema/scene';
+import type { SceneConnection, Scene } from '@trpg-scenario-maker/schema/scene';
 
-export type { SceneConnection };
+export type { SceneConnection, Scene };
 
-export interface Scene {
+export type SceneEventType =
+  | 'start'
+  | 'conversation'
+  | 'choice'
+  | 'battle'
+  | 'treasure'
+  | 'trap'
+  | 'puzzle'
+  | 'rest'
+  | 'ending';
+
+export interface SceneEvent {
   id: string;
-  title: string;
-  description: string;
-  isMasterScene: boolean;
+  type: SceneEventType;
+  content: string;
+  sortOrder: number;
 }
 
 export interface SceneEditorProps {

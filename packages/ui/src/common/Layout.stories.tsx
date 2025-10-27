@@ -85,6 +85,10 @@ export const WithBackgroundColor: Story = {
 };
 
 export const MultipleLayouts: Story = {
+  args: {
+    className: '',
+    children: null,
+  },
   render: () => (
     <div className="space-y-8 bg-gray-100">
       <Layout className="bg-white shadow">

@@ -10,6 +10,11 @@ import {
   type OnNodesChange,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
+import { SceneNode } from './SceneNode';
+
+const nodeTypes = {
+  sceneNode: SceneNode,
+};
 
 interface FlowCanvasProps {
   nodes: Node[];
@@ -50,6 +55,7 @@ export function FlowCanvas({
       <ReactFlow
         nodes={nodes}
         edges={edges}
+        nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}

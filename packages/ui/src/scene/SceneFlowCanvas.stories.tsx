@@ -7,6 +7,7 @@ import {
   masterSceneHighlightScenes,
   sampleConnections,
   sampleScenes,
+  scenesWithEvents,
 } from './__fixtures__/scenes';
 import { SceneFlowCanvas } from './SceneFlowCanvas';
 
@@ -79,7 +80,7 @@ export const ComplexFlow: Story = {
   },
 };
 
-export const WithoutOrder: Story = {
+export const WithoutsortOrder: Story = {
   args: {
     scenes: sampleScenes.slice(0, 3),
     connections: [
@@ -109,5 +110,59 @@ export const MasterSceneHighlight: Story = {
   args: {
     scenes: masterSceneHighlightScenes,
     connections: masterSceneHighlightConnections,
+  },
+};
+
+export const WithEvents: Story = {
+  args: {
+    scenes: scenesWithEvents,
+    connections: sampleConnections,
+  },
+};
+
+export const WithEventsComplexFlow: Story = {
+  args: {
+    scenes: scenesWithEvents.concat([
+      {
+        id: '6',
+        title: '隠し通路',
+        description: '古城の隠された通路を発見',
+        isMasterScene: false,
+        events: [
+          {
+            id: 'e10',
+            type: 'puzzle',
+            content: '隠し扉の謎解き',
+            sortOrder: 0,
+          },
+          {
+            id: 'e11',
+            type: 'trap',
+            content: '魔法の罠',
+            sortOrder: 1,
+          },
+        ],
+      },
+      {
+        id: '7',
+        title: '宝物庫',
+        description: '隠された宝物を発見',
+        isMasterScene: false,
+        events: [
+          {
+            id: 'e12',
+            type: 'treasure',
+            content: '伝説の宝',
+            sortOrder: 0,
+          },
+        ],
+      },
+    ]),
+    connections: [
+      ...sampleConnections,
+      { id: '3-6', source: '3', target: '6' },
+      { id: '6-7', source: '6', target: '7' },
+      { id: '7-5', source: '7', target: '5' },
+    ],
   },
 };

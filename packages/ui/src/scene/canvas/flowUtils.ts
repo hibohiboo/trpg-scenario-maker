@@ -41,13 +41,13 @@ export const getLayoutedElements = (
 export const scenesToNodes = (
   scenes: Scene[],
   existingNodes?: Node[],
-): Node[] =>
+): Node<Scene>[] =>
   scenes.map((scene, index) => {
     const existingNode = existingNodes?.find((n) => n.id === scene.id);
     return {
       id: scene.id,
-      type: scene.isMasterScene ? 'input' : 'default',
-      data: { label: scene.title },
+      type: 'sceneNode',
+      data: scene,
       position: existingNode?.position || {
         x: 250 * (index % 3),
         y: 150 * Math.floor(index / 3),
