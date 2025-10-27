@@ -11,7 +11,7 @@ export default defineConfig([
     },
   },
   {
-    files: ['**/*.test.ts'],
+    files: ['**/*.test.ts', 'tests/*'],
     extends: [...customConfig],
     rules: {
       'no-console': 'off',

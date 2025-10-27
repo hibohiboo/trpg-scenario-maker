@@ -1,32 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
-import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
-import {
-  initializeWebDatabase,
-  initializeWebConnection,
-} from '../../tests/mock/helper.mjs';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { initializeDatabase, closeDatabase, executeQuery } from '../db';
 import { graphDbSchemas } from '../schemas';
 import { scenarioGraphRepository } from './scenarioRepository';
 import { sceneGraphRepository } from './sceneRepository';
 
-vi.mock('@kuzu/kuzu-wasm', async () => {
-  const { default: originalModule } = (await vi.importActual(
-    '@kuzu/kuzu-wasm',
-  )) as any;
-  return {
-    default: async () => {
-      const m = await originalModule();
-      const Database = () => initializeWebDatabase(m);
-      const Connection = (...args: [any, number]) =>
-        initializeWebConnection(m, ...args);
-      return {
-        ...m,
-        Database,
-        Connection,
-      };
-    },
-  };
-});
 describe('sceneGraphRepositoryでescapeCypherStringを通してマークダウンがパースできるかのテスト', () => {
   beforeAll(async () => {
     await initializeDatabase();

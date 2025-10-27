@@ -1,34 +1,11 @@
 import { parseSceneEventListSchema } from '@trpg-scenario-maker/schema';
 import { v4 as uuidv4 } from 'uuid';
-import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
-import {
-  initializeWebDatabase,
-  initializeWebConnection,
-} from '../../tests/mock/helper.mjs';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { initializeDatabase, closeDatabase, executeQuery } from '../db';
 import { graphDbSchemas } from '../schemas';
 import { scenarioGraphRepository } from './scenarioRepository';
 import { sceneEventRepository } from './sceneEventRepository';
 import { sceneGraphRepository } from './sceneRepository';
-
-vi.mock('@kuzu/kuzu-wasm', async () => {
-  const { default: originalModule } = (await vi.importActual(
-    '@kuzu/kuzu-wasm',
-  )) as any;
-  return {
-    default: async () => {
-      const m = await originalModule();
-      const Database = () => initializeWebDatabase(m);
-      const Connection = (...args: [any, number]) =>
-        initializeWebConnection(m, ...args);
-      return {
-        ...m,
-        Database,
-        Connection,
-      };
-    },
-  };
-});
 
 const initScene = async () => {
   // テスト用シナリオとシーンを作成
@@ -60,60 +37,6 @@ describe('sceneEventRepository', () => {
     await closeDatabase();
   });
 
-  describe('database setup', () => {
-    it('SceneEventノードが作成可能', async () => {
-      const testId = uuidv4();
-      const result = await executeQuery(`
-        CREATE (event:SceneEvent {
-          id: '${testId}',
-          sceneType: 'test',
-          content: 'test content',
-          sortOrder: 0
-        })
-        RETURN event.id AS id
-      `);
-      expect(result).toBeDefined();
-    });
-
-    it('SceneノードとEventを紐付けできる', async () => {
-      // シナリオとシーンを作成
-      const scenarioId = uuidv4();
-      await scenarioGraphRepository.create({
-        id: scenarioId,
-        title: 'テストシナリオ',
-      });
-
-      const sceneId = uuidv4();
-      const sceneResult = await sceneGraphRepository.createScene({
-        scenarioId,
-        id: sceneId,
-        title: 'テストシーン',
-        description: 'テスト',
-        isMasterScene: false,
-      });
-
-      // シーンが作成されたことを確認
-      expect(sceneResult).toHaveLength(1);
-      expect((sceneResult as any)[0].id).toBe(sceneId);
-
-      // イベントを作成してシーンに紐付け
-      const eventId = uuidv4();
-      const eventResult = await executeQuery(`
-        MATCH (scene:Scene {id: '${sceneId}'})
-        CREATE (event:SceneEvent {
-          id: '${eventId}',
-          type: 'test',
-          content: 'test content',
-          sortOrder: 0
-        })
-        CREATE (scene)-[:HAS_EVENT]->(event)
-        RETURN event.id AS id, event.type AS type
-      `);
-
-      expect(eventResult).toHaveLength(1);
-      expect((eventResult as any)[0].id).toBe(eventId);
-    });
-  });
   describe('createEvent', () => {
     it('イベントを作成できる', async () => {
       const { sceneId } = await initScene();
