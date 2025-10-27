@@ -1,4 +1,5 @@
 import dagre from '@dagrejs/dagre';
+import type { SceneEvent } from '@trpg-scenario-maker/schema';
 import type { Edge, Node } from '@xyflow/react';
 import type { Scene } from '../types';
 
@@ -41,13 +42,19 @@ export const getLayoutedElements = (
 export const scenesToNodes = (
   scenes: Scene[],
   existingNodes?: Node[],
+  events?: Record<string, SceneEvent[]>,
 ): Node<Scene>[] =>
   scenes.map((scene, index) => {
     const existingNode = existingNodes?.find((n) => n.id === scene.id);
+    const sceneEvents = events?.[scene.id];
+    const sceneWithEvents: Scene = sceneEvents
+      ? { ...scene, events: sceneEvents }
+      : scene;
+
     return {
       id: scene.id,
       type: 'sceneNode',
-      data: scene,
+      data: sceneWithEvents,
       position: existingNode?.position || {
         x: 250 * (index % 3),
         y: 150 * Math.floor(index / 3),

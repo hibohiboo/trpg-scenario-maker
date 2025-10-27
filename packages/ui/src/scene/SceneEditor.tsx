@@ -140,6 +140,7 @@ export function SceneEditor({
         <SceneFlowCanvas
           scenes={scenes}
           connections={connections}
+          events={events}
           onConnectionAdd={onAddConnection}
           onConnectionDelete={onDeleteConnection}
         />

@@ -1,3 +1,4 @@
+import type { SceneEvent } from '@trpg-scenario-maker/schema';
 import {
   useNodesState,
   useEdgesState,
@@ -17,6 +18,7 @@ import { getLayoutedElements, scenesToNodes } from './index';
 export interface SceneFlowCanvasProps {
   scenes: Scene[];
   connections: SceneConnection[];
+  events?: Record<string, SceneEvent[]>;
   onNodesChange?: (nodes: Scene[]) => void;
   onConnectionAdd?: (connection: Omit<SceneConnection, 'id'>) => void;
   onConnectionDelete?: (id: string) => void;
@@ -26,13 +28,14 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
   const {
     scenes,
     connections,
+    events,
     onNodesChange: onNodesUpdate,
     onConnectionAdd,
     onConnectionDelete,
   } = props;
   const [selectedScene, setSelectedScene] = useState<Scene | null>(null);
 
-  const initialNodes: Node[] = scenesToNodes(scenes);
+  const initialNodes: Node[] = scenesToNodes(scenes, undefined, events);
 
   const initialEdges: Edge[] = connections.map((conn) => ({
     id: conn.id,
@@ -58,9 +61,9 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
   );
 
   useEffect(() => {
-    const newNodes: Node[] = scenesToNodes(scenes, nodes);
+    const newNodes: Node[] = scenesToNodes(scenes, nodes, events);
     setNodes(newNodes);
-  }, [scenes, setNodes]);
+  }, [scenes, events, setNodes]);
 
   useEffect(() => {
     const newEdges: Edge[] = connections.map((conn) => ({
