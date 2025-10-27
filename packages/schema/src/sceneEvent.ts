@@ -12,7 +12,7 @@ const SceneEventTypeSchema = v.picklist([
   'ending',
 ]);
 
-const SceneEventSchema = v.object({
+export const SceneEventSchema = v.object({
   id: v.string(),
   type: SceneEventTypeSchema,
   content: v.string(),
