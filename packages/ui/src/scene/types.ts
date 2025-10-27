@@ -1,29 +1,18 @@
+import type {
+  SceneEvent,
+  SceneEventType as SchemaSceneEventType,
+} from '@trpg-scenario-maker/schema';
 import type { SceneConnection, Scene } from '@trpg-scenario-maker/schema/scene';
 
-export type { SceneConnection, Scene };
+export type { SceneConnection, Scene, SceneEvent };
 
-export type SceneEventType =
-  | 'start'
-  | 'conversation'
-  | 'choice'
-  | 'battle'
-  | 'treasure'
-  | 'trap'
-  | 'puzzle'
-  | 'rest'
-  | 'ending';
-
-export interface SceneEvent {
-  id: string;
-  type: SceneEventType;
-  content: string;
-  sortOrder: number;
-}
+export type SceneEventType = SchemaSceneEventType;
 
 export interface SceneEditorProps {
   scenarioId: string;
   scenes: Scene[];
   connections: SceneConnection[];
+  events?: Record<string, SceneEvent[]>;
   isFormOpen: boolean;
   editingScene: Scene | null;
   onAddScene: (scene: Omit<Scene, 'id'>) => void;
@@ -35,6 +24,18 @@ export interface SceneEditorProps {
     connection: Partial<SceneConnection>,
   ) => void;
   onDeleteConnection: (id: string) => void;
+  onAddEvent?: (
+    sceneId: string,
+    eventData: { type: SceneEventType; content: string },
+  ) => void;
+  onUpdateEvent?: (
+    sceneId: string,
+    eventId: string,
+    eventData: { type: SceneEventType; content: string },
+  ) => void;
+  onDeleteEvent?: (sceneId: string, eventId: string) => void;
+  onMoveEventUp?: (sceneId: string, eventId: string) => void;
+  onMoveEventDown?: (sceneId: string, eventId: string) => void;
   onOpenForm: () => void;
   onCloseForm: () => void;
   onEditScene: (scene: Scene) => void;

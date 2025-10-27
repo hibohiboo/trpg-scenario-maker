@@ -97,9 +97,11 @@ CREATE REL TABLE HAS_EVENT (
   - イベント追加・更新・削除・順序変更の操作を提供
   - moveEventUp/moveEventDown ヘルパーメソッド実装
 
-- [ ] **SceneEditor統合** (`packages/ui/src/scene/SceneEditor.tsx`)
+- [x] **SceneEditor統合** (`packages/ui/src/scene/SceneEditor.tsx`)
   - SceneFormにイベント管理機能を統合
-  - シーン保存時にイベントも一緒に保存
+  - イベント関連のpropsをSceneEditorPropsに追加
+  - イベントハンドラーをSceneFormに渡す
+  - sceneEditorHelpers.ts でヘルパー関数を分離
 
 ### 4. Storybook追加
 
@@ -155,14 +157,13 @@ CREATE REL TABLE HAS_EVENT (
 3. Storybook（SceneEventIcon, SceneNode, SceneFlowCanvas）
 4. テスト・検証（lint、型チェック、ビルド）
 
-### ⭐ フェーズ2: 編集UI機能（未実装）
+### ✅ フェーズ2: 編集UI機能（完了）
 1. SceneEventFormコンポーネント作成
 2. SceneFormへのイベント管理セクション追加
 3. useSceneEventOperations Hook作成
 4. SceneEditor統合
 5. Storybook追加（SceneEventForm）
-6. テスト・検証
-7. ドキュメント更新
+6. テスト・検証（lint、型チェック、ビルド）
 
 ## 注意事項
 

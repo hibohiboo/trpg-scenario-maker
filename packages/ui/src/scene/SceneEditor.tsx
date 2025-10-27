@@ -1,12 +1,23 @@
 import { Button, Modal } from '..';
+import { createEventHandlers } from './sceneEditorHelpers';
 import { SceneFlowCanvas } from './SceneFlowCanvas';
 import { SceneForm } from './SceneForm';
 import type { SceneEditorProps, Scene } from './types';
+
+const getSceneEvents = ({
+  editingScene,
+  events,
+}: Pick<SceneEditorProps, 'editingScene' | 'events'>) =>
+  editingScene && events ? events[editingScene.id] : undefined;
+
+const getTitle = ({ editingScene }: Pick<SceneEditorProps, 'editingScene'>) =>
+  editingScene ? 'シーンを編集' : '新しいシーンを作成';
 
 export function SceneEditor({
   scenarioId: _scenarioId,
   scenes,
   connections,
+  events,
   isFormOpen,
   editingScene,
   onAddScene,
@@ -14,6 +25,11 @@ export function SceneEditor({
   onDeleteScene,
   onAddConnection,
   onDeleteConnection,
+  onAddEvent,
+  onUpdateEvent,
+  onDeleteEvent,
+  onMoveEventUp,
+  onMoveEventDown,
   onOpenForm,
   onCloseForm,
   onEditScene,
@@ -30,6 +46,17 @@ export function SceneEditor({
     }
   };
 
+  const sceneEvents = getSceneEvents({ editingScene, events });
+
+  const eventHandlers = createEventHandlers(
+    editingScene,
+    onAddEvent,
+    onUpdateEvent,
+    onDeleteEvent,
+    onMoveEventUp,
+    onMoveEventDown,
+  );
+  const title = getTitle({ editingScene });
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -39,25 +66,24 @@ export function SceneEditor({
         </Button>
       </div>
 
-      <Modal
-        isOpen={isFormOpen}
-        onClose={onCloseForm}
-        title={editingScene ? 'シーンを編集' : '新しいシーンを作成'}
-        size="md"
-      >
+      <Modal isOpen={isFormOpen} onClose={onCloseForm} title={title} size="lg">
         {isFormOpen && (
           <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-            <h3 className="mb-4 text-lg font-semibold">
-              {editingScene ? 'シーンを編集' : '新しいシーンを作成'}
-            </h3>
+            <h3 className="mb-4 text-lg font-semibold">{title}</h3>
             <SceneForm
               scene={editingScene ?? undefined}
               scenes={scenes}
               connections={connections}
+              events={sceneEvents}
               onSubmit={editingScene ? handleUpdateScene : handleAddScene}
               onCancel={onCloseForm}
               onConnectionDelete={onDeleteConnection}
               onConnectionAdd={onAddConnection}
+              onEventAdd={eventHandlers.handleAddEvent}
+              onEventUpdate={eventHandlers.handleUpdateEvent}
+              onEventDelete={eventHandlers.handleDeleteEvent}
+              onEventMoveUp={eventHandlers.handleMoveEventUp}
+              onEventMoveDown={eventHandlers.handleMoveEventDown}
             />
           </div>
         )}
