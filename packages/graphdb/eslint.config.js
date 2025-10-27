@@ -17,6 +17,9 @@ export default defineConfig([
       'no-console': 'off',
       'import/no-extraneous-dependencies': ['off'],
       '@typescript-eslint/no-explicit-any': ['off'],
+      'no-restricted-syntax': ['off'],
+      'no-await-in-loop': ['off'],
+      'no-plusplus': ['off'],
     },
   },
   {

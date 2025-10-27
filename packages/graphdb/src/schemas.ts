@@ -20,6 +20,17 @@ export const graphDbSchemas = {
         PRIMARY KEY (id)
       )`,
     },
+    {
+      name: 'SceneEvent',
+      query: `
+      CREATE NODE TABLE SceneEvent (
+        id STRING,
+        type STRING,
+        content STRING,
+        sortOrder INT64,
+        PRIMARY KEY (id)
+      )`,
+    },
   ],
   relationships: [
     {
@@ -34,6 +45,13 @@ export const graphDbSchemas = {
       query: `
       CREATE REL TABLE NEXT_SCENE (
         FROM Scene TO Scene
+      )`,
+    },
+    {
+      name: 'HAS_EVENT',
+      query: `
+      CREATE REL TABLE HAS_EVENT (
+        FROM Scene TO SceneEvent
       )`,
     },
   ],

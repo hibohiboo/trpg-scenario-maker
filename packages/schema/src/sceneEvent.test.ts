@@ -9,7 +9,7 @@ describe('SceneEvent Schema', () => {
         id: 'event-1',
         type: 'start',
         content: 'シーン開始',
-        order: 0,
+        sortOrder: 0,
       };
 
       const result = parseSceneEventSchema(validEvent);
@@ -36,7 +36,7 @@ describe('SceneEvent Schema', () => {
           id: `event-${index}`,
           type,
           content: `${type}イベント`,
-          order: index,
+          sortOrder: index,
         };
 
         const result = parseSceneEventSchema(event);
@@ -46,16 +46,16 @@ describe('SceneEvent Schema', () => {
     });
 
     it.each([
-      { order: 0, description: '0' },
-      { order: 1, description: '1' },
-      { order: 10, description: '10' },
-      { order: 100, description: '100' },
-    ])('orderが$descriptionの場合は成功', ({ order }) => {
+      { sortOrder: 0, description: '0' },
+      { sortOrder: 1, description: '1' },
+      { sortOrder: 10, description: '10' },
+      { sortOrder: 100, description: '100' },
+    ])('sortOrderが$descriptionの場合は成功', ({ sortOrder }) => {
       const event = {
         id: 'event-1',
         type: 'start' as SceneEventType,
         content: 'テスト',
-        order,
+        sortOrder,
       };
 
       expect(() => parseSceneEventSchema(event)).not.toThrow();
@@ -66,7 +66,7 @@ describe('SceneEvent Schema', () => {
         id: 123,
         type: 'start',
         content: 'テスト',
-        order: 0,
+        sortOrder: 0,
       };
 
       expect(() => parseSceneEventSchema(invalidEvent)).toThrow();
@@ -77,7 +77,7 @@ describe('SceneEvent Schema', () => {
         id: 'event-1',
         type: 'invalid-type',
         content: 'テスト',
-        order: 0,
+        sortOrder: 0,
       };
 
       expect(() => parseSceneEventSchema(invalidEvent)).toThrow();
@@ -88,29 +88,29 @@ describe('SceneEvent Schema', () => {
         id: 'event-1',
         type: 'start',
         content: 123,
-        order: 0,
+        sortOrder: 0,
       };
 
       expect(() => parseSceneEventSchema(invalidEvent)).toThrow();
     });
 
-    it('orderが負の数の場合はエラー', () => {
+    it('sortOrderが負の数の場合はエラー', () => {
       const invalidEvent = {
         id: 'event-1',
         type: 'start',
         content: 'テスト',
-        order: -1,
+        sortOrder: -1,
       };
 
       expect(() => parseSceneEventSchema(invalidEvent)).toThrow();
     });
 
-    it('orderが整数でない場合はエラー', () => {
+    it('sortOrderが整数でない場合はエラー', () => {
       const invalidEvent = {
         id: 'event-1',
         type: 'start',
         content: 'テスト',
-        order: 1.5,
+        sortOrder: 1.5,
       };
 
       expect(() => parseSceneEventSchema(invalidEvent)).toThrow();
@@ -121,7 +121,7 @@ describe('SceneEvent Schema', () => {
         id: 'event-1',
         type: 'start',
         // content が欠けている
-        order: 0,
+        sortOrder: 0,
       };
 
       expect(() => parseSceneEventSchema(incompleteEvent)).toThrow();
@@ -132,7 +132,7 @@ describe('SceneEvent Schema', () => {
         id: 'event-1',
         type: 'start',
         content: '',
-        order: 0,
+        sortOrder: 0,
       };
 
       expect(() => parseSceneEventSchema(event)).not.toThrow();
@@ -148,7 +148,7 @@ describe('SceneEvent Schema', () => {
         id: 'event-1',
         type: 'start',
         content: 'テスト',
-        order: 0,
+        sortOrder: 0,
         extraField: 'extra value',
       };
 
@@ -176,7 +176,7 @@ describe('SceneEvent Schema', () => {
           id: 'event-1',
           type,
           content: 'テスト',
-          order: 0,
+          sortOrder: 0,
         };
 
         expect(() => parseSceneEventSchema(event)).not.toThrow();
@@ -190,7 +190,7 @@ describe('SceneEvent Schema', () => {
         id: 'battle-001',
         type: 'battle',
         content: 'ドラゴンとの戦闘',
-        order: 0,
+        sortOrder: 0,
       };
 
       const result = parseSceneEventSchema(battleEvent);
@@ -203,7 +203,7 @@ describe('SceneEvent Schema', () => {
         id: 'conv-001',
         type: 'conversation',
         content: 'マスターとの会話：依頼内容を聞く',
-        order: 1,
+        sortOrder: 1,
       };
 
       const result = parseSceneEventSchema(conversationEvent);
@@ -216,7 +216,7 @@ describe('SceneEvent Schema', () => {
         id: 'choice-001',
         type: 'choice',
         content: '依頼を受けるか断るか',
-        order: 2,
+        sortOrder: 2,
       };
 
       const result = parseSceneEventSchema(choiceEvent);
@@ -230,25 +230,25 @@ describe('SceneEvent Schema', () => {
           id: 'e1',
           type: 'start',
           content: 'シーン開始',
-          order: 0,
+          sortOrder: 0,
         },
         {
           id: 'e2',
           type: 'conversation',
           content: '会話',
-          order: 1,
+          sortOrder: 1,
         },
         {
           id: 'e3',
           type: 'battle',
           content: '戦闘',
-          order: 2,
+          sortOrder: 2,
         },
         {
           id: 'e4',
           type: 'ending',
           content: '終了',
-          order: 3,
+          sortOrder: 3,
         },
       ];
 
@@ -257,9 +257,9 @@ describe('SceneEvent Schema', () => {
       });
 
       // 順序が正しいか確認
-      expect(events[0].order).toBeLessThan(events[1].order);
-      expect(events[1].order).toBeLessThan(events[2].order);
-      expect(events[2].order).toBeLessThan(events[3].order);
+      expect(events[0].sortOrder).toBeLessThan(events[1].sortOrder);
+      expect(events[1].sortOrder).toBeLessThan(events[2].sortOrder);
+      expect(events[2].sortOrder).toBeLessThan(events[3].sortOrder);
     });
   });
 });

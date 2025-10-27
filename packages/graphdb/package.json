@@ -21,6 +21,7 @@
     "uuid": "^13.0.0"
   },
   "dependencies": {
+    "@trpg-scenario-maker/schema": "workspace:*",
     "@kuzu/kuzu-wasm": "^0.7.0"
   }
 }

@@ -10,3 +10,4 @@ export {
   parseToScenarioString,
   parseToScenario,
 } from './scenario';
+export * from './sceneEvent';
