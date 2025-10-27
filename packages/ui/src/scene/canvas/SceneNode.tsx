@@ -1,4 +1,4 @@
-import { parseSceneSchema } from '@trpg-scenario-maker/schema';
+import { safeParseSceneSchema } from '@trpg-scenario-maker/schema';
 import { Handle, Position } from '@xyflow/react';
 import type { NodeProps } from '@xyflow/react';
 import { memo } from 'react';
@@ -9,7 +9,12 @@ import { SceneEventIcon } from '../SceneEventIcon';
  * シーンのタイトルとイベントアイコンを表示
  */
 export const SceneNode = memo((props: NodeProps) => {
-  const data = parseSceneSchema(props.data);
+  const result = safeParseSceneSchema(props.data);
+  if (!result.success) {
+    console.debug('SceneNode parse failed:', props.data);
+    return <></>;
+  }
+  const data = result.output;
   const hasEvents = data.events && data.events.length > 0;
 
   return (

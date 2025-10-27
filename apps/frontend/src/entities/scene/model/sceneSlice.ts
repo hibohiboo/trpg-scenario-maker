@@ -72,6 +72,7 @@ export const sceneSlice = createSlice({
       })
       .addCase(readScenesAction.rejected, (state, action) => {
         state.isLoading = false;
+        console.warn(action.type, action);
         state.error = action.error.message || 'Failed to load scenes';
       });
 

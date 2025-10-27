@@ -9,6 +9,7 @@ import {
 } from '@trpg-scenario-maker/graphdb';
 import { scenarioGraphHandlers } from '@/entities/scenario/workers/scenarioGraphHandlers';
 import { sceneGraphHandlers } from '@/entities/scene/workers/sceneGraphHandlers';
+import { sceneEventHandlers } from '@/entities/sceneEvent/workers/sceneEventHandlers';
 
 // リクエスト/レスポンス型
 export interface GraphDBWorkerRequest {
@@ -114,6 +115,11 @@ scenarioGraphHandlers.forEach(({ type, handler }) => {
 
 // シーングラフハンドラーを登録
 sceneGraphHandlers.forEach(({ type, handler }) => {
+  handlers.set(type, handler);
+});
+
+// シーンイベントハンドラーを登録
+sceneEventHandlers.forEach(({ type, handler }) => {
   handlers.set(type, handler);
 });
 
