@@ -5,3 +5,5 @@ export { ErrorMessage } from './ErrorMessage';
 export { Layout } from './Layout';
 export { Modal } from './Modal';
 export type { ModalProps } from './Modal';
+export { Tabs } from './Tabs';
+export type { Tab, TabsProps } from './Tabs';
