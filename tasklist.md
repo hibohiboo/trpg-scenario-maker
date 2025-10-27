@@ -9,7 +9,7 @@ CREATE NODE TABLE SceneEvent (
     id STRING,
     type STRING,          -- "start" | "conversation" | "choice" | "battle" | ...
     content STRING,
-    order INT64,
+    sortOrder INT64,
     PRIMARY KEY (id)
 );
 
@@ -166,4 +166,4 @@ CREATE REL TABLE HAS_EVENT (
 - 改行コードは全てLFで統一
 - TypeScript型安全性を維持
 - 既存のScene機能に影響を与えないよう注意
-- イベントの順序管理（order）を適切に実装
+- イベントの順序管理（sortOrder）を適切に実装
