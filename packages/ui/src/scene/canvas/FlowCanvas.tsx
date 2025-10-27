@@ -51,6 +51,12 @@ export function FlowCanvas({
           width: 14px !important;
           height: 14px !important;
         }
+
+        /* 選択されたエッジのスタイル */
+        .react-flow__edge.selected path {
+          stroke: #ef4444 !important;
+          stroke-width: 3px !important;
+        }
       `}</style>
       <ReactFlow
         nodes={nodes}
