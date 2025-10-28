@@ -43,13 +43,7 @@ export const SceneEventForm: React.FC<SceneEventFormProps> = ({
 
   const handleSubmit = () => {
     setError('');
-
-    if (!content.trim()) {
-      setError('イベント内容を入力してください');
-      return;
-    }
-
-    onSave({ type, content: content.trim() });
+    onSave({ type, content });
   };
 
   return (
