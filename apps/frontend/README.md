@@ -71,12 +71,119 @@ src/
 │       ├── api/
 │       │   ├── scenarioApi.ts           # RDB API層（Worker呼び出し）
 │       │   └── scenarioGraphApi.ts      # GraphDB API層（Worker呼び出し）
-│       └── store/
-│           ├── scenarioSlice.ts         # Redux Slice
-│           └── scenarioActions.ts       # Async Thunks
+│       ├── store/
+│       │   ├── scenarioSlice.ts         # Redux Slice
+│       │   └── scenarioActions.ts       # Async Thunks
+│       └── actions/
+│           └── scenarioActions.ts       # 同期的なアクション
+│
+├── page/                       # ページコンポーネント
+│   └── scenarioDetail/
+│       ├── index.tsx          # ページコンポーネント
+│       ├── loader.ts          # React Routerのloaderロジック
+│       └── hooks/
+│           └── useScenarioDetailPage.ts
+│
+├── app/
+│   └── routes/
+│       └── index.tsx          # ルーティング定義
 │
 └── main.tsx                    # エントリポイント（Worker初期化）
 ```
+
+## React Routerのloaderパターン
+
+このアプリケーションでは、React Routerの`loader`機能を使用してページ遷移前にデータを取得します。loaderロジックは各ページディレクトリに配置し、ルーティング定義ファイルをシンプルに保ちます。
+
+### loaderの配置パターン
+
+**推奨パターン: ページと同じディレクトリ内**
+
+```
+page/scenarioDetail/
+├── index.tsx          # ページコンポーネント
+├── loader.ts          # loader関数（ページ専用のデータ取得ロジック）
+└── hooks/
+    └── useScenarioDetailPage.ts
+```
+
+### 実装例
+
+**loader定義 ([page/scenarioDetail/loader.ts](src/page/scenarioDetail/loader.ts)):**
+
+```typescript
+import type { LoaderFunctionArgs } from 'react-router';
+import { store } from '@/app/store';
+import { readScenarioAction } from '@/entities/scenario/actions/scenarioActions';
+
+export const scenarioDetailLoader = async ({ params }: LoaderFunctionArgs) => {
+  // 必要に応じてストアからデータを取得
+  let state = store.getState();
+  if (state.scenario.scenarios.length === 0) {
+    await store.dispatch(readScenarioAction());
+    state = store.getState();
+  }
+
+  // パラメータからデータを検索
+  const existingScenario = state.scenario.scenarios.find(
+    (s) => s.id === params.id,
+  );
+  if (!existingScenario) {
+    throw new Error('シナリオが見つかりません');
+  }
+
+  return existingScenario;
+};
+```
+
+**ルーティング定義 ([app/routes/index.tsx](src/app/routes/index.tsx)):**
+
+```typescript
+import { scenarioDetailLoader } from '@/page/scenarioDetail/loader';
+
+export const createRouter = () =>
+  createBrowserRouter([
+    {
+      path: '/scenario/:id',
+      element: <ScenarioDetailPage />,
+      loader: scenarioDetailLoader, // loader関数を参照
+    },
+  ]);
+```
+
+**ページコンポーネントでの利用 ([page/scenarioDetail/hooks/useScenarioDetailPage.ts](src/page/scenarioDetail/hooks/useScenarioDetailPage.ts)):**
+
+```typescript
+import { useLoaderData } from 'react-router';
+
+export const useScenarioDetailPage = () => {
+  // loaderから取得したデータを利用
+  const data = useLoaderData();
+
+  useEffect(() => {
+    // loaderで取得したデータを使った初期化処理
+    scenarioGraphApi.create(data);
+  }, [data]);
+
+  // ...
+};
+```
+
+### loaderのメリット
+
+1. **データ取得の分離**: ルーティング定義がシンプルに保たれる
+2. **ページ遷移前のデータ取得**: ページ表示前にデータが準備される
+3. **エラーハンドリング**: loader内でエラーを投げることでエラーページに遷移可能
+4. **テスタビリティ**: loader関数を独立してテスト可能
+5. **型安全性**: `LoaderFunctionArgs`による型チェック
+
+### 配置パターンの選択基準
+
+| パターン | 適用ケース |
+|---------|-----------|
+| **ページディレクトリ内** | ページ専用のloaderロジック（推奨） |
+| **entitiesディレクトリ内** | 複数ページで共通利用するloaderロジック |
+| **routesディレクトリ内** | ルーティング関連ロジックを集約したい場合 |
 
 ## Web Workerアーキテクチャ詳細
 
