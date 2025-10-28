@@ -1,7 +1,7 @@
 import { Button, Modal, Tabs } from '..';
 import type { Tab } from '..';
 import { createEventHandlers } from './sceneEditorHelpers';
-import { SceneEventIcon } from './SceneEventIcon';
+import { SceneEventIcon } from './sceneEvent';
 import { SceneFlowCanvas } from './SceneFlowCanvas';
 import { SceneForm } from './SceneForm';
 import type { SceneEditorProps, Scene } from './types';

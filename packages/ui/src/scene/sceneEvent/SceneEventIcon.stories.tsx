@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { SceneEventType } from '../types';
 import { SceneEventIcon } from './SceneEventIcon';
-import type { SceneEventType } from './types';
 
 const meta = {
   title: 'Scene/SceneEventIcon',

@@ -8,8 +8,7 @@ import {
   FaArrowDown,
 } from 'react-icons/fa';
 import { Button } from '../../common';
-import { SceneEventForm } from '../SceneEventForm';
-import { SceneEventIcon } from '../SceneEventIcon';
+import { SceneEventForm, SceneEventIcon } from '../sceneEvent';
 
 export interface SceneEventsSectionProps {
   events: SceneEvent[];
