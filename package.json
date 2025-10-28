@@ -6,7 +6,10 @@
     "build": "bunx --bun turbo build",
     "lint": "turbo lint",
     "ncu": "turbo ncu --force && ncu -u",
-    "test": "vitest"
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:report": "vitest run --reporter=html --reporter=json",
+    "test:report-view": "vite preview --outDir test-results"
   },
   "turbo": {
     "pipeline": {
@@ -28,6 +31,8 @@
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "@vitejs/plugin-react": "^5.1.0",
+    "@vitest/coverage-v8": "^4.0.4",
+    "@vitest/ui": "^4.0.4",
     "babel-plugin-react-compiler": "^19.1.0-rc.3",
     "prettier": "^3.6.2",
     "turbo": "^2.5.8",

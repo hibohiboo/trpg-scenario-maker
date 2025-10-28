@@ -6,4 +6,9 @@ dist
 npm-cache
 *.tsbuildinfo
 tsconfig.tsbuildinfo
-node_modules
+
+# Test reports
+coverage
+test-results
+playwright-report
+test-report

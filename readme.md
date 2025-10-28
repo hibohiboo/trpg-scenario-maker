@@ -147,9 +147,46 @@ bun run lint
 
 ### テスト実行
 
+このプロジェクトはVitestを使用してユニットテストを実行します。モノレポ全体のテストを一括で管理できます。
+
 ```bash
-bun run test
+# 全パッケージのテストを実行
+bun test
+
+# UIモードでテストを実行（ブラウザで確認）
+bun test:ui
+
+
+# HTMLレポートを生成
+bun test:report
+# → bun run test:report-view を行い、 http://localhost:4173/ をブラウザで開く
 ```
+
+#### テスト設定
+
+- **[vitest.config.ts](vitest.config.ts)**: ルートレベルのVitest設定
+  - `projects: ['packages/*']` でpackages配下の全プロジェクトを自動検出
+  - カバレッジレポート: HTML、JSON、LCOV形式で出力
+  - 各パッケージの `vitest.config.ts` で個別設定（jsdom環境、setupFilesなど）
+
+#### E2Eテスト（BDD）
+
+フロントエンドのE2EテストはCucumber + Playwrightで実装されています。
+
+```bash
+cd apps/frontend
+
+# Playwrightブラウザをインストール（初回のみ）
+bunx playwright install chromium
+
+# 開発サーバーを起動（別ターミナル）
+bun run dev
+
+# E2Eテストを実行
+bun run test:e2e
+```
+
+テストシナリオは [apps/frontend/tests/features/](apps/frontend/tests/features/) に配置されています。
 
 ### 依存関係の更新
 
@@ -308,6 +345,7 @@ GraphDBのデータはCSV形式でIndexedDBに保存されます。WebWorker内�
 #### パース実施箇所
 
 1. **Worker ハンドラー**: Web Worker受信時に `payload` をパース
+
    ```typescript
    // 悪い例: 型アサーション使用
    const { sceneId } = payload as { sceneId: string };
@@ -317,6 +355,7 @@ GraphDBのデータはCSV形式でIndexedDBに保存されます。WebWorker内�
    ```
 
 2. **API レスポンス**: DBからの取得データをパース
+
    ```typescript
    const scenes = parseSceneListSchema(result);
    ```
@@ -345,17 +384,20 @@ GraphDBのデータはCSV形式でIndexedDBに保存されます。WebWorker内�
 #### シーン編集画面のレイアウト戦略
 
 **PC・タブレット（768px以上）**:
+
 - シーン一覧とシーンフローを横並びで表示（1:3の割合）
 - シーンフローにより多くのスペースを割り当て、グラフの視認性を向上
 - `md:grid md:grid-cols-4` により、シーン一覧（1列）とシーンフロー（3列）を表示
 - 両方の情報を同時に確認可能
 
 **スマートフォン（768px未満）**:
+
 - タブ切り替えによる表示（「シーン一覧」「シーンフロー」タブ）
 - シーンフローは横幅が必要なため、全幅で表示することで操作性を向上
 - タブでコンテンツを切り替えることで、限られた画面を最大限に活用
 
 **実装のポイント**:
+
 ```typescript
 // PC: 横並び表示（1:3の割合）
 <div className="hidden md:grid md:grid-cols-4 md:gap-4">
@@ -406,8 +448,8 @@ React Flowを使用したシーン間の関係性を視覚的に表示・編集�
 - [x] シーングラフ基本機能実装
 - [x] シナリオフロー可視化機能（React Flow統合）
 - [x] シナリオフロー自動整列機能（dagre統合）
-- [ ] シーンイベント追加機能実装 ... current.tasklist.md参照
-- [ ] 基本的なシナリオエディタUI
+- [x] シーンイベント追加機能実装
+- [x] 基本的なシナリオエディタUI
 - [ ] キャラクター・場所・アイテム管理機能
 - [ ] データのエクスポート/インポート
 - [ ] テンプレート機能
