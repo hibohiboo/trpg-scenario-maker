@@ -46,9 +46,9 @@ jobs:
       - name: Unit Test
         run: bun run test:report
         working-directory: .
-      - name: Build Component Catalog
-        run: bun run build-storybook
-        working-directory: ./packages/ui
+      # - name: Build Component Catalog
+      #   run: bun run build-storybook
+      #   working-directory: ./packages/ui
       # e2e テストレポート
       - name: Install Playwright
         run: npx playwright install --with-deps chromium
