@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "type-check": "tsc -b",
-    "lint": "eslint . --fix",
+    "lint": "eslint . --fix && tsc -b ",
     "preview": "vite preview",
     "ncu": "ncu -u"
   },
