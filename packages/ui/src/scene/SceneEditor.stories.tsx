@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { fn } from '@storybook/test';
+import { fn } from 'storybook/test';
 import type { SceneEvent } from '@trpg-scenario-maker/schema';
 import { useState } from 'react';
 import { SceneEditor } from './SceneEditor';
@@ -79,11 +79,26 @@ export const Default: Story = {
       useState<SceneConnection[]>(initialConnections);
     const [events, setEvents] = useState<Record<string, SceneEvent[]>>({
       '1': [
-        { id: 'e1', type: 'conversation', content: 'GMの説明: 酒場は賑わっている', sortOrder: 0 },
-        { id: 'e2', type: 'skill_check', content: '感知判定: DC10', sortOrder: 1 },
+        {
+          id: 'e1',
+          type: 'conversation',
+          content: 'GMの説明: 酒場は賑わっている',
+          sortOrder: 0,
+        },
+        {
+          id: 'e2',
+          type: 'skill_check',
+          content: '感知判定: DC10',
+          sortOrder: 1,
+        },
       ],
       '2': [
-        { id: 'e3', type: 'conversation', content: '険しい山道を進む', sortOrder: 0 },
+        {
+          id: 'e3',
+          type: 'conversation',
+          content: '険しい山道を進む',
+          sortOrder: 0,
+        },
       ],
     });
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -124,7 +139,10 @@ export const Default: Story = {
       setConnections(connections.filter((conn) => conn.id !== id));
     };
 
-    const handleAddEvent = (sceneId: string, eventData: { type: SceneEvent['type']; content: string }) => {
+    const handleAddEvent = (
+      sceneId: string,
+      eventData: { type: SceneEvent['type']; content: string },
+    ) => {
       const newEvent: SceneEvent = {
         id: `e${Date.now()}`,
         type: eventData.type,
@@ -137,12 +155,17 @@ export const Default: Story = {
       });
     };
 
-    const handleUpdateEvent = (sceneId: string, eventId: string, eventData: { type: SceneEvent['type']; content: string }) => {
+    const handleUpdateEvent = (
+      sceneId: string,
+      eventId: string,
+      eventData: { type: SceneEvent['type']; content: string },
+    ) => {
       setEvents({
         ...events,
-        [sceneId]: events[sceneId]?.map((e) =>
-          e.id === eventId ? { ...e, ...eventData } : e
-        ) || [],
+        [sceneId]:
+          events[sceneId]?.map((e) =>
+            e.id === eventId ? { ...e, ...eventData } : e,
+          ) || [],
       });
     };
 
@@ -159,7 +182,10 @@ export const Default: Story = {
       if (index <= 0) return;
 
       const newEvents = [...sceneEvents];
-      [newEvents[index - 1], newEvents[index]] = [newEvents[index], newEvents[index - 1]];
+      [newEvents[index - 1], newEvents[index]] = [
+        newEvents[index],
+        newEvents[index - 1],
+      ];
       const reorderedEvents = newEvents.map((e, i) => ({ ...e, sortOrder: i }));
 
       setEvents({ ...events, [sceneId]: reorderedEvents });
@@ -171,7 +197,10 @@ export const Default: Story = {
       if (index < 0 || index >= sceneEvents.length - 1) return;
 
       const newEvents = [...sceneEvents];
-      [newEvents[index], newEvents[index + 1]] = [newEvents[index + 1], newEvents[index]];
+      [newEvents[index], newEvents[index + 1]] = [
+        newEvents[index + 1],
+        newEvents[index],
+      ];
       const reorderedEvents = newEvents.map((e, i) => ({ ...e, sortOrder: i }));
 
       setEvents({ ...events, [sceneId]: reorderedEvents });
@@ -261,9 +290,7 @@ export const WithManyScenes: Story = {
         { id: 'e1', type: 'start', content: 'シナリオ開始', sortOrder: 0 },
         { id: 'e2', type: 'conversation', content: '導入の説明', sortOrder: 1 },
       ],
-      '3': [
-        { id: 'e3', type: 'battle', content: 'ゴブリン x3', sortOrder: 0 },
-      ],
+      '3': [{ id: 'e3', type: 'battle', content: 'ゴブリン x3', sortOrder: 0 }],
       '5': [
         { id: 'e4', type: 'treasure', content: '宝箱を発見', sortOrder: 0 },
         { id: 'e5', type: 'trap', content: '罠の判定', sortOrder: 1 },
@@ -351,19 +378,37 @@ export const WithComplexFlow: Story = {
     const [events, setEvents] = useState<Record<string, SceneEvent[]>>({
       '1': [
         { id: 'e1', type: 'start', content: '冒険の始まり', sortOrder: 0 },
-        { id: 'e2', type: 'choice', content: '選択: 森へ行くか、山へ行くか', sortOrder: 1 },
+        {
+          id: 'e2',
+          type: 'choice',
+          content: '選択: 森へ行くか、山へ行くか',
+          sortOrder: 1,
+        },
       ],
       '4': [
-        { id: 'e3', type: 'conversation', content: '妖精との会話', sortOrder: 0 },
+        {
+          id: 'e3',
+          type: 'conversation',
+          content: '妖精との会話',
+          sortOrder: 0,
+        },
         { id: 'e4', type: 'puzzle', content: '妖精の謎かけ', sortOrder: 1 },
       ],
       '5': [
-        { id: 'e5', type: 'conversation', content: '賢者との会話', sortOrder: 0 },
-        { id: 'e6', type: 'skill_check', content: '知識判定: DC15', sortOrder: 1 },
+        {
+          id: 'e5',
+          type: 'conversation',
+          content: '賢者との会話',
+          sortOrder: 0,
+        },
+        {
+          id: 'e6',
+          type: 'skill_check',
+          content: '知識判定: DC15',
+          sortOrder: 1,
+        },
       ],
-      '7': [
-        { id: 'e7', type: 'ending', content: '物語の結末', sortOrder: 0 },
-      ],
+      '7': [{ id: 'e7', type: 'ending', content: '物語の結末', sortOrder: 0 }],
     });
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [editingScene, setEditingScene] = useState<Scene | null>(null);
@@ -416,9 +461,10 @@ export const WithComplexFlow: Story = {
           onUpdateEvent={(sceneId, eventId, eventData) => {
             setEvents({
               ...events,
-              [sceneId]: events[sceneId]?.map((e) =>
-                e.id === eventId ? { ...e, ...eventData } : e
-              ) || [],
+              [sceneId]:
+                events[sceneId]?.map((e) =>
+                  e.id === eventId ? { ...e, ...eventData } : e,
+                ) || [],
             });
           }}
           onDeleteEvent={(sceneId, eventId) => {

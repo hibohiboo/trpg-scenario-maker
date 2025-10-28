@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { fn } from '@storybook/test';
+import { fn } from 'storybook/test';
 import { useState } from 'react';
 import { ScenarioForm } from './ScenarioForm';
 
@@ -71,11 +71,7 @@ export const WithoutCancelButton: Story = {
   render: () => {
     const [title, setTitle] = useState('');
     return (
-      <ScenarioForm
-        title={title}
-        onTitleChange={setTitle}
-        onSubmit={fn()}
-      />
+      <ScenarioForm title={title} onTitleChange={setTitle} onSubmit={fn()} />
     );
   },
   args: {} as never,
