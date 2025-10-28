@@ -10,6 +10,7 @@ export interface SceneFormProps {
   events?: SceneEvent[];
   onSubmit: (scene: Omit<Scene, 'id'>) => void;
   onCancel?: () => void;
+  onDelete?: (id: string) => void;
   onConnectionDelete?: (connectionId: string) => void;
   onConnectionAdd?: (connection: Omit<SceneConnection, 'id'>) => void;
   onEventAdd?: (eventData: { type: SceneEventType; content: string }) => void;

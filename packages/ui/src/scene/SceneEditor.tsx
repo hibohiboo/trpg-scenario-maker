@@ -19,7 +19,6 @@ const renderSceneList = (
   scenes: Scene[],
   events: SceneEditorProps['events'],
   onEditScene: (scene: Scene) => void,
-  onDeleteScene: (id: string) => void,
 ) => (
   <div className="space-y-2">
     {scenes.map((scene) => {
@@ -58,9 +57,6 @@ const renderSceneList = (
             <Button onClick={() => onEditScene(scene)} variant="success" size="sm">
               編集
             </Button>
-            <Button onClick={() => onDeleteScene(scene.id)} variant="danger" size="sm">
-              削除
-            </Button>
           </div>
         </div>
       );
@@ -98,7 +94,7 @@ export function SceneEditor({
   editingScene,
   onAddScene,
   onUpdateScene,
-  onDeleteScene,
+  onDeleteScene: _onDeleteScene,
   onAddConnection,
   onDeleteConnection,
   onAddEvent,
@@ -122,6 +118,11 @@ export function SceneEditor({
     }
   };
 
+  const handleDeleteScene = (id: string) => {
+    _onDeleteScene(id);
+    onCloseForm();
+  };
+
   const sceneEvents = getSceneEvents({ editingScene, events });
 
   const eventHandlers = createEventHandlers(
@@ -137,7 +138,7 @@ export function SceneEditor({
   const sceneListContent = (
     <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
       <h3 className="mb-4 text-lg font-semibold">シーン一覧</h3>
-      {renderSceneList(scenes, events, onEditScene, onDeleteScene)}
+      {renderSceneList(scenes, events, onEditScene)}
     </div>
   );
 
@@ -152,7 +153,7 @@ export function SceneEditor({
     {
       id: 'list',
       label: 'シーン一覧',
-      content: renderSceneList(scenes, events, onEditScene, onDeleteScene),
+      content: renderSceneList(scenes, events, onEditScene),
     },
     {
       id: 'flow',
@@ -181,6 +182,7 @@ export function SceneEditor({
               events={sceneEvents}
               onSubmit={editingScene ? handleUpdateScene : handleAddScene}
               onCancel={onCloseForm}
+              onDelete={handleDeleteScene}
               onConnectionDelete={onDeleteConnection}
               onConnectionAdd={onAddConnection}
               onEventAdd={eventHandlers.handleAddEvent}

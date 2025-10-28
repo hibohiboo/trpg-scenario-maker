@@ -8,12 +8,38 @@ const inputClassName =
   'mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500';
 const labelClassName = 'block text-sm font-medium text-gray-700';
 
-const getHasEventHandlers = (formState: ReturnType<typeof useSceneForm>) =>
+type FormState = ReturnType<typeof useSceneForm>;
+
+const getHasEventHandlers = (formState: FormState) =>
   formState.onEventAdd &&
   formState.onEventUpdate &&
   formState.onEventDelete &&
   formState.onEventMoveUp &&
   formState.onEventMoveDown;
+
+type ButtonProps = Pick<
+  FormState,
+  'submitLabel' | 'onCancel' | 'scene' | 'onDelete'
+>;
+
+const Buttons = ({ submitLabel, onCancel, scene, onDelete }: ButtonProps) => (
+  <div className="flex gap-2 items-center">
+    <Button type="submit" variant="primary">
+      {submitLabel}
+    </Button>
+    {onCancel && (
+      <Button type="button" onClick={onCancel} variant="secondary">
+        キャンセル
+      </Button>
+    )}
+    <div className="flex-1" />
+    {scene && onDelete && (
+      <Button type="button" onClick={() => onDelete(scene.id)} variant="danger">
+        削除
+      </Button>
+    )}
+  </div>
+);
 
 export function SceneForm(props: SceneFormProps) {
   const formState = useSceneForm(props);
@@ -27,6 +53,8 @@ export function SceneForm(props: SceneFormProps) {
     handleSubmit,
     submitLabel,
     onCancel,
+    scene,
+    onDelete,
   } = formState;
 
   const hasEventHandlers = getHasEventHandlers(formState);
@@ -42,16 +70,7 @@ export function SceneForm(props: SceneFormProps) {
         inputClassName={inputClassName}
         labelClassName={labelClassName}
       />
-      <div className="flex gap-2">
-        <Button type="submit" variant="primary">
-          {submitLabel}
-        </Button>
-        {onCancel && (
-          <Button type="button" onClick={onCancel} variant="secondary">
-            キャンセル
-          </Button>
-        )}
-      </div>
+
       {formState.scene && formState.events && hasEventHandlers && (
         <SceneEventsSection
           events={formState.events}
@@ -74,6 +93,12 @@ export function SceneForm(props: SceneFormProps) {
           inputClassName={inputClassName}
         />
       )}
+      <Buttons
+        submitLabel={submitLabel}
+        onCancel={onCancel}
+        scene={scene}
+        onDelete={onDelete}
+      />
     </form>
   );
 }
