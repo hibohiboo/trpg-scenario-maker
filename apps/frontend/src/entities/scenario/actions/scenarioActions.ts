@@ -5,6 +5,7 @@ import {
 } from '@trpg-scenario-maker/schema';
 import { v4 as uuidv4 } from 'uuid';
 import { scenarioApi } from '../api/scenarioApi';
+import { scenarioGraphApi } from '../api/scenarioGraphApi';
 import {
   closeCreateModal,
   closeDeleteModal,
@@ -20,6 +21,8 @@ export const createScenarioAction = createAsyncThunk<
     title: payload.title,
     id: uuidv4(),
   });
+  await scenarioGraphApi.create(newScenario);
+  await scenarioGraphApi.save();
   dispatch(closeCreateModal());
   return scenarioToString(newScenario);
 });

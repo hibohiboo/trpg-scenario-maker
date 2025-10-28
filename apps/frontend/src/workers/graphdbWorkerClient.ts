@@ -78,6 +78,26 @@ class GraphDBWorkerClient extends BaseWorkerClient<
 
   async load(): Promise<void> {
     await Promise.all(schemas.map((schema) => this.loadTable(schema.name)));
+    await this.ensureInitialData();
+  }
+
+  private async ensureInitialData(): Promise<void> {
+    // シナリオの存在確認
+    const scenarios = await this.execute<
+      { s: { id: string; title: string } }[]
+    >(`
+      MATCH (s:Scenario)
+      RETURN s
+    `);
+
+    // シナリオが存在しない場合、初期データを登録
+    if (!scenarios || scenarios.length === 0) {
+      await this.execute(`
+        CREATE (s:Scenario {id: '3f81c321-1941-4247-9f5d-37bb6a9e8e45', title: 'サンプルシナリオ'})
+        RETURN s
+      `);
+      await this.save();
+    }
   }
 
   private async createSchema(): Promise<void> {
