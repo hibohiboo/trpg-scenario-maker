@@ -1,6 +1,5 @@
 import type { SceneEventType } from '@trpg-scenario-maker/ui';
-import { useEffect } from 'react';
-import { useLoaderData, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { scenarioGraphApi } from '@/entities/scenario';
 import {
   useSceneList,
@@ -14,15 +13,10 @@ import {
 import { useAppSelector } from '@/shared/lib/store';
 
 export const useScenarioDetailPage = () => {
-  const data = useLoaderData();
   const { id } = useParams();
   if (!id) throw new Error('シナリオIDが見つかりません');
 
-  useEffect(() => {
-    scenarioGraphApi.create(data);
-  }, [id, data]);
-
-  const { scenes, connections, isLoading, error } = useSceneList(id);
+  const { scenes, connections, isLoading, error } = useSceneList();
   const {
     handleAddScene,
     handleUpdateScene,
@@ -38,24 +32,11 @@ export const useScenarioDetailPage = () => {
     handleCloseForm,
     handleEditScene,
   } = useSceneFormState();
-  const {
-    addEvent,
-    updateEvent,
-    removeEvent,
-    moveEventUp,
-    moveEventDown,
-    loadEvents,
-  } = useSceneEventOperations();
+  const { addEvent, updateEvent, removeEvent, moveEventUp, moveEventDown } =
+    useSceneEventOperations();
   const events = useAppSelector(
     (state) => state[sceneEventSlice.reducerPath].eventsBySceneId,
   );
-
-  // シーン編集時に該当シーンのイベントを再読み込み
-  useEffect(() => {
-    if (editingScene) {
-      loadEvents(editingScene.id);
-    }
-  }, [editingScene, loadEvents]);
 
   const handleSave = async () => {
     await scenarioGraphApi.save();
