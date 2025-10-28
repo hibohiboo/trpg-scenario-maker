@@ -20,7 +20,7 @@ export const useScenarioDetailPage = () => {
   const {
     handleAddScene,
     handleUpdateScene,
-    handleDeleteScene,
+    handleDeleteScene: _handleDeleteScene,
     handleAddConnection,
     handleUpdateConnection,
     handleDeleteConnection,
@@ -41,6 +41,18 @@ export const useScenarioDetailPage = () => {
   const handleSave = async () => {
     await scenarioGraphApi.save();
     alert('シナリオを保存しました');
+  };
+
+  const handleDeleteScene = async (sceneId: string) => {
+    const scene = scenes.find((s) => s.id === sceneId);
+    if (!scene) return;
+
+    const confirmed = window.confirm(
+      `シーン「${scene.title}」を削除してもよろしいですか？\nこの操作は取り消せません。`,
+    );
+    if (confirmed) {
+      await _handleDeleteScene(sceneId);
+    }
   };
 
   const handleAddEvent = async (
