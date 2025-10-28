@@ -40,8 +40,11 @@ jobs:
       - name: Install document dependencies
         run: bun install
         working-directory: ${{ inputs.build_path }}
-      - name: Build 
+      - name: Build
         run: bun run build
+        working-directory: .
+      - name: Unit Test
+        run: bun run test:report
         working-directory: .
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4

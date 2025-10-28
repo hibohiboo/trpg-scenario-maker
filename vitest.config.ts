@@ -22,8 +22,8 @@ export default defineConfig({
     },
     reporters: ['default', 'html', 'json'],
     outputFile: {
-      html: './test-results/index.html',
-      json: './test-results/results.json',
+      html: './apps/frontend/dist/vitest-results/index.html',
+      json: './apps/frontend/dist/vitest-results/results.json',
     },
   },
 });
