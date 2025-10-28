@@ -49,6 +49,20 @@ jobs:
       - name: Build Component Catalog
         run: bun run build-storybook
         working-directory: ./packages/ui
+      # e2e テストレポート
+      - name: Install Playwright
+        run: npx playwright install --with-deps chromium
+        working-directory: apps/frontend
+      - name: Start Frontend
+        run: |
+          bunx --bun vite preview --port 5173 > frontend.log 2>&1 &
+          echo $! > ../frontend.pid
+        working-directory: apps/frontend
+      - name: Start Frontend
+        run: bun run test:e2e
+        working-directory: apps/frontend
+
+        # デプロイ用の出力フォルダをパッケージ
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:

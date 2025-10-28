@@ -4,7 +4,11 @@ TRPGシナリオを可視化しながら作成できるWebアプリケーショ�
 
 [Demo Page: TRPGシナリオメーカー](https://hibohiboo.github.io/trpg-scenario-maker/)
 
+[コンポーネントカタログ](https://hibohiboo.github.io/trpg-scenario-maker/tsm-components-catalog/)
+
 [テストレポート:vitest](https://hibohiboo.github.io/trpg-scenario-maker/vitest-results/)
+
+[テストレポート:e2e](https://hibohiboo.github.io/trpg-scenario-maker/cucumber-report/)
 
 [Github](https://github.com/hibohiboo/trpg-scenario-maker)
 
