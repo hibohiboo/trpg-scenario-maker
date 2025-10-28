@@ -13,7 +13,8 @@
     "dev": "storybook dev -p 6006",
     "lint": "eslint . --fix && tsc -b",
     "type-check": "tsc -b",
-    "test": "vitest"
+    "test": "vitest",
+    "build-storybook": "storybook build -o ../../apps/frontend/dist/tsm-components-catalog"
   },
   "dependencies": {
     "@dagrejs/dagre": "^1.1.5",
