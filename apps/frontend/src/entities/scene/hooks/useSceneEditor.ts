@@ -15,7 +15,7 @@ export function useSceneEditor(scenarioId: string) {
   const dispatch = useAppDispatch();
 
   // シーンとコネクションの状態を取得
-  const { scenes, connections, isLoading, error } = useSceneList(scenarioId);
+  const { scenes, connections, isLoading, error } = useSceneList();
 
   // シーン操作用のハンドラーを取得
   const {
