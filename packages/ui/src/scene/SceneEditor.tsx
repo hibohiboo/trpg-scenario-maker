@@ -182,7 +182,7 @@ export function SceneEditor({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="space-y-4">
         <h2 className="text-2xl font-bold">シーン編集</h2>
         <Button onClick={onOpenForm} variant="primary">
           シーンを追加
