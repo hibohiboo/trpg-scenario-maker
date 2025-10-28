@@ -46,6 +46,9 @@ jobs:
       - name: Unit Test
         run: bun run test:report
         working-directory: .
+      - name: Build Component Catalog
+        run: bun run build-storybook
+        working-directory: ./packages/ui
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
