@@ -7,20 +7,20 @@ import {
   useSceneOperations,
   useSceneFormState,
 } from '@/entities/scene';
-import { useSceneEventOperations, sceneEventSlice } from '@/entities/sceneEvent';
+import {
+  useSceneEventOperations,
+  sceneEventSlice,
+} from '@/entities/sceneEvent';
 import { useAppSelector } from '@/shared/lib/store';
 
 export const useScenarioDetailPage = () => {
-  const { id } = useParams();
   const data = useLoaderData();
+  const { id } = useParams();
+  if (!id) throw new Error('シナリオIDが見つかりません');
 
   useEffect(() => {
     scenarioGraphApi.create(data);
   }, [id, data]);
-
-  if (!id) {
-    throw new Error('シナリオIDが見つかりません');
-  }
 
   const { scenes, connections, isLoading, error } = useSceneList(id);
   const {
@@ -38,9 +38,19 @@ export const useScenarioDetailPage = () => {
     handleCloseForm,
     handleEditScene,
   } = useSceneFormState();
-  const { addEvent, updateEvent, removeEvent, moveEventUp, moveEventDown, loadEvents } = useSceneEventOperations();
-  const events = useAppSelector((state) => state[sceneEventSlice.reducerPath].eventsBySceneId);
+  const {
+    addEvent,
+    updateEvent,
+    removeEvent,
+    moveEventUp,
+    moveEventDown,
+    loadEvents,
+  } = useSceneEventOperations();
+  const events = useAppSelector(
+    (state) => state[sceneEventSlice.reducerPath].eventsBySceneId,
+  );
 
+  // シーン編集時に該当シーンのイベントを再読み込み
   useEffect(() => {
     if (editingScene) {
       loadEvents(editingScene.id);
@@ -52,11 +62,18 @@ export const useScenarioDetailPage = () => {
     alert('シナリオを保存しました');
   };
 
-  const handleAddEvent = async (sceneId: string, eventData: { type: SceneEventType; content: string }) => {
+  const handleAddEvent = async (
+    sceneId: string,
+    eventData: { type: SceneEventType; content: string },
+  ) => {
     await addEvent(sceneId, eventData);
   };
 
-  const handleUpdateEvent = async (sceneId: string, eventId: string, eventData: { type: SceneEventType; content: string }) => {
+  const handleUpdateEvent = async (
+    sceneId: string,
+    eventId: string,
+    eventData: { type: SceneEventType; content: string },
+  ) => {
     await updateEvent(sceneId, eventId, eventData);
   };
 
