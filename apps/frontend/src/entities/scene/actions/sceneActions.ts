@@ -24,6 +24,7 @@ export const createSceneAction = createAsyncThunk<
   { scenarioId: string; scene: Omit<Scene, 'id'> }
 >('scene/createScene', async ({ scenarioId, scene }) => {
   const newScene = await sceneGraphApi.createScene(scenarioId, scene);
+  await sceneGraphApi.save();
   return newScene;
 });
 
@@ -32,6 +33,7 @@ export const updateSceneAction = createAsyncThunk<
   { id: string; updates: Partial<Scene> }
 >('scene/updateScene', async ({ id, updates }) => {
   const updatedScene = await sceneGraphApi.updateScene(id, updates);
+  await sceneGraphApi.save();
   return updatedScene;
 });
 
@@ -39,6 +41,7 @@ export const deleteSceneAction = createAsyncThunk<string, string>(
   'scene/deleteScene',
   async (id) => {
     await sceneGraphApi.deleteScene(id);
+    await sceneGraphApi.save();
     return id;
   },
 );
@@ -48,6 +51,7 @@ export const createConnectionAction = createAsyncThunk<
   Omit<SceneConnection, 'id'>
 >('scene/createConnection', async (connection) => {
   const newConnection = await sceneGraphApi.createConnection(connection);
+  await sceneGraphApi.save();
   return newConnection;
 });
 
@@ -55,6 +59,7 @@ export const deleteConnectionAction = createAsyncThunk<string, string>(
   'scene/deleteConnection',
   async (id) => {
     await sceneGraphApi.deleteConnection(id);
+    await sceneGraphApi.save();
     return id;
   },
 );
