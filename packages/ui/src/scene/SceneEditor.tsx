@@ -9,8 +9,10 @@ import type { SceneEditorProps, Scene } from './types';
 const getSceneEvents = ({
   editingScene,
   events,
-}: Pick<SceneEditorProps, 'editingScene' | 'events'>) =>
-  editingScene && events ? events[editingScene.id] : undefined;
+}: Pick<SceneEditorProps, 'editingScene' | 'events'>) => {
+  if (!editingScene || !events) return [];
+  return events[editingScene.id] ?? [];
+};
 
 const getTitle = ({ editingScene }: Pick<SceneEditorProps, 'editingScene'>) =>
   editingScene ? 'シーンを編集' : '新しいシーンを作成';
@@ -54,7 +56,11 @@ const renderSceneList = (
             )}
           </div>
           <div className="flex gap-2">
-            <Button onClick={() => onEditScene(scene)} variant="success" size="sm">
+            <Button
+              onClick={() => onEditScene(scene)}
+              variant="success"
+              size="sm"
+            >
               編集
             </Button>
           </div>
@@ -145,7 +151,13 @@ export function SceneEditor({
   const sceneFlowContent = (
     <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
       <h3 className="mb-4 text-lg font-semibold">シーンフロー</h3>
-      {renderSceneFlow(scenes, connections, events, onAddConnection, onDeleteConnection)}
+      {renderSceneFlow(
+        scenes,
+        connections,
+        events,
+        onAddConnection,
+        onDeleteConnection,
+      )}
     </div>
   );
 
@@ -158,7 +170,13 @@ export function SceneEditor({
     {
       id: 'flow',
       label: 'シーンフロー',
-      content: renderSceneFlow(scenes, connections, events, onAddConnection, onDeleteConnection),
+      content: renderSceneFlow(
+        scenes,
+        connections,
+        events,
+        onAddConnection,
+        onDeleteConnection,
+      ),
     },
   ];
 
@@ -197,12 +215,8 @@ export function SceneEditor({
 
       {/* PC: 横並び（1:3の割合）、スマホ: タブ切り替え */}
       <div className="hidden md:grid md:grid-cols-4 md:gap-4">
-        <div className="md:col-span-1">
-          {sceneListContent}
-        </div>
-        <div className="md:col-span-3">
-          {sceneFlowContent}
-        </div>
+        <div className="md:col-span-1">{sceneListContent}</div>
+        <div className="md:col-span-3">{sceneFlowContent}</div>
       </div>
 
       <div className="md:hidden">

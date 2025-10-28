@@ -25,7 +25,6 @@ export default function Page() {
     handleOpenForm,
     handleCloseForm,
     handleEditScene,
-    handleSave,
   } = useScenarioDetailPage();
 
   if (isLoading) {
