@@ -2,7 +2,9 @@
 
 TRPGシナリオを可視化しながら作成できるWebアプリケーション
 
-[Demo Page](https://hibohiboo.github.io/trpg-scenario-maker/)
+[Demo Page: TRPGシナリオメーカー](https://hibohiboo.github.io/trpg-scenario-maker/)
+
+[テストレポート:vitest](https://hibohiboo.github.io/trpg-scenario-maker/vitest-results/)
 
 [Github](https://github.com/hibohiboo/trpg-scenario-maker)
 
