@@ -29,6 +29,8 @@
     "@tailwindcss/vite": "^4.1.16",
     "@trpg-scenario-maker/eslint-config-custom": "workspace:*",
     "@trpg-scenario-maker/tsconfig": "workspace:*",
-    "eslint": "catalog:testing"
+    "cucumber": "^6.0.7",
+    "eslint": "catalog:testing",
+    "playwright": "^1.56.1"
   }
 }

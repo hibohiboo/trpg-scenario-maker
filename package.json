@@ -32,9 +32,9 @@
     "prettier": "^3.6.2",
     "turbo": "^2.5.8",
     "typescript": "^5.9.3",
-    "vite": "npm:rolldown-vite@7.1.19",
+    "vite": "npm:rolldown-vite@7.1.20",
     "vite-tsconfig-paths": "^6.0.0-beta.4",
-    "vitest": "^4.0.3"
+    "vitest": "^4.0.4"
   },
   "workspaces": {
     "packages": [
@@ -57,6 +57,6 @@
     }
   },
   "overrides": {
-    "vite": "npm:rolldown-vite@7.1.19"
+    "vite": "npm:rolldown-vite@7.1.20"
   }
 }
