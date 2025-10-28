@@ -192,7 +192,6 @@ export function SceneEditor({
       <Modal isOpen={isFormOpen} onClose={onCloseForm} title={title} size="lg">
         {isFormOpen && (
           <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-            <h3 className="mb-4 text-lg font-semibold">{title}</h3>
             <SceneForm
               scene={editingScene ?? undefined}
               scenes={scenes}

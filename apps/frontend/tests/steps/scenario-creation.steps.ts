@@ -14,7 +14,7 @@ interface CustomWorld {
   init: () => Promise<void>;
 }
 
-setDefaultTimeout(20000);
+setDefaultTimeout(10000);
 
 function setupCustomWorld() {
   setWorldConstructor(function (this: CustomWorld) {
@@ -47,7 +47,6 @@ When(
     await this.page
       .getByRole('button', { name: buttonText, exact: true })
       .click();
-    await this.page.waitForTimeout(500);
   },
 );
 
@@ -63,7 +62,6 @@ When(
   'シナリオ {string} をクリックする',
   async function (this: CustomWorld, scenarioTitle: string) {
     await this.page.getByText(scenarioTitle).first().click();
-    await this.page.waitForTimeout(1000);
   },
 );
 
@@ -100,35 +98,28 @@ When(
       .locator('.bg-white')
       .getByRole('button', { name: buttonText })
       .click();
-    await this.page.waitForTimeout(500);
   },
 );
+const sceneListContainer = (page: Page) =>
+  page.getByText('シーン一覧').locator('..');
 
 When(
   'シーン {string} の編集ボタンをクリックする',
   async function (this: CustomWorld, sceneTitle: string) {
-    const sceneRow = this.page
-      .locator('div')
-      .filter({ hasText: sceneTitle })
-      .first();
+    const container = sceneListContainer(this.page);
+    const sceneRow = container
+      .getByText(sceneTitle)
+      .locator('..')
+      .locator('..');
     await sceneRow.getByRole('button', { name: '編集' }).click();
-    await this.page.waitForTimeout(500);
   },
 );
 
 Then(
   'シーン一覧に {string} が表示される',
   async function (this: CustomWorld, sceneTitle: string) {
-    await expect(this.page.getByText(sceneTitle)).toBeVisible();
-  },
-);
-
-// タブ操作
-When(
-  '{string} タブをクリックする',
-  async function (this: CustomWorld, tabName: string) {
-    await this.page.getByRole('tab', { name: tabName }).click();
-    await this.page.waitForTimeout(500);
+    const container = sceneListContainer(this.page);
+    await expect(container.getByText(sceneTitle)).toBeVisible();
   },
 );
 
@@ -151,21 +142,23 @@ When(
   'イベントフォームの {string} ボタンをクリックする',
   async function (this: CustomWorld, buttonText: string) {
     await this.page.getByRole('button', { name: buttonText }).last().click();
-    await this.page.waitForTimeout(500);
   },
 );
 
 Then(
   'イベント一覧に {string} が表示される',
   async function (this: CustomWorld, content: string) {
-    await expect(this.page.getByText(content)).toBeVisible();
+    const container = this.page
+      .getByText('シーンを編集')
+      .locator('..')
+      .locator('..');
+    await expect(container.getByText(content)).toBeVisible();
   },
 );
 
 // モーダル操作
 When('モーダルを閉じる', async function (this: CustomWorld) {
-  await this.page.getByRole('button', { name: '✕' }).click();
-  await this.page.waitForTimeout(500);
+  await this.page.getByRole('button', { name: '閉じる' }).click();
 });
 
 // シーン接続関連
