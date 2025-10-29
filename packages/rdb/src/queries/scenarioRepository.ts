@@ -1,11 +1,11 @@
 import { eq, desc } from 'drizzle-orm';
-import { db } from '..';
 import { scenariosTable, type NewScenario } from '../schema';
+import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 
 /**
- * シナリオのデータアクセス層
+ * シナリオのデータアクセス層（DI対応）
  */
-export const scenarioRepository = {
+export const createScenarioRepository = (db: NodePgDatabase) => ({
   /**
    * シナリオの総数を取得
    */
@@ -58,4 +58,4 @@ export const scenarioRepository = {
   async delete(id: string) {
     await db.delete(scenariosTable).where(eq(scenariosTable.id, id));
   },
-} as const;
+});
