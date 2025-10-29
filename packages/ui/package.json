@@ -49,6 +49,8 @@
     "postcss-load-config": "^6.0.1",
     "storybook": "^10.0.1",
     "tailwindcss": "^4.1.16",
-    "typescript": "catalog:building"
+    "typescript": "catalog:building",
+    "playwright": "^1.56.1",
+    "@vitest/browser-playwright": "^4.0.4"
   }
 }
