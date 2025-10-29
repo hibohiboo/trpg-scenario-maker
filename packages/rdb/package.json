@@ -20,7 +20,8 @@
     "drizzle-kit": "^0.31.6",
     "@trpg-scenario-maker/eslint-config-custom": "workspace:*",
     "@trpg-scenario-maker/tsconfig": "workspace:*",
-    "eslint": "catalog:testing"
+    "eslint": "catalog:testing",
+    "vitest": "catalog:testing"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.3.11",

@@ -1,56 +1,94 @@
+import { describe, it, expect, beforeAll, afterEach } from 'vitest';
 import { PGlite } from '@electric-sql/pglite';
 import { drizzle } from 'drizzle-orm/pglite';
-import { describe, it, expect, beforeAll } from 'vitest';
 import { createScenarioRepository } from './scenarioRepository';
 
-// テスト用のインメモリデータベースを作成
-let testDb: ReturnType<typeof drizzle>;
-let testClient: PGlite;
-
-beforeAll(async () => {
-  // メモリ内データベースを作成
-  testClient = new PGlite();
-  testDb = drizzle(testClient);
-
-  // テーブルを作成
-  await testClient.exec(`
-    CREATE TABLE IF NOT EXISTS scenarios (
-      id UUID PRIMARY KEY,
-      title TEXT NOT NULL,
-      created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-      updated_at TIMESTAMP NOT NULL DEFAULT NOW()
-    );
-  `);
-
-  // dbインスタンスを置き換え（モック）
-  // 注意: この方法は実際のdbインポートを直接置き換える必要があるため
-  // より良いアプローチはDI（依存性注入）を使用することです
-});
-
 describe('scenarioRepository', () => {
+  let testClient: PGlite;
+  let testDb: ReturnType<typeof drizzle>;
+  let repository: ReturnType<typeof createScenarioRepository>;
+
+  beforeAll(async () => {
+    // テスト用のインメモリデータベースを作成
+    testClient = new PGlite();
+    testDb = drizzle(testClient);
+
+    // テーブルを作成
+    await testClient.exec(`
+      CREATE TABLE IF NOT EXISTS scenarios (
+        id UUID PRIMARY KEY,
+        title TEXT NOT NULL,
+        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+      );
+    `);
+
+    // DI経由でリポジトリを作成
+    repository = createScenarioRepository(testDb);
+  });
+
+  afterEach(async () => {
+    // 各テスト後にテーブルをクリア
+    await testClient.exec('TRUNCATE TABLE scenarios;');
+  });
+
   describe('count', () => {
     it('シナリオが0件の場合、0を返す', async () => {
-      const scenarioRepository = createScenarioRepository(testDb);
-      const count = await scenarioRepository.count();
-      expect(count).toBeGreaterThanOrEqual(0);
+      const count = await repository.count();
+      expect(count).toBe(0);
+    });
+
+    it('シナリオが作成された後、正しい件数を返す', async () => {
+      await repository.create({
+        id: crypto.randomUUID(),
+        title: 'テストシナリオ1',
+      });
+      await repository.create({
+        id: crypto.randomUUID(),
+        title: 'テストシナリオ2',
+      });
+
+      const count = await repository.count();
+      expect(count).toBe(2);
     });
   });
 
-  describe.todo('findAll', () => {
-    it('全シナリオを取得できる', async () => {
-      const scenarios = await scenarioRepository.findAll();
-      expect(Array.isArray(scenarios)).toBe(true);
+  describe('findAll', () => {
+    it('シナリオが0件の場合、空配列を返す', async () => {
+      const scenarios = await repository.findAll();
+      expect(scenarios).toEqual([]);
+    });
+
+    it('全シナリオを更新日時の降順で取得できる', async () => {
+      const scenario1 = await repository.create({
+        id: crypto.randomUUID(),
+        title: 'シナリオ1',
+      });
+
+      // 少し待機して更新日時を異なるものにする
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      const scenario2 = await repository.create({
+        id: crypto.randomUUID(),
+        title: 'シナリオ2',
+      });
+
+      const scenarios = await repository.findAll();
+      expect(scenarios).toHaveLength(2);
+      // 新しいものが先頭に来る
+      expect(scenarios[0].id).toBe(scenario2.id);
+      expect(scenarios[1].id).toBe(scenario1.id);
     });
   });
 
-  describe.todo('create', () => {
+  describe('create', () => {
     it('新しいシナリオを作成できる', async () => {
       const newScenario = {
         id: crypto.randomUUID(),
         title: 'テストシナリオ',
       };
 
-      const result = await scenarioRepository.create(newScenario);
+      const result = await repository.create(newScenario);
 
       expect(result).toBeDefined();
       expect(result.id).toBe(newScenario.id);
@@ -60,47 +98,50 @@ describe('scenarioRepository', () => {
     });
   });
 
-  describe.todo('update', () => {
+  describe('update', () => {
     it('既存のシナリオを更新できる', async () => {
       // まずシナリオを作成
       const newScenario = {
         id: crypto.randomUUID(),
         title: '更新前のタイトル',
       };
-      const created = await scenarioRepository.create(newScenario);
+      const created = await repository.create(newScenario);
+
+      // 少し待機して更新日時が確実に異なるようにする
+      await new Promise((resolve) => setTimeout(resolve, 10));
 
       // 更新
-      const updated = await scenarioRepository.update(created.id, {
+      const updated = await repository.update(created.id, {
         title: '更新後のタイトル',
       });
 
       expect(updated).toBeDefined();
       expect(updated.title).toBe('更新後のタイトル');
-      expect(updated.updatedAt.getTime()).toBeGreaterThanOrEqual(
-        created.updatedAt.getTime(),
+      expect(updated.updatedAt.getTime()).toBeGreaterThan(
+        created.updatedAt.getTime()
       );
     });
   });
 
-  describe.todo('delete', () => {
+  describe('delete', () => {
     it('シナリオを削除できる', async () => {
       // まずシナリオを作成
       const newScenario = {
         id: crypto.randomUUID(),
         title: '削除対象シナリオ',
       };
-      const created = await scenarioRepository.create(newScenario);
+      const created = await repository.create(newScenario);
 
       // 削除前に存在確認
-      const beforeDelete = await scenarioRepository.findAll();
+      const beforeDelete = await repository.findAll();
       const exists = beforeDelete.some((s) => s.id === created.id);
       expect(exists).toBe(true);
 
       // 削除
-      await scenarioRepository.delete(created.id);
+      await repository.delete(created.id);
 
       // 削除後に存在しないことを確認
-      const afterDelete = await scenarioRepository.findAll();
+      const afterDelete = await repository.findAll();
       const notExists = !afterDelete.some((s) => s.id === created.id);
       expect(notExists).toBe(true);
     });

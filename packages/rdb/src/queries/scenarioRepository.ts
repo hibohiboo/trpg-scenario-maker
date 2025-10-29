@@ -1,16 +1,18 @@
 import { eq, desc } from 'drizzle-orm';
 import { scenariosTable, type NewScenario } from '../schema';
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import type { PgliteDatabase } from 'drizzle-orm/pglite';
 
 /**
  * シナリオのデータアクセス層（DI対応）
  */
-export const createScenarioRepository = (db: NodePgDatabase) => ({
+export const createScenarioRepository = (
+  database: PgliteDatabase<Record<string, unknown>>
+) => ({
   /**
    * シナリオの総数を取得
    */
   async count() {
-    const result = await db.execute<{ cnt: number }>(
+    const result = await database.execute<{ cnt: number }>(
       'SELECT count(*) as cnt FROM scenarios',
     );
     const [ret] = result.rows;
@@ -21,7 +23,7 @@ export const createScenarioRepository = (db: NodePgDatabase) => ({
    * 全シナリオを取得（更新日時の降順）
    */
   async findAll() {
-    return db
+    return database
       .select({
         id: scenariosTable.id,
         title: scenariosTable.title,
@@ -36,7 +38,7 @@ export const createScenarioRepository = (db: NodePgDatabase) => ({
    * シナリオを作成
    */
   async create(data: NewScenario) {
-    const [result] = await db.insert(scenariosTable).values(data).returning();
+    const [result] = await database.insert(scenariosTable).values(data).returning();
     return result;
   },
 
@@ -44,7 +46,7 @@ export const createScenarioRepository = (db: NodePgDatabase) => ({
    * シナリオを更新
    */
   async update(id: string, data: { title: string }) {
-    const [result] = await db
+    const [result] = await database
       .update(scenariosTable)
       .set({ title: data.title, updatedAt: new Date() })
       .where(eq(scenariosTable.id, id))
@@ -56,6 +58,6 @@ export const createScenarioRepository = (db: NodePgDatabase) => ({
    * シナリオを削除
    */
   async delete(id: string) {
-    await db.delete(scenariosTable).where(eq(scenariosTable.id, id));
+    await database.delete(scenariosTable).where(eq(scenariosTable.id, id));
   },
 });
