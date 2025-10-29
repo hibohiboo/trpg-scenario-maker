@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "ncu": "ncu -u",
     "generate": "drizzle-kit generate",
-    "compile": "bun run compile-migrations.mts"
+    "compile": "bun run compile-migrations.mts",
+    "test": "vitest"
   },
   "devDependencies": {
     "cross-env": "^10.1.0",
