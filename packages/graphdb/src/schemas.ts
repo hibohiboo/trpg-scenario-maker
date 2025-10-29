@@ -79,14 +79,14 @@ export const graphDbSchemas = {
       name: 'RELATES_FROM',
       query: `
       CREATE REL TABLE RELATES_FROM (
-        FROM CharacterRelationship TO Character
+        FROM Character TO Character, relationshipName STRING
       )`,
     },
     {
       name: 'RELATES_TO',
       query: `
       CREATE REL TABLE RELATES_TO (
-        FROM CharacterRelationship TO Character
+        FROM Character TO Character, relationshipName STRING
       )`,
     },
   ],

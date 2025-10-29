@@ -1,7 +1,6 @@
 import { executeQuery } from '..';
+import { RELATION_DELIMITER } from '../utils/constants';
 import { escapeCypherString } from '../utils/escapeCypherString';
-
-const RELATION_DELIMITER = '|';
 
 const relationIdToIds = (id: string) => id.split(RELATION_DELIMITER);
 

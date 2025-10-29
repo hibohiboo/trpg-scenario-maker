@@ -45,3 +45,10 @@ export type RelationshipFormData = v.InferOutput<
 export const parseToRelationship = (data: unknown): Relationship => {
   return v.parse(RelationshipSchema, data);
 };
+
+/**
+ * 関係性リストをパース
+ */
+export const parseToRelationshipList = (data: unknown): Relationship[] => {
+  return v.parse(v.array(RelationshipSchema), data);
+};

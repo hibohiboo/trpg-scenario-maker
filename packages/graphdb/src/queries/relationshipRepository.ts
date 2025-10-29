@@ -1,4 +1,5 @@
 import { executeQuery } from '..';
+import { RELATION_DELIMITER } from '../utils/constants';
 import { escapeCypherString } from '../utils/escapeCypherString';
 
 /**
@@ -9,33 +10,18 @@ export const relationshipGraphRepository = {
    * 関係性エッジを作成（A→Bの関係）
    */
   async create(params: {
-    id: string;
     fromCharacterId: string;
     toCharacterId: string;
     relationshipName: string;
   }) {
     const escapedName = escapeCypherString(params.relationshipName);
 
-    // 1つのクエリでエッジ作成とプロパティ設定を行う
-    const result = (await executeQuery(`
-      MATCH (from:Character {id: '${params.fromCharacterId}'}), (to:Character {id: '${params.toCharacterId}'})
-      CREATE (from)-[r:RELATES_TO {relationshipName: '${escapedName}'}]->(to)
-      RETURN '${params.fromCharacterId}' AS fromId, '${params.toCharacterId}' AS toId, '${escapedName}' AS relationshipName
-    `)) as {
-      fromId: string;
-      toId: string;
-      relationshipName: string;
-    }[];
-
-    const [ret] = result;
-    if (!ret) return undefined;
-
-    return {
-      id: params.id,
-      fromCharacterId: ret.fromId,
-      toCharacterId: ret.toId,
-      relationshipName: ret.relationshipName,
-    };
+    return executeQuery(`
+      MATCH (f:Character {id: '${params.fromCharacterId}'})
+          , (t:Character {id: '${params.toCharacterId}'})
+      CREATE (f)-[:RELATES_TO {relationshipName: '${escapedName}'}]->(t)
+      RETURN '${params.fromCharacterId}${RELATION_DELIMITER}${params.toCharacterId}' AS id, '${params.fromCharacterId}' AS fromCharacterId, '${params.toCharacterId}' AS toCharacterId, '${escapedName}' AS relationshipName
+    `);
   },
 
   /**
