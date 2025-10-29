@@ -56,7 +56,7 @@ TRPG Scenario Makerは、TRPGのシナリオ作成を支援するフロントエ
 
 ### UIコンポーネント開発
 
-- **Storybook**: 9.1.13 (コンポーネントカタログ)
+- **Storybook**: 10.0.1 (コンポーネントカタログ)
 - **Tailwind CSS**: 4.1.15 (スタイリング)
 - **React Icons**: 5.5.0 (アイコンライブラリ)
 

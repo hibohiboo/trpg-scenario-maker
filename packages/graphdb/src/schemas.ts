@@ -41,6 +41,17 @@ export const graphDbSchemas = {
         PRIMARY KEY (id)
       )`,
     },
+    {
+      name: 'CharacterRelationship',
+      query: `
+      CREATE NODE TABLE CharacterRelationship (
+        id STRING,
+        fromCharacterId STRING,
+        toCharacterId STRING,
+        relationshipName STRING,
+        PRIMARY KEY (id)
+      )`,
+    },
   ],
   relationships: [
     {
@@ -65,11 +76,17 @@ export const graphDbSchemas = {
       )`,
     },
     {
+      name: 'RELATES_FROM',
+      query: `
+      CREATE REL TABLE RELATES_FROM (
+        FROM CharacterRelationship TO Character
+      )`,
+    },
+    {
       name: 'RELATES_TO',
       query: `
       CREATE REL TABLE RELATES_TO (
-        FROM Character TO Character,
-        relationshipName STRING
+        FROM CharacterRelationship TO Character
       )`,
     },
   ],

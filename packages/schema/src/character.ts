@@ -38,3 +38,7 @@ export type CharacterFormData = v.InferOutput<typeof CharacterFormDataSchema>;
 export const parseToCharacter = (data: unknown): Character => {
   return v.parse(CharacterSchema, data);
 };
+
+export const parseToCharacterList = (data: unknown) => {
+  return v.parse(v.array(CharacterSchema), data);
+};

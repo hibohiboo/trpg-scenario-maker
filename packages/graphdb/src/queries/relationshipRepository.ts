@@ -16,28 +16,15 @@ export const relationshipGraphRepository = {
   }) {
     const escapedName = escapeCypherString(params.relationshipName);
 
+    // 1つのクエリでエッジ作成とプロパティ設定を行う
     const result = (await executeQuery(`
       MATCH (from:Character {id: '${params.fromCharacterId}'}), (to:Character {id: '${params.toCharacterId}'})
       CREATE (from)-[r:RELATES_TO {relationshipName: '${escapedName}'}]->(to)
-      RETURN r, from, to
+      RETURN '${params.fromCharacterId}' AS fromId, '${params.toCharacterId}' AS toId, '${escapedName}' AS relationshipName
     `)) as {
-      r: {
-        _src: { offset: string; table: string };
-        _dst: { offset: string; table: string };
-        _id: { offset: string; table: string };
-        _LABEL: string;
-        relationshipName: string;
-      };
-      from: {
-        id: string;
-        name: string;
-        description: string;
-      };
-      to: {
-        id: string;
-        name: string;
-        description: string;
-      };
+      fromId: string;
+      toId: string;
+      relationshipName: string;
     }[];
 
     const [ret] = result;
@@ -45,9 +32,9 @@ export const relationshipGraphRepository = {
 
     return {
       id: params.id,
-      fromCharacterId: ret.from.id,
-      toCharacterId: ret.to.id,
-      relationshipName: ret.r.relationshipName,
+      fromCharacterId: ret.fromId,
+      toCharacterId: ret.toId,
+      relationshipName: ret.relationshipName,
     };
   },
 

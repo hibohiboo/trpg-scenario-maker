@@ -12,22 +12,12 @@ export const characterGraphRepository = {
     const escapedName = escapeCypherString(params.name);
     const escapedDescription = escapeCypherString(params.description);
 
-    const result = (await executeQuery(`
+    const result = await executeQuery(`
       CREATE (c:Character {id: '${params.id}', name: '${escapedName}', description: '${escapedDescription}'})
-      RETURN c
-    `)) as {
-      c: {
-        _id: { offset: string; table: string };
-        _LABEL: string;
-        id: string;
-        name: string;
-        description: string;
-      };
-    }[];
-    const [ret] = result;
-    if (!ret) return undefined;
+      RETURN c.id AS id, c.name AS name, c.description AS description
+    `);
 
-    return ret.c;
+    return result;
   },
 
   /**
