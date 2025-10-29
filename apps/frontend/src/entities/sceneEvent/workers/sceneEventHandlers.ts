@@ -6,6 +6,7 @@ import {
   parseDeleteEventPayload,
   parseUpdateEventOrderPayload,
   parseSceneEventListSchema,
+  type SceneEvent,
 } from '@trpg-scenario-maker/schema';
 
 /**
@@ -17,7 +18,8 @@ export const sceneEventHandlers = [
     handler: async (payload: unknown) => {
       const { sceneId } = parseGetEventsBySceneIdPayload(payload);
       const result = await sceneEventRepository.getEventsBySceneId(sceneId);
-      return { data: parseSceneEventListSchema(result) };
+      const data: SceneEvent[] = parseSceneEventListSchema(result);
+      return { data };
     },
   },
   {
@@ -64,4 +66,14 @@ export const sceneEventHandlers = [
       return { success: true };
     },
   },
-];
+] as const;
+
+type SceneEventHandler = (typeof sceneEventHandlers)[number];
+
+export type SceneEventHandlerMap = {
+  [H in SceneEventHandler as H['type']]: ReturnType<
+    H['handler']
+  > extends Promise<{ data: infer D }>
+    ? Promise<D>
+    : never;
+};

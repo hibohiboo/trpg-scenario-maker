@@ -1,5 +1,6 @@
 import type { SceneEvent } from '@trpg-scenario-maker/ui';
 import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
+import type { SceneEventHandlerMap } from '../workers/sceneEventHandlers';
 
 /**
  * シーンイベントのグラフDB操作API
@@ -10,10 +11,11 @@ export const sceneEventApi = {
    * シーンに属するイベントを取得
    */
   getEventsBySceneId: async (sceneId: string): Promise<SceneEvent[]> => {
-    const result = await graphdbWorkerClient.request<SceneEvent[]>(
-      'sceneEvent:graph:getEventsBySceneId',
-      { sceneId },
-    );
+    const key = 'sceneEvent:graph:getEventsBySceneId';
+    const result = await graphdbWorkerClient.request<
+      SceneEventHandlerMap[typeof key]
+    >(key, { sceneId });
+
     return result;
   },
 
@@ -24,17 +26,18 @@ export const sceneEventApi = {
     sceneId: string,
     event: Omit<SceneEvent, 'id'>,
   ): Promise<SceneEvent> => {
+    const key = 'sceneEvent:graph:updateEvent';
     const id = crypto.randomUUID();
-    const result = await graphdbWorkerClient.request<SceneEvent>(
-      'sceneEvent:graph:createEvent',
-      {
-        sceneId,
-        id,
-        type: event.type,
-        content: event.content,
-        sortOrder: event.sortOrder,
-      },
-    );
+
+    const result = await graphdbWorkerClient.request<
+      SceneEventHandlerMap[typeof key]
+    >(key, {
+      sceneId,
+      id,
+      type: event.type,
+      content: event.content,
+      sortOrder: event.sortOrder,
+    });
 
     return result;
   },
@@ -46,13 +49,10 @@ export const sceneEventApi = {
     id: string,
     updates: Partial<Omit<SceneEvent, 'id'>>,
   ): Promise<SceneEvent> => {
-    const result = await graphdbWorkerClient.request<SceneEvent>(
-      'sceneEvent:graph:updateEvent',
-      {
-        id,
-        ...updates,
-      },
-    );
+    const key = 'sceneEvent:graph:updateEvent';
+    const result = await graphdbWorkerClient.request<
+      SceneEventHandlerMap[typeof key]
+    >(key, { id, ...updates });
 
     return result;
   },
@@ -61,7 +61,10 @@ export const sceneEventApi = {
    * イベントを削除
    */
   deleteEvent: async (id: string): Promise<void> => {
-    await graphdbWorkerClient.request('sceneEvent:graph:deleteEvent', { id });
+    const key = 'sceneEvent:graph:deleteEvent';
+    await graphdbWorkerClient.request<SceneEventHandlerMap[typeof key]>(key, {
+      id,
+    });
   },
 
   /**
@@ -70,7 +73,8 @@ export const sceneEventApi = {
   updateEventOrder: async (
     eventOrders: { id: string; sortOrder: number }[],
   ): Promise<void> => {
-    await graphdbWorkerClient.request('sceneEvent:graph:updateEventOrder', {
+    const key = 'sceneEvent:graph:updateEventOrder';
+    await graphdbWorkerClient.request<SceneEventHandlerMap[typeof key]>(key, {
       eventOrders,
     });
   },
