@@ -39,7 +39,7 @@ export const sceneGraphApi = {
     scene: Omit<Scene, 'id'>,
   ): Promise<Scene> => {
     const id = crypto.randomUUID();
-    const result = await graphdbWorkerClient.request<Scene[]>(
+    const result = await graphdbWorkerClient.request<Scene>(
       'scene:graph:createScene',
       {
         scenarioId,
@@ -50,20 +50,14 @@ export const sceneGraphApi = {
       },
     );
 
-    if (result.length === 0) {
-      throw new Error(
-        'Failed to create scene: No result returned from database',
-      );
-    }
-
-    return result[0];
+    return result;
   },
 
   /**
    * シーンを更新
    */
   updateScene: async (id: string, updates: Partial<Scene>): Promise<Scene> => {
-    const result = await graphdbWorkerClient.request<Scene[]>(
+    const result = await graphdbWorkerClient.request<Scene>(
       'scene:graph:updateScene',
       {
         id,
@@ -71,13 +65,7 @@ export const sceneGraphApi = {
       },
     );
 
-    if (result.length === 0) {
-      throw new Error(
-        'Failed to update scene: Scene not found or no result returned',
-      );
-    }
-
-    return result[0];
+    return result;
   },
 
   /**

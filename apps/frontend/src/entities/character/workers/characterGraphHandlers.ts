@@ -29,7 +29,15 @@ export const characterGraphHandlers = [
         description: string;
       };
       const result = await characterGraphRepository.create(params);
-      return { data: parseToCharacterList(result) };
+      const [data] = parseToCharacterList(result);
+
+      if (!data) {
+        throw new Error(
+          'Failed to create character: No result returned from database',
+        );
+      }
+
+      return { data };
     },
   },
   {
@@ -41,7 +49,13 @@ export const characterGraphHandlers = [
         description: string;
       };
       const result = await characterGraphRepository.update(params);
-      return { data: parseToCharacterList(result) };
+      const [data] = parseToCharacterList(result);
+      if (data) {
+        throw new Error(
+          'Failed to update character: Character not found or no result returned',
+        );
+      }
+      return { data };
     },
   },
   {

@@ -15,16 +15,12 @@ export const characterRelationGraphApi = {
     toCharacterId: string;
     relationshipName: string;
   }): Promise<Relationship> {
-    const result = await graphdbWorkerClient.request<Relationship[]>(
+    const result = await graphdbWorkerClient.request<Relationship>(
       'characterRelation:graph:create',
       params,
     );
 
-    if (result.length === 0) {
-      throw new Error('Failed to create character relation');
-    }
-
-    return result[0];
+    return result;
   },
 
   /**
@@ -35,16 +31,12 @@ export const characterRelationGraphApi = {
     toCharacterId: string;
     relationshipName: string;
   }): Promise<Relationship> {
-    const result = await graphdbWorkerClient.request<Relationship[]>(
+    const result = await graphdbWorkerClient.request<Relationship>(
       'characterRelation:graph:update',
       params,
     );
 
-    if (result.length === 0) {
-      throw new Error('Failed to update character relation');
-    }
-
-    return result[0];
+    return result;
   },
 
   /**

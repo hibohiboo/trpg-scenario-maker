@@ -35,18 +35,12 @@ export const characterGraphApi = {
     name: string;
     description: string;
   }): Promise<Character> {
-    const result = await graphdbWorkerClient.request<Character[]>(
+    const result = await graphdbWorkerClient.request<Character>(
       'character:graph:create',
       params,
     );
 
-    if (result.length === 0) {
-      throw new Error(
-        'Failed to create character: No result returned from database',
-      );
-    }
-
-    return result[0];
+    return result;
   },
 
   /**
@@ -57,18 +51,12 @@ export const characterGraphApi = {
     name: string;
     description: string;
   }): Promise<Character> {
-    const result = await graphdbWorkerClient.request<Character[]>(
+    const result = await graphdbWorkerClient.request<Character>(
       'character:graph:update',
       params,
     );
 
-    if (result.length === 0) {
-      throw new Error(
-        'Failed to update character: Character not found or no result returned',
-      );
-    }
-
-    return result[0];
+    return result;
   },
 
   /**

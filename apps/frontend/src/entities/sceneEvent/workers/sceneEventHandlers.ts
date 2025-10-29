@@ -25,7 +25,13 @@ export const sceneEventHandlers = [
     handler: async (payload: unknown) => {
       const params = parseCreateEventPayload(payload);
       const result = await sceneEventRepository.createEvent(params);
-      return { data: parseSceneEventListSchema(result) };
+      const [data] = parseSceneEventListSchema(result);
+      if (!data) {
+        throw new Error(
+          'Failed to create event: No result returned from database',
+        );
+      }
+      return { data };
     },
   },
   {
@@ -33,7 +39,13 @@ export const sceneEventHandlers = [
     handler: async (payload: unknown) => {
       const params = parseUpdateEventPayload(payload);
       const result = await sceneEventRepository.updateEvent(params);
-      return { data: parseSceneEventListSchema(result) };
+      const [data] = parseSceneEventListSchema(result);
+      if (!data) {
+        throw new Error(
+          'Failed to update event: Event not found or no result returned',
+        );
+      }
+      return { data };
     },
   },
   {

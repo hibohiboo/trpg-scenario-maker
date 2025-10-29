@@ -39,7 +39,13 @@ export const sceneGraphHandlers = [
     handler: async (payload: unknown) => {
       const params = parseCreateScenePayload(payload);
       const result = await sceneGraphRepository.createScene(params);
-      return { data: result };
+      const [data] = parseSceneListSchema(result);
+      if (!data) {
+        throw new Error(
+          'Failed to create scene: No result returned from database',
+        );
+      }
+      return { data };
     },
   },
   {
@@ -47,7 +53,14 @@ export const sceneGraphHandlers = [
     handler: async (payload: unknown) => {
       const params = parseUpdateScenePayload(payload);
       const result = await sceneGraphRepository.updateScene(params);
-      return { data: result };
+
+      const [data] = parseSceneListSchema(result);
+      if (!data) {
+        throw new Error(
+          'Failed to update scene: Scene not found or no result returned',
+        );
+      }
+      return { data };
     },
   },
   {

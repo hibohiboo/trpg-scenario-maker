@@ -1,4 +1,3 @@
-import { parseSceneEventSchema } from '@trpg-scenario-maker/schema/sceneEvent';
 import type { SceneEvent } from '@trpg-scenario-maker/ui';
 import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 
@@ -26,7 +25,7 @@ export const sceneEventApi = {
     event: Omit<SceneEvent, 'id'>,
   ): Promise<SceneEvent> => {
     const id = crypto.randomUUID();
-    const result = await graphdbWorkerClient.request<SceneEvent[]>(
+    const result = await graphdbWorkerClient.request<SceneEvent>(
       'sceneEvent:graph:createEvent',
       {
         sceneId,
@@ -37,13 +36,7 @@ export const sceneEventApi = {
       },
     );
 
-    if (!result || !Array.isArray(result) || result.length === 0) {
-      throw new Error(
-        'Failed to create event: No result returned from database',
-      );
-    }
-
-    return parseSceneEventSchema(result[0]);
+    return result;
   },
 
   /**
@@ -53,7 +46,7 @@ export const sceneEventApi = {
     id: string,
     updates: Partial<Omit<SceneEvent, 'id'>>,
   ): Promise<SceneEvent> => {
-    const result = await graphdbWorkerClient.request<SceneEvent[]>(
+    const result = await graphdbWorkerClient.request<SceneEvent>(
       'sceneEvent:graph:updateEvent',
       {
         id,
@@ -61,13 +54,7 @@ export const sceneEventApi = {
       },
     );
 
-    if (!result || !Array.isArray(result) || result.length === 0) {
-      throw new Error(
-        'Failed to update event: Event not found or no result returned',
-      );
-    }
-
-    return parseSceneEventSchema(result[0]);
+    return result;
   },
 
   /**

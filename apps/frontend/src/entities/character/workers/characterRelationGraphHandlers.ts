@@ -15,7 +15,11 @@ export const characterRelationGraphHandlers = [
         relationshipName: string;
       };
       const result = await relationshipGraphRepository.create(params);
-      return { data: parseToRelationshipList(result) };
+      const [data] = parseToRelationshipList(result);
+      if (!data) {
+        throw new Error('Failed to create character relation');
+      }
+      return { data };
     },
   },
   {
@@ -27,7 +31,11 @@ export const characterRelationGraphHandlers = [
         relationshipName: string;
       };
       const result = await relationshipGraphRepository.update(params);
-      return { data: parseToRelationshipList(result) };
+      const [data] = parseToRelationshipList(result);
+      if (data) {
+        throw new Error('Failed to update character relation');
+      }
+      return { data };
     },
   },
   {
