@@ -21,6 +21,7 @@ describe('characterGraphRepository', () => {
   describe('キャラクターCRUD操作', () => {
     it('キャラクターを作成できる', async () => {
       const characterId = uuidv4();
+
       const result = await characterGraphRepository.create({
         id: characterId,
         name: 'テストキャラクター',
@@ -33,7 +34,7 @@ describe('characterGraphRepository', () => {
       expect(c.description).toBe('これはテストキャラクターです');
     });
 
-    it.todo('キャラクターを更新できる', async () => {
+    it('キャラクターを更新できる', async () => {
       const characterId = uuidv4();
       await characterGraphRepository.create({
         id: characterId,
@@ -41,19 +42,19 @@ describe('characterGraphRepository', () => {
         description: '初期説明',
       });
 
-      await characterGraphRepository.update({
+      const updateResult = await characterGraphRepository.update({
         id: characterId,
         name: '更新後の名前',
         description: '更新後の説明',
       });
 
-      const result = await characterGraphRepository.findById(characterId);
-      expect(result).toBeDefined();
-      expect(result?.name).toBe('更新後の名前');
-      expect(result?.description).toBe('更新後の説明');
+      const [updated] = parseToCharacterList(updateResult);
+      expect(updated.id).toBe(characterId);
+      expect(updated.name).toBe('更新後の名前');
+      expect(updated.description).toBe('更新後の説明');
     });
 
-    it.todo('キャラクターを削除できる', async () => {
+    it('キャラクターを削除できる', async () => {
       const characterId = uuidv4();
       await characterGraphRepository.create({
         id: characterId,
@@ -64,10 +65,11 @@ describe('characterGraphRepository', () => {
       await characterGraphRepository.delete(characterId);
 
       const result = await characterGraphRepository.findById(characterId);
-      expect(result).toBeUndefined();
+      const characters = parseToCharacterList(result);
+      expect(characters).toHaveLength(0);
     });
 
-    it.todo('全キャラクターを取得できる', async () => {
+    it('全キャラクターを取得できる', async () => {
       const char1Id = uuidv4();
       const char2Id = uuidv4();
 
@@ -84,10 +86,11 @@ describe('characterGraphRepository', () => {
       });
 
       const result = await characterGraphRepository.findAll();
-      expect(result.length).toBeGreaterThanOrEqual(2);
+      const characters = parseToCharacterList(result);
+      expect(characters.length).toBeGreaterThanOrEqual(2);
 
-      const char1 = result.find((c) => c.id === char1Id);
-      const char2 = result.find((c) => c.id === char2Id);
+      const char1 = characters.find((c) => c.id === char1Id);
+      const char2 = characters.find((c) => c.id === char2Id);
 
       expect(char1).toBeDefined();
       expect(char1?.name).toBe('キャラ1');
@@ -95,7 +98,7 @@ describe('characterGraphRepository', () => {
       expect(char2?.name).toBe('キャラ2');
     });
 
-    it.todo('特殊文字を含む説明でキャラクターを作成できる', async () => {
+    it('特殊文字を含む説明でキャラクターを作成できる', async () => {
       const characterId = uuidv4();
       const specialDescription = `特殊文字テスト: 'シングルクォート'
 改行あり`;
@@ -106,8 +109,9 @@ describe('characterGraphRepository', () => {
         description: specialDescription,
       });
 
-      expect(result?.description).toBe(specialDescription);
-      expect(result?.name).toBe("キャラ'名前'");
+      const [c] = parseToCharacterList(result);
+      expect(c.description).toBe(specialDescription);
+      expect(c.name).toBe("キャラ'名前'");
     });
   });
 

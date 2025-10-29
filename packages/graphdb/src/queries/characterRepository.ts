@@ -12,12 +12,10 @@ export const characterGraphRepository = {
     const escapedName = escapeCypherString(params.name);
     const escapedDescription = escapeCypherString(params.description);
 
-    const result = await executeQuery(`
+    return executeQuery(`
       CREATE (c:Character {id: '${params.id}', name: '${escapedName}', description: '${escapedDescription}'})
       RETURN c.id AS id, c.name AS name, c.description AS description
     `);
-
-    return result;
   },
 
   /**
@@ -29,7 +27,7 @@ export const characterGraphRepository = {
     return executeQuery(`
       MATCH (c:Character {id: '${params.id}'})
       SET c.name = '${escapedName}', c.description = '${escapedDescription}'
-      RETURN c
+      RETURN c.id AS id, c.name AS name, c.description AS description
     `);
   },
 
@@ -47,40 +45,19 @@ export const characterGraphRepository = {
    * 全キャラクターノードを取得
    */
   async findAll() {
-    const result = (await executeQuery(`
+    return executeQuery(`
       MATCH (c:Character)
-      RETURN c
-    `)) as {
-      c: {
-        _id: { offset: string; table: string };
-        _LABEL: string;
-        id: string;
-        name: string;
-        description: string;
-      };
-    }[];
-
-    return result.map((row) => row.c);
+      RETURN c.id AS id, c.name AS name, c.description AS description
+    `);
   },
 
   /**
    * IDでキャラクターを取得
    */
   async findById(id: string) {
-    const result = (await executeQuery(`
+    return executeQuery(`
       MATCH (c:Character {id: '${id}'})
-      RETURN c
-    `)) as {
-      c: {
-        _id: { offset: string; table: string };
-        _LABEL: string;
-        id: string;
-        name: string;
-        description: string;
-      };
-    }[];
-
-    const [ret] = result;
-    return ret ? ret.c : undefined;
+      RETURN c.id AS id, c.name AS name, c.description AS description
+    `);
   },
 } as const;
