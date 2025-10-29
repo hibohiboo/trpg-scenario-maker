@@ -9,9 +9,8 @@ export default defineConfig({
     projects: [
       {
         plugins: [
+          // https://storybook.js.org/docs/writing-tests/integrations/vitest-addon
           storybookTest({
-            // https://storybook.js.org/docs/writing-tests/integrations/vitest-addon
-
             tags: {
               include: ['test'],
               exclude: ['experimental'],
@@ -29,6 +28,13 @@ export default defineConfig({
             instances: [{ browser: 'chromium' }],
           },
           setupFiles: ['./.storybook/vitest.setup.ts'],
+        },
+      },
+      {
+        test: {
+          include: ['**/*.test.{ts,tsx}'],
+          environment: 'jsdom',
+          globals: true,
         },
       },
     ],
