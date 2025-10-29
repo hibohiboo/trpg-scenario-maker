@@ -42,32 +42,33 @@ export const relationshipGraphRepository = {
    */
   async findByCharacterId(characterId: string) {
     const outgoingResult = (await executeQuery(`
-      MATCH (from:Character {id: '${characterId}'})-[r:RELATES_TO]->(to:Character)
-      RETURN from, r, to
+      MATCH (f:Character {id: '${characterId}'})-[r:RELATES_TO]->(t:Character)
+      RETURN f, r, t
     `)) as {
-      from: { id: string; name: string; description: string };
+      f: { id: string; name: string; description: string };
       r: { relationshipName: string };
-      to: { id: string; name: string; description: string };
+      t: { id: string; name: string; description: string };
     }[];
 
     const incomingResult = (await executeQuery(`
-      MATCH (from:Character)-[r:RELATES_TO]->(to:Character {id: '${characterId}'})
-      RETURN from, r, to
+      MATCH (f:Character)-[r:RELATES_TO]->(t:Character {id: '${characterId}'})
+      RETURN f, r, t
     `)) as {
-      from: { id: string; name: string; description: string };
+      f: { id: string; name: string; description: string };
       r: { relationshipName: string };
-      to: { id: string; name: string; description: string };
+      t: { id: string; name: string; description: string };
     }[];
-
     return {
       outgoing: outgoingResult.map((row) => ({
-        fromCharacterId: row.from.id,
-        toCharacterId: row.to.id,
+        id: `${row.f.id}${RELATION_DELIMITER}${row.t.id}`,
+        fromCharacterId: row.f.id,
+        toCharacterId: row.t.id,
         relationshipName: row.r.relationshipName,
       })),
       incoming: incomingResult.map((row) => ({
-        fromCharacterId: row.from.id,
-        toCharacterId: row.to.id,
+        id: `${row.f.id}${RELATION_DELIMITER}${row.t.id}`,
+        fromCharacterId: row.f.id,
+        toCharacterId: row.t.id,
         relationshipName: row.r.relationshipName,
       })),
     };
