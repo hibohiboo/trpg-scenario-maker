@@ -70,4 +70,17 @@ export const characterRelationGraphHandlers = [
       return { data: parseToRelationshipList(result) };
     },
   },
-];
+] as const;
+
+type CharacterRelationGraphHandler =
+  (typeof characterRelationGraphHandlers)[number];
+
+export type CharacterRelationGraphHandlerMap = {
+  [H in CharacterRelationGraphHandler as H['type']]: ReturnType<
+    H['handler']
+  > extends Promise<{ data: infer D }>
+    ? D
+    : ReturnType<H['handler']> extends Promise<{ success: boolean }>
+      ? void
+      : never;
+};

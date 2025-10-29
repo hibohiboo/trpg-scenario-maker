@@ -1,5 +1,6 @@
 import type { Relationship } from '@trpg-scenario-maker/schema';
 import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
+import type { CharacterRelationGraphHandlerMap } from '../workers/characterRelationGraphHandlers';
 
 /**
  * キャラクター関係性グラフDB API
@@ -15,10 +16,10 @@ export const characterRelationGraphApi = {
     toCharacterId: string;
     relationshipName: string;
   }): Promise<Relationship> {
-    const result = await graphdbWorkerClient.request<Relationship>(
-      'characterRelation:graph:create',
-      params,
-    );
+    const key = 'characterRelation:graph:create';
+    const result = await graphdbWorkerClient.request<
+      CharacterRelationGraphHandlerMap[typeof key]
+    >(key, params);
 
     return result;
   },
@@ -31,10 +32,10 @@ export const characterRelationGraphApi = {
     toCharacterId: string;
     relationshipName: string;
   }): Promise<Relationship> {
-    const result = await graphdbWorkerClient.request<Relationship>(
-      'characterRelation:graph:update',
-      params,
-    );
+    const key = 'characterRelation:graph:update';
+    const result = await graphdbWorkerClient.request<
+      CharacterRelationGraphHandlerMap[typeof key]
+    >(key, params);
 
     return result;
   },
@@ -46,7 +47,10 @@ export const characterRelationGraphApi = {
     fromCharacterId: string;
     toCharacterId: string;
   }): Promise<void> {
-    await graphdbWorkerClient.request('characterRelation:graph:delete', params);
+    const key = 'characterRelation:graph:delete';
+    await graphdbWorkerClient.request<
+      CharacterRelationGraphHandlerMap[typeof key]
+    >(key, params);
   },
 
   /**
@@ -56,18 +60,19 @@ export const characterRelationGraphApi = {
     outgoing: Relationship[];
     incoming: Relationship[];
   }> {
-    return graphdbWorkerClient.request<{
-      outgoing: Relationship[];
-      incoming: Relationship[];
-    }>('characterRelation:graph:getByCharacterId', { characterId });
+    const key = 'characterRelation:graph:getByCharacterId';
+    return graphdbWorkerClient.request<
+      CharacterRelationGraphHandlerMap[typeof key]
+    >(key, { characterId });
   },
 
   /**
    * 全関係性を取得
    */
   async getAll(): Promise<Relationship[]> {
-    return graphdbWorkerClient.request<Relationship[]>(
-      'characterRelation:graph:getAll',
-    );
+    const key = 'characterRelation:graph:getAll';
+    return graphdbWorkerClient.request<
+      CharacterRelationGraphHandlerMap[typeof key]
+    >(key);
   },
 } as const;

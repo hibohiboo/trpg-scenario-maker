@@ -66,4 +66,16 @@ export const characterGraphHandlers = [
       return { success: true };
     },
   },
-];
+] as const;
+
+type CharacterGraphHandler = (typeof characterGraphHandlers)[number];
+
+export type CharacterGraphHandlerMap = {
+  [H in CharacterGraphHandler as H['type']]: ReturnType<
+    H['handler']
+  > extends Promise<{ data: infer D }>
+    ? D
+    : ReturnType<H['handler']> extends Promise<{ success: boolean }>
+      ? void
+      : never;
+};
