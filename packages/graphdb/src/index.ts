@@ -12,5 +12,5 @@ export { scenarioGraphRepository } from './queries/scenarioRepository';
 export { sceneGraphRepository } from './queries/sceneRepository';
 export { sceneEventRepository } from './queries/sceneEventRepository';
 export { characterGraphRepository } from './queries/characterRepository';
-export { relationshipGraphRepository } from './queries/relationshipRepository';
+export { characterRelationshipGraphRepository as relationshipGraphRepository } from './queries/characterRelationshipGraphRepository';
 export { setItem, getItem, removeItem, clear } from './indexedDBStorage';

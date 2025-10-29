@@ -6,8 +6,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { initializeDatabase, closeDatabase, executeQuery } from '../db';
 import { graphDbSchemas } from '../schemas';
+import { characterRelationshipGraphRepository } from './characterRelationshipGraphRepository';
 import { characterGraphRepository } from './characterRepository';
-import { relationshipGraphRepository } from './relationshipRepository';
 
 describe('characterGraphRepository', () => {
   beforeAll(async () => {
@@ -136,14 +136,14 @@ describe('characterGraphRepository', () => {
       });
 
       // A→B の関係
-      const rel1Result = await relationshipGraphRepository.create({
+      const rel1Result = await characterRelationshipGraphRepository.create({
         fromCharacterId: char1Id,
         toCharacterId: char2Id,
         relationshipName: '友人',
       });
 
       // B→A の関係（双方向は別エッジ）
-      const rel2Result = await relationshipGraphRepository.create({
+      const rel2Result = await characterRelationshipGraphRepository.create({
         fromCharacterId: char2Id,
         toCharacterId: char1Id,
         relationshipName: '仲間',
@@ -182,20 +182,20 @@ describe('characterGraphRepository', () => {
         description: 'テスト',
       });
       // char1 → char2
-      await relationshipGraphRepository.create({
+      await characterRelationshipGraphRepository.create({
         fromCharacterId: char1Id,
         toCharacterId: char2Id,
         relationshipName: 'ライバル',
       });
       // char3 → char1
-      await relationshipGraphRepository.create({
+      await characterRelationshipGraphRepository.create({
         fromCharacterId: char3Id,
         toCharacterId: char1Id,
         relationshipName: '師匠',
       });
 
       const result =
-        await relationshipGraphRepository.findByCharacterId(char1Id);
+        await characterRelationshipGraphRepository.findByCharacterId(char1Id);
 
       const [o] = parseToRelationshipList(result.outgoing);
       expect(o.toCharacterId).toBe(char2Id);
@@ -222,13 +222,13 @@ describe('characterGraphRepository', () => {
         description: 'テスト',
       });
 
-      await relationshipGraphRepository.create({
+      await characterRelationshipGraphRepository.create({
         fromCharacterId: char1Id,
         toCharacterId: char2Id,
         relationshipName: '初期関係',
       });
 
-      const updateResult = await relationshipGraphRepository.update({
+      const updateResult = await characterRelationshipGraphRepository.update({
         fromCharacterId: char1Id,
         toCharacterId: char2Id,
         relationshipName: '更新後の関係',
@@ -257,19 +257,19 @@ describe('characterGraphRepository', () => {
         description: 'テスト',
       });
 
-      await relationshipGraphRepository.create({
+      await characterRelationshipGraphRepository.create({
         fromCharacterId: char1Id,
         toCharacterId: char2Id,
         relationshipName: '削除される関係',
       });
 
-      await relationshipGraphRepository.delete({
+      await characterRelationshipGraphRepository.delete({
         fromCharacterId: char1Id,
         toCharacterId: char2Id,
       });
 
       const result =
-        await relationshipGraphRepository.findByCharacterId(char1Id);
+        await characterRelationshipGraphRepository.findByCharacterId(char1Id);
       expect(result.outgoing).toHaveLength(0);
     });
 
@@ -289,17 +289,18 @@ describe('characterGraphRepository', () => {
         description: 'テスト',
       });
 
-      await relationshipGraphRepository.create({
-        id: uuidv4(),
+      await characterRelationshipGraphRepository.create({
         fromCharacterId: char1Id,
         toCharacterId: char2Id,
         relationshipName: '関係1',
       });
 
-      const allRelationships = await relationshipGraphRepository.findAll();
-      expect(allRelationships.length).toBeGreaterThanOrEqual(1);
+      const allRelationships =
+        await characterRelationshipGraphRepository.findAll();
+      const all = parseToRelationshipList(allRelationships);
+      expect(all.length).toBeGreaterThanOrEqual(1);
 
-      const foundRelation = allRelationships.find(
+      const foundRelation = all.find(
         (r) => r.fromCharacterId === char1Id && r.toCharacterId === char2Id,
       );
       expect(foundRelation).toBeDefined();

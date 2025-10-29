@@ -7,6 +7,8 @@ import {
   setItem,
   getItem,
 } from '@trpg-scenario-maker/graphdb';
+import { characterGraphHandlers } from '@/entities/character/workers/characterGraphHandlers';
+import { characterRelationGraphHandlers } from '@/entities/character/workers/characterRelationGraphHandlers';
 import { scenarioGraphHandlers } from '@/entities/scenario/workers/scenarioGraphHandlers';
 import { sceneGraphHandlers } from '@/entities/scene/workers/sceneGraphHandlers';
 import { sceneEventHandlers } from '@/entities/sceneEvent/workers/sceneEventHandlers';
@@ -120,6 +122,16 @@ sceneGraphHandlers.forEach(({ type, handler }) => {
 
 // シーンイベントハンドラーを登録
 sceneEventHandlers.forEach(({ type, handler }) => {
+  handlers.set(type, handler);
+});
+
+// キャラクターグラフハンドラーを登録
+characterGraphHandlers.forEach(({ type, handler }) => {
+  handlers.set(type, handler);
+});
+
+// キャラクター関係性グラフハンドラーを登録
+characterRelationGraphHandlers.forEach(({ type, handler }) => {
   handlers.set(type, handler);
 });
 

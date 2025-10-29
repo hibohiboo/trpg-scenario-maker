@@ -50,7 +50,7 @@ export const sceneGraphApi = {
       },
     );
 
-    if (!result || !Array.isArray(result) || result.length === 0) {
+    if (result.length === 0) {
       throw new Error(
         'Failed to create scene: No result returned from database',
       );
@@ -71,7 +71,7 @@ export const sceneGraphApi = {
       },
     );
 
-    if (!result || !Array.isArray(result) || result.length === 0) {
+    if (result.length === 0) {
       throw new Error(
         'Failed to update scene: Scene not found or no result returned',
       );

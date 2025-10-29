@@ -1,8 +1,9 @@
-import { relationshipGraphRepository } from '@trpg-scenario-maker/graphdb';
 import type { Relationship } from '@trpg-scenario-maker/schema';
+import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 
 /**
  * キャラクター関係性グラフDB API
+ * GraphDBWorkerClientを使用して、キャラクター関係性固有のAPI操作を提供
  */
 export const characterRelationGraphApi = {
   /**
@@ -14,11 +15,16 @@ export const characterRelationGraphApi = {
     toCharacterId: string;
     relationshipName: string;
   }): Promise<Relationship> {
-    const result = await relationshipGraphRepository.create(params);
-    if (Array.isArray(result) && result.length > 0) {
-      return result[0] as Relationship;
+    const result = await graphdbWorkerClient.request<Relationship[]>(
+      'characterRelation:graph:create',
+      params,
+    );
+
+    if (result.length === 0) {
+      throw new Error('Failed to create character relation');
     }
-    throw new Error('Failed to create character relation');
+
+    return result[0];
   },
 
   /**
@@ -29,11 +35,16 @@ export const characterRelationGraphApi = {
     toCharacterId: string;
     relationshipName: string;
   }): Promise<Relationship> {
-    const result = await relationshipGraphRepository.update(params);
-    if (Array.isArray(result) && result.length > 0) {
-      return result[0] as Relationship;
+    const result = await graphdbWorkerClient.request<Relationship[]>(
+      'characterRelation:graph:update',
+      params,
+    );
+
+    if (result.length === 0) {
+      throw new Error('Failed to update character relation');
     }
-    throw new Error('Failed to update character relation');
+
+    return result[0];
   },
 
   /**
@@ -43,7 +54,7 @@ export const characterRelationGraphApi = {
     fromCharacterId: string;
     toCharacterId: string;
   }): Promise<void> {
-    await relationshipGraphRepository.delete(params);
+    await graphdbWorkerClient.request('characterRelation:graph:delete', params);
   },
 
   /**
@@ -53,13 +64,18 @@ export const characterRelationGraphApi = {
     outgoing: Relationship[];
     incoming: Relationship[];
   }> {
-    return relationshipGraphRepository.findByCharacterId(characterId);
+    return graphdbWorkerClient.request<{
+      outgoing: Relationship[];
+      incoming: Relationship[];
+    }>('characterRelation:graph:getByCharacterId', { characterId });
   },
 
   /**
    * 全関係性を取得
    */
   async getAll(): Promise<Relationship[]> {
-    return relationshipGraphRepository.findAll();
+    return graphdbWorkerClient.request<Relationship[]>(
+      'characterRelation:graph:getAll',
+    );
   },
 } as const;

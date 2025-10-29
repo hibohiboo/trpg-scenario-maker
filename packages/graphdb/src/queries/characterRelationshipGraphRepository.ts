@@ -5,7 +5,7 @@ import { escapeCypherString } from '../utils/escapeCypherString';
 /**
  * 関係性のグラフDB操作リポジトリ
  */
-export const relationshipGraphRepository = {
+export const characterRelationshipGraphRepository = {
   /**
    * 関係性エッジを作成（A→Bの関係）
    */
