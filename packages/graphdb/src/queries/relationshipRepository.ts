@@ -103,23 +103,10 @@ export const relationshipGraphRepository = {
   }) {
     const escapedName = escapeCypherString(params.relationshipName);
 
-    const result = (await executeQuery(`
-      MATCH (from:Character {id: '${params.fromCharacterId}'})-[r:RELATES_TO]->(to:Character {id: '${params.toCharacterId}'})
+    return executeQuery(`
+      MATCH (f:Character {id: '${params.fromCharacterId}'})-[r:RELATES_TO]->(t:Character {id: '${params.toCharacterId}'})
       SET r.relationshipName = '${escapedName}'
-      RETURN from, r, to
-    `)) as {
-      from: { id: string; name: string; description: string };
-      r: { relationshipName: string };
-      to: { id: string; name: string; description: string };
-    }[];
-
-    const [ret] = result;
-    if (!ret) return undefined;
-
-    return {
-      fromCharacterId: ret.from.id,
-      toCharacterId: ret.to.id,
-      relationshipName: ret.r.relationshipName,
-    };
+      RETURN '${params.fromCharacterId}${RELATION_DELIMITER}${params.toCharacterId}' AS id, '${params.fromCharacterId}' AS fromCharacterId, '${params.toCharacterId}' AS toCharacterId, '${escapedName}' AS relationshipName
+    `);
   },
 } as const;

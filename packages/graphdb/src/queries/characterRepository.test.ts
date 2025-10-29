@@ -213,7 +213,7 @@ describe('characterGraphRepository', () => {
       expect(result.incoming[0].relationshipName).toBe('師匠');
     });
 
-    it.todo('関係性を更新できる', async () => {
+    it('関係性を更新できる', async () => {
       const char1Id = uuidv4();
       const char2Id = uuidv4();
 
@@ -230,20 +230,22 @@ describe('characterGraphRepository', () => {
       });
 
       await relationshipGraphRepository.create({
-        id: uuidv4(),
         fromCharacterId: char1Id,
         toCharacterId: char2Id,
         relationshipName: '初期関係',
       });
 
-      const updated = await relationshipGraphRepository.update({
+      const updateResult = await relationshipGraphRepository.update({
         fromCharacterId: char1Id,
         toCharacterId: char2Id,
         relationshipName: '更新後の関係',
       });
 
-      expect(updated).toBeDefined();
-      expect(updated?.relationshipName).toBe('更新後の関係');
+      const [updated] = parseToRelationshipList(updateResult);
+      expect(updated.id).toBe(`${char1Id}|${char2Id}`);
+      expect(updated.fromCharacterId).toBe(char1Id);
+      expect(updated.toCharacterId).toBe(char2Id);
+      expect(updated.relationshipName).toBe('更新後の関係');
     });
 
     it.todo('関係性を削除できる', async () => {
