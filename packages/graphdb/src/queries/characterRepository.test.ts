@@ -241,7 +241,7 @@ describe('characterGraphRepository', () => {
       expect(updated.relationshipName).toBe('更新後の関係');
     });
 
-    it.todo('関係性を削除できる', async () => {
+    it('関係性を削除できる', async () => {
       const char1Id = uuidv4();
       const char2Id = uuidv4();
 
