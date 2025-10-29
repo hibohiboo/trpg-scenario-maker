@@ -32,7 +32,7 @@ export const relationshipGraphRepository = {
     toCharacterId: string;
   }): Promise<void> {
     await executeQuery(`
-      MATCH (from:Character {id: '${params.fromCharacterId}'})-[r:RELATES_TO]->(to:Character {id: '${params.toCharacterId}'})
+      MATCH (f:Character {id: '${params.fromCharacterId}'})-[r:RELATES_TO]->(t:Character {id: '${params.toCharacterId}'})
       DELETE r
     `);
   },
@@ -79,17 +79,18 @@ export const relationshipGraphRepository = {
    */
   async findAll() {
     const result = (await executeQuery(`
-      MATCH (from:Character)-[r:RELATES_TO]->(to:Character)
-      RETURN from, r, to
+      MATCH (f:Character)-[r:RELATES_TO]->(t:Character)
+      RETURN f, r, t
     `)) as {
-      from: { id: string; name: string; description: string };
+      f: { id: string; name: string; description: string };
       r: { relationshipName: string };
-      to: { id: string; name: string; description: string };
+      t: { id: string; name: string; description: string };
     }[];
 
     return result.map((row) => ({
-      fromCharacterId: row.from.id,
-      toCharacterId: row.to.id,
+      id: `${row.f.id}${RELATION_DELIMITER}${row.t.id}`,
+      fromCharacterId: row.f.id,
+      toCharacterId: row.t.id,
       relationshipName: row.r.relationshipName,
     }));
   },

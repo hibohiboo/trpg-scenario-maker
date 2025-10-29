@@ -273,7 +273,7 @@ describe('characterGraphRepository', () => {
       expect(result.outgoing).toHaveLength(0);
     });
 
-    it.todo('全関係性を取得できる', async () => {
+    it('全関係性を取得できる', async () => {
       const char1Id = uuidv4();
       const char2Id = uuidv4();
 
