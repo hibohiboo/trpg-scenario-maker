@@ -36,7 +36,7 @@ export default defineConfig({
       output: {
         manualChunks: (moduleId) => {
           if (moduleId.includes('node_modules')) {
-            return moduleId.includes('react') ? 'react' : 'vendor';
+            return chunkRule(moduleId);
           }
           return null;
         },
@@ -45,3 +45,16 @@ export default defineConfig({
     assetsInlineLimit: 0,
   },
 });
+
+function chunkRule(moduleId: string) {
+  console.log(moduleId);
+  if (moduleId.includes('react-redux') || moduleId.includes('@reduxjs/toolkit'))
+    return 'redux';
+  if (moduleId.includes('react-router')) return 'router';
+  if (moduleId.includes('react-icons')) return 'icons';
+  if (moduleId.includes('@xyflow/react')) return 'flow';
+  if (moduleId.includes('react-markdown') || moduleId.includes('remark-gfm'))
+    return 'markdown';
+  if (moduleId.includes('react')) return 'react';
+  return 'vendor';
+}
