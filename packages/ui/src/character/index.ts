@@ -1,4 +1,5 @@
 export * from './CharacterList';
+export * from './CharacterCreateModal';
 export * from './RelationshipList';
 export * from './RelationshipForm';
 export * from './DeleteRelationshipModal';

@@ -1,3 +1,4 @@
+import { CharacterCreateModal } from './CharacterCreateModal';
 import { CharacterList } from './CharacterList';
 import { DeleteRelationshipModal } from './DeleteRelationshipModal';
 import { RelationshipForm } from './RelationshipForm';
@@ -13,9 +14,26 @@ export interface CharacterRelationshipPageProps {
   isLoadingCharacters?: boolean;
   /** 関係性読み込み中 */
   isLoadingRelationships?: boolean;
-  /** 作成モーダルの表示状態 */
-  isCreateModalOpen: boolean;
 
+  /** キャラクター作成モーダルの表示状態 */
+  isCharacterCreateModalOpen: boolean;
+  /** キャラクター作成フォーム: 名前 */
+  createCharacterName: string;
+  /** キャラクター作成フォーム: 説明 */
+  createCharacterDescription: string;
+  /** キャラクター作成ボタンクリック */
+  onCharacterCreateNew: () => void;
+  /** キャラクター作成モーダルを閉じる */
+  onCloseCharacterCreateModal: () => void;
+  /** キャラクター作成フォーム: 名前変更 */
+  onCreateCharacterNameChange: (name: string) => void;
+  /** キャラクター作成フォーム: 説明変更 */
+  onCreateCharacterDescriptionChange: (description: string) => void;
+  /** キャラクター作成フォーム送信 */
+  onCharacterCreateSubmit: () => void;
+
+  /** 関係性作成モーダルの表示状態 */
+  isCreateModalOpen: boolean;
   /** 編集モーダルの表示状態 */
   isEditModalOpen: boolean;
   /** 削除確認モーダルの表示状態 */
@@ -74,6 +92,14 @@ export function CharacterRelationshipPage({
   relationships,
   isLoadingCharacters,
   isLoadingRelationships,
+  isCharacterCreateModalOpen,
+  createCharacterName,
+  createCharacterDescription,
+  onCharacterCreateNew,
+  onCloseCharacterCreateModal,
+  onCreateCharacterNameChange,
+  onCreateCharacterDescriptionChange,
+  onCharacterCreateSubmit,
   isCreateModalOpen,
   isEditModalOpen,
   isDeleteModalOpen,
@@ -112,6 +138,7 @@ export function CharacterRelationshipPage({
             characters={characters}
             isLoading={isLoadingCharacters}
             onCharacterClick={onCharacterClick}
+            onCreateNew={onCharacterCreateNew}
           />
         </div>
 
@@ -210,6 +237,18 @@ export function CharacterRelationshipPage({
           </div>
         </div>
       )}
+
+      {/* キャラクター作成モーダル */}
+      <CharacterCreateModal
+        isOpen={isCharacterCreateModalOpen}
+        name={createCharacterName}
+        description={createCharacterDescription}
+        isSubmitting={isSubmitting}
+        onClose={onCloseCharacterCreateModal}
+        onNameChange={onCreateCharacterNameChange}
+        onDescriptionChange={onCreateCharacterDescriptionChange}
+        onSubmit={onCharacterCreateSubmit}
+      />
 
       {/* 削除確認モーダル */}
       {isDeleteModalOpen && deletingRelationship && (

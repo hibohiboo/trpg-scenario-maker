@@ -1,45 +1,9 @@
-import {
-  Given,
-  When,
-  Then,
-  Before,
-  After,
-  setDefaultTimeout,
-  setWorldConstructor,
-} from '@cucumber/cucumber';
-import { chromium, Page, expect } from '@playwright/test';
+import { When, Then } from '@cucumber/cucumber';
+import { Page, expect } from '@playwright/test';
 
 interface CustomWorld {
   page: Page;
-  init: () => Promise<void>;
 }
-
-setDefaultTimeout(10000);
-
-function setupCustomWorld() {
-  setWorldConstructor(function (this: CustomWorld) {
-    this.init = async () => {
-      const browser = await chromium.launch({ headless: true });
-      const context = await browser.newContext();
-      this.page = await context.newPage();
-    };
-  });
-}
-setupCustomWorld();
-
-Before(async function (this: CustomWorld) {
-  await this.init();
-});
-
-After(async function (this: CustomWorld) {
-  await this.page.close();
-});
-
-// 基本操作
-Given('アプリケーションを開いている', async function (this: CustomWorld) {
-  await this.page.goto('http://localhost:5173');
-  await this.page.waitForLoadState('networkidle');
-});
 
 // ナビゲーション
 When(
@@ -56,14 +20,45 @@ Then('キャラクター一覧が表示される', async function (this: CustomW
   ).toBeVisible();
 });
 
-// 関係性の作成
+// キャラクター作成
 When(
-  '{string} ボタンをクリックする',
-  async function (this: CustomWorld, buttonText: string) {
-    await this.page.getByRole('button', { name: buttonText }).click();
+  'キャラクター名に {string} と入力する',
+  async function (this: CustomWorld, name: string) {
+    await this.page
+      .getByPlaceholder('名前を入力')
+      .or(this.page.getByLabel('名前'))
+      .fill(name);
   },
 );
 
+When(
+  'キャラクター説明に {string} と入力する',
+  async function (this: CustomWorld, description: string) {
+    await this.page
+      .getByPlaceholder('説明を入力')
+      .or(this.page.getByLabel('説明'))
+      .fill(description);
+  },
+);
+
+When(
+  'モーダルの {string} ボタンをクリックする',
+  async function (this: CustomWorld, buttonText: string) {
+    await this.page
+      .locator('[role="dialog"]')
+      .getByRole('button', { name: buttonText })
+      .click();
+  },
+);
+
+Then(
+  'キャラクター一覧に {string} が表示される',
+  async function (this: CustomWorld, characterName: string) {
+    await expect(this.page.getByText(characterName)).toBeVisible();
+  },
+);
+
+// 関係性の作成
 When(
   '関係元キャラクターで {string} を選択する',
   async function (this: CustomWorld, characterName: string) {
@@ -101,17 +96,39 @@ When(
 );
 
 Then(
-  '関係性一覧に {string} が表示される',
-  async function (this: CustomWorld, relationshipText: string) {
-    await expect(this.page.getByText(relationshipText)).toBeVisible();
+  '関係性 {string} から {string} への {string} が表示される',
+  async function (
+    this: CustomWorld,
+    fromChar: string,
+    toChar: string,
+    relationshipName: string,
+  ) {
+    // 3つのテキストすべてが同じ行に含まれることを確認
+    const row = this.page
+      .locator('div')
+      .filter({ hasText: fromChar })
+      .filter({ hasText: toChar })
+      .filter({ hasText: relationshipName })
+      .first();
+    await expect(row).toBeVisible();
   },
 );
 
 // 関係性の編集
 When(
-  '関係性 {string} の編集ボタンをクリックする',
-  async function (this: CustomWorld, relationshipText: string) {
-    const row = this.page.getByText(relationshipText).locator('..');
+  '関係性 {string} から {string} への {string} の編集ボタンをクリックする',
+  async function (
+    this: CustomWorld,
+    fromChar: string,
+    toChar: string,
+    relationshipName: string,
+  ) {
+    const row = this.page
+      .locator('div')
+      .filter({ hasText: fromChar })
+      .filter({ hasText: toChar })
+      .filter({ hasText: relationshipName })
+      .first();
     await row.getByRole('button', { name: '編集' }).click();
   },
 );
@@ -139,9 +156,19 @@ When(
 
 // 関係性の削除
 When(
-  '関係性 {string} の削除ボタンをクリックする',
-  async function (this: CustomWorld, relationshipText: string) {
-    const row = this.page.getByText(relationshipText).locator('..');
+  '関係性 {string} から {string} への {string} の削除ボタンをクリックする',
+  async function (
+    this: CustomWorld,
+    fromChar: string,
+    toChar: string,
+    relationshipName: string,
+  ) {
+    const row = this.page
+      .locator('div')
+      .filter({ hasText: fromChar })
+      .filter({ hasText: toChar })
+      .filter({ hasText: relationshipName })
+      .first();
     await row.getByRole('button', { name: '削除' }).click();
   },
 );
@@ -157,8 +184,18 @@ When(
 );
 
 Then(
-  '関係性一覧に {string} が表示されない',
-  async function (this: CustomWorld, relationshipText: string) {
-    await expect(this.page.getByText(relationshipText)).not.toBeVisible();
+  '関係性 {string} から {string} への {string} が表示されない',
+  async function (
+    this: CustomWorld,
+    fromChar: string,
+    toChar: string,
+    relationshipName: string,
+  ) {
+    const row = this.page
+      .locator('div')
+      .filter({ hasText: fromChar })
+      .filter({ hasText: toChar })
+      .filter({ hasText: relationshipName });
+    await expect(row).not.toBeVisible();
   },
 );

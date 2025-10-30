@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import { setSelectedCharacterId, relationshipSlice } from '../model/relationshipSlice';
 import { useAllRelationships } from './useAllRelationships';
 import { useCharacterList } from './useCharacterList';
+import { useCreateCharacter } from './useCreateCharacter';
 import { useCreateRelationship } from './useCreateRelationship';
 import { useDeleteRelationship } from './useDeleteRelationship';
 import { useUpdateRelationship } from './useUpdateRelationship';
@@ -19,7 +20,20 @@ export const useCharacterRelationshipPage = () => {
   // 関係性リスト
   const { relationships, isLoading: isLoadingRelationships } = useAllRelationships();
 
-  // 作成
+  // キャラクター作成
+  const {
+    isOpen: isCharacterCreateModalOpen,
+    name: createCharacterName,
+    description: createCharacterDescription,
+    isSubmitting: isCreatingCharacter,
+    openModal: openCharacterCreateModal,
+    closeModal: closeCharacterCreateModal,
+    setName: setCreateCharacterName,
+    setDescription: setCreateCharacterDescription,
+    createCharacter,
+  } = useCreateCharacter();
+
+  // 関係性作成
   const {
     isOpen: isCreateModalOpen,
     fromCharacterId: createFromCharacterId,
@@ -75,16 +89,26 @@ export const useCharacterRelationshipPage = () => {
     selectedCharacterId,
     onCharacterClick: handleCharacterClick,
 
+    // キャラクター作成モーダル
+    isCharacterCreateModalOpen,
+    createCharacterName,
+    createCharacterDescription,
+    onCharacterCreateNew: openCharacterCreateModal,
+    onCloseCharacterCreateModal: closeCharacterCreateModal,
+    onCreateCharacterNameChange: setCreateCharacterName,
+    onCreateCharacterDescriptionChange: setCreateCharacterDescription,
+    onCharacterCreateSubmit: createCharacter,
+
     // 関係性リスト
     relationships,
     isLoadingRelationships,
 
-    // 作成モーダル
+    // 関係性作成モーダル
     isCreateModalOpen,
     createFromCharacterId,
     createToCharacterId,
     createRelationshipName,
-    isSubmitting: isCreating,
+    isSubmitting: isCreating || isCreatingCharacter,
     onCreateNew: openCreateModal,
     onCloseCreateModal: closeCreateModal,
     onCreateFromCharacterChange: setCreateFromCharacterId,

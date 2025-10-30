@@ -9,6 +9,14 @@ export const CharacterRelationshipPage = () => {
       relationships={vm.relationships}
       isLoadingCharacters={vm.isLoadingCharacters}
       isLoadingRelationships={vm.isLoadingRelationships}
+      isCharacterCreateModalOpen={vm.isCharacterCreateModalOpen}
+      createCharacterName={vm.createCharacterName}
+      createCharacterDescription={vm.createCharacterDescription}
+      onCharacterCreateNew={vm.onCharacterCreateNew}
+      onCloseCharacterCreateModal={vm.onCloseCharacterCreateModal}
+      onCreateCharacterNameChange={vm.onCreateCharacterNameChange}
+      onCreateCharacterDescriptionChange={vm.onCreateCharacterDescriptionChange}
+      onCharacterCreateSubmit={vm.onCharacterCreateSubmit}
       isCreateModalOpen={vm.isCreateModalOpen}
       isEditModalOpen={vm.isEditModalOpen}
       isDeleteModalOpen={vm.isDeleteModalOpen}

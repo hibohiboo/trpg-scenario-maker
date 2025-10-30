@@ -70,128 +70,97 @@ const sampleRelationships: Relationship[] = [
   },
 ];
 
+const baseArgs = {
+  isCharacterCreateModalOpen: false,
+  createCharacterName: '',
+  createCharacterDescription: '',
+  onCharacterCreateNew: fn(),
+  onCloseCharacterCreateModal: fn(),
+  onCreateCharacterNameChange: fn(),
+  onCreateCharacterDescriptionChange: fn(),
+  onCharacterCreateSubmit: fn(),
+  isCreateModalOpen: false,
+  isEditModalOpen: false,
+  isDeleteModalOpen: false,
+  createFromCharacterId: '',
+  createToCharacterId: '',
+  createRelationshipName: '',
+  editRelationshipName: '',
+  editingRelationship: null,
+  deletingRelationship: null,
+  isSubmitting: false,
+  isDeleting: false,
+};
+
 export const Default: Story = {
   args: {
+    ...baseArgs,
     characters: sampleCharacters,
     relationships: sampleRelationships,
     isLoadingCharacters: false,
     isLoadingRelationships: false,
-    isCreateModalOpen: false,
-    isEditModalOpen: false,
-    isDeleteModalOpen: false,
-    createFromCharacterId: '',
-    createToCharacterId: '',
-    createRelationshipName: '',
-    editRelationshipName: '',
-    editingRelationship: null,
-    deletingRelationship: null,
-    isSubmitting: false,
-    isDeleting: false,
   },
 };
 
 export const Loading: Story = {
   args: {
+    ...baseArgs,
     characters: [],
     relationships: [],
     isLoadingCharacters: true,
     isLoadingRelationships: true,
-    isCreateModalOpen: false,
-    isEditModalOpen: false,
-    isDeleteModalOpen: false,
-    createFromCharacterId: '',
-    createToCharacterId: '',
-    createRelationshipName: '',
-    editRelationshipName: '',
-    editingRelationship: null,
-    deletingRelationship: null,
-    isSubmitting: false,
-    isDeleting: false,
   },
 };
 
 export const Empty: Story = {
   args: {
+    ...baseArgs,
     characters: [],
     relationships: [],
     isLoadingCharacters: false,
     isLoadingRelationships: false,
-    isCreateModalOpen: false,
-    isEditModalOpen: false,
-    isDeleteModalOpen: false,
-    createFromCharacterId: '',
-    createToCharacterId: '',
-    createRelationshipName: '',
-    editRelationshipName: '',
-    editingRelationship: null,
-    deletingRelationship: null,
-    isSubmitting: false,
-    isDeleting: false,
   },
 };
 
 export const WithCreateModal: Story = {
   args: {
+    ...baseArgs,
     characters: sampleCharacters,
     relationships: sampleRelationships,
     isLoadingCharacters: false,
     isLoadingRelationships: false,
     isCreateModalOpen: true,
-    isEditModalOpen: false,
-    isDeleteModalOpen: false,
-    createFromCharacterId: '',
-    createToCharacterId: '',
-    createRelationshipName: '',
-    editRelationshipName: '',
-    editingRelationship: null,
-    deletingRelationship: null,
-    isSubmitting: false,
-    isDeleting: false,
   },
 };
 
 export const WithEditModal: Story = {
   args: {
+    ...baseArgs,
     characters: sampleCharacters,
     relationships: sampleRelationships,
     isLoadingCharacters: false,
     isLoadingRelationships: false,
-    isCreateModalOpen: false,
     isEditModalOpen: true,
-    isDeleteModalOpen: false,
-    createFromCharacterId: '',
-    createToCharacterId: '',
-    createRelationshipName: '',
     editRelationshipName: '親友',
     editingRelationship: sampleRelationships[0],
-    deletingRelationship: null,
-    isSubmitting: false,
-    isDeleting: false,
   },
 };
 
 export const WithDeleteModal: Story = {
   args: {
+    ...baseArgs,
     characters: sampleCharacters,
     relationships: sampleRelationships,
     isLoadingCharacters: false,
     isLoadingRelationships: false,
-    isCreateModalOpen: false,
-    isEditModalOpen: false,
     isDeleteModalOpen: true,
-    createFromCharacterId: '',
-    createToCharacterId: '',
-    createRelationshipName: '',
-    editRelationshipName: '',
-    editingRelationship: null,
     deletingRelationship: sampleRelationships[0],
-    isSubmitting: false,
-    isDeleting: false,
   },
 };
 
 export const ManyCharactersAndRelationships: Story = {
   args: {
+    ...baseArgs,
     characters: [
       ...sampleCharacters,
       {
@@ -228,16 +197,5 @@ export const ManyCharactersAndRelationships: Story = {
     ],
     isLoadingCharacters: false,
     isLoadingRelationships: false,
-    isCreateModalOpen: false,
-    isEditModalOpen: false,
-    isDeleteModalOpen: false,
-    createFromCharacterId: '',
-    createToCharacterId: '',
-    createRelationshipName: '',
-    editRelationshipName: '',
-    editingRelationship: null,
-    deletingRelationship: null,
-    isSubmitting: false,
-    isDeleting: false,
   },
 };

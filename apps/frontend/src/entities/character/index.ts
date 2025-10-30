@@ -5,6 +5,7 @@ export * from './actions/relationshipActions';
 export * from './model/characterSlice';
 export * from './model/relationshipSlice';
 export * from './hooks/useCharacterList';
+export * from './hooks/useCreateCharacter';
 export * from './hooks/useAllRelationships';
 export * from './hooks/useCharacterRelationships';
 export * from './hooks/useCreateRelationship';

@@ -56,6 +56,8 @@
   - [x] character-relationship.feature（Featureファイル）
   - [x] character-relationship.steps.ts（ステップ定義）
   - [x] 双方向関係性のテストケース追加
+  - [x] 重複ステップ定義の解消（共通ステップをscenario-creation.steps.tsに集約）
+  - [x] テストデータのセットアップ追加（キャラクター作成ステップ）
 
 ### 📝 未着手（テスト実行・グラフ可視化）
 - [ ] 開発サーバー起動
@@ -149,7 +151,7 @@
 | UI層（コンポーネント） | ✅完了 | 100% (基本コンポーネント完了) |
 | ページ統合層 | ✅完了 | 100% (Hooks+Container完了) |
 | ルーティング層 | ✅完了 | 100% (Navigation+Routes完了) |
-| テスト層（BDD） | ❌未着手 | 0% |
+| テスト層（BDD） | ✅完了 | 100% (Feature+Steps完了) |
 
 ## 実装完了したファイル一覧
 
@@ -208,3 +210,7 @@
 - ✅ `packages/ui/src/common/index.ts` - export更新
 - ✅ `apps/frontend/src/app/routes/LayoutWrapper.tsx` - レイアウトラッパー
 - ✅ `apps/frontend/src/app/routes/index.tsx` - /charactersルート追加
+
+### BDDテスト層
+- ✅ `apps/frontend/tests/features/character-relationship.feature` - Featureファイル
+- ✅ `apps/frontend/tests/steps/character-relationship.steps.ts` - ステップ定義
