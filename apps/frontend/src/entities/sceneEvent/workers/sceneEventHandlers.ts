@@ -74,6 +74,8 @@ export type SceneEventHandlerMap = {
   [H in SceneEventHandler as H['type']]: ReturnType<
     H['handler']
   > extends Promise<{ data: infer D }>
-    ? Promise<D>
-    : never;
+    ? D
+    : ReturnType<H['handler']> extends Promise<{ success: boolean }>
+      ? void
+      : never;
 };
