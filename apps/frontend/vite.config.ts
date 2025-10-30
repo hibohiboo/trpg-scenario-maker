@@ -47,7 +47,6 @@ export default defineConfig({
 });
 
 function chunkRule(moduleId: string) {
-  console.log(moduleId);
   if (moduleId.includes('react-redux') || moduleId.includes('@reduxjs/toolkit'))
     return 'redux';
   if (moduleId.includes('react-router')) return 'router';

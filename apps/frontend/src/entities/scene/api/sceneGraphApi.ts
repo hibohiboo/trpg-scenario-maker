@@ -1,6 +1,7 @@
 import { parseSceneConnectionSchema } from '@trpg-scenario-maker/schema/scene';
 import type { Scene, SceneConnection } from '@trpg-scenario-maker/ui';
 import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
+import type { SceneGraphHandlerMap } from '../workers/sceneGraphHandlers';
 
 /**
  * シーンのグラフDB操作API
@@ -11,10 +12,11 @@ export const sceneGraphApi = {
    * シナリオに属するシーンを取得
    */
   getScenesByScenarioId: async (scenarioId: string): Promise<Scene[]> => {
-    const result = await graphdbWorkerClient.request<Scene[]>(
-      'scene:graph:getScenesByScenarioId',
-      { scenarioId },
-    );
+    const key = 'scene:graph:getScenesByScenarioId';
+    const result = await graphdbWorkerClient.request<
+      SceneGraphHandlerMap[typeof key]
+    >(key, { scenarioId });
+
     return result;
   },
 
@@ -24,10 +26,11 @@ export const sceneGraphApi = {
   getConnectionsByScenarioId: async (
     scenarioId: string,
   ): Promise<SceneConnection[]> => {
-    const result = await graphdbWorkerClient.request<Array<SceneConnection>>(
-      'scene:graph:getConnectionsByScenarioId',
-      { scenarioId },
-    );
+    const key = 'scene:graph:getConnectionsByScenarioId';
+    const result = await graphdbWorkerClient.request<
+      SceneGraphHandlerMap[typeof key]
+    >(key, { scenarioId });
+
     return result;
   },
 
@@ -38,17 +41,17 @@ export const sceneGraphApi = {
     scenarioId: string,
     scene: Omit<Scene, 'id'>,
   ): Promise<Scene> => {
+    const key = 'scene:graph:createScene';
     const id = crypto.randomUUID();
-    const result = await graphdbWorkerClient.request<Scene>(
-      'scene:graph:createScene',
-      {
-        scenarioId,
-        id,
-        title: scene.title,
-        description: scene.description,
-        isMasterScene: scene.isMasterScene,
-      },
-    );
+    const result = await graphdbWorkerClient.request<
+      SceneGraphHandlerMap[typeof key]
+    >(key, {
+      scenarioId,
+      id,
+      title: scene.title,
+      description: scene.description,
+      isMasterScene: scene.isMasterScene,
+    });
 
     return result;
   },
@@ -57,13 +60,13 @@ export const sceneGraphApi = {
    * シーンを更新
    */
   updateScene: async (id: string, updates: Partial<Scene>): Promise<Scene> => {
-    const result = await graphdbWorkerClient.request<Scene>(
-      'scene:graph:updateScene',
-      {
-        id,
-        ...updates,
-      },
-    );
+    const key = 'scene:graph:updateScene';
+    const result = await graphdbWorkerClient.request<
+      SceneGraphHandlerMap[typeof key]
+    >(key, {
+      id,
+      ...updates,
+    });
 
     return result;
   },
@@ -72,7 +75,10 @@ export const sceneGraphApi = {
    * シーンを削除
    */
   deleteScene: async (id: string): Promise<void> => {
-    await graphdbWorkerClient.request('scene:graph:deleteScene', { id });
+    const key = 'scene:graph:deleteScene';
+    await graphdbWorkerClient.request<SceneGraphHandlerMap[typeof key]>(key, {
+      id,
+    });
   },
 
   /**
@@ -81,13 +87,14 @@ export const sceneGraphApi = {
   createConnection: async (
     connection: Omit<SceneConnection, 'id'>,
   ): Promise<SceneConnection> => {
-    const result = await graphdbWorkerClient.request<SceneConnection[]>(
-      'scene:graph:createConnection',
-      {
-        source: connection.source,
-        target: connection.target,
-      },
-    );
+    const key = 'scene:graph:createConnection';
+    const result = await graphdbWorkerClient.request<
+      SceneGraphHandlerMap[typeof key]
+    >(key, {
+      source: connection.source,
+      target: connection.target,
+    });
+
     const [r] = result;
     return parseSceneConnectionSchema(r);
   },
@@ -96,7 +103,11 @@ export const sceneGraphApi = {
    * シーン間の接続を削除
    */
   deleteConnection: async (id: string): Promise<void> => {
-    await graphdbWorkerClient.request('scene:graph:deleteConnection', id);
+    const key = 'scene:graph:deleteConnection';
+    await graphdbWorkerClient.request<SceneGraphHandlerMap[typeof key]>(
+      key,
+      id,
+    );
   },
 
   /**

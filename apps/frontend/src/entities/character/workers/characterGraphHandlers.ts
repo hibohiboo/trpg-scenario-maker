@@ -50,7 +50,7 @@ export const characterGraphHandlers = [
       };
       const result = await characterGraphRepository.update(params);
       const [data] = parseToCharacterList(result);
-      if (data) {
+      if (!data) {
         throw new Error(
           'Failed to update character: Character not found or no result returned',
         );

@@ -32,7 +32,7 @@ export const characterRelationGraphHandlers = [
       };
       const result = await relationshipGraphRepository.update(params);
       const [data] = parseToRelationshipList(result);
-      if (data) {
+      if (!data) {
         throw new Error('Failed to update character relation');
       }
       return { data };

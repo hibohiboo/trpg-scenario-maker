@@ -9,6 +9,7 @@ import {
   parseDeleteConnectionPayload,
   parseSceneListSchema,
 } from '@trpg-scenario-maker/schema';
+import { parseSceneConnectionListSchema } from '@trpg-scenario-maker/schema/scene';
 
 /**
  * シーンのグラフDB操作ハンドラー
@@ -31,7 +32,7 @@ export const sceneGraphHandlers = [
       const { scenarioId } = parseGetConnectionsByScenarioIdPayload(payload);
       const result =
         await sceneGraphRepository.getConnectionsByScenarioId(scenarioId);
-      return { data: result };
+      return { data: parseSceneConnectionListSchema(result) };
     },
   },
   {
@@ -76,7 +77,7 @@ export const sceneGraphHandlers = [
     handler: async (payload: unknown) => {
       const params = parseCreateConnectionPayload(payload);
       const result = await sceneGraphRepository.createConnection(params);
-      return { data: result };
+      return { data: parseSceneConnectionListSchema(result) };
     },
   },
   {
@@ -87,4 +88,16 @@ export const sceneGraphHandlers = [
       return { success: true };
     },
   },
-];
+] as const;
+
+type SceneGraphHandler = (typeof sceneGraphHandlers)[number];
+
+export type SceneGraphHandlerMap = {
+  [H in SceneGraphHandler as H['type']]: ReturnType<
+    H['handler']
+  > extends Promise<{ data: infer D }>
+    ? D
+    : ReturnType<H['handler']> extends Promise<{ success: boolean }>
+      ? void
+      : never;
+};

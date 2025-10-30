@@ -26,7 +26,7 @@ export const sceneEventApi = {
     sceneId: string,
     event: Omit<SceneEvent, 'id'>,
   ): Promise<SceneEvent> => {
-    const key = 'sceneEvent:graph:updateEvent';
+    const key = 'sceneEvent:graph:createEvent';
     const id = crypto.randomUUID();
 
     const result = await graphdbWorkerClient.request<
