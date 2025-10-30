@@ -40,14 +40,15 @@
 - [x] types定義（Character, Relationship, RelationshipFormData）
 - [x] uiパッケージへのexport設定
 
-### ✅ 完了（UI層 - ページ統合）
+### ✅ 完了（UI層 - ページ統合・ルーティング）
 - [x] フロントエンドページ実装（containers層）
   - [x] useCharacterRelationshipPageフック作成
   - [x] CharacterRelationshipPageコンテナ作成
   - [x] Page.tsx re-export設定
-- [ ] ルーティング追加
-  - [ ] /charactersルート追加
-  - [ ] ナビゲーションメニュー追加
+- [x] ルーティング追加
+  - [x] /charactersルート追加
+  - [x] ナビゲーションメニュー追加（Navigationコンポーネント作成）
+  - [x] LayoutWrapper作成・統合
 - [ ] 動作確認・デバッグ
 
 ### 📝 未着手（テスト・グラフ可視化）
@@ -140,7 +141,7 @@
 | Hooks層 | ✅完了 | 100% (全Hooks実装済み) |
 | UI層（コンポーネント） | ✅完了 | 100% (基本コンポーネント完了) |
 | ページ統合層 | ✅完了 | 100% (Hooks+Container完了) |
-| ルーティング層 | 🚧作業中 | 0% (次のタスク) |
+| ルーティング層 | ✅完了 | 100% (Navigation+Routes完了) |
 | テスト層（BDD） | ❌未着手 | 0% |
 
 ## 実装完了したファイル一覧
@@ -191,4 +192,12 @@
 - ✅ `apps/frontend/src/entities/character/hooks/useCharacterRelationshipPage.ts`
 - ✅ `apps/frontend/src/entities/character/containers/CharacterRelationshipPage.tsx`
 - ✅ `apps/frontend/src/page/character/ui/Page.tsx`
+- ✅ `apps/frontend/src/page/character/index.ts`
 - ✅ `apps/frontend/src/entities/character/index.ts` - export更新
+
+### ルーティング層（Navigation/Routes）
+- ✅ `packages/ui/src/common/Navigation.tsx` - ナビゲーションコンポーネント
+- ✅ `packages/ui/src/common/Layout.tsx` - Navigation統合対応
+- ✅ `packages/ui/src/common/index.ts` - export更新
+- ✅ `apps/frontend/src/app/routes/LayoutWrapper.tsx` - レイアウトラッパー
+- ✅ `apps/frontend/src/app/routes/index.tsx` - /charactersルート追加

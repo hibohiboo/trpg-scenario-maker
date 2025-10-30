@@ -1,19 +1,16 @@
-import { Layout } from '@trpg-scenario-maker/ui';
-import { createBrowserRouter, Outlet } from 'react-router';
+import { createBrowserRouter } from 'react-router';
+import { CharacterRelationshipPage } from '@/page/character';
 import { ScenarioPage } from '@/page/scenario';
 import { ScenarioDetailPage } from '@/page/scenarioDetail';
 import { scenarioDetailLoader } from '@/page/scenarioDetail/loader';
+import { LayoutWrapper } from './LayoutWrapper';
 
 export const createRouter = (_: { dispatch: AppDispatch }) =>
   createBrowserRouter(
     [
       {
         path: '/',
-        element: (
-          <Layout>
-            <Outlet />
-          </Layout>
-        ),
+        element: <LayoutWrapper />,
         children: [
           {
             path: '',
@@ -28,6 +25,10 @@ export const createRouter = (_: { dispatch: AppDispatch }) =>
                 loader: scenarioDetailLoader,
               },
             ],
+          },
+          {
+            path: 'characters',
+            element: <CharacterRelationshipPage />,
           },
         ],
       },

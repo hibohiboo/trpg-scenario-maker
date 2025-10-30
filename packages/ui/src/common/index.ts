@@ -7,3 +7,5 @@ export { Modal } from './Modal';
 export type { ModalProps } from './Modal';
 export { Tabs } from './Tabs';
 export type { Tab, TabsProps } from './Tabs';
+export { Navigation } from './Navigation';
+export type { NavigationItem, NavigationProps } from './Navigation';

@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react';
+import { Navigation } from './Navigation';
+import type { NavigationItem } from './Navigation';
 
 interface LayoutProps {
   /**
@@ -24,6 +26,14 @@ interface LayoutProps {
    * 縦パディング（デフォルト: "py-8"）
    */
   paddingY?: string;
+  /**
+   * ナビゲーション項目（省略時はナビゲーションを表示しない）
+   */
+  navigationItems?: NavigationItem[];
+  /**
+   * 現在のパス（ナビゲーションのアクティブ状態判定に使用）
+   */
+  currentPath?: string;
 }
 
 const maxWidthClasses: Record<
@@ -49,11 +59,16 @@ export function Layout({
   maxWidth = 'container',
   paddingX = 'px-4',
   paddingY = 'py-8',
+  navigationItems,
+  currentPath,
 }: LayoutProps) {
   const widthClass = maxWidthClasses[maxWidth];
 
   return (
     <div className={`${widthClass} mx-auto ${paddingX} ${paddingY} ${className}`}>
+      {navigationItems && navigationItems.length > 0 && (
+        <Navigation items={navigationItems} currentPath={currentPath} />
+      )}
       {children}
     </div>
   );
