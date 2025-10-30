@@ -9,6 +9,7 @@ import {
   parseDeleteConnectionPayload,
   parseSceneListSchema,
 } from '@trpg-scenario-maker/schema';
+import { parseSceneConnectionListSchema } from '@trpg-scenario-maker/schema/scene';
 
 /**
  * シーンのグラフDB操作ハンドラー
@@ -31,7 +32,7 @@ export const sceneGraphHandlers = [
       const { scenarioId } = parseGetConnectionsByScenarioIdPayload(payload);
       const result =
         await sceneGraphRepository.getConnectionsByScenarioId(scenarioId);
-      return { data: result };
+      return { data: parseSceneConnectionListSchema(result) };
     },
   },
   {
@@ -39,7 +40,13 @@ export const sceneGraphHandlers = [
     handler: async (payload: unknown) => {
       const params = parseCreateScenePayload(payload);
       const result = await sceneGraphRepository.createScene(params);
-      return { data: result };
+      const [data] = parseSceneListSchema(result);
+      if (!data) {
+        throw new Error(
+          'Failed to create scene: No result returned from database',
+        );
+      }
+      return { data };
     },
   },
   {
@@ -47,7 +54,14 @@ export const sceneGraphHandlers = [
     handler: async (payload: unknown) => {
       const params = parseUpdateScenePayload(payload);
       const result = await sceneGraphRepository.updateScene(params);
-      return { data: result };
+
+      const [data] = parseSceneListSchema(result);
+      if (!data) {
+        throw new Error(
+          'Failed to update scene: Scene not found or no result returned',
+        );
+      }
+      return { data };
     },
   },
   {
@@ -63,7 +77,7 @@ export const sceneGraphHandlers = [
     handler: async (payload: unknown) => {
       const params = parseCreateConnectionPayload(payload);
       const result = await sceneGraphRepository.createConnection(params);
-      return { data: result };
+      return { data: parseSceneConnectionListSchema(result) };
     },
   },
   {
@@ -74,4 +88,16 @@ export const sceneGraphHandlers = [
       return { success: true };
     },
   },
-];
+] as const;
+
+type SceneGraphHandler = (typeof sceneGraphHandlers)[number];
+
+export type SceneGraphHandlerMap = {
+  [H in SceneGraphHandler as H['type']]: ReturnType<
+    H['handler']
+  > extends Promise<{ data: infer D }>
+    ? D
+    : ReturnType<H['handler']> extends Promise<{ success: boolean }>
+      ? void
+      : never;
+};

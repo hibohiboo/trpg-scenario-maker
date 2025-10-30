@@ -1,0 +1,114 @@
+import { executeQuery } from '..';
+import { RELATION_DELIMITER } from '../utils/constants';
+import { escapeCypherString } from '../utils/escapeCypherString';
+
+/**
+ * 関係性のグラフDB操作リポジトリ
+ */
+export const characterRelationshipGraphRepository = {
+  /**
+   * 関係性エッジを作成（A→Bの関係）
+   */
+  async create(params: {
+    fromCharacterId: string;
+    toCharacterId: string;
+    relationshipName: string;
+  }) {
+    const escapedName = escapeCypherString(params.relationshipName);
+
+    return executeQuery(`
+      MATCH (f:Character {id: '${params.fromCharacterId}'})
+          , (t:Character {id: '${params.toCharacterId}'})
+      CREATE (f)-[:RELATES_TO {relationshipName: '${escapedName}'}]->(t)
+      RETURN '${params.fromCharacterId}${RELATION_DELIMITER}${params.toCharacterId}' AS id, '${params.fromCharacterId}' AS fromCharacterId, '${params.toCharacterId}' AS toCharacterId, '${escapedName}' AS relationshipName
+    `);
+  },
+
+  /**
+   * 関係性エッジを削除
+   */
+  async delete(params: {
+    fromCharacterId: string;
+    toCharacterId: string;
+  }): Promise<void> {
+    await executeQuery(`
+      MATCH (f:Character {id: '${params.fromCharacterId}'})-[r:RELATES_TO]->(t:Character {id: '${params.toCharacterId}'})
+      DELETE r
+    `);
+  },
+
+  /**
+   * キャラクターの全関係性を取得（発信・受信両方）
+   */
+  async findByCharacterId(characterId: string) {
+    const outgoingResult = (await executeQuery(`
+      MATCH (f:Character {id: '${characterId}'})-[r:RELATES_TO]->(t:Character)
+      RETURN f, r, t
+    `)) as {
+      f: { id: string; name: string; description: string };
+      r: { relationshipName: string };
+      t: { id: string; name: string; description: string };
+    }[];
+
+    const incomingResult = (await executeQuery(`
+      MATCH (f:Character)-[r:RELATES_TO]->(t:Character {id: '${characterId}'})
+      RETURN f, r, t
+    `)) as {
+      f: { id: string; name: string; description: string };
+      r: { relationshipName: string };
+      t: { id: string; name: string; description: string };
+    }[];
+    return {
+      outgoing: outgoingResult.map((row) => ({
+        id: `${row.f.id}${RELATION_DELIMITER}${row.t.id}`,
+        fromCharacterId: row.f.id,
+        toCharacterId: row.t.id,
+        relationshipName: row.r.relationshipName,
+      })),
+      incoming: incomingResult.map((row) => ({
+        id: `${row.f.id}${RELATION_DELIMITER}${row.t.id}`,
+        fromCharacterId: row.f.id,
+        toCharacterId: row.t.id,
+        relationshipName: row.r.relationshipName,
+      })),
+    };
+  },
+
+  /**
+   * 全関係性を取得
+   */
+  async findAll() {
+    const result = (await executeQuery(`
+      MATCH (f:Character)-[r:RELATES_TO]->(t:Character)
+      RETURN f, r, t
+    `)) as {
+      f: { id: string; name: string; description: string };
+      r: { relationshipName: string };
+      t: { id: string; name: string; description: string };
+    }[];
+
+    return result.map((row) => ({
+      id: `${row.f.id}${RELATION_DELIMITER}${row.t.id}`,
+      fromCharacterId: row.f.id,
+      toCharacterId: row.t.id,
+      relationshipName: row.r.relationshipName,
+    }));
+  },
+
+  /**
+   * 関係性を更新
+   */
+  async update(params: {
+    fromCharacterId: string;
+    toCharacterId: string;
+    relationshipName: string;
+  }) {
+    const escapedName = escapeCypherString(params.relationshipName);
+
+    return executeQuery(`
+      MATCH (f:Character {id: '${params.fromCharacterId}'})-[r:RELATES_TO]->(t:Character {id: '${params.toCharacterId}'})
+      SET r.relationshipName = '${escapedName}'
+      RETURN '${params.fromCharacterId}${RELATION_DELIMITER}${params.toCharacterId}' AS id, '${params.fromCharacterId}' AS fromCharacterId, '${params.toCharacterId}' AS toCharacterId, '${escapedName}' AS relationshipName
+    `);
+  },
+} as const;

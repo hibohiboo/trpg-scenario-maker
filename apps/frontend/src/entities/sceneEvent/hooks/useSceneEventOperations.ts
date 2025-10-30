@@ -48,12 +48,20 @@ export interface UseSceneEventOperationsResult {
   /**
    * イベントを上に移動
    */
-  moveEventUp: (sceneId: string, events: SceneEvent[], eventId: string) => Promise<void>;
+  moveEventUp: (
+    sceneId: string,
+    events: SceneEvent[],
+    eventId: string,
+  ) => Promise<void>;
 
   /**
    * イベントを下に移動
    */
-  moveEventDown: (sceneId: string, events: SceneEvent[], eventId: string) => Promise<void>;
+  moveEventDown: (
+    sceneId: string,
+    events: SceneEvent[],
+    eventId: string,
+  ) => Promise<void>;
 }
 
 /**
@@ -70,7 +78,10 @@ export const useSceneEventOperations = (): UseSceneEventOperationsResult => {
   );
 
   const addEvent = useCallback(
-    async (sceneId: string, eventData: { type: SceneEventType; content: string }) => {
+    async (
+      sceneId: string,
+      eventData: { type: SceneEventType; content: string },
+    ) => {
       const newEvent = {
         type: eventData.type,
         content: eventData.content,
@@ -117,7 +128,10 @@ export const useSceneEventOperations = (): UseSceneEventOperationsResult => {
   );
 
   const reorderEvents = useCallback(
-    async (sceneId: string, eventOrders: { id: string; sortOrder: number }[]) => {
+    async (
+      sceneId: string,
+      eventOrders: { id: string; sortOrder: number }[],
+    ) => {
       await dispatch(
         updateEventOrderAction({
           sceneId,

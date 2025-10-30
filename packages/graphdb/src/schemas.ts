@@ -31,6 +31,27 @@ export const graphDbSchemas = {
         PRIMARY KEY (id)
       )`,
     },
+    {
+      name: 'Character',
+      query: `
+      CREATE NODE TABLE Character (
+        id STRING,
+        name STRING,
+        description STRING,
+        PRIMARY KEY (id)
+      )`,
+    },
+    {
+      name: 'CharacterRelationship',
+      query: `
+      CREATE NODE TABLE CharacterRelationship (
+        id STRING,
+        fromCharacterId STRING,
+        toCharacterId STRING,
+        relationshipName STRING,
+        PRIMARY KEY (id)
+      )`,
+    },
   ],
   relationships: [
     {
@@ -52,6 +73,20 @@ export const graphDbSchemas = {
       query: `
       CREATE REL TABLE HAS_EVENT (
         FROM Scene TO SceneEvent
+      )`,
+    },
+    {
+      name: 'RELATES_FROM',
+      query: `
+      CREATE REL TABLE RELATES_FROM (
+        FROM Character TO Character, relationshipName STRING
+      )`,
+    },
+    {
+      name: 'RELATES_TO',
+      query: `
+      CREATE REL TABLE RELATES_TO (
+        FROM Character TO Character, relationshipName STRING
       )`,
     },
   ],

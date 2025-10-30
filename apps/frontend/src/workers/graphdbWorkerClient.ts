@@ -5,6 +5,7 @@ import type {
   GraphDBWorkerResponse,
 } from './graphdb.worker';
 import DBWorker from './graphdb.worker?worker';
+import type { GlobalHandlerMap } from './types/handlerMaps';
 
 const { nodes, relationships } = graphDbSchemas;
 const schemas = [...nodes, ...relationships];
@@ -59,14 +60,17 @@ class GraphDBWorkerClient extends BaseWorkerClient<
    * 汎用リクエスト送信メソッド
    * エンティティAPIから直接使用される
    */
-  async request<T = unknown>(type: string, payload?: unknown): Promise<T> {
+  async request<K extends keyof GlobalHandlerMap>(
+    type: K,
+    payload?: unknown,
+  ): Promise<GlobalHandlerMap[K]> {
     const response = await this.sendRequest<
-      GraphDBWorkerResponse & { data: T }
+      GraphDBWorkerResponse & { data: GlobalHandlerMap[K] }
     >({
       type,
       payload,
     });
-    return response.data as T;
+    return response.data as GlobalHandlerMap[K];
   }
 
   async save(): Promise<void> {

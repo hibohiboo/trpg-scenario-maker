@@ -35,4 +35,16 @@ export const scenarioGraphHandlers = [
       return { data: result };
     },
   },
-];
+] as const;
+
+type ScenarioGraphHandler = (typeof scenarioGraphHandlers)[number];
+
+export type ScenarioGraphHandlerMap = {
+  [H in ScenarioGraphHandler as H['type']]: ReturnType<
+    H['handler']
+  > extends Promise<{ data: infer D }>
+    ? D
+    : ReturnType<H['handler']> extends Promise<{ success: boolean }>
+      ? void
+      : never;
+};

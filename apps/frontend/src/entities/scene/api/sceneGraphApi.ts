@@ -11,10 +11,11 @@ export const sceneGraphApi = {
    * シナリオに属するシーンを取得
    */
   getScenesByScenarioId: async (scenarioId: string): Promise<Scene[]> => {
-    const result = await graphdbWorkerClient.request<Scene[]>(
+    const result = await graphdbWorkerClient.request(
       'scene:graph:getScenesByScenarioId',
       { scenarioId },
     );
+
     return result;
   },
 
@@ -24,10 +25,11 @@ export const sceneGraphApi = {
   getConnectionsByScenarioId: async (
     scenarioId: string,
   ): Promise<SceneConnection[]> => {
-    const result = await graphdbWorkerClient.request<Array<SceneConnection>>(
+    const result = await graphdbWorkerClient.request(
       'scene:graph:getConnectionsByScenarioId',
       { scenarioId },
     );
+
     return result;
   },
 
@@ -39,31 +41,22 @@ export const sceneGraphApi = {
     scene: Omit<Scene, 'id'>,
   ): Promise<Scene> => {
     const id = crypto.randomUUID();
-    const result = await graphdbWorkerClient.request<Scene[]>(
-      'scene:graph:createScene',
-      {
-        scenarioId,
-        id,
-        title: scene.title,
-        description: scene.description,
-        isMasterScene: scene.isMasterScene,
-      },
-    );
+    const result = await graphdbWorkerClient.request('scene:graph:createScene', {
+      scenarioId,
+      id,
+      title: scene.title,
+      description: scene.description,
+      isMasterScene: scene.isMasterScene,
+    });
 
-    if (!result || !Array.isArray(result) || result.length === 0) {
-      throw new Error(
-        'Failed to create scene: No result returned from database',
-      );
-    }
-
-    return result[0];
+    return result;
   },
 
   /**
    * シーンを更新
    */
   updateScene: async (id: string, updates: Partial<Scene>): Promise<Scene> => {
-    const result = await graphdbWorkerClient.request<Scene[]>(
+    const result = await graphdbWorkerClient.request(
       'scene:graph:updateScene',
       {
         id,
@@ -71,20 +64,16 @@ export const sceneGraphApi = {
       },
     );
 
-    if (!result || !Array.isArray(result) || result.length === 0) {
-      throw new Error(
-        'Failed to update scene: Scene not found or no result returned',
-      );
-    }
-
-    return result[0];
+    return result;
   },
 
   /**
    * シーンを削除
    */
   deleteScene: async (id: string): Promise<void> => {
-    await graphdbWorkerClient.request('scene:graph:deleteScene', { id });
+    await graphdbWorkerClient.request('scene:graph:deleteScene', {
+      id,
+    });
   },
 
   /**
@@ -93,13 +82,14 @@ export const sceneGraphApi = {
   createConnection: async (
     connection: Omit<SceneConnection, 'id'>,
   ): Promise<SceneConnection> => {
-    const result = await graphdbWorkerClient.request<SceneConnection[]>(
+    const result = await graphdbWorkerClient.request(
       'scene:graph:createConnection',
       {
         source: connection.source,
         target: connection.target,
       },
     );
+
     const [r] = result;
     return parseSceneConnectionSchema(r);
   },

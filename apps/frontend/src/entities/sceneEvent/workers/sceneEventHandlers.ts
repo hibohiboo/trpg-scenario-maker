@@ -6,6 +6,7 @@ import {
   parseDeleteEventPayload,
   parseUpdateEventOrderPayload,
   parseSceneEventListSchema,
+  type SceneEvent,
 } from '@trpg-scenario-maker/schema';
 
 /**
@@ -17,7 +18,8 @@ export const sceneEventHandlers = [
     handler: async (payload: unknown) => {
       const { sceneId } = parseGetEventsBySceneIdPayload(payload);
       const result = await sceneEventRepository.getEventsBySceneId(sceneId);
-      return { data: parseSceneEventListSchema(result) };
+      const data: SceneEvent[] = parseSceneEventListSchema(result);
+      return { data };
     },
   },
   {
@@ -25,7 +27,13 @@ export const sceneEventHandlers = [
     handler: async (payload: unknown) => {
       const params = parseCreateEventPayload(payload);
       const result = await sceneEventRepository.createEvent(params);
-      return { data: parseSceneEventListSchema(result) };
+      const [data] = parseSceneEventListSchema(result);
+      if (!data) {
+        throw new Error(
+          'Failed to create event: No result returned from database',
+        );
+      }
+      return { data };
     },
   },
   {
@@ -33,7 +41,13 @@ export const sceneEventHandlers = [
     handler: async (payload: unknown) => {
       const params = parseUpdateEventPayload(payload);
       const result = await sceneEventRepository.updateEvent(params);
-      return { data: parseSceneEventListSchema(result) };
+      const [data] = parseSceneEventListSchema(result);
+      if (!data) {
+        throw new Error(
+          'Failed to update event: Event not found or no result returned',
+        );
+      }
+      return { data };
     },
   },
   {
@@ -52,4 +66,16 @@ export const sceneEventHandlers = [
       return { success: true };
     },
   },
-];
+] as const;
+
+type SceneEventHandler = (typeof sceneEventHandlers)[number];
+
+export type SceneEventHandlerMap = {
+  [H in SceneEventHandler as H['type']]: ReturnType<
+    H['handler']
+  > extends Promise<{ data: infer D }>
+    ? D
+    : ReturnType<H['handler']> extends Promise<{ success: boolean }>
+      ? void
+      : never;
+};
