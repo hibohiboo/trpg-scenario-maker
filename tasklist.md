@@ -40,10 +40,11 @@
 - [x] types定義（Character, Relationship, RelationshipFormData）
 - [x] uiパッケージへのexport設定
 
-### 🚧 作業中（UI層 - ページ統合）
-- [ ] フロントエンドページ実装（containers層）
-  - [ ] useCharacterRelationshipPageフック作成
-  - [ ] CharacterRelationshipPageコンテナ作成
+### ✅ 完了（UI層 - ページ統合）
+- [x] フロントエンドページ実装（containers層）
+  - [x] useCharacterRelationshipPageフック作成
+  - [x] CharacterRelationshipPageコンテナ作成
+  - [x] Page.tsx re-export設定
 - [ ] ルーティング追加
   - [ ] /charactersルート追加
   - [ ] ナビゲーションメニュー追加
@@ -138,7 +139,7 @@
 | 状態管理層（Redux） | ✅完了 | 100% (Character, Relationship両方完了) |
 | Hooks層 | ✅完了 | 100% (全Hooks実装済み) |
 | UI層（コンポーネント） | ✅完了 | 100% (基本コンポーネント完了) |
-| ページ統合層 | 🚧作業中 | 0% (次のタスク) |
+| ページ統合層 | ✅完了 | 100% (Hooks+Container完了) |
 | ルーティング層 | 🚧作業中 | 0% (次のタスク) |
 | テスト層（BDD） | ❌未着手 | 0% |
 
@@ -178,5 +179,16 @@
 - ✅ `packages/ui/src/character/RelationshipForm.tsx`
 - ✅ `packages/ui/src/character/DeleteRelationshipModal.tsx`
 - ✅ `packages/ui/src/character/CharacterRelationshipPage.tsx`
+- ✅ `packages/ui/src/character/CharacterList.stories.tsx`
+- ✅ `packages/ui/src/character/RelationshipList.stories.tsx`
+- ✅ `packages/ui/src/character/RelationshipForm.stories.tsx`
+- ✅ `packages/ui/src/character/DeleteRelationshipModal.stories.tsx`
+- ✅ `packages/ui/src/character/CharacterRelationshipPage.stories.tsx`
 - ✅ `packages/ui/src/character/index.ts`
 - ✅ `packages/ui/src/index.ts` - export設定
+
+### ページ統合層（Container/Hooks）
+- ✅ `apps/frontend/src/entities/character/hooks/useCharacterRelationshipPage.ts`
+- ✅ `apps/frontend/src/entities/character/containers/CharacterRelationshipPage.tsx`
+- ✅ `apps/frontend/src/page/character/ui/Page.tsx`
+- ✅ `apps/frontend/src/entities/character/index.ts` - export更新

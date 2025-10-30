@@ -10,3 +10,5 @@ export * from './hooks/useCharacterRelationships';
 export * from './hooks/useCreateRelationship';
 export * from './hooks/useUpdateRelationship';
 export * from './hooks/useDeleteRelationship';
+export * from './hooks/useCharacterRelationshipPage';
+export { CharacterRelationshipPage } from './containers/CharacterRelationshipPage';

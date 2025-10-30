@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import { setSelectedCharacterId, relationshipSlice } from '../model/relationshipSlice';
-import { useCharacterList } from './useCharacterList';
 import { useAllRelationships } from './useAllRelationships';
+import { useCharacterList } from './useCharacterList';
 import { useCreateRelationship } from './useCreateRelationship';
-import { useUpdateRelationship } from './useUpdateRelationship';
 import { useDeleteRelationship } from './useDeleteRelationship';
+import { useUpdateRelationship } from './useUpdateRelationship';
 
 /**
  * キャラクター関係性ページの統合Hook
@@ -62,8 +62,8 @@ export const useCharacterRelationshipPage = () => {
   );
 
   const handleCharacterClick = useCallback(
-    (characterId: string) => {
-      dispatch(setSelectedCharacterId(characterId));
+    (character: { id: string }) => {
+      dispatch(setSelectedCharacterId(character.id));
     },
     [dispatch],
   );
