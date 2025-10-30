@@ -51,10 +51,17 @@
   - [x] LayoutWrapper作成・統合
 - [ ] 動作確認・デバッグ
 
-### 📝 未着手（テスト・グラフ可視化）
+### ✅ 完了（BDDテスト）
+- [x] BDDテスト作成
+  - [x] character-relationship.feature（Featureファイル）
+  - [x] character-relationship.steps.ts（ステップ定義）
+  - [x] 双方向関係性のテストケース追加
+
+### 📝 未着手（テスト実行・グラフ可視化）
+- [ ] 開発サーバー起動
+- [ ] BDDテスト実行
 - [ ] 基本機能の動作確認
 - [ ] RelationshipGraph（関係性グラフ可視化）実装
-- [ ] BDDテスト作成・実行
 
 ## 技術スタック
 - グラフDB: Kùzu WASM（既存）
