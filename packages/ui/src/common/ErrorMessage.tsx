@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Button } from './Button';
 
 interface ErrorMessageProps {
   /**
@@ -67,12 +68,14 @@ export function ErrorMessage({
           <h3 className="text-lg font-semibold text-red-800">{title}</h3>
           <p className="mt-2 text-sm text-red-700">{errorMessage}</p>
           {onRetry && (
-            <button
+            <Button
               onClick={onRetry}
-              className="mt-4 rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+              variant="danger"
+              size="sm"
+              className="mt-4"
             >
               {retryLabel}
-            </button>
+            </Button>
           )}
         </div>
       </div>
