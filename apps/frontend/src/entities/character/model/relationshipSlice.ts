@@ -159,13 +159,27 @@ export const relationshipSlice = createSlice({
       })
       .addCase(updateRelationshipAction.fulfilled, (state, action) => {
         state.isSubmitting = false;
+        // IDで関係性を特定して更新（同じキャラクターペア間に複数の関係性がある場合に対応）
         const index = state.relationships.findIndex(
-          (r) =>
-            r.fromCharacterId === action.payload.fromCharacterId &&
-            r.toCharacterId === action.payload.toCharacterId,
+          (r) => r.id === action.payload.id,
         );
         if (index !== -1) {
           state.relationships[index] = action.payload;
+        }
+
+        // outgoingRelationships と incomingRelationships も更新
+        const outgoingIndex = state.outgoingRelationships.findIndex(
+          (r) => r.id === action.payload.id,
+        );
+        if (outgoingIndex !== -1) {
+          state.outgoingRelationships[outgoingIndex] = action.payload;
+        }
+
+        const incomingIndex = state.incomingRelationships.findIndex(
+          (r) => r.id === action.payload.id,
+        );
+        if (incomingIndex !== -1) {
+          state.incomingRelationships[incomingIndex] = action.payload;
         }
       })
       .addCase(updateRelationshipAction.rejected, (state) => {
@@ -179,7 +193,16 @@ export const relationshipSlice = createSlice({
       })
       .addCase(deleteRelationshipAction.fulfilled, (state, action) => {
         state.isDeleting = false;
+        // IDで関係性を特定して削除（同じキャラクターペア間に複数の関係性がある場合に対応）
         state.relationships = state.relationships.filter(
+          (r) => r.id !== action.payload.id,
+        );
+
+        // outgoingRelationships と incomingRelationships からも削除
+        state.outgoingRelationships = state.outgoingRelationships.filter(
+          (r) => r.id !== action.payload.id,
+        );
+        state.incomingRelationships = state.incomingRelationships.filter(
           (r) => r.id !== action.payload.id,
         );
       })

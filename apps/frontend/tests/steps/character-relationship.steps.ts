@@ -4,7 +4,9 @@ import type { CustomWorld } from './common.steps';
 
 Then('キャラクター一覧が表示される', async function (this: CustomWorld) {
   await expect(
-    this.page.getByText('キャラクター一覧').or(this.page.getByText('キャラクター')),
+    this.page
+      .getByText('キャラクター一覧')
+      .or(this.page.getByText('キャラクター')),
   ).toBeVisible();
 });
 
@@ -28,7 +30,6 @@ When(
       .fill(description);
   },
 );
-
 
 Then(
   'キャラクター一覧に {string} が表示される',
@@ -64,7 +65,6 @@ When(
   },
 );
 
-
 Then(
   '関係性 {string} から {string} への {string} が表示される',
   async function (
@@ -73,14 +73,16 @@ Then(
     toChar: string,
     relationshipName: string,
   ) {
-    // 3つのテキストすべてが同じ行に含まれることを確認
+    // より具体的なパターンでマッチング: "fromChar → relationshipName → toChar"
+    const relationshipPattern = new RegExp(
+      `${fromChar}.*→.*${relationshipName}.*→.*${toChar}`,
+    );
+
     const row = this.page
-      .locator('div')
-      .filter({ hasText: fromChar })
-      .filter({ hasText: toChar })
-      .filter({ hasText: relationshipName })
-      .first();
-    await expect(row).toBeVisible();
+      .locator('div.p-4.border.rounded-lg')
+      .filter({ hasText: relationshipPattern });
+
+    await expect(row.first()).toBeVisible();
   },
 );
 
@@ -93,13 +95,17 @@ When(
     toChar: string,
     relationshipName: string,
   ) {
+    // より具体的なパターンでマッチング: "fromChar → relationshipName → toChar"
+    const relationshipPattern = new RegExp(
+      `${fromChar}.*→.*${relationshipName}.*→.*${toChar}`,
+    );
+
     const row = this.page
-      .locator('div')
-      .filter({ hasText: fromChar })
-      .filter({ hasText: toChar })
-      .filter({ hasText: relationshipName })
+      .locator('div.p-4.border.rounded-lg')
+      .filter({ hasText: relationshipPattern })
       .first();
-    await row.getByRole('button', { name: '編集' }).first().click();
+
+    await row.getByRole('button', { name: '編集' }).click();
   },
 );
 
@@ -114,7 +120,6 @@ When(
   },
 );
 
-
 // 関係性の削除
 When(
   '関係性 {string} から {string} への {string} の削除ボタンをクリックする',
@@ -124,16 +129,19 @@ When(
     toChar: string,
     relationshipName: string,
   ) {
+    // より具体的なパターンでマッチング: "fromChar → relationshipName → toChar"
+    const relationshipPattern = new RegExp(
+      `${fromChar}.*→.*${relationshipName}.*→.*${toChar}`,
+    );
+
     const row = this.page
-      .locator('div')
-      .filter({ hasText: fromChar })
-      .filter({ hasText: toChar })
-      .filter({ hasText: relationshipName })
+      .locator('div.p-4.border.rounded-lg')
+      .filter({ hasText: relationshipPattern })
       .first();
-    await row.getByRole('button', { name: '削除' }).first().click();
+
+    await row.getByRole('button', { name: '削除' }).click();
   },
 );
-
 
 Then(
   '関係性 {string} から {string} への {string} が表示されない',
@@ -143,11 +151,14 @@ Then(
     toChar: string,
     relationshipName: string,
   ) {
+    const relationshipPattern = new RegExp(
+      `${fromChar}.*→.*${relationshipName}.*→.*${toChar}`,
+    );
+
     const row = this.page
-      .locator('div')
-      .filter({ hasText: fromChar })
-      .filter({ hasText: toChar })
-      .filter({ hasText: relationshipName });
+      .locator('div.p-4.border.rounded-lg')
+      .filter({ hasText: relationshipPattern });
+
     await expect(row).not.toBeVisible();
   },
 );
