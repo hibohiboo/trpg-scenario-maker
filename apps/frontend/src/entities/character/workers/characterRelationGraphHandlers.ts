@@ -26,8 +26,7 @@ export const characterRelationGraphHandlers = [
     type: 'characterRelation:graph:update',
     handler: async (payload: unknown) => {
       const params = payload as {
-        fromCharacterId: string;
-        toCharacterId: string;
+        id: string;
         relationshipName: string;
       };
       const result = await relationshipGraphRepository.update(params);
@@ -42,8 +41,7 @@ export const characterRelationGraphHandlers = [
     type: 'characterRelation:graph:delete',
     handler: async (payload: unknown) => {
       const params = payload as {
-        fromCharacterId: string;
-        toCharacterId: string;
+        id: string;
       };
       await relationshipGraphRepository.delete(params);
       return { success: true };

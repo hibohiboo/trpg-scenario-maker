@@ -38,8 +38,7 @@ export const createRelationshipAction = createAsyncThunk<
 export const updateRelationshipAction = createAsyncThunk<
   Relationship,
   {
-    fromCharacterId: string;
-    toCharacterId: string;
+    id: string;
     relationshipName: string;
   },
   { dispatch: AppDispatch }
@@ -54,8 +53,8 @@ export const updateRelationshipAction = createAsyncThunk<
  * 関係性削除アクション
  */
 export const deleteRelationshipAction = createAsyncThunk<
-  { fromCharacterId: string; toCharacterId: string },
-  { fromCharacterId: string; toCharacterId: string },
+  { id: string },
+  { id: string },
   { dispatch: AppDispatch }
 >('relationship/delete', async (payload, { dispatch }) => {
   await characterRelationGraphApi.delete(payload);

@@ -36,8 +36,7 @@ export const useDeleteRelationship = () => {
 
     await dispatch(
       deleteRelationshipAction({
-        fromCharacterId: relationshipState.deletingRelationship.fromCharacterId,
-        toCharacterId: relationshipState.deletingRelationship.toCharacterId,
+        id: relationshipState.deletingRelationship.id,
       }),
     );
   }, [dispatch, relationshipState.deletingRelationship]);

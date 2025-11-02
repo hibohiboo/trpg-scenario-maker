@@ -76,17 +76,21 @@ export const graphDbSchemas = {
       )`,
     },
     {
-      name: 'RELATES_FROM',
+      name: 'CHARACTER_RELATES_FROM',
       query: `
-      CREATE REL TABLE RELATES_FROM (
-        FROM Character TO Character, relationshipName STRING
+      CREATE REL TABLE CHARACTER_RELATES_FROM (
+        FROM Character TO Character,
+        id STRING,
+        relationshipName STRING
       )`,
     },
     {
-      name: 'RELATES_TO',
+      name: 'CHARACTER_RELATES_TO',
       query: `
-      CREATE REL TABLE RELATES_TO (
-        FROM Character TO Character, relationshipName STRING
+      CREATE REL TABLE CHARACTER_RELATES_TO (
+        FROM Character TO Character,
+        id STRING,
+        relationshipName STRING
       )`,
     },
   ],

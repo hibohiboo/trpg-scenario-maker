@@ -136,27 +136,31 @@ describe('characterGraphRepository', () => {
       });
 
       // A→B の関係
+      const rel1Id = uuidv4();
       const rel1Result = await characterRelationshipGraphRepository.create({
+        id: rel1Id,
         fromCharacterId: char1Id,
         toCharacterId: char2Id,
         relationshipName: '友人',
       });
 
       // B→A の関係（双方向は別エッジ）
+      const rel2Id = uuidv4();
       const rel2Result = await characterRelationshipGraphRepository.create({
+        id: rel2Id,
         fromCharacterId: char2Id,
         toCharacterId: char1Id,
         relationshipName: '仲間',
       });
 
       const [rel1] = parseToRelationshipList(rel1Result);
-      expect(rel1.id).toBe(`${char1Id}|${char2Id}`);
+      expect(rel1.id).toBe(rel1Id);
       expect(rel1.fromCharacterId).toBe(char1Id);
       expect(rel1.toCharacterId).toBe(char2Id);
       expect(rel1.relationshipName).toBe('友人');
 
       const [rel2] = parseToRelationshipList(rel2Result);
-      expect(rel2.id).toBe(`${char2Id}|${char1Id}`);
+      expect(rel2.id).toBe(rel2Id);
       expect(rel2.fromCharacterId).toBe(char2Id);
       expect(rel2.toCharacterId).toBe(char1Id);
       expect(rel2.relationshipName).toBe('仲間');
@@ -183,12 +187,14 @@ describe('characterGraphRepository', () => {
       });
       // char1 → char2
       await characterRelationshipGraphRepository.create({
+        id: uuidv4(),
         fromCharacterId: char1Id,
         toCharacterId: char2Id,
         relationshipName: 'ライバル',
       });
       // char3 → char1
       await characterRelationshipGraphRepository.create({
+        id: uuidv4(),
         fromCharacterId: char3Id,
         toCharacterId: char1Id,
         relationshipName: '師匠',
@@ -222,20 +228,21 @@ describe('characterGraphRepository', () => {
         description: 'テスト',
       });
 
+      const relId = uuidv4();
       await characterRelationshipGraphRepository.create({
+        id: relId,
         fromCharacterId: char1Id,
         toCharacterId: char2Id,
         relationshipName: '初期関係',
       });
 
       const updateResult = await characterRelationshipGraphRepository.update({
-        fromCharacterId: char1Id,
-        toCharacterId: char2Id,
+        id: relId,
         relationshipName: '更新後の関係',
       });
 
       const [updated] = parseToRelationshipList(updateResult);
-      expect(updated.id).toBe(`${char1Id}|${char2Id}`);
+      expect(updated.id).toBe(relId);
       expect(updated.fromCharacterId).toBe(char1Id);
       expect(updated.toCharacterId).toBe(char2Id);
       expect(updated.relationshipName).toBe('更新後の関係');
@@ -257,15 +264,16 @@ describe('characterGraphRepository', () => {
         description: 'テスト',
       });
 
+      const relId = uuidv4();
       await characterRelationshipGraphRepository.create({
+        id: relId,
         fromCharacterId: char1Id,
         toCharacterId: char2Id,
         relationshipName: '削除される関係',
       });
 
       await characterRelationshipGraphRepository.delete({
-        fromCharacterId: char1Id,
-        toCharacterId: char2Id,
+        id: relId,
       });
 
       const result =
@@ -290,6 +298,7 @@ describe('characterGraphRepository', () => {
       });
 
       await characterRelationshipGraphRepository.create({
+        id: uuidv4(),
         fromCharacterId: char1Id,
         toCharacterId: char2Id,
         relationshipName: '関係1',
@@ -305,6 +314,59 @@ describe('characterGraphRepository', () => {
       );
       expect(foundRelation).toBeDefined();
       expect(foundRelation?.relationshipName).toBe('関係1');
+    });
+
+    it('同じキャラクターペア間に複数の関係性を作成できる', async () => {
+      const char1Id = uuidv4();
+      const char2Id = uuidv4();
+
+      await characterGraphRepository.create({
+        id: char1Id,
+        name: 'アリス',
+        description: '主人公',
+      });
+
+      await characterGraphRepository.create({
+        id: char2Id,
+        name: 'ボブ',
+        description: '相手役',
+      });
+
+      // 同じA→Bに対して複数の関係性を作成
+      const rel1Id = uuidv4();
+      const rel1Result = await characterRelationshipGraphRepository.create({
+        id: rel1Id,
+        fromCharacterId: char1Id,
+        toCharacterId: char2Id,
+        relationshipName: '友人',
+      });
+
+      const rel2Id = uuidv4();
+      const rel2Result = await characterRelationshipGraphRepository.create({
+        id: rel2Id,
+        fromCharacterId: char1Id,
+        toCharacterId: char2Id,
+        relationshipName: 'ライバル',
+      });
+
+      // 1つ目の関係性
+      const [rel1] = parseToRelationshipList(rel1Result);
+      expect(rel1.id).toBe(rel1Id);
+      expect(rel1.relationshipName).toBe('友人');
+
+      // 2つ目の関係性
+      const [rel2] = parseToRelationshipList(rel2Result);
+      expect(rel2.id).toBe(rel2Id);
+      expect(rel2.relationshipName).toBe('ライバル');
+
+      // 全関係性を取得して両方存在することを確認
+      const result =
+        await characterRelationshipGraphRepository.findByCharacterId(char1Id);
+      const outgoing = parseToRelationshipList(result.outgoing);
+
+      expect(outgoing).toHaveLength(2);
+      expect(outgoing.find((r) => r.relationshipName === '友人')).toBeDefined();
+      expect(outgoing.find((r) => r.relationshipName === 'ライバル')).toBeDefined();
     });
   });
 });

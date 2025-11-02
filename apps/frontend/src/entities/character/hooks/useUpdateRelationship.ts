@@ -39,8 +39,7 @@ export const useUpdateRelationship = () => {
 
   const updateRelationship = useCallback(async () => {
     if (
-      !relationshipState.editFromCharacterId ||
-      !relationshipState.editToCharacterId ||
+      !relationshipState.editingRelationship ||
       !relationshipState.editRelationshipName
     ) {
       return;
@@ -48,15 +47,13 @@ export const useUpdateRelationship = () => {
 
     await dispatch(
       updateRelationshipAction({
-        fromCharacterId: relationshipState.editFromCharacterId,
-        toCharacterId: relationshipState.editToCharacterId,
+        id: relationshipState.editingRelationship.id,
         relationshipName: relationshipState.editRelationshipName,
       }),
     );
   }, [
     dispatch,
-    relationshipState.editFromCharacterId,
-    relationshipState.editToCharacterId,
+    relationshipState.editingRelationship,
     relationshipState.editRelationshipName,
   ]);
 

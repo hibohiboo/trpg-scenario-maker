@@ -180,11 +180,7 @@ export const relationshipSlice = createSlice({
       .addCase(deleteRelationshipAction.fulfilled, (state, action) => {
         state.isDeleting = false;
         state.relationships = state.relationships.filter(
-          (r) =>
-            !(
-              r.fromCharacterId === action.payload.fromCharacterId &&
-              r.toCharacterId === action.payload.toCharacterId
-            ),
+          (r) => r.id !== action.payload.id,
         );
       })
       .addCase(deleteRelationshipAction.rejected, (state) => {

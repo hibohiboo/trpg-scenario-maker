@@ -27,8 +27,7 @@ export const characterRelationGraphApi = {
    * 関係性を更新
    */
   async update(params: {
-    fromCharacterId: string;
-    toCharacterId: string;
+    id: string;
     relationshipName: string;
   }): Promise<Relationship> {
     const result = await graphdbWorkerClient.request(
@@ -43,8 +42,7 @@ export const characterRelationGraphApi = {
    * 関係性を削除
    */
   async delete(params: {
-    fromCharacterId: string;
-    toCharacterId: string;
+    id: string;
   }): Promise<void> {
     await graphdbWorkerClient.request('characterRelation:graph:delete', params);
   },

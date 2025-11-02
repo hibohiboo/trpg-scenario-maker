@@ -1,5 +1,4 @@
 import { executeQuery } from '..';
-import { RELATION_DELIMITER } from '../utils/constants';
 import { escapeCypherString } from '../utils/escapeCypherString';
 
 /**
@@ -8,8 +7,10 @@ import { escapeCypherString } from '../utils/escapeCypherString';
 export const characterRelationshipGraphRepository = {
   /**
    * 関係性エッジを作成（A→Bの関係）
+   * idを明示的に指定することで、同じキャラクターペア間に複数の関係性を持てる
    */
   async create(params: {
+    id: string;
     fromCharacterId: string;
     toCharacterId: string;
     relationshipName: string;
@@ -19,20 +20,19 @@ export const characterRelationshipGraphRepository = {
     return executeQuery(`
       MATCH (f:Character {id: '${params.fromCharacterId}'})
           , (t:Character {id: '${params.toCharacterId}'})
-      CREATE (f)-[:RELATES_TO {relationshipName: '${escapedName}'}]->(t)
-      RETURN '${params.fromCharacterId}${RELATION_DELIMITER}${params.toCharacterId}' AS id, '${params.fromCharacterId}' AS fromCharacterId, '${params.toCharacterId}' AS toCharacterId, '${escapedName}' AS relationshipName
+      CREATE (f)-[:CHARACTER_RELATES_TO {id: '${params.id}', relationshipName: '${escapedName}'}]->(t)
+      RETURN '${params.id}' AS id, '${params.fromCharacterId}' AS fromCharacterId, '${params.toCharacterId}' AS toCharacterId, '${escapedName}' AS relationshipName
     `);
   },
 
   /**
-   * 関係性エッジを削除
+   * 関係性エッジを削除（idで特定）
    */
   async delete(params: {
-    fromCharacterId: string;
-    toCharacterId: string;
+    id: string;
   }): Promise<void> {
     await executeQuery(`
-      MATCH (f:Character {id: '${params.fromCharacterId}'})-[r:RELATES_TO]->(t:Character {id: '${params.toCharacterId}'})
+      MATCH ()-[r:CHARACTER_RELATES_TO {id: '${params.id}'}]->()
       DELETE r
     `);
   },
@@ -42,31 +42,31 @@ export const characterRelationshipGraphRepository = {
    */
   async findByCharacterId(characterId: string) {
     const outgoingResult = (await executeQuery(`
-      MATCH (f:Character {id: '${characterId}'})-[r:RELATES_TO]->(t:Character)
+      MATCH (f:Character {id: '${characterId}'})-[r:CHARACTER_RELATES_TO]->(t:Character)
       RETURN f, r, t
     `)) as {
       f: { id: string; name: string; description: string };
-      r: { relationshipName: string };
+      r: { id: string; relationshipName: string };
       t: { id: string; name: string; description: string };
     }[];
 
     const incomingResult = (await executeQuery(`
-      MATCH (f:Character)-[r:RELATES_TO]->(t:Character {id: '${characterId}'})
+      MATCH (f:Character)-[r:CHARACTER_RELATES_TO]->(t:Character {id: '${characterId}'})
       RETURN f, r, t
     `)) as {
       f: { id: string; name: string; description: string };
-      r: { relationshipName: string };
+      r: { id: string; relationshipName: string };
       t: { id: string; name: string; description: string };
     }[];
     return {
       outgoing: outgoingResult.map((row) => ({
-        id: `${row.f.id}${RELATION_DELIMITER}${row.t.id}`,
+        id: row.r.id,
         fromCharacterId: row.f.id,
         toCharacterId: row.t.id,
         relationshipName: row.r.relationshipName,
       })),
       incoming: incomingResult.map((row) => ({
-        id: `${row.f.id}${RELATION_DELIMITER}${row.t.id}`,
+        id: row.r.id,
         fromCharacterId: row.f.id,
         toCharacterId: row.t.id,
         relationshipName: row.r.relationshipName,
@@ -79,16 +79,16 @@ export const characterRelationshipGraphRepository = {
    */
   async findAll() {
     const result = (await executeQuery(`
-      MATCH (f:Character)-[r:RELATES_TO]->(t:Character)
+      MATCH (f:Character)-[r:CHARACTER_RELATES_TO]->(t:Character)
       RETURN f, r, t
     `)) as {
       f: { id: string; name: string; description: string };
-      r: { relationshipName: string };
+      r: { id: string; relationshipName: string };
       t: { id: string; name: string; description: string };
     }[];
 
     return result.map((row) => ({
-      id: `${row.f.id}${RELATION_DELIMITER}${row.t.id}`,
+      id: row.r.id,
       fromCharacterId: row.f.id,
       toCharacterId: row.t.id,
       relationshipName: row.r.relationshipName,
@@ -96,19 +96,18 @@ export const characterRelationshipGraphRepository = {
   },
 
   /**
-   * 関係性を更新
+   * 関係性を更新（idで特定）
    */
   async update(params: {
-    fromCharacterId: string;
-    toCharacterId: string;
+    id: string;
     relationshipName: string;
   }) {
     const escapedName = escapeCypherString(params.relationshipName);
 
     return executeQuery(`
-      MATCH (f:Character {id: '${params.fromCharacterId}'})-[r:RELATES_TO]->(t:Character {id: '${params.toCharacterId}'})
+      MATCH (f:Character)-[r:CHARACTER_RELATES_TO {id: '${params.id}'}]->(t:Character)
       SET r.relationshipName = '${escapedName}'
-      RETURN '${params.fromCharacterId}${RELATION_DELIMITER}${params.toCharacterId}' AS id, '${params.fromCharacterId}' AS fromCharacterId, '${params.toCharacterId}' AS toCharacterId, '${escapedName}' AS relationshipName
+      RETURN r.id AS id, f.id AS fromCharacterId, t.id AS toCharacterId, '${escapedName}' AS relationshipName
     `);
   },
 } as const;
