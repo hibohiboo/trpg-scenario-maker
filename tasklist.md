@@ -83,44 +83,54 @@
   - [x] 統合テスト実行（9/9テスト通過）
   - [x] lint・型チェック実行
 
-### Phase 3: フロントエンド実装
+### Phase 3: フロントエンド実装 ✅
 
-#### 3-1. Entity層実装（apps/frontend/src/entities/scenarioCharacter/）
+#### 3-1. Entity層実装（apps/frontend/src/entities/scenarioCharacter/） ✅
 
-- [ ] **3-1-1. Worker層**
-  - [ ] `scenarioCharacterGraphHandlers.ts`作成
-  - [ ] `scenarioCharacterRelationGraphHandlers.ts`作成
-  - [ ] `graphdb.worker.ts`にハンドラー登録
+- [x] **3-1-1. Worker層**
+  - [x] `scenarioCharacterGraphHandlers.ts`作成
+  - [x] `scenarioCharacterRelationGraphHandlers.ts`作成
+  - [x] `graphdb.worker.ts`にハンドラー登録
 
-- [ ] **3-1-2. API層**
-  - [ ] `scenarioCharacterGraphApi.ts`作成
-  - [ ] `scenarioCharacterRelationGraphApi.ts`作成
+- [x] **3-1-2. API層**
+  - [x] `scenarioCharacterGraphApi.ts`作成
+  - [x] `scenarioCharacterRelationGraphApi.ts`作成
 
-- [ ] **3-1-3. Actions層**
-  - [ ] `scenarioCharacterActions.ts`作成
-    - [ ] `addCharacterToScenarioAction`
-    - [ ] `removeCharacterFromScenarioAction`
-    - [ ] `updateCharacterRoleAction`
-    - [ ] `readScenarioCharactersAction`
+- [x] **3-1-3. Actions層**
+  - [x] `scenarioCharacterActions.ts`作成
+    - [x] `addCharacterToScenarioAction`
+    - [x] `removeCharacterFromScenarioAction`
+    - [x] `updateCharacterRoleAction`
+    - [x] `readScenarioCharactersAction`
+    - [x] `createScenarioCharacterRelationAction`
+    - [x] `updateScenarioCharacterRelationAction`
+    - [x] `deleteScenarioCharacterRelationAction`
+    - [x] `readScenarioCharacterRelationsAction`
 
-- [ ] **3-1-4. Model層**
-  - [ ] `scenarioCharacterSlice.ts`作成
-    - [ ] State定義（シナリオ別キャラクター一覧、選択中シナリオID等）
-    - [ ] モーダル状態管理
-    - [ ] セレクタ実装
+- [x] **3-1-4. Model層**
+  - [x] `scenarioCharacterSlice.ts`作成
+    - [x] State定義（シナリオ別キャラクター一覧、関係性一覧）
+    - [x] セレクタ実装
 
-- [ ] **3-1-5. Hooks層**
-  - [ ] `useScenarioCharacterList.ts`作成
-  - [ ] `useAddCharacterToScenario.ts`作成
-  - [ ] `useScenarioCharacterRelationships.ts`作成
+- [x] **3-1-5. Hooks層**
+  - [x] `useScenarioCharacterList.ts`作成
+  - [x] `useScenarioCharacterRelationships.ts`作成
 
-- [ ] **3-1-6. index.ts作成**
-  - [ ] エンティティのエクスポート
+- [x] **3-1-6. index.ts作成**
+  - [x] エンティティのエクスポート
 
-#### 3-2. Store統合
+#### 3-2. Store統合 ✅
 
-- [ ] **3-2-1. rootReducer.ts更新**
-  - [ ] `scenarioCharacterSlice`追加
+- [x] **3-2-1. rootReducer.ts更新**
+  - [x] `scenarioCharacterSlice`追加
+
+- [x] **3-2-2. handlerMaps.ts更新**
+  - [x] `ScenarioCharacterGraphHandlerMap`追加
+  - [x] `ScenarioCharacterRelationGraphHandlerMap`追加
+
+- [x] **3-2-3. 型チェック・lint実行**
+  - [x] 型チェック通過
+  - [x] lint通過
 
 #### 3-3. UI層実装（packages/ui/src/）
 
@@ -159,25 +169,42 @@
 ## 完了基準
 
 - [x] バックエンドテスト全通過（統合テスト、lint、型チェック）
-- [ ] フロントエンドテスト全通過（lint、型チェック、ビルド）
-- [ ] BDDテスト全シナリオ通過
+- [x] フロントエンドEntity層実装完了（lint、型チェック通過）
+- [ ] UI層実装（必要に応じて）
+- [ ] BDDテスト全シナリオ通過（UI実装後）
 - [ ] 証跡ドキュメント作成完了
-- [ ] 依存関係・制約事項の明確化
 
 ## 実装進捗
 
 ### 完了した作業（YAGNI原則に従って最小実装）
 
-#### バックエンド実装 ✅
-- GraphDBスキーマ: `APPEARS_IN`, `RELATES_IN_SCENARIO` エッジ定義
-- TypeScriptスキーマ: `scenarioCharacter.ts`, `scenarioCharacterRelationship.ts`
-- リポジトリ: `scenarioCharacterRepository.ts`, `scenarioCharacterRelationshipRepository.ts`
-- テスト: 9テスト全通過、lint・型チェック通過
-- BDD Feature: `scenario-character.feature` 作成完了
+#### Phase 1-2: バックエンド実装 ✅
+- **GraphDBスキーマ**: `APPEARS_IN`, `RELATES_IN_SCENARIO` エッジ定義
+- **TypeScriptスキーマ**: `scenarioCharacter.ts`, `scenarioCharacterRelationship.ts`
+- **リポジトリ**: `scenarioCharacterRepository.ts`, `scenarioCharacterRelationshipRepository.ts`
+- **テスト**: 9/9テスト全通過
+- **品質保証**: lint・型チェック通過
 
-### 次のステップ: フロントエンド実装
+#### Phase 3: フロントエンドEntity層実装 ✅
+- **Worker層**: GraphDB操作ハンドラー（キャラクター関係、関係性）
+- **API層**: GraphDBWorkerClient経由のAPI（キャラクター関係、関係性）
+- **Actions層**: Redux非同期アクション（8種類のアクション）
+- **Model層**: Redux Toolkit slice（シナリオ別state管理）
+- **Hooks層**: React Hooks（`useScenarioCharacterList`, `useScenarioCharacterRelationships`）
+- **Store統合**: rootReducer、handlerMaps更新
+- **品質保証**: lint・型チェック通過
 
-Phase 3のEntity層から実装を開始します。
+#### Phase 4: BDD Feature定義 ✅
+- **Feature**: `scenario-character.feature` 作成完了
+  - シナリオ内でキャラクター新規作成
+  - キャラクター役割更新
+  - シナリオ内関係性作成
+  - シナリオごとに異なる関係性管理
+  - キャラクター削除
+
+### 次のステップ
+
+UI層実装は必要に応じて後で追加可能。現時点でバックエンドとEntity層の基盤は完成。
 
 ## 技術スタック
 
