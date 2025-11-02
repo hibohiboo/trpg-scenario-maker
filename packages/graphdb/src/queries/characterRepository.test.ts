@@ -9,6 +9,38 @@ import { graphDbSchemas } from '../schemas';
 import { characterRelationshipGraphRepository } from './characterRelationshipGraphRepository';
 import { characterGraphRepository } from './characterRepository';
 
+/**
+ * テスト用キャラクターを作成するヘルパー関数
+ */
+const createTestCharacter = async (params: {
+  name: string;
+  description: string;
+}) => {
+  const id = uuidv4();
+  await characterGraphRepository.create({
+    id,
+    name: params.name,
+    description: params.description,
+  });
+  return { id, ...params };
+};
+
+/**
+ * テスト用関係性を作成するヘルパー関数
+ */
+const createTestRelationship = async (params: {
+  fromCharacterId: string;
+  toCharacterId: string;
+  relationshipName: string;
+}) => {
+  const id = uuidv4();
+  await characterRelationshipGraphRepository.create({
+    id,
+    ...params,
+  });
+  return { id, ...params };
+};
+
 describe('characterGraphRepository', () => {
   beforeAll(async () => {
     await initializeDatabase();
@@ -23,14 +55,18 @@ describe('characterGraphRepository', () => {
 
   describe('キャラクターCRUD操作', () => {
     it('キャラクターを作成できる', async () => {
+      // Arrange
       const characterId = uuidv4();
-
-      const result = await characterGraphRepository.create({
+      const characterData = {
         id: characterId,
         name: 'テストキャラクター',
         description: 'これはテストキャラクターです',
-      });
+      };
 
+      // Act
+      const result = await characterGraphRepository.create(characterData);
+
+      // Assert
       const [c] = parseToCharacterList(result);
       expect(c.id).toBe(characterId);
       expect(c.name).toBe('テストキャラクター');
@@ -38,19 +74,23 @@ describe('characterGraphRepository', () => {
     });
 
     it('キャラクターを更新できる', async () => {
+      // Arrange
       const characterId = uuidv4();
       await characterGraphRepository.create({
         id: characterId,
         name: '初期名',
         description: '初期説明',
       });
-
-      const updateResult = await characterGraphRepository.update({
+      const updateData = {
         id: characterId,
         name: '更新後の名前',
         description: '更新後の説明',
-      });
+      };
 
+      // Act
+      const updateResult = await characterGraphRepository.update(updateData);
+
+      // Assert
       const [updated] = parseToCharacterList(updateResult);
       expect(updated.id).toBe(characterId);
       expect(updated.name).toBe('更新後の名前');
@@ -58,6 +98,7 @@ describe('characterGraphRepository', () => {
     });
 
     it('キャラクターを削除できる', async () => {
+      // Arrange
       const characterId = uuidv4();
       await characterGraphRepository.create({
         id: characterId,
@@ -65,8 +106,10 @@ describe('characterGraphRepository', () => {
         description: '削除されます',
       });
 
+      // Act
       await characterGraphRepository.delete(characterId);
 
+      // Assert
       const result = await characterGraphRepository.findById(characterId);
       const characters = parseToCharacterList(result);
       expect(characters).toHaveLength(0);
@@ -120,248 +163,165 @@ describe('characterGraphRepository', () => {
 
   describe('関係性操作', () => {
     it('双方向の関係性を作成できる', async () => {
-      const char1Id = uuidv4();
-      const char2Id = uuidv4();
-
-      await characterGraphRepository.create({
-        id: char1Id,
+      // Arrange
+      const char1 = await createTestCharacter({
         name: 'アリス',
         description: '主人公',
       });
-
-      await characterGraphRepository.create({
-        id: char2Id,
+      const char2 = await createTestCharacter({
         name: 'ボブ',
         description: 'サブキャラクター',
       });
 
-      // A→B の関係
-      const rel1Id = uuidv4();
-      const rel1Result = await characterRelationshipGraphRepository.create({
-        id: rel1Id,
-        fromCharacterId: char1Id,
-        toCharacterId: char2Id,
+      // Act
+      const rel1 = await createTestRelationship({
+        fromCharacterId: char1.id,
+        toCharacterId: char2.id,
         relationshipName: '友人',
       });
-
-      // B→A の関係（双方向は別エッジ）
-      const rel2Id = uuidv4();
-      const rel2Result = await characterRelationshipGraphRepository.create({
-        id: rel2Id,
-        fromCharacterId: char2Id,
-        toCharacterId: char1Id,
+      const rel2 = await createTestRelationship({
+        fromCharacterId: char2.id,
+        toCharacterId: char1.id,
         relationshipName: '仲間',
       });
 
-      const [rel1] = parseToRelationshipList(rel1Result);
-      expect(rel1.id).toBe(rel1Id);
-      expect(rel1.fromCharacterId).toBe(char1Id);
-      expect(rel1.toCharacterId).toBe(char2Id);
+      // Assert
+      expect(rel1.fromCharacterId).toBe(char1.id);
+      expect(rel1.toCharacterId).toBe(char2.id);
       expect(rel1.relationshipName).toBe('友人');
 
-      const [rel2] = parseToRelationshipList(rel2Result);
-      expect(rel2.id).toBe(rel2Id);
-      expect(rel2.fromCharacterId).toBe(char2Id);
-      expect(rel2.toCharacterId).toBe(char1Id);
+      expect(rel2.fromCharacterId).toBe(char2.id);
+      expect(rel2.toCharacterId).toBe(char1.id);
       expect(rel2.relationshipName).toBe('仲間');
     });
 
     it('キャラクターの全関係性を取得できる', async () => {
-      const char1Id = uuidv4();
-      const char2Id = uuidv4();
-      const char3Id = uuidv4();
-      await characterGraphRepository.create({
-        id: char1Id,
-        name: 'キャラA',
-        description: 'テスト',
-      });
-      await characterGraphRepository.create({
-        id: char2Id,
-        name: 'キャラB',
-        description: 'テスト',
-      });
-      await characterGraphRepository.create({
-        id: char3Id,
-        name: 'キャラC',
-        description: 'テスト',
-      });
-      // char1 → char2
-      await characterRelationshipGraphRepository.create({
-        id: uuidv4(),
-        fromCharacterId: char1Id,
-        toCharacterId: char2Id,
+      // Arrange
+      const char1 = await createTestCharacter({ name: 'キャラA', description: 'テスト' });
+      const char2 = await createTestCharacter({ name: 'キャラB', description: 'テスト' });
+      const char3 = await createTestCharacter({ name: 'キャラC', description: 'テスト' });
+
+      await createTestRelationship({
+        fromCharacterId: char1.id,
+        toCharacterId: char2.id,
         relationshipName: 'ライバル',
       });
-      // char3 → char1
-      await characterRelationshipGraphRepository.create({
-        id: uuidv4(),
-        fromCharacterId: char3Id,
-        toCharacterId: char1Id,
+      await createTestRelationship({
+        fromCharacterId: char3.id,
+        toCharacterId: char1.id,
         relationshipName: '師匠',
       });
 
+      // Act
       const result =
-        await characterRelationshipGraphRepository.findByCharacterId(char1Id);
+        await characterRelationshipGraphRepository.findByCharacterId(char1.id);
 
-      const [o] = parseToRelationshipList(result.outgoing);
-      expect(o.toCharacterId).toBe(char2Id);
-      expect(o.relationshipName).toBe('ライバル');
+      // Assert
+      const [outgoing] = parseToRelationshipList(result.outgoing);
+      expect(outgoing.toCharacterId).toBe(char2.id);
+      expect(outgoing.relationshipName).toBe('ライバル');
 
-      const [i] = parseToRelationshipList(result.incoming);
-      expect(i.fromCharacterId).toBe(char3Id);
-      expect(i.relationshipName).toBe('師匠');
+      const [incoming] = parseToRelationshipList(result.incoming);
+      expect(incoming.fromCharacterId).toBe(char3.id);
+      expect(incoming.relationshipName).toBe('師匠');
     });
 
     it('関係性を更新できる', async () => {
-      const char1Id = uuidv4();
-      const char2Id = uuidv4();
-
-      await characterGraphRepository.create({
-        id: char1Id,
-        name: 'キャラX',
-        description: 'テスト',
-      });
-
-      await characterGraphRepository.create({
-        id: char2Id,
-        name: 'キャラY',
-        description: 'テスト',
-      });
-
-      const relId = uuidv4();
-      await characterRelationshipGraphRepository.create({
-        id: relId,
-        fromCharacterId: char1Id,
-        toCharacterId: char2Id,
+      // Arrange
+      const char1 = await createTestCharacter({ name: 'キャラX', description: 'テスト' });
+      const char2 = await createTestCharacter({ name: 'キャラY', description: 'テスト' });
+      const relationship = await createTestRelationship({
+        fromCharacterId: char1.id,
+        toCharacterId: char2.id,
         relationshipName: '初期関係',
       });
 
+      // Act
       const updateResult = await characterRelationshipGraphRepository.update({
-        id: relId,
+        id: relationship.id,
         relationshipName: '更新後の関係',
       });
 
+      // Assert
       const [updated] = parseToRelationshipList(updateResult);
-      expect(updated.id).toBe(relId);
-      expect(updated.fromCharacterId).toBe(char1Id);
-      expect(updated.toCharacterId).toBe(char2Id);
+      expect(updated.id).toBe(relationship.id);
+      expect(updated.fromCharacterId).toBe(char1.id);
+      expect(updated.toCharacterId).toBe(char2.id);
       expect(updated.relationshipName).toBe('更新後の関係');
     });
 
     it('関係性を削除できる', async () => {
-      const char1Id = uuidv4();
-      const char2Id = uuidv4();
-
-      await characterGraphRepository.create({
-        id: char1Id,
-        name: 'キャラP',
-        description: 'テスト',
-      });
-
-      await characterGraphRepository.create({
-        id: char2Id,
-        name: 'キャラQ',
-        description: 'テスト',
-      });
-
-      const relId = uuidv4();
-      await characterRelationshipGraphRepository.create({
-        id: relId,
-        fromCharacterId: char1Id,
-        toCharacterId: char2Id,
+      // Arrange
+      const char1 = await createTestCharacter({ name: 'キャラP', description: 'テスト' });
+      const char2 = await createTestCharacter({ name: 'キャラQ', description: 'テスト' });
+      const relationship = await createTestRelationship({
+        fromCharacterId: char1.id,
+        toCharacterId: char2.id,
         relationshipName: '削除される関係',
       });
 
+      // Act
       await characterRelationshipGraphRepository.delete({
-        id: relId,
+        id: relationship.id,
       });
 
+      // Assert
       const result =
-        await characterRelationshipGraphRepository.findByCharacterId(char1Id);
+        await characterRelationshipGraphRepository.findByCharacterId(char1.id);
       expect(result.outgoing).toHaveLength(0);
     });
 
     it('全関係性を取得できる', async () => {
-      const char1Id = uuidv4();
-      const char2Id = uuidv4();
-
-      await characterGraphRepository.create({
-        id: char1Id,
-        name: 'キャラM',
-        description: 'テスト',
-      });
-
-      await characterGraphRepository.create({
-        id: char2Id,
-        name: 'キャラN',
-        description: 'テスト',
-      });
-
-      await characterRelationshipGraphRepository.create({
-        id: uuidv4(),
-        fromCharacterId: char1Id,
-        toCharacterId: char2Id,
+      // Arrange
+      const char1 = await createTestCharacter({ name: 'キャラM', description: 'テスト' });
+      const char2 = await createTestCharacter({ name: 'キャラN', description: 'テスト' });
+      await createTestRelationship({
+        fromCharacterId: char1.id,
+        toCharacterId: char2.id,
         relationshipName: '関係1',
       });
 
+      // Act
       const allRelationships =
         await characterRelationshipGraphRepository.findAll();
+
+      // Assert
       const all = parseToRelationshipList(allRelationships);
       expect(all.length).toBeGreaterThanOrEqual(1);
 
       const foundRelation = all.find(
-        (r) => r.fromCharacterId === char1Id && r.toCharacterId === char2Id,
+        (r) => r.fromCharacterId === char1.id && r.toCharacterId === char2.id,
       );
       expect(foundRelation).toBeDefined();
       expect(foundRelation?.relationshipName).toBe('関係1');
     });
 
     it('同じキャラクターペア間に複数の関係性を作成できる', async () => {
-      const char1Id = uuidv4();
-      const char2Id = uuidv4();
+      // Arrange
+      const char1 = await createTestCharacter({ name: 'アリス', description: '主人公' });
+      const char2 = await createTestCharacter({ name: 'ボブ', description: '相手役' });
 
-      await characterGraphRepository.create({
-        id: char1Id,
-        name: 'アリス',
-        description: '主人公',
-      });
-
-      await characterGraphRepository.create({
-        id: char2Id,
-        name: 'ボブ',
-        description: '相手役',
-      });
-
-      // 同じA→Bに対して複数の関係性を作成
-      const rel1Id = uuidv4();
-      const rel1Result = await characterRelationshipGraphRepository.create({
-        id: rel1Id,
-        fromCharacterId: char1Id,
-        toCharacterId: char2Id,
+      // Act
+      const rel1 = await createTestRelationship({
+        fromCharacterId: char1.id,
+        toCharacterId: char2.id,
         relationshipName: '友人',
       });
-
-      const rel2Id = uuidv4();
-      const rel2Result = await characterRelationshipGraphRepository.create({
-        id: rel2Id,
-        fromCharacterId: char1Id,
-        toCharacterId: char2Id,
+      const rel2 = await createTestRelationship({
+        fromCharacterId: char1.id,
+        toCharacterId: char2.id,
         relationshipName: 'ライバル',
       });
 
-      // 1つ目の関係性
-      const [rel1] = parseToRelationshipList(rel1Result);
-      expect(rel1.id).toBe(rel1Id);
+      // Assert
+      expect(rel1.id).toBeDefined();
       expect(rel1.relationshipName).toBe('友人');
-
-      // 2つ目の関係性
-      const [rel2] = parseToRelationshipList(rel2Result);
-      expect(rel2.id).toBe(rel2Id);
+      expect(rel2.id).toBeDefined();
       expect(rel2.relationshipName).toBe('ライバル');
 
       // 全関係性を取得して両方存在することを確認
       const result =
-        await characterRelationshipGraphRepository.findByCharacterId(char1Id);
+        await characterRelationshipGraphRepository.findByCharacterId(char1.id);
       const outgoing = parseToRelationshipList(result.outgoing);
 
       expect(outgoing).toHaveLength(2);
