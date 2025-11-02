@@ -1,18 +1,6 @@
 import { When, Then } from '@cucumber/cucumber';
-import { Page, expect } from '@playwright/test';
-
-interface CustomWorld {
-  page: Page;
-}
-
-// ナビゲーション
-When(
-  'ナビゲーションで {string} をクリックする',
-  async function (this: CustomWorld, linkText: string) {
-    await this.page.getByRole('link', { name: linkText }).click();
-    await this.page.waitForLoadState('networkidle');
-  },
-);
+import { expect } from '@playwright/test';
+import type { CustomWorld } from './common.steps';
 
 Then('キャラクター一覧が表示される', async function (this: CustomWorld) {
   await expect(
@@ -41,15 +29,6 @@ When(
   },
 );
 
-When(
-  'モーダルの {string} ボタンをクリックする',
-  async function (this: CustomWorld, buttonText: string) {
-    await this.page
-      .locator('[role="dialog"]')
-      .getByRole('button', { name: buttonText })
-      .click();
-  },
-);
 
 Then(
   'キャラクター一覧に {string} が表示される',
@@ -85,15 +64,6 @@ When(
   },
 );
 
-When(
-  '作成フォームの {string} ボタンをクリックする',
-  async function (this: CustomWorld, buttonText: string) {
-    await this.page
-      .locator('[role="dialog"]')
-      .getByRole('button', { name: buttonText })
-      .click();
-  },
-);
 
 Then(
   '関係性 {string} から {string} への {string} が表示される',
@@ -144,15 +114,6 @@ When(
   },
 );
 
-When(
-  '編集フォームの {string} ボタンをクリックする',
-  async function (this: CustomWorld, buttonText: string) {
-    await this.page
-      .locator('[role="dialog"]')
-      .getByRole('button', { name: buttonText })
-      .click();
-  },
-);
 
 // 関係性の削除
 When(
@@ -173,15 +134,6 @@ When(
   },
 );
 
-When(
-  '削除確認モーダルで {string} ボタンをクリックする',
-  async function (this: CustomWorld, buttonText: string) {
-    await this.page
-      .locator('[role="dialog"]')
-      .getByRole('button', { name: buttonText })
-      .click();
-  },
-);
 
 Then(
   '関係性 {string} から {string} への {string} が表示されない',

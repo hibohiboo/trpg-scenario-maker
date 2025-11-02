@@ -1,54 +1,6 @@
-import {
-  Given,
-  When,
-  Then,
-  Before,
-  After,
-  setDefaultTimeout,
-  setWorldConstructor,
-} from '@cucumber/cucumber';
-import { chromium, Page, expect } from '@playwright/test';
-
-interface CustomWorld {
-  page: Page;
-  init: () => Promise<void>;
-}
-
-setDefaultTimeout(10000);
-
-function setupCustomWorld() {
-  setWorldConstructor(function (this: CustomWorld) {
-    this.init = async () => {
-      const browser = await chromium.launch({ headless: true });
-      const context = await browser.newContext();
-      this.page = await context.newPage();
-    };
-  });
-}
-setupCustomWorld();
-
-Before(async function (this: CustomWorld) {
-  await this.init();
-});
-
-After(async function (this: CustomWorld) {
-  await this.page.close();
-});
-
-// 基本操作
-Given('アプリケーションを開いている', async function (this: CustomWorld) {
-  await this.page.goto('http://localhost:5173');
-  await this.page.waitForLoadState('networkidle');
-});
-
-When(
-  '{string} ボタンをクリックする',
-  async function (this: CustomWorld, buttonText: string) {
-    await this.page
-      .getByRole('button', { name: buttonText, exact: true })
-      .click();
-  },
-);
+import { When, Then } from '@cucumber/cucumber';
+import { Page, expect } from '@playwright/test';
+import type { CustomWorld } from './common.steps';
 
 // シナリオ関連
 When(
@@ -85,7 +37,7 @@ When(
 );
 
 When(
-  '説明に {string} と入力する',
+  'シーン説明に {string} と入力する',
   async function (this: CustomWorld, description: string) {
     await this.page.locator('#scene-description').fill(description);
   },
@@ -155,11 +107,6 @@ Then(
     await expect(container.getByText(content)).toBeVisible();
   },
 );
-
-// モーダル操作
-When('モーダルを閉じる', async function (this: CustomWorld) {
-  await this.page.getByRole('button', { name: '閉じる' }).click();
-});
 
 // シーン接続関連
 When(

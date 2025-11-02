@@ -1,5 +1,6 @@
 import * as v from 'valibot';
 import { SceneEventSchema } from './sceneEvent';
+import { DescriptionSchema } from './common';
 
 const SceneConnectionSchema = v.object({
   /** ${source}|${target}をリレーションのIDとする */
@@ -14,15 +15,6 @@ export const parseSceneConnectionListSchema = (t: unknown) =>
   v.parse(v.array(SceneConnectionSchema), t);
 
 export type SceneConnection = v.InferOutput<typeof SceneConnectionSchema>;
-
-/**
- * descriptionフィールドのスキーマ
- * nullの場合は空文字に変換する
- */
-const DescriptionSchema = v.pipe(
-  v.nullable(v.string()),
-  v.transform((value) => value ?? ''),
-);
 
 const SceneSchema = v.object({
   id: v.string(),

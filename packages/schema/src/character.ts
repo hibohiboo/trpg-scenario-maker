@@ -1,4 +1,5 @@
 import * as v from 'valibot';
+import { DescriptionSchema } from './common';
 
 /**
  * キャラクタースキーマ
@@ -9,7 +10,7 @@ export const CharacterSchema = v.object({
   /** キャラクター名 */
   name: v.string(),
   /** 説明 */
-  description: v.string(),
+  description: DescriptionSchema,
 });
 
 /**
