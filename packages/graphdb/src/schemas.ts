@@ -93,5 +93,22 @@ export const graphDbSchemas = {
         relationshipName STRING
       )`,
     },
+    {
+      name: 'APPEARS_IN',
+      query: `
+      CREATE REL TABLE APPEARS_IN (
+        FROM Character TO Scenario,
+        role STRING
+      )`,
+    },
+    {
+      name: 'RELATES_IN_SCENARIO',
+      query: `
+      CREATE REL TABLE RELATES_IN_SCENARIO (
+        FROM Character TO Character,
+        scenarioId STRING,
+        relationshipName STRING
+      )`,
+    },
   ],
 };
