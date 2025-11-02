@@ -47,6 +47,7 @@ export const useScenarioDetailPage = () => {
     isLoading: isCharactersLoading,
     addCharacter,
     removeCharacter,
+    updateRole,
   } = useScenarioCharacterList(id);
 
   const handleSave = async () => {
@@ -144,6 +145,22 @@ export const useScenarioDetailPage = () => {
     console.log('Add existing character');
   };
 
+  const handleEditCharacter = async (character: CharacterWithRole) => {
+    const newRole = window.prompt(
+      `「${character.name}」の役割を入力してください`,
+      character.role || '',
+    );
+    if (newRole === null) return; // キャンセルされた場合
+
+    try {
+      await updateRole(character.characterId, newRole);
+      await graphdbWorkerClient.save();
+    } catch (err) {
+      console.error('Failed to update character role:', err);
+      alert('役割の更新に失敗しました');
+    }
+  };
+
   return {
     id,
     scenes,
@@ -171,6 +188,7 @@ export const useScenarioDetailPage = () => {
     characters,
     isCharactersLoading,
     handleCharacterClick,
+    handleEditCharacter,
     handleRemoveCharacter,
     handleCreateNewCharacter,
     handleAddExistingCharacter,

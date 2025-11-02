@@ -33,6 +33,7 @@ export default function Page() {
     characters,
     isCharactersLoading,
     handleCharacterClick,
+    handleEditCharacter,
     handleRemoveCharacter,
     handleCreateNewCharacter,
     handleAddExistingCharacter,
@@ -55,6 +56,7 @@ export default function Page() {
           characters={characters}
           isLoading={isCharactersLoading}
           onCharacterClick={handleCharacterClick}
+          onEditCharacter={handleEditCharacter}
           onRemoveCharacter={handleRemoveCharacter}
           onCreateNew={handleCreateNewCharacter}
           onAddExisting={handleAddExistingCharacter}

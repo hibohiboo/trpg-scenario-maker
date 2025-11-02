@@ -20,6 +20,9 @@ const meta = {
     onCharacterClick: {
       description: 'キャラクタークリック時のコールバック',
     },
+    onEditCharacter: {
+      description: 'キャラクター編集ボタンクリック時のコールバック',
+    },
     onRemoveCharacter: {
       description: 'キャラクター削除ボタンクリック時のコールバック',
     },
@@ -32,6 +35,7 @@ const meta = {
   },
   args: {
     onCharacterClick: fn(),
+    onEditCharacter: fn(),
     onRemoveCharacter: fn(),
     onCreateNew: fn(),
     onAddExisting: fn(),
@@ -200,5 +204,13 @@ export const WithoutAddExistingButton: Story = {
     characters: sampleCharacters,
     isLoading: false,
     onAddExisting: undefined,
+  },
+};
+
+export const WithoutEditButton: Story = {
+  args: {
+    characters: sampleCharacters,
+    isLoading: false,
+    onEditCharacter: undefined,
   },
 };

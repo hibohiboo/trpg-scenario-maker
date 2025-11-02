@@ -9,6 +9,8 @@ export interface ScenarioCharacterListProps {
   isLoading?: boolean;
   /** キャラクタークリック時のコールバック */
   onCharacterClick?: (character: CharacterWithRole) => void;
+  /** キャラクター編集ボタンクリック時のコールバック */
+  onEditCharacter?: (character: CharacterWithRole) => void;
   /** キャラクター削除ボタンクリック時のコールバック */
   onRemoveCharacter?: (characterId: string) => void;
   /** 新規キャラクター作成ボタンクリック時のコールバック */
@@ -24,6 +26,7 @@ export function ScenarioCharacterList({
   characters,
   isLoading,
   onCharacterClick,
+  onEditCharacter,
   onRemoveCharacter,
   onCreateNew,
   onAddExisting,
@@ -80,16 +83,27 @@ export function ScenarioCharacterList({
                   </p>
                 )}
               </button>
-              {onRemoveCharacter && (
-                <Button
-                  onClick={() => onRemoveCharacter(character.characterId)}
-                  variant="ghost"
-                  size="sm"
-                  className="ml-2 text-red-600 hover:bg-red-50"
-                >
-                  削除
-                </Button>
-              )}
+              <div className="flex gap-2 ml-2">
+                {onEditCharacter && (
+                  <Button
+                    onClick={() => onEditCharacter(character)}
+                    variant="ghost"
+                    size="sm"
+                  >
+                    編集
+                  </Button>
+                )}
+                {onRemoveCharacter && (
+                  <Button
+                    onClick={() => onRemoveCharacter(character.characterId)}
+                    variant="ghost"
+                    size="sm"
+                    className="text-red-600 hover:bg-red-50"
+                  >
+                    削除
+                  </Button>
+                )}
+              </div>
             </div>
           ))}
         </div>

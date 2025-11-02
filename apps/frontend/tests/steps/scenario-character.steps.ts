@@ -87,6 +87,20 @@ When(
   },
 );
 
+// プロンプトで役割を入力準備する
+When(
+  'プロンプトで役割 {string} を入力準備する',
+  async function (this: CustomWorld, role: string) {
+    // window.promptのモックを設定（役割のみ）
+    await this.page.evaluate(
+      (r: string) => {
+        window.prompt = (() => r) as typeof prompt;
+      },
+      role,
+    );
+  },
+);
+
 // 役割に入力する
 When(
   '役割に {string} と入力する',
