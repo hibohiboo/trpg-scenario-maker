@@ -1,6 +1,30 @@
 import { When, Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 import type { CustomWorld } from './common.steps';
+import type { Locator } from '@playwright/test';
+
+/**
+ * 関係性の表示要素を取得するヘルパー関数
+ * @param world CustomWorld
+ * @param fromChar 関係元キャラクター名
+ * @param relationshipName 関係性名
+ * @param toChar 関係先キャラクター名
+ * @returns 関係性の表示要素のLocator
+ */
+function getRelationshipRow(
+  world: CustomWorld,
+  fromChar: string,
+  relationshipName: string,
+  toChar: string,
+): Locator {
+  const relationshipPattern = new RegExp(
+    `${fromChar}.*→.*${relationshipName}.*→.*${toChar}`,
+  );
+
+  return world.page
+    .locator('div.p-4.border.rounded-lg')
+    .filter({ hasText: relationshipPattern });
+}
 
 Then('キャラクター一覧が表示される', async function (this: CustomWorld) {
   await expect(
@@ -73,15 +97,7 @@ Then(
     toChar: string,
     relationshipName: string,
   ) {
-    // より具体的なパターンでマッチング: "fromChar → relationshipName → toChar"
-    const relationshipPattern = new RegExp(
-      `${fromChar}.*→.*${relationshipName}.*→.*${toChar}`,
-    );
-
-    const row = this.page
-      .locator('div.p-4.border.rounded-lg')
-      .filter({ hasText: relationshipPattern });
-
+    const row = getRelationshipRow(this, fromChar, relationshipName, toChar);
     await expect(row.first()).toBeVisible();
   },
 );
@@ -95,17 +111,8 @@ When(
     toChar: string,
     relationshipName: string,
   ) {
-    // より具体的なパターンでマッチング: "fromChar → relationshipName → toChar"
-    const relationshipPattern = new RegExp(
-      `${fromChar}.*→.*${relationshipName}.*→.*${toChar}`,
-    );
-
-    const row = this.page
-      .locator('div.p-4.border.rounded-lg')
-      .filter({ hasText: relationshipPattern })
-      .first();
-
-    await row.getByRole('button', { name: '編集' }).click();
+    const row = getRelationshipRow(this, fromChar, relationshipName, toChar);
+    await row.first().getByRole('button', { name: '編集' }).click();
   },
 );
 
@@ -129,17 +136,8 @@ When(
     toChar: string,
     relationshipName: string,
   ) {
-    // より具体的なパターンでマッチング: "fromChar → relationshipName → toChar"
-    const relationshipPattern = new RegExp(
-      `${fromChar}.*→.*${relationshipName}.*→.*${toChar}`,
-    );
-
-    const row = this.page
-      .locator('div.p-4.border.rounded-lg')
-      .filter({ hasText: relationshipPattern })
-      .first();
-
-    await row.getByRole('button', { name: '削除' }).click();
+    const row = getRelationshipRow(this, fromChar, relationshipName, toChar);
+    await row.first().getByRole('button', { name: '削除' }).click();
   },
 );
 
@@ -151,14 +149,7 @@ Then(
     toChar: string,
     relationshipName: string,
   ) {
-    const relationshipPattern = new RegExp(
-      `${fromChar}.*→.*${relationshipName}.*→.*${toChar}`,
-    );
-
-    const row = this.page
-      .locator('div.p-4.border.rounded-lg')
-      .filter({ hasText: relationshipPattern });
-
+    const row = getRelationshipRow(this, fromChar, relationshipName, toChar);
     await expect(row).not.toBeVisible();
   },
 );
