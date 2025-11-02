@@ -63,7 +63,7 @@ When(
 
 // プロンプトで入力準備する
 When(
-  /^プロンプトで "([^"]*)" \(説明: "([^"]*)", 役割: "([^"]*)"\) を入力準備する$/,
+  'プロンプトで {string} [説明: {string}, 役割: {string} ] を入力準備する',
   async function (
     this: CustomWorld,
     name: string,
@@ -187,9 +187,7 @@ Given(
     );
 
     // キャラクターを作成ボタンをクリック
-    await this.page
-      .getByRole('button', { name: 'キャラクターを作成' })
-      .click();
+    await this.page.getByRole('button', { name: 'キャラクターを作成' }).click();
 
     // 少し待つ
     await this.page.waitForTimeout(1000);
