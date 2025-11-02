@@ -1,3 +1,5 @@
+import { Button } from '../common';
+
 export interface CharacterCreateModalProps {
   /** モーダルの表示状態 */
   isOpen: boolean;
@@ -94,21 +96,21 @@ export function CharacterCreateModal({
             />
           </div>
           <div className="flex justify-end gap-2 mt-6">
-            <button
+            <Button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-gray-700 bg-gray-100 rounded hover:bg-gray-200"
+              variant="secondary"
             >
               キャンセル
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               onClick={onSubmit}
               disabled={isSubmitting || !name}
-              className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              variant="primary"
             >
               {isSubmitting ? '作成中...' : '作成'}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

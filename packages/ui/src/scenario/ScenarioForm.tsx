@@ -1,3 +1,4 @@
+import { Button } from '../common';
 import type { ScenarioFormData } from './types';
 
 export interface ScenarioFormProps {
@@ -54,22 +55,22 @@ export function ScenarioForm({
 
       <div className="flex gap-2 justify-end">
         {onCancel && (
-          <button
+          <Button
             type="button"
             onClick={onCancel}
             disabled={isSubmitting}
-            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            variant="ghost"
           >
             キャンセル
-          </button>
+          </Button>
         )}
-        <button
+        <Button
           type="submit"
           disabled={isSubmitting}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          variant="primary"
         >
           {isSubmitting ? '送信中...' : submitLabel}
-        </button>
+        </Button>
       </div>
     </form>
   );

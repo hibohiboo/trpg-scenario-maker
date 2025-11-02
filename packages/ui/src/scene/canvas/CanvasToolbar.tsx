@@ -1,3 +1,5 @@
+import { Button } from '../../common';
+
 interface CanvasToolbarProps {
   onLayout: (direction: 'TB' | 'LR') => void;
 }
@@ -15,20 +17,22 @@ export function CanvasToolbar({ onLayout }: CanvasToolbarProps) {
       </div>
       <div className="flex flex-col gap-2 rounded-lg bg-white p-3 shadow-md">
         <p className="text-sm font-semibold text-gray-700">自動整列：</p>
-        <button
+        <Button
           onClick={() => onLayout('TB')}
-          className="rounded bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700"
+          variant="primary"
+          size="sm"
           type="button"
         >
           縦方向
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => onLayout('LR')}
-          className="rounded bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700"
+          variant="primary"
+          size="sm"
           type="button"
         >
           横方向
-        </button>
+        </Button>
       </div>
     </div>
   );

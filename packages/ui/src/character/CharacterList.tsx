@@ -44,19 +44,22 @@ export function CharacterList({
       ) : (
         <div className="space-y-2">
           {characters.map((character) => (
-            <button
+            <Button
               key={character.id}
               type="button"
               onClick={() => onCharacterClick?.(character)}
-              className="w-full text-left p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+              variant="ghost"
+              className="w-full text-left p-4 border border-gray-300 justify-start"
             >
-              <h3 className="font-bold text-lg">{character.name}</h3>
-              {character.description && (
-                <p className="text-gray-600 text-sm mt-1">
-                  {character.description}
-                </p>
-              )}
-            </button>
+              <div className="w-full">
+                <h3 className="font-bold text-lg">{character.name}</h3>
+                {character.description && (
+                  <p className="text-gray-600 text-sm mt-1">
+                    {character.description}
+                  </p>
+                )}
+              </div>
+            </Button>
           ))}
         </div>
       )}
