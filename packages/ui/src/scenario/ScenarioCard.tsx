@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
+import { Button } from '../common';
 import type { Scenario } from './types';
 
 export interface ScenarioCardProps {
@@ -55,24 +56,28 @@ export function ScenarioCard({
         </h3>
         <div className="flex gap-2">
           {onEdit && (
-            <button
+            <Button
               type="button"
               onClick={handleEdit}
-              className="p-1 text-gray-600 hover:text-blue-600 transition-colors"
+              variant="ghost"
+              size="sm"
+              className="p-1! text-gray-600 hover:text-blue-600"
               aria-label="シナリオを編集"
             >
               <FiEdit2 size={18} />
-            </button>
+            </Button>
           )}
           {onDelete && (
-            <button
+            <Button
               type="button"
               onClick={handleDelete}
-              className="p-1 text-gray-600 hover:text-red-600 transition-colors"
+              variant="ghost"
+              size="sm"
+              className="p-1! text-gray-600 hover:text-red-600"
               aria-label="シナリオを削除"
             >
               <FiTrash2 size={18} />
-            </button>
+            </Button>
           )}
         </div>
       </div>

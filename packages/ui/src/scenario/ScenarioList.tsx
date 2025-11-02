@@ -1,4 +1,5 @@
 import { FiPlus } from 'react-icons/fi';
+import { Button } from '../common';
 import { ScenarioCard } from './ScenarioCard';
 import type { Scenario } from './types';
 
@@ -29,14 +30,15 @@ function ScenarioListBody({
       <div className="text-center py-12 text-gray-500">
         <p className="mb-4">シナリオがまだありません</p>
         {onCreateNew && (
-          <button
+          <Button
             type="button"
             onClick={onCreateNew}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            variant="primary"
+            className="inline-flex items-center gap-2"
           >
             <FiPlus size={20} />
             最初のシナリオを作成
-          </button>
+          </Button>
         )}
       </div>
     );
@@ -76,14 +78,15 @@ export function ScenarioList(props: ScenarioListProps) {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900">シナリオ一覧</h2>
         {onCreateNew && (
-          <button
+          <Button
             type="button"
             onClick={onCreateNew}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            variant="primary"
+            className="flex items-center gap-2"
           >
             <FiPlus size={20} />
             新規作成
-          </button>
+          </Button>
         )}
       </div>
       <ScenarioListBody {...props} />

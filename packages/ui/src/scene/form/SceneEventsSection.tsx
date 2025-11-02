@@ -114,40 +114,48 @@ export const SceneEventsSection: React.FC<SceneEventsSectionProps> = ({
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                <button
+                <Button
                   type="button"
                   onClick={() => onMoveEventUp(event.id)}
                   disabled={index === 0}
-                  className="rounded p-1 text-gray-600 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-30"
+                  variant="ghost"
+                  size="sm"
+                  className="p-1! text-gray-600 hover:bg-gray-100"
                   title="上に移動"
                 >
                   <FaArrowUp size={16} />
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
                   onClick={() => onMoveEventDown(event.id)}
                   disabled={index === events.length - 1}
-                  className="rounded p-1 text-gray-600 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-30"
+                  variant="ghost"
+                  size="sm"
+                  className="p-1! text-gray-600 hover:bg-gray-100"
                   title="下に移動"
                 >
                   <FaArrowDown size={16} />
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
                   onClick={() => handleEditClick(event)}
-                  className="rounded p-1 text-blue-600 hover:bg-blue-50"
+                  variant="ghost"
+                  size="sm"
+                  className="p-1! text-blue-600 hover:bg-blue-50"
                   title="編集"
                 >
                   <FaEdit size={16} />
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
                   onClick={() => handleDelete(event.id)}
-                  className="rounded p-1 text-red-600 hover:bg-red-50"
+                  variant="ghost"
+                  size="sm"
+                  className="p-1! text-red-600 hover:bg-red-50"
                   title="削除"
                 >
                   <FaTrash size={16} />
-                </button>
+                </Button>
               </div>
             </div>
           ))}
