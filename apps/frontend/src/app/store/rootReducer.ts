@@ -1,6 +1,7 @@
 import { combineReducers, type UnknownAction } from '@reduxjs/toolkit';
 import { characterSlice, relationshipSlice } from '@/entities/character';
 import { scenarioSlice } from '@/entities/scenario';
+import { scenarioCharacterSlice } from '@/entities/scenarioCharacter';
 import { sceneSlice } from '@/entities/scene';
 import { sceneEventSlice } from '@/entities/sceneEvent';
 
@@ -10,6 +11,7 @@ const combinedReducer = combineReducers({
   [sceneEventSlice.reducerPath]: sceneEventSlice.reducer,
   [characterSlice.reducerPath]: characterSlice.reducer,
   [relationshipSlice.reducerPath]: relationshipSlice.reducer,
+  [scenarioCharacterSlice.reducerPath]: scenarioCharacterSlice.reducer,
 });
 
 type CombinedState = ReturnType<typeof combinedReducer>;
