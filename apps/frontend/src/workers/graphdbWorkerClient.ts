@@ -121,11 +121,12 @@ class GraphDBWorkerClient extends BaseWorkerClient<
 
   private async saveEdge(tableName: string): Promise<void> {
     const edgeFilename = `/${tableName}.csv`;
+    // エッジのプロパティも含めて保存（relationshipNameなど）
     await this.sendRequest<GraphDBWorkerResponse>({
       type: 'save',
       payload: {
         path: edgeFilename,
-        query: `COPY (MATCH (a)-[f:${tableName}]->(b) RETURN a.id, b.id) TO '${edgeFilename}' (header=false, delim='|');`,
+        query: `COPY (MATCH (a)-[f:${tableName}]->(b) RETURN a.id, b.id, f.*) TO '${edgeFilename}' (header=false, delim='|');`,
       },
     });
   }
