@@ -1,4 +1,5 @@
 {
+  // 調整: コマンドパレット（Ctrl + Shift + P）から「Developer: Show Running Extensions」を実行 して拡張機能の起動時間を書くに
   "recommendations": [
     "ms-vscode.vscode-typescript-next",
     "bradlc.vscode-tailwindcss",

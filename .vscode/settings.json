@@ -9,16 +9,18 @@
   ],
   "eslint.useFlatConfig": true,
   "eslint.useESLintClass": true,
+  "prettier.requireConfig": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnType": false,
+  "editor.formatOnPaste": false,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-  "files.eol": "\n",
   "editor.insertSpaces": true,
   "editor.tabSize": 2,
   "editor.tabCompletion": "on",
-  "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "prettier.requireConfig": true,
+  "files.eol": "\n",
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true
@@ -38,4 +40,46 @@
   "files.associations": {
     "*.css": "tailwindcss"
   },
+  // 軽量化: https://qiita.com/nolanlover0527/items/071277263f8851012e6b
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/*/**": true,
+    "**/dist/**": true,
+    "**/build/**": true,
+    "**/.vscode/**": true,
+    "**/coverage/**": true,
+    "**/test-results/**": true,
+    "**/tmp/**": true,
+    "**/.cache/**": true,
+    "**/.turbo/**": true
+  },
+  // サイドバーに表示しないフォルダのせて血
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/dist": false, // たまに見たいので表示はしておく
+    "**/build": true
+  },
+  // 検索対象にしない
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/*.code-search": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/coverage": true,
+    "**/test-results/**": true
+  },
+  // tsの軽量化
+  "typescript.tsserver.log": "off", // tsserverのログ出力を停止
+  "typescript.disableAutomaticTypeAcquisition": true, // 自動型取得を無効化 (JS用に@typesから型をDLする機能)
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false, // 大規模プロジェクトでの診断負荷を軽減
+  // git統合の最適化
+  "git.enabled": true,
+  "git.autorefresh": false,
+  "git.autofetch": false,
+  "git.decorations.enabled": false
+  // ファイルサイズ制限
 }
