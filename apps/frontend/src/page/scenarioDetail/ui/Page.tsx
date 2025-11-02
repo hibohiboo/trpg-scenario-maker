@@ -1,6 +1,8 @@
 import {
   SceneEditor,
   ScenarioCharacterList,
+  ScenarioCharacterRelationshipList,
+  ScenarioCharacterRelationshipFormModal,
   Loading,
   ErrorMessage,
 } from '@trpg-scenario-maker/ui';
@@ -37,6 +39,13 @@ export default function Page() {
     handleRemoveCharacter,
     handleCreateNewCharacter,
     handleAddExistingCharacter,
+    characterRelations,
+    isRelationsLoading,
+    isRelationshipFormOpen,
+    handleAddRelationship,
+    handleCloseRelationshipForm,
+    handleSubmitRelationship,
+    handleRemoveRelationship,
   } = useScenarioDetailPage();
 
   if (isLoading) {
@@ -62,6 +71,22 @@ export default function Page() {
           onAddExisting={handleAddExistingCharacter}
         />
       </section>
+
+      <section>
+        <ScenarioCharacterRelationshipList
+          relations={characterRelations}
+          isLoading={isRelationsLoading}
+          onAddRelationship={handleAddRelationship}
+          onRemoveRelationship={handleRemoveRelationship}
+        />
+      </section>
+
+      <ScenarioCharacterRelationshipFormModal
+        isOpen={isRelationshipFormOpen}
+        characters={characters}
+        onClose={handleCloseRelationshipForm}
+        onSubmit={handleSubmitRelationship}
+      />
 
       <section>
         <SceneEditor

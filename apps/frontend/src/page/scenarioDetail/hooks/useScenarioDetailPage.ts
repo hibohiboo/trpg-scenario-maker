@@ -1,10 +1,20 @@
-import type { SceneEventType, CharacterWithRole } from '@trpg-scenario-maker/ui';
+import type {
+  SceneEventType,
+  CharacterWithRole,
+  ScenarioCharacterRelation,
+} from '@trpg-scenario-maker/ui';
+import { useState } from 'react';
 import { useParams } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
 import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 import { characterGraphApi } from '@/entities/character';
 import { scenarioGraphApi } from '@/entities/scenario';
-import { useScenarioCharacterList } from '@/entities/scenarioCharacter';
+import {
+  useScenarioCharacterList,
+  useScenarioCharacterRelationships,
+  scenarioCharacterRelationGraphApi,
+  readScenarioCharacterRelationsAction,
+} from '@/entities/scenarioCharacter';
 import {
   useSceneList,
   useSceneOperations,
@@ -14,11 +24,14 @@ import {
   useSceneEventOperations,
   sceneEventSlice,
 } from '@/entities/sceneEvent';
-import { useAppSelector } from '@/shared/lib/store';
+import { useAppSelector, useAppDispatch } from '@/shared/lib/store';
 
 export const useScenarioDetailPage = () => {
   const { id } = useParams();
   if (!id) throw new Error('シナリオIDが見つかりません');
+
+  const dispatch = useAppDispatch();
+  const [isRelationshipFormOpen, setIsRelationshipFormOpen] = useState(false);
 
   const { scenes, connections, isLoading, error } = useSceneList();
   const {
@@ -49,6 +62,29 @@ export const useScenarioDetailPage = () => {
     removeCharacter,
     updateRole,
   } = useScenarioCharacterList(id);
+
+  const { relations, isLoading: isRelationsLoading } =
+    useScenarioCharacterRelationships(id);
+
+  // 関係性データをUIコンポーネント用に変換
+  const characterRelations: ScenarioCharacterRelation[] = relations.map(
+    (rel) => {
+      const fromChar = characters.find(
+        (c) => c.characterId === rel.fromCharacterId,
+      );
+      const toChar = characters.find(
+        (c) => c.characterId === rel.toCharacterId,
+      );
+      return {
+        scenarioId: rel.scenarioId,
+        fromCharacterId: rel.fromCharacterId,
+        fromCharacterName: fromChar?.name || '不明',
+        toCharacterId: rel.toCharacterId,
+        toCharacterName: toChar?.name || '不明',
+        relationshipName: rel.relationshipName,
+      };
+    },
+  );
 
   const handleSave = async () => {
     await scenarioGraphApi.save();
@@ -161,6 +197,58 @@ export const useScenarioDetailPage = () => {
     }
   };
 
+  const handleOpenRelationshipForm = () => {
+    setIsRelationshipFormOpen(true);
+  };
+
+  const handleCloseRelationshipForm = () => {
+    setIsRelationshipFormOpen(false);
+  };
+
+  const handleSubmitRelationship = async (params: {
+    fromCharacterId: string;
+    toCharacterId: string;
+    relationshipName: string;
+  }) => {
+    try {
+      await scenarioCharacterRelationGraphApi.create({
+        scenarioId: id,
+        ...params,
+      });
+      await graphdbWorkerClient.save();
+      // 関係性リストを再取得
+      dispatch(readScenarioCharacterRelationsAction({ scenarioId: id }));
+    } catch (err) {
+      console.error('Failed to create relationship:', err);
+      alert('関係性の作成に失敗しました');
+    }
+  };
+
+  const handleRemoveRelationship = async (
+    fromCharacterId: string,
+    toCharacterId: string,
+  ) => {
+    const fromChar = characters.find((c) => c.characterId === fromCharacterId);
+    const toChar = characters.find((c) => c.characterId === toCharacterId);
+
+    const confirmed = window.confirm(
+      `「${fromChar?.name || '不明'}」から「${toChar?.name || '不明'}」への関係性を削除してもよろしいですか？`,
+    );
+    if (confirmed) {
+      try {
+        await scenarioCharacterRelationGraphApi.delete({
+          scenarioId: id,
+          fromCharacterId,
+          toCharacterId,
+        });
+        await graphdbWorkerClient.save();
+      } catch (err) {
+        console.error('Failed to remove relationship:', err);
+        alert('関係性の削除に失敗しました');
+      }
+    }
+  };
+
   return {
     id,
     scenes,
@@ -192,5 +280,12 @@ export const useScenarioDetailPage = () => {
     handleRemoveCharacter,
     handleCreateNewCharacter,
     handleAddExistingCharacter,
+    characterRelations,
+    isRelationsLoading,
+    isRelationshipFormOpen,
+    handleAddRelationship: handleOpenRelationshipForm,
+    handleCloseRelationshipForm,
+    handleSubmitRelationship,
+    handleRemoveRelationship,
   };
 };

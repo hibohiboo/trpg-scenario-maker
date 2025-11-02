@@ -101,6 +101,40 @@ When(
   },
 );
 
+// プロンプトで関係性を入力準備する
+When(
+  'プロンプトで関係性 [関係元: {string}, 関係先: {string}, 関係名: {string} ] を入力準備する',
+  async function (
+    this: CustomWorld,
+    fromCharName: string,
+    toCharName: string,
+    relationName: string,
+  ) {
+    // window.promptのモックを設定（3回の呼び出しに対応）
+    await this.page.evaluate(
+      ({
+        from,
+        to,
+        rel,
+      }: {
+        from: string;
+        to: string;
+        rel: string;
+      }) => {
+        let callCount = 0;
+        window.prompt = (() => {
+          callCount++;
+          if (callCount === 1) return from; // 関係元キャラクター名
+          if (callCount === 2) return to; // 関係先キャラクター名
+          if (callCount === 3) return rel; // 関係名
+          return '';
+        }) as typeof prompt;
+      },
+      { from: fromCharName, to: toCharName, rel: relationName },
+    );
+  },
+);
+
 // 役割に入力する
 When(
   '役割に {string} と入力する',
