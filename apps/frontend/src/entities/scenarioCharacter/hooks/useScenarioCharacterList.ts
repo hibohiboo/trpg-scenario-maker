@@ -1,9 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
-import { readScenarioCharactersAction } from '../actions/scenarioCharacterActions';
+import {
+  readScenarioCharactersAction,
+  addCharacterToScenarioAction,
+  removeCharacterFromScenarioAction,
+  updateCharacterRoleAction,
+} from '../actions/scenarioCharacterActions';
 import {
   scenarioCharactersSelector,
   scenarioCharacterLoadingSelector,
+  scenarioCharacterSubmittingSelector,
 } from '../model/scenarioCharacterSlice';
 
 export const useScenarioCharacterList = (scenarioId: string) => {
@@ -19,9 +25,41 @@ export const useScenarioCharacterList = (scenarioId: string) => {
     scenarioCharactersSelector(state, scenarioId),
   );
   const isLoading = useAppSelector(scenarioCharacterLoadingSelector);
+  const isSubmitting = useAppSelector(scenarioCharacterSubmittingSelector);
+
+  const addCharacter = useCallback(
+    async (characterId: string, role?: string) => {
+      await dispatch(
+        addCharacterToScenarioAction({ scenarioId, characterId, role }),
+      ).unwrap();
+    },
+    [dispatch, scenarioId],
+  );
+
+  const removeCharacter = useCallback(
+    async (characterId: string) => {
+      await dispatch(
+        removeCharacterFromScenarioAction({ scenarioId, characterId }),
+      ).unwrap();
+    },
+    [dispatch, scenarioId],
+  );
+
+  const updateRole = useCallback(
+    async (characterId: string, role: string) => {
+      await dispatch(
+        updateCharacterRoleAction({ scenarioId, characterId, role }),
+      ).unwrap();
+    },
+    [dispatch, scenarioId],
+  );
 
   return {
     characters,
     isLoading,
+    isSubmitting,
+    addCharacter,
+    removeCharacter,
+    updateRole,
   };
 };

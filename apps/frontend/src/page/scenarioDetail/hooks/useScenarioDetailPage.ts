@@ -1,6 +1,7 @@
-import type { SceneEventType } from '@trpg-scenario-maker/ui';
+import type { SceneEventType, CharacterWithRole } from '@trpg-scenario-maker/ui';
 import { useParams } from 'react-router';
 import { scenarioGraphApi } from '@/entities/scenario';
+import { useScenarioCharacterList } from '@/entities/scenarioCharacter';
 import {
   useSceneList,
   useSceneOperations,
@@ -37,6 +38,12 @@ export const useScenarioDetailPage = () => {
   const events = useAppSelector(
     (state) => state[sceneEventSlice.reducerPath].eventsBySceneId,
   );
+
+  const {
+    characters,
+    isLoading: isCharactersLoading,
+    removeCharacter,
+  } = useScenarioCharacterList(id);
 
   const handleSave = async () => {
     await scenarioGraphApi.save();
@@ -84,6 +91,33 @@ export const useScenarioDetailPage = () => {
     await moveEventDown(sceneId, sceneEvents, eventId);
   };
 
+  const handleCharacterClick = (character: CharacterWithRole) => {
+    // TODO: キャラクター詳細ページへ遷移、または編集モーダルを開く
+    console.log('Character clicked:', character);
+  };
+
+  const handleRemoveCharacter = async (characterId: string) => {
+    const character = characters.find((c) => c.characterId === characterId);
+    if (!character) return;
+
+    const confirmed = window.confirm(
+      `キャラクター「${character.name}」をシナリオから削除してもよろしいですか？`,
+    );
+    if (confirmed) {
+      await removeCharacter(characterId);
+    }
+  };
+
+  const handleCreateNewCharacter = () => {
+    // TODO: キャラクター作成モーダルを開く
+    console.log('Create new character');
+  };
+
+  const handleAddExistingCharacter = () => {
+    // TODO: 既存キャラクター選択モーダルを開く
+    console.log('Add existing character');
+  };
+
   return {
     id,
     scenes,
@@ -108,5 +142,11 @@ export const useScenarioDetailPage = () => {
     handleCloseForm,
     handleEditScene,
     handleSave,
+    characters,
+    isCharactersLoading,
+    handleCharacterClick,
+    handleRemoveCharacter,
+    handleCreateNewCharacter,
+    handleAddExistingCharacter,
   };
 };

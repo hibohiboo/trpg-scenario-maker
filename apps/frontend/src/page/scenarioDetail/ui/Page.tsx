@@ -1,4 +1,9 @@
-import { SceneEditor, Loading, ErrorMessage } from '@trpg-scenario-maker/ui';
+import {
+  SceneEditor,
+  ScenarioCharacterList,
+  Loading,
+  ErrorMessage,
+} from '@trpg-scenario-maker/ui';
 import { useScenarioDetailPage } from '../hooks/useScenarioDetailPage';
 
 export default function Page() {
@@ -25,6 +30,12 @@ export default function Page() {
     handleOpenForm,
     handleCloseForm,
     handleEditScene,
+    characters,
+    isCharactersLoading,
+    handleCharacterClick,
+    handleRemoveCharacter,
+    handleCreateNewCharacter,
+    handleAddExistingCharacter,
   } = useScenarioDetailPage();
 
   if (isLoading) {
@@ -36,31 +47,44 @@ export default function Page() {
   }
 
   return (
-    <>
-      <h1 className="mb-6 text-3xl font-bold">シナリオ編集</h1>
+    <div className="space-y-8">
+      <h1 className="text-3xl font-bold">シナリオ編集</h1>
 
-      <SceneEditor
-        scenarioId={id}
-        scenes={scenes}
-        connections={connections}
-        events={events}
-        isFormOpen={isFormOpen}
-        editingScene={editingScene}
-        onAddScene={handleAddScene}
-        onUpdateScene={handleUpdateScene}
-        onDeleteScene={handleDeleteScene}
-        onAddConnection={handleAddConnection}
-        onUpdateConnection={handleUpdateConnection}
-        onDeleteConnection={handleDeleteConnection}
-        onAddEvent={handleAddEvent}
-        onUpdateEvent={handleUpdateEvent}
-        onDeleteEvent={handleDeleteEvent}
-        onMoveEventUp={handleMoveEventUp}
-        onMoveEventDown={handleMoveEventDown}
-        onOpenForm={handleOpenForm}
-        onCloseForm={handleCloseForm}
-        onEditScene={handleEditScene}
-      />
-    </>
+      <section>
+        <ScenarioCharacterList
+          characters={characters}
+          isLoading={isCharactersLoading}
+          onCharacterClick={handleCharacterClick}
+          onRemoveCharacter={handleRemoveCharacter}
+          onCreateNew={handleCreateNewCharacter}
+          onAddExisting={handleAddExistingCharacter}
+        />
+      </section>
+
+      <section>
+        <SceneEditor
+          scenarioId={id}
+          scenes={scenes}
+          connections={connections}
+          events={events}
+          isFormOpen={isFormOpen}
+          editingScene={editingScene}
+          onAddScene={handleAddScene}
+          onUpdateScene={handleUpdateScene}
+          onDeleteScene={handleDeleteScene}
+          onAddConnection={handleAddConnection}
+          onUpdateConnection={handleUpdateConnection}
+          onDeleteConnection={handleDeleteConnection}
+          onAddEvent={handleAddEvent}
+          onUpdateEvent={handleUpdateEvent}
+          onDeleteEvent={handleDeleteEvent}
+          onMoveEventUp={handleMoveEventUp}
+          onMoveEventDown={handleMoveEventDown}
+          onOpenForm={handleOpenForm}
+          onCloseForm={handleCloseForm}
+          onEditScene={handleEditScene}
+        />
+      </section>
+    </div>
   );
 }

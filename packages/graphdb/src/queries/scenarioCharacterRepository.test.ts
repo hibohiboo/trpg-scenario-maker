@@ -71,6 +71,8 @@ describe('scenarioCharacterRepository', () => {
       const [sc] = parseToScenarioCharacterList(result);
       expect(sc.scenarioId).toBe(scenario.id);
       expect(sc.characterId).toBe(character.id);
+      expect(sc.name).toBe(character.name);
+      expect(sc.description).toBe(character.description);
       expect(sc.role).toBe('主人公');
     });
 
@@ -133,6 +135,8 @@ describe('scenarioCharacterRepository', () => {
 
       // Assert
       const [sc] = parseToScenarioCharacterList(result);
+      expect(sc.name).toBe(character.name);
+      expect(sc.description).toBe(character.description);
       expect(sc.role).toBe('協力者');
     });
 

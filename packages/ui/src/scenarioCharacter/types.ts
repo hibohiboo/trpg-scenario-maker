@@ -4,6 +4,8 @@
 export interface ScenarioCharacter {
   scenarioId: string;
   characterId: string;
+  name: string;
+  description?: string;
   role?: string;
 }
 
@@ -19,8 +21,6 @@ export interface ScenarioCharacterRelationship {
 
 /**
  * キャラクター詳細情報（表示用）
+ * ScenarioCharacterと同じ構造だが、明示的に型を定義
  */
-export interface CharacterWithRole extends ScenarioCharacter {
-  name: string;
-  description?: string;
-}
+export type CharacterWithRole = ScenarioCharacter;

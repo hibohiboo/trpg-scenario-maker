@@ -18,7 +18,7 @@ export const scenarioCharacterRepository = {
     return executeQuery(`
       MATCH (c:Character {id: '${params.characterId}'}), (s:Scenario {id: '${params.scenarioId}'})
       CREATE (c)-[r:APPEARS_IN {role: '${escapedRole}'}]->(s)
-      RETURN '${params.scenarioId}' AS scenarioId, '${params.characterId}' AS characterId, r.role AS role
+      RETURN '${params.scenarioId}' AS scenarioId, '${params.characterId}' AS characterId, c.name AS name, c.description AS description, r.role AS role
     `);
   },
 
@@ -48,7 +48,7 @@ export const scenarioCharacterRepository = {
     return executeQuery(`
       MATCH (c:Character {id: '${params.characterId}'})-[r:APPEARS_IN]->(s:Scenario {id: '${params.scenarioId}'})
       SET r.role = '${escapedRole}'
-      RETURN '${params.scenarioId}' AS scenarioId, '${params.characterId}' AS characterId, r.role AS role
+      RETURN '${params.scenarioId}' AS scenarioId, '${params.characterId}' AS characterId, c.name AS name, c.description AS description, r.role AS role
     `);
   },
 
@@ -58,7 +58,7 @@ export const scenarioCharacterRepository = {
   async findCharactersByScenarioId(scenarioId: string) {
     return executeQuery(`
       MATCH (c:Character)-[r:APPEARS_IN]->(s:Scenario {id: '${scenarioId}'})
-      RETURN '${scenarioId}' AS scenarioId, c.id AS characterId, r.role AS role
+      RETURN '${scenarioId}' AS scenarioId, c.id AS characterId, c.name AS name, c.description AS description, r.role AS role
     `);
   },
 } as const;

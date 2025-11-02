@@ -8,6 +8,10 @@ export const ScenarioCharacterSchema = v.object({
   scenarioId: v.string(),
   /** キャラクターID */
   characterId: v.string(),
+  /** キャラクター名 */
+  name: v.string(),
+  /** キャラクター説明 */
+  description: v.optional(v.string(), ''),
   /** シナリオ内での役割（例: "主人公", "敵", "協力者"） */
   role: v.optional(v.string(), ''),
 });
