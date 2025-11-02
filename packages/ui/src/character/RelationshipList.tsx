@@ -55,7 +55,7 @@ export function RelationshipList({
           {relationships.map((relationship) => (
             <div
               key={relationship.id}
-              className="p-4 border rounded-lg flex items-center justify-between hover:bg-gray-50"
+              className="character-relation-item p-4 border rounded-lg flex items-center justify-between hover:bg-gray-50"
             >
               <div className="flex-1">
                 <div className="flex items-center gap-2">

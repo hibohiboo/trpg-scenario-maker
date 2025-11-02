@@ -22,7 +22,7 @@ function getRelationshipRow(
   );
 
   return world.page
-    .locator('div.p-4.border.rounded-lg')
+    .locator('div.character-relation-item')
     .filter({ hasText: relationshipPattern });
 }
 
