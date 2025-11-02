@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "module": "ESNext",
-    "skipLibCheck": true,
+    "skipLibCheck": true, // 型定義ファイルのチェックをスキップ（高速化）
+    "forceConsistentCasingInFileNames": true, // ファイルの大文字小文字の一致を強制
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -17,5 +18,13 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "coverage"
+  ]
 }
