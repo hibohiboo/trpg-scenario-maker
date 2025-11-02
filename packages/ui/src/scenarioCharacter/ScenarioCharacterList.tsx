@@ -39,7 +39,7 @@ export function ScenarioCharacterList({
         <div className="flex gap-2">
           {onCreateNew && (
             <Button onClick={onCreateNew} variant="primary" size="sm">
-              新規作成
+              キャラクターを作成
             </Button>
           )}
           {onAddExisting && (
@@ -59,7 +59,7 @@ export function ScenarioCharacterList({
           {characters.map((character) => (
             <div
               key={character.characterId}
-              className="flex items-start justify-between p-4 border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="scenario-character-item flex items-start justify-between p-4 border border-gray-300 rounded-lg hover:bg-gray-50"
             >
               <button
                 type="button"

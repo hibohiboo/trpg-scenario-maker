@@ -10,7 +10,8 @@
     "lint": "eslint . --fix && tsc -b ",
     "preview": "vite preview",
     "ncu": "ncu -u",
-    "test:e2e": "cucumber-js --config cucumber.mjs --exit"
+    "test:e2e": "cucumber-js --config cucumber.mjs --exit",
+    "codegen": "playwright codegen"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.9.2",

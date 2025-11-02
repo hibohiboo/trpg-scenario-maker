@@ -18,7 +18,7 @@ setDefaultTimeout(10000);
 function setupCustomWorld() {
   setWorldConstructor(function (this: CustomWorld) {
     this.init = async () => {
-      const browser = await chromium.launch({ headless: true });
+      const browser = await chromium.launch({ headless: false });
       const context = await browser.newContext();
       this.page = await context.newPage();
     };

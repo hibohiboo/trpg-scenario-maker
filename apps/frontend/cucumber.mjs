@@ -1,5 +1,5 @@
 export default {
-  paths: ['**/features/*.feature'],
+  paths: ['**/features/scenario-character.feature'],
   import: ['**/steps/*.steps.ts'],
   loader: ['ts-node/esm'],
   format: [

@@ -1,5 +1,8 @@
 import type { SceneEventType, CharacterWithRole } from '@trpg-scenario-maker/ui';
 import { useParams } from 'react-router';
+import { v4 as uuidv4 } from 'uuid';
+import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
+import { characterGraphApi } from '@/entities/character';
 import { scenarioGraphApi } from '@/entities/scenario';
 import { useScenarioCharacterList } from '@/entities/scenarioCharacter';
 import {
@@ -42,6 +45,7 @@ export const useScenarioDetailPage = () => {
   const {
     characters,
     isLoading: isCharactersLoading,
+    addCharacter,
     removeCharacter,
   } = useScenarioCharacterList(id);
 
@@ -108,9 +112,31 @@ export const useScenarioDetailPage = () => {
     }
   };
 
-  const handleCreateNewCharacter = () => {
-    // TODO: キャラクター作成モーダルを開く
-    console.log('Create new character');
+  const handleCreateNewCharacter = async () => {
+    const name = window.prompt('キャラクター名を入力してください');
+    if (!name) return;
+
+    const description = window.prompt('キャラクターの説明を入力してください（省略可）') || '';
+    const role = window.prompt('シナリオ内での役割を入力してください（省略可）') || '';
+
+    try {
+      // キャラクターを作成
+      const characterId = uuidv4();
+      await characterGraphApi.create({
+        id: characterId,
+        name,
+        description,
+      });
+
+      // シナリオに追加
+      await addCharacter(characterId, role);
+
+      // 保存
+      await graphdbWorkerClient.save();
+    } catch (err) {
+      console.error('Failed to create character:', err);
+      alert('キャラクターの作成に失敗しました');
+    }
   };
 
   const handleAddExistingCharacter = () => {
