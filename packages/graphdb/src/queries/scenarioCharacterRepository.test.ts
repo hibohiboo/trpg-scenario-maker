@@ -7,9 +7,9 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { initializeDatabase, closeDatabase, executeQuery } from '../db';
 import { graphDbSchemas } from '../schemas';
 import { characterGraphRepository } from './characterRepository';
-import { scenarioGraphRepository } from './scenarioRepository';
-import { scenarioCharacterRepository } from './scenarioCharacterRepository';
 import { scenarioCharacterRelationshipRepository } from './scenarioCharacterRelationshipRepository';
+import { scenarioCharacterRepository } from './scenarioCharacterRepository';
+import { scenarioGraphRepository } from './scenarioRepository';
 
 /**
  * テスト用シナリオを作成するヘルパー関数
@@ -100,14 +100,14 @@ describe('scenarioCharacterRepository', () => {
       // Act
       const result =
         await scenarioCharacterRepository.findCharactersByScenarioId(
-          scenario.id
+          scenario.id,
         );
 
       // Assert
       const characters = parseToScenarioCharacterList(result);
       expect(characters.length).toBe(2);
       expect(characters.map((c) => c.characterId).sort()).toEqual(
-        [char1.id, char2.id].sort()
+        [char1.id, char2.id].sort(),
       );
     });
 
@@ -158,7 +158,7 @@ describe('scenarioCharacterRepository', () => {
       // Assert
       const result =
         await scenarioCharacterRepository.findCharactersByScenarioId(
-          scenario.id
+          scenario.id,
         );
       const characters = parseToScenarioCharacterList(result);
       expect(characters.length).toBe(0);
@@ -257,7 +257,7 @@ describe('scenarioCharacterRepository', () => {
       // Act
       const result =
         await scenarioCharacterRelationshipRepository.findByScenarioId(
-          scenario.id
+          scenario.id,
         );
 
       // Assert
@@ -293,7 +293,7 @@ describe('scenarioCharacterRepository', () => {
       // Assert
       const result =
         await scenarioCharacterRelationshipRepository.findByScenarioId(
-          scenario.id
+          scenario.id,
         );
       const relationships = parseToScenarioCharacterRelationshipList(result);
       expect(relationships.length).toBe(0);
@@ -334,15 +334,15 @@ describe('scenarioCharacterRepository', () => {
           {
             scenarioId: scenario.id,
             characterId: char1.id,
-          }
+          },
         );
 
       // Assert
       const outgoing = parseToScenarioCharacterRelationshipList(
-        result.outgoing
+        result.outgoing,
       );
       const incoming = parseToScenarioCharacterRelationshipList(
-        result.incoming
+        result.incoming,
       );
       expect(outgoing.length).toBe(1);
       expect(outgoing[0].toCharacterId).toBe(char2.id);

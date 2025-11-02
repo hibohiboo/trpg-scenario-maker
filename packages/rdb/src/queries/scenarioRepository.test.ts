@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeAll, afterEach } from 'vitest';
 import { PGlite } from '@electric-sql/pglite';
 import { drizzle } from 'drizzle-orm/pglite';
+import { describe, it, expect, beforeAll, afterEach } from 'vitest';
 import { createScenarioRepository } from './scenarioRepository';
 
 describe('scenarioRepository', () => {
@@ -66,7 +66,9 @@ describe('scenarioRepository', () => {
       });
 
       // 少し待機して更新日時を異なるものにする
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      await new Promise((resolve) => {
+        setTimeout(resolve, 10);
+      });
 
       const scenario2 = await repository.create({
         id: crypto.randomUUID(),
@@ -108,7 +110,9 @@ describe('scenarioRepository', () => {
       const created = await repository.create(newScenario);
 
       // 少し待機して更新日時が確実に異なるようにする
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      await new Promise((resolve) => {
+        setTimeout(resolve, 10);
+      });
 
       // 更新
       const updated = await repository.update(created.id, {
@@ -118,7 +122,7 @@ describe('scenarioRepository', () => {
       expect(updated).toBeDefined();
       expect(updated.title).toBe('更新後のタイトル');
       expect(updated.updatedAt.getTime()).toBeGreaterThan(
-        created.updatedAt.getTime()
+        created.updatedAt.getTime(),
       );
     });
   });

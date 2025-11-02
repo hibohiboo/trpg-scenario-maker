@@ -14,7 +14,7 @@ export default defineConfig([
     files: ['**/*.test.ts', 'tests/*'],
     extends: [...customConfig],
     rules: {
-      'no-console': 'off',
+      'no-console': ['off'],
       'import/no-extraneous-dependencies': ['off'],
       '@typescript-eslint/no-explicit-any': ['off'],
       'no-restricted-syntax': ['off'],
