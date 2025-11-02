@@ -99,7 +99,7 @@ When(
       .filter({ hasText: toChar })
       .filter({ hasText: relationshipName })
       .first();
-    await row.getByRole('button', { name: '編集' }).click();
+    await row.getByRole('button', { name: '編集' }).first().click();
   },
 );
 
@@ -130,7 +130,7 @@ When(
       .filter({ hasText: toChar })
       .filter({ hasText: relationshipName })
       .first();
-    await row.getByRole('button', { name: '削除' }).click();
+    await row.getByRole('button', { name: '削除' }).first().click();
   },
 );
 

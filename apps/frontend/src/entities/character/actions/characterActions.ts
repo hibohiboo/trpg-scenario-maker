@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import type { Character } from '@trpg-scenario-maker/schema';
 import { v4 as uuidv4 } from 'uuid';
+import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 import { characterGraphApi } from '../api/characterGraphApi';
 import {
   closeCreateModal,
@@ -19,6 +20,7 @@ export const createCharacterAction = createAsyncThunk<
     description: payload.description,
   });
   dispatch(closeCreateModal());
+  await graphdbWorkerClient.save();
   return newCharacter;
 });
 
@@ -29,6 +31,8 @@ export const updateCharacterAction = createAsyncThunk<
 >('character/update', async (payload, { dispatch }) => {
   const updatedCharacter = await characterGraphApi.update(payload);
   dispatch(closeEditModal());
+
+  await graphdbWorkerClient.save();
   return updatedCharacter;
 });
 
@@ -39,6 +43,8 @@ export const deleteCharacterAction = createAsyncThunk<
 >('character/delete', async (payload, { dispatch }) => {
   await characterGraphApi.delete(payload.id);
   dispatch(closeDeleteModal());
+
+  await graphdbWorkerClient.save();
   return payload.id;
 });
 

@@ -10,7 +10,7 @@ export interface CharacterListProps {
   /** キャラクタークリック時のコールバック */
   onCharacterClick?: (character: Character) => void;
   /** 新規作成ボタンクリック時のコールバック */
-  onCreateNew?: () => void;
+  onCreateNew?: (fromCharacterId?: string) => void;
 }
 
 /**
@@ -31,7 +31,7 @@ export function CharacterList({
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold">キャラクター一覧</h3>
         {onCreateNew && (
-          <Button onClick={onCreateNew} variant="primary" size="sm">
+          <Button onClick={() => onCreateNew()} variant="primary" size="sm">
             新規作成
           </Button>
         )}

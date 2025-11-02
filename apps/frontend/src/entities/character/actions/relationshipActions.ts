@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import type { Relationship } from '@trpg-scenario-maker/schema';
 import { v4 as uuidv4 } from 'uuid';
+import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 import { characterRelationGraphApi } from '../api/characterRelationGraphApi';
 import {
   closeRelationshipCreateModal,
@@ -27,6 +28,7 @@ export const createRelationshipAction = createAsyncThunk<
     relationshipName: payload.relationshipName,
   });
   dispatch(closeRelationshipCreateModal());
+  await graphdbWorkerClient.save();
   return newRelationship;
 });
 
@@ -44,6 +46,7 @@ export const updateRelationshipAction = createAsyncThunk<
 >('relationship/update', async (payload, { dispatch }) => {
   const updatedRelationship = await characterRelationGraphApi.update(payload);
   dispatch(closeRelationshipEditModal());
+  await graphdbWorkerClient.save();
   return updatedRelationship;
 });
 
@@ -57,6 +60,7 @@ export const deleteRelationshipAction = createAsyncThunk<
 >('relationship/delete', async (payload, { dispatch }) => {
   await characterRelationGraphApi.delete(payload);
   dispatch(closeRelationshipDeleteModal());
+  await graphdbWorkerClient.save();
   return payload;
 });
 

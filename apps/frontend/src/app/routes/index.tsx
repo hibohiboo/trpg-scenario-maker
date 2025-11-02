@@ -1,5 +1,8 @@
 import { createBrowserRouter } from 'react-router';
-import { CharacterRelationshipPage } from '@/page/character';
+import {
+  CharacterRelationshipPage,
+  characterRelationshipLoader,
+} from '@/page/character';
 import { ScenarioPage } from '@/page/scenario';
 import { ScenarioDetailPage } from '@/page/scenarioDetail';
 import { scenarioDetailLoader } from '@/page/scenarioDetail/loader';
@@ -29,6 +32,7 @@ export const createRouter = (_: { dispatch: AppDispatch }) =>
           {
             path: 'characters',
             element: <CharacterRelationshipPage />,
+            loader: characterRelationshipLoader,
           },
         ],
       },

@@ -9,7 +9,10 @@ export const characterGraphHandlers = [
     type: 'character:graph:getList',
     handler: async () => {
       const result = await characterGraphRepository.findAll();
-      return { data: parseToCharacterList(result) };
+
+      const data = parseToCharacterList(result);
+
+      return { data };
     },
   },
   {

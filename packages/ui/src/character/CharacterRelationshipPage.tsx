@@ -22,7 +22,7 @@ export interface CharacterRelationshipPageProps {
   /** キャラクター作成フォーム: 説明 */
   createCharacterDescription: string;
   /** キャラクター作成ボタンクリック */
-  onCharacterCreateNew: () => void;
+  onCharacterCreateNew: (fromCharacterId?: string) => void;
   /** キャラクター作成モーダルを閉じる */
   onCloseCharacterCreateModal: () => void;
   /** キャラクター作成フォーム: 名前変更 */
@@ -55,7 +55,7 @@ export interface CharacterRelationshipPageProps {
   /** 削除中かどうか */
   isDeleting?: boolean;
   /** 新規作成ボタンクリック時のコールバック */
-  onCreateNew: () => void;
+  onCreateNew: (fromCharacterId?: string) => void;
   /** 作成モーダルを閉じるコールバック */
   onCloseCreateModal: () => void;
   /** 作成フォーム: 関係元キャラクター変更 */

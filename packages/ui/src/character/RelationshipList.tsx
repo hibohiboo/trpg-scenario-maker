@@ -10,7 +10,7 @@ export interface RelationshipListProps {
   /** ローディング状態 */
   isLoading?: boolean;
   /** 新規作成ボタンクリック時のコールバック */
-  onCreateNew?: () => void;
+  onCreateNew?: (fromCharacterId?: string) => void;
   /** 編集ボタンクリック時のコールバック */
   onEdit?: (relationship: Relationship) => void;
   /** 削除ボタンクリック時のコールバック */
@@ -42,16 +42,14 @@ export function RelationshipList({
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">キャラクター関係性</h2>
         {onCreateNew && (
-          <Button onClick={onCreateNew} variant="primary">
+          <Button onClick={() => onCreateNew()} variant="primary">
             関係性を追加
           </Button>
         )}
       </div>
 
       {relationships.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">
-          関係性がありません
-        </div>
+        <div className="text-center py-8 text-gray-500">関係性がありません</div>
       ) : (
         <div className="space-y-2">
           {relationships.map((relationship) => (
