@@ -328,5 +328,77 @@ describe('characterGraphRepository', () => {
       expect(outgoing.find((r) => r.relationshipName === '友人')).toBeDefined();
       expect(outgoing.find((r) => r.relationshipName === 'ライバル')).toBeDefined();
     });
+
+    it('同じキャラクターペア間の複数関係性から特定の関係性のみを更新できる', async () => {
+      // Arrange
+      const char1 = await createTestCharacter({ name: 'アリス', description: '主人公' });
+      const char2 = await createTestCharacter({ name: 'ボブ', description: '相手役' });
+
+      const rel1 = await createTestRelationship({
+        fromCharacterId: char1.id,
+        toCharacterId: char2.id,
+        relationshipName: '友人',
+      });
+      const rel2 = await createTestRelationship({
+        fromCharacterId: char1.id,
+        toCharacterId: char2.id,
+        relationshipName: 'ライバル',
+      });
+
+      // Act - rel1のみを更新
+      const updateResult = await characterRelationshipGraphRepository.update({
+        id: rel1.id,
+        relationshipName: '親友',
+      });
+
+      // Assert
+      const [updated] = parseToRelationshipList(updateResult);
+      expect(updated.id).toBe(rel1.id);
+      expect(updated.relationshipName).toBe('親友');
+
+      // 全関係性を取得して検証
+      const result =
+        await characterRelationshipGraphRepository.findByCharacterId(char1.id);
+      const outgoing = parseToRelationshipList(result.outgoing);
+
+      expect(outgoing).toHaveLength(2);
+      expect(outgoing.find((r) => r.id === rel1.id)?.relationshipName).toBe('親友');
+      expect(outgoing.find((r) => r.id === rel2.id)?.relationshipName).toBe('ライバル');
+    });
+
+    it('同じキャラクターペア間の複数関係性から特定の関係性のみを削除できる', async () => {
+      // Arrange
+      const char1 = await createTestCharacter({ name: 'アリス', description: '主人公' });
+      const char2 = await createTestCharacter({ name: 'ボブ', description: '相手役' });
+
+      const rel1 = await createTestRelationship({
+        fromCharacterId: char1.id,
+        toCharacterId: char2.id,
+        relationshipName: '友人',
+      });
+      const rel2 = await createTestRelationship({
+        fromCharacterId: char1.id,
+        toCharacterId: char2.id,
+        relationshipName: 'ライバル',
+      });
+
+      // Act - rel1のみを削除
+      await characterRelationshipGraphRepository.delete({
+        id: rel1.id,
+      });
+
+      // Assert
+      const result =
+        await characterRelationshipGraphRepository.findByCharacterId(char1.id);
+      const outgoing = parseToRelationshipList(result.outgoing);
+
+      // rel2は残っている
+      expect(outgoing).toHaveLength(1);
+      expect(outgoing[0].id).toBe(rel2.id);
+      expect(outgoing[0].relationshipName).toBe('ライバル');
+
+      // rel1は削除されている
+      expect(outgoing.find((r) => r.id === rel1.id)).toBeUndefined();
+    });
   });
 });
