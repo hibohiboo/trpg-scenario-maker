@@ -18,73 +18,70 @@
 
 ## タスク一覧
 
-### Phase 1: スキーマ設計
+### Phase 1: スキーマ設計 ✅
 
-- [ ] **1-1. スキーマ定義の設計**
-  - [ ] `ScenarioCharacter`スキーマの設計（シナリオ内でのキャラクター情報）
-  - [ ] `ScenarioCharacterRelationship`スキーマの設計（シナリオ内での関係性）
-  - [ ] データ構造のドキュメント作成
+- [x] **1-1. スキーマ定義の設計**
+  - [x] `ScenarioCharacter`スキーマの設計（シナリオ内でのキャラクター情報）
+  - [x] `ScenarioCharacterRelationship`スキーマの設計（シナリオ内での関係性）
 
-### Phase 2: バックエンド実装
+### Phase 2: バックエンド実装 ✅
 
-#### 2-1. スキーマ実装（packages/schema/src/）
+#### 2-1. スキーマ実装（packages/schema/src/） ✅
 
-- [ ] **2-1-1. scenarioCharacter.ts作成**
-  - [ ] `ScenarioCharacterSchema`定義（scenarioId, characterId, role等）
-  - [ ] `ScenarioCharacterFormDataSchema`定義
-  - [ ] `parseToScenarioCharacter`関数実装
-  - [ ] `parseToScenarioCharacterList`関数実装
+- [x] **2-1-1. scenarioCharacter.ts作成**
+  - [x] `ScenarioCharacterSchema`定義（scenarioId, characterId, role等）
+  - [x] `ScenarioCharacterFormDataSchema`定義
+  - [x] `parseToScenarioCharacter`関数実装
+  - [x] `parseToScenarioCharacterList`関数実装
 
-- [ ] **2-1-2. scenarioCharacterRelationship.ts作成**
-  - [ ] `ScenarioCharacterRelationshipSchema`定義
-  - [ ] `ScenarioCharacterRelationshipFormDataSchema`定義
-  - [ ] `parseToScenarioCharacterRelationship`関数実装
-  - [ ] `parseToScenarioCharacterRelationshipList`関数実装
+- [x] **2-1-2. scenarioCharacterRelationship.ts作成**
+  - [x] `ScenarioCharacterRelationshipSchema`定義
+  - [x] `ScenarioCharacterRelationshipFormDataSchema`定義
+  - [x] `parseToScenarioCharacterRelationship`関数実装
+  - [x] `parseToScenarioCharacterRelationshipList`関数実装
 
-- [ ] **2-1-3. index.ts更新**
-  - [ ] 新しいスキーマのエクスポート追加
+- [x] **2-1-3. index.ts更新**
+  - [x] 新しいスキーマのエクスポート追加
 
-#### 2-2. グラフDBスキーマ更新（packages/graphdb/）
+#### 2-2. グラフDBスキーマ更新（packages/graphdb/） ✅
 
-- [ ] **2-2-1. schemas.ts更新**
-  - [ ] `APPEARS_IN`エッジテーブル定義（Scenario ← Character、role付き）
-  - [ ] `RELATES_IN_SCENARIO`エッジテーブル定義（Character → Character、scenarioId + relationshipName付き）
+- [x] **2-2-1. schemas.ts更新**
+  - [x] `APPEARS_IN`エッジテーブル定義（Character → Scenario、role付き）
+  - [x] `RELATES_IN_SCENARIO`エッジテーブル定義（Character → Character、scenarioId + relationshipName付き）
 
-#### 2-3. リポジトリ実装（packages/graphdb/src/queries/）
+#### 2-3. リポジトリ実装（packages/graphdb/src/queries/） ✅
 
-- [ ] **2-3-1. scenarioCharacterRepository.ts作成**
-  - [ ] `addCharacterToScenario()`: キャラクターをシナリオに追加
-  - [ ] `removeCharacterFromScenario()`: シナリオからキャラクター削除
-  - [ ] `updateCharacterRole()`: シナリオ内での役割更新
-  - [ ] `findCharactersByScenarioId()`: シナリオに登場するキャラクター一覧取得
-  - [ ] `findScenariosByCharacterId()`: キャラクターが登場するシナリオ一覧取得
+- [x] **2-3-1. scenarioCharacterRepository.ts作成**
+  - [x] `addCharacterToScenario()`: キャラクターをシナリオに追加
+  - [x] `removeCharacterFromScenario()`: シナリオからキャラクター削除
+  - [x] `updateCharacterRole()`: シナリオ内での役割更新
+  - [x] `findCharactersByScenarioId()`: シナリオに登場するキャラクター一覧取得
 
-- [ ] **2-3-2. scenarioCharacterRelationshipRepository.ts作成**
-  - [ ] `create()`: シナリオ内関係性作成
-  - [ ] `update()`: 関係性更新
-  - [ ] `delete()`: 関係性削除
-  - [ ] `findByScenarioId()`: シナリオ内の全関係性取得
-  - [ ] `findByScenarioAndCharacterId()`: 特定キャラクターの関係性取得
+- [x] **2-3-2. scenarioCharacterRelationshipRepository.ts作成**
+  - [x] `create()`: シナリオ内関係性作成
+  - [x] `update()`: 関係性更新
+  - [x] `delete()`: 関係性削除
+  - [x] `findByScenarioId()`: シナリオ内の全関係性取得
+  - [x] `findByScenarioAndCharacterId()`: 特定キャラクターの関係性取得
 
-- [ ] **2-3-3. index.ts更新**
-  - [ ] 新しいリポジトリのエクスポート追加
+- [x] **2-3-3. index.ts更新**
+  - [x] 新しいリポジトリのエクスポート追加
 
-#### 2-4. テスト実装
+#### 2-4. テスト実装 ✅
 
-- [ ] **2-4-1. scenarioCharacterRepository.test.ts作成**
-  - [ ] キャラクター追加/削除テスト
-  - [ ] 役割更新テスト
-  - [ ] シナリオ別キャラクター取得テスト
-  - [ ] キャラクター別シナリオ取得テスト
+- [x] **2-4-1. scenarioCharacterRepository.test.ts作成**
+  - [x] キャラクター追加/削除テスト
+  - [x] 役割更新テスト
+  - [x] シナリオ別キャラクター取得テスト
 
-- [ ] **2-4-2. scenarioCharacterRelationshipRepository.test.ts作成**
-  - [ ] 関係性CRUD操作テスト
-  - [ ] シナリオ別関係性取得テスト
-  - [ ] キャラクター別関係性取得テスト
+- [x] **2-4-2. scenarioCharacterRelationshipRepository.test.ts作成**
+  - [x] 関係性CRUD操作テスト
+  - [x] シナリオ別関係性取得テスト
+  - [x] キャラクター別関係性取得テスト
 
-- [ ] **2-4-3. テスト実行・全テスト通過確認**
-  - [ ] 統合テスト実行
-  - [ ] lint・型チェック実行
+- [x] **2-4-3. テスト実行・全テスト通過確認**
+  - [x] 統合テスト実行（9/9テスト通過）
+  - [x] lint・型チェック実行
 
 ### Phase 3: フロントエンド実装
 
@@ -142,13 +139,15 @@
 
 ### Phase 4: テスト・品質保証
 
-- [ ] **4-1. BDDテスト実装（apps/frontend/tests/）**
-  - [ ] `scenario-character.feature`作成
-    - [ ] シナリオにキャラクター追加シナリオ
-    - [ ] キャラクター削除シナリオ
-    - [ ] 役割編集シナリオ
-  - [ ] `scenario-character.steps.ts`作成
-  - [ ] テスト実行・全シナリオ通過確認
+- [x] **4-1. BDDテスト実装（apps/frontend/tests/）**
+  - [x] `scenario-character.feature`作成
+    - [x] シナリオ内でキャラクター新規作成シナリオ
+    - [x] キャラクター役割更新シナリオ
+    - [x] シナリオ内関係性作成シナリオ
+    - [x] シナリオごとに異なる関係性管理シナリオ
+    - [x] キャラクター削除シナリオ
+  - [ ] `scenario-character.steps.ts`作成（フロントエンド実装後）
+  - [ ] テスト実行・全シナリオ通過確認（フロントエンド実装後）
 
 - [ ] **4-2. 証跡記録**
   - [ ] `docs/scenario-character-implementation.md`作成
@@ -159,11 +158,26 @@
 
 ## 完了基準
 
-- [ ] バックエンドテスト全通過（統合テスト、lint、型チェック）
+- [x] バックエンドテスト全通過（統合テスト、lint、型チェック）
 - [ ] フロントエンドテスト全通過（lint、型チェック、ビルド）
 - [ ] BDDテスト全シナリオ通過
 - [ ] 証跡ドキュメント作成完了
 - [ ] 依存関係・制約事項の明確化
+
+## 実装進捗
+
+### 完了した作業（YAGNI原則に従って最小実装）
+
+#### バックエンド実装 ✅
+- GraphDBスキーマ: `APPEARS_IN`, `RELATES_IN_SCENARIO` エッジ定義
+- TypeScriptスキーマ: `scenarioCharacter.ts`, `scenarioCharacterRelationship.ts`
+- リポジトリ: `scenarioCharacterRepository.ts`, `scenarioCharacterRelationshipRepository.ts`
+- テスト: 9テスト全通過、lint・型チェック通過
+- BDD Feature: `scenario-character.feature` 作成完了
+
+### 次のステップ: フロントエンド実装
+
+Phase 3のEntity層から実装を開始します。
 
 ## 技術スタック
 
