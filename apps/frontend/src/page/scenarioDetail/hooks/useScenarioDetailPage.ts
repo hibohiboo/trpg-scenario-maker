@@ -38,6 +38,8 @@ export const useScenarioDetailPage = () => {
   const dispatch = useAppDispatch();
   const [isRelationshipFormOpen, setIsRelationshipFormOpen] = useState(false);
   const [isCharacterFormOpen, setIsCharacterFormOpen] = useState(false);
+  const [isCharacterEditOpen, setIsCharacterEditOpen] = useState(false);
+  const [editingCharacter, setEditingCharacter] = useState<CharacterWithRole | null>(null);
   const currentTab = useAppSelector(scenarioDetailCurrentTabSelector);
   const tabItems = useAppSelector(scenarioDetailTabItemsSelector);
   const { scenes, connections, isLoading, error } = useSceneList();
@@ -191,19 +193,38 @@ export const useScenarioDetailPage = () => {
 
   const handleAddExistingCharacter = undefined;
 
-  const handleEditCharacter = async (character: CharacterWithRole) => {
-    const newRole = window.prompt(
-      `「${character.name}」の役割を入力してください`,
-      character.role || '',
-    );
-    if (newRole === null) return; // キャンセルされた場合
+  const handleOpenEditCharacter = (character: CharacterWithRole) => {
+    setEditingCharacter(character);
+    setIsCharacterEditOpen(true);
+  };
 
+  const handleCloseEditCharacter = () => {
+    setEditingCharacter(null);
+    setIsCharacterEditOpen(false);
+  };
+
+  const handleUpdateCharacter = async (params: {
+    characterId: string;
+    name: string;
+    description: string;
+    role: string;
+  }) => {
     try {
-      await updateRole(character.characterId, newRole);
+      // キャラクター情報を更新
+      await characterGraphApi.update({
+        id: params.characterId,
+        name: params.name,
+        description: params.description,
+      });
+
+      // 役割を更新
+      await updateRole(params.characterId, params.role);
+
+      // 保存
       await graphdbWorkerClient.save();
     } catch (err) {
-      console.error('Failed to update character role:', err);
-      alert('役割の更新に失敗しました');
+      console.error('Failed to update character:', err);
+      alert('キャラクターの更新に失敗しました');
     }
   };
 
@@ -288,12 +309,16 @@ export const useScenarioDetailPage = () => {
     characters,
     isCharactersLoading,
     handleCharacterClick,
-    handleEditCharacter,
     handleRemoveCharacter,
     isCharacterFormOpen,
     handleOpenCharacterForm,
     handleCloseCharacterForm,
     handleCreateNewCharacter,
+    isCharacterEditOpen,
+    editingCharacter,
+    handleOpenEditCharacter,
+    handleCloseEditCharacter,
+    handleUpdateCharacter,
     handleAddExistingCharacter,
     characterRelations,
     isRelationsLoading,

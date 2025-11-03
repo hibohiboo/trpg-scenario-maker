@@ -89,14 +89,30 @@ When(
   },
 );
 
-// プロンプトで役割を入力準備する
+// モーダルでキャラクター名を変更する
 When(
-  'プロンプトで役割 {string} を入力準備する',
-  async function (this: CustomWorld, role: string) {
-    // window.promptのモックを設定（役割のみ）
-    await this.page.evaluate((r: string) => {
-      window.prompt = (() => r) as typeof prompt;
-    }, role);
+  'キャラクター名を {string} に変更する',
+  async function (this: CustomWorld, newName: string) {
+    const modal = this.page.locator('[role="dialog"]');
+    await modal.getByLabel('キャラクター名').fill(newName);
+  },
+);
+
+// モーダルでキャラクター説明を変更する
+When(
+  'キャラクター説明を {string} に変更する',
+  async function (this: CustomWorld, newDescription: string) {
+    const modal = this.page.locator('[role="dialog"]');
+    await modal.getByLabel('キャラクター説明').fill(newDescription);
+  },
+);
+
+// モーダルで役割を変更する
+When(
+  '役割を {string} に変更する',
+  async function (this: CustomWorld, newRole: string) {
+    const modal = this.page.locator('[role="dialog"]');
+    await modal.getByLabel('役割').fill(newRole);
   },
 );
 
