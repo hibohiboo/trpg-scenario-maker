@@ -57,7 +57,6 @@ export const readInformationConnectionsAction = createAsyncThunk<
     await informationItemGraphApi.getInformationConnectionsByScenarioId(
       scenarioId,
     );
-  console.log('occcc', connections);
   return connections;
 });
 

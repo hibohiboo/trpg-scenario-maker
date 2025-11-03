@@ -1,6 +1,13 @@
 import type { LoaderFunctionArgs } from 'react-router';
 import { store } from '@/app/store';
+import {
+  readInformationItemsAction,
+  readSceneInformationConnectionsAction,
+  readInformationConnectionsAction,
+  readInformationToSceneConnectionsAction,
+} from '@/entities/informationItem';
 import { readScenarioAction } from '@/entities/scenario/actions/scenarioActions';
+import { readScenarioCharactersAction } from '@/entities/scenarioCharacter';
 import {
   readConnectionsAction,
   readScenesAction,
@@ -27,6 +34,16 @@ export const scenarioDetailLoader = async ({ params }: LoaderFunctionArgs) => {
   const scenarioId = existingScenario.id;
   dispatch(setCurrentScenarioId(scenarioId));
   dispatch(readConnectionsAction(scenarioId));
+  dispatch(setCurrentScenarioId(scenarioId));
+
+  // シナリオで使用するキャラクターを読み込み
+  dispatch(readScenarioCharactersAction({ scenarioId }));
+
+  // シナリオIDを情報項目のステートに設定し、情報項目を読込
+  dispatch(readInformationItemsAction(scenarioId));
+  dispatch(readSceneInformationConnectionsAction(scenarioId));
+  dispatch(readInformationConnectionsAction(scenarioId));
+  dispatch(readInformationToSceneConnectionsAction(scenarioId));
   const scenes = await dispatch(readScenesAction(scenarioId)).unwrap();
   await Promise.all(
     scenes.map((scene) => dispatch(readEventsAction(scene.id))),
