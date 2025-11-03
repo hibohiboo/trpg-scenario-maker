@@ -56,6 +56,7 @@ export default function Page() {
     informationItems,
     informationConnections,
     informationToSceneConnections,
+    sceneInformationConnections,
     isInformationItemsLoading,
     isInformationItemFormOpen,
     editingInformationItem,
@@ -72,6 +73,8 @@ export default function Page() {
     handleRemoveInformationConnection,
     handleAddInformationToScene,
     handleRemoveInformationToScene,
+    handleAddSceneInformation,
+    handleRemoveSceneInformation,
   } = useScenarioDetailPage();
 
   if (isLoading) {
@@ -140,6 +143,9 @@ export default function Page() {
           informationItems={informationItems}
           informationConnections={informationConnections}
           informationToSceneConnections={informationToSceneConnections}
+          sceneInformationConnections={sceneInformationConnections}
+          handleAddSceneInformation={handleAddSceneInformation}
+          handleRemoveSceneInformation={handleRemoveSceneInformation}
         />
       )}
       {currentTab === '情報項目' && (

@@ -54,6 +54,7 @@ export const useScenarioDetailPage = () => {
     items: informationItems,
     informationConnections,
     informationToSceneConnections,
+    sceneInformationConnections,
     isLoading: isInformationItemsLoading,
   } = useInformationItemList();
   const {
@@ -64,6 +65,8 @@ export const useScenarioDetailPage = () => {
     handleDeleteInformationConnection,
     handleAddInformationToSceneConnection,
     handleDeleteInformationToSceneConnection,
+    handleAddSceneInformationConnection,
+    handleDeleteSceneInformationConnection,
   } = useInformationItemOperations();
   const {
     isFormOpen: isInformationItemFormOpen,
@@ -425,6 +428,30 @@ export const useScenarioDetailPage = () => {
     }
   };
 
+  // シーン→情報項目の関連操作
+  const handleAddSceneInformation = async (
+    sceneId: string,
+    informationItemId: string,
+  ) => {
+    try {
+      await handleAddSceneInformationConnection({ sceneId, informationItemId });
+      await graphdbWorkerClient.save();
+    } catch (err) {
+      console.error('Failed to add scene information connection:', err);
+      alert('シーンと情報項目の関連作成に失敗しました');
+    }
+  };
+
+  const handleRemoveSceneInformation = async (connectionId: string) => {
+    try {
+      await handleDeleteSceneInformationConnection(connectionId);
+      await graphdbWorkerClient.save();
+    } catch (err) {
+      console.error('Failed to remove scene information connection:', err);
+      alert('シーンと情報項目の関連削除に失敗しました');
+    }
+  };
+
   return {
     id,
     scenes,
@@ -476,6 +503,7 @@ export const useScenarioDetailPage = () => {
     informationItems,
     informationConnections,
     informationToSceneConnections,
+    sceneInformationConnections,
     isInformationItemsLoading,
     isInformationItemFormOpen,
     editingInformationItem,
@@ -492,5 +520,7 @@ export const useScenarioDetailPage = () => {
     handleRemoveInformationConnection,
     handleAddInformationToScene,
     handleRemoveInformationToScene,
+    handleAddSceneInformation,
+    handleRemoveSceneInformation,
   };
 };

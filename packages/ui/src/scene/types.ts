@@ -7,6 +7,7 @@ import type {
   InformationItem,
   InformationItemConnection,
   InformationToSceneConnection,
+  SceneInformationConnection,
 } from '../informationItem/types';
 
 export type { SceneConnection, Scene, SceneEvent };
@@ -44,8 +45,12 @@ export interface SceneEditorProps {
   onOpenForm: () => void;
   onCloseForm: () => void;
   onEditScene: (scene: Scene) => void;
-  // 情報項目関連
+  // 情報項目関連（シーンフロー表示用）
   informationItems?: InformationItem[];
   informationConnections?: InformationItemConnection[];
   informationToSceneConnections?: InformationToSceneConnection[];
+  // シーン→情報項目関連（シーンで獲得できる情報）
+  sceneInformationConnections?: SceneInformationConnection[];
+  onAddSceneInformation?: (sceneId: string, informationItemId: string) => void;
+  onRemoveSceneInformation?: (connectionId: string) => void;
 }

@@ -26,6 +26,9 @@ type SceneTabContentProps = Pick<
   | 'informationItems'
   | 'informationConnections'
   | 'informationToSceneConnections'
+  | 'sceneInformationConnections'
+  | 'handleAddSceneInformation'
+  | 'handleRemoveSceneInformation'
 >;
 
 export function SceneTabContent({
@@ -52,6 +55,9 @@ export function SceneTabContent({
   informationItems,
   informationConnections,
   informationToSceneConnections,
+  sceneInformationConnections,
+  handleAddSceneInformation,
+  handleRemoveSceneInformation,
 }: SceneTabContentProps) {
   return (
     <section>
@@ -79,6 +85,9 @@ export function SceneTabContent({
         informationItems={informationItems}
         informationConnections={informationConnections}
         informationToSceneConnections={informationToSceneConnections}
+        sceneInformationConnections={sceneInformationConnections}
+        onAddSceneInformation={handleAddSceneInformation}
+        onRemoveSceneInformation={handleRemoveSceneInformation}
       />
     </section>
   );

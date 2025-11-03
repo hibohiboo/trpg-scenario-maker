@@ -120,6 +120,9 @@ export function SceneEditor({
   informationItems,
   informationConnections,
   informationToSceneConnections,
+  sceneInformationConnections,
+  onAddSceneInformation,
+  onRemoveSceneInformation,
 }: SceneEditorProps) {
   const handleAddScene = (scene: Omit<Scene, 'id'>) => {
     onAddScene(scene);
@@ -222,6 +225,15 @@ export function SceneEditor({
               onEventDelete={eventHandlers.handleDeleteEvent}
               onEventMoveUp={eventHandlers.handleMoveEventUp}
               onEventMoveDown={eventHandlers.handleMoveEventDown}
+              informationItems={informationItems}
+              sceneInformationConnections={sceneInformationConnections}
+              onAddSceneInformation={
+                editingScene && onAddSceneInformation
+                  ? (informationItemId: string) =>
+                      onAddSceneInformation(editingScene.id, informationItemId)
+                  : undefined
+              }
+              onRemoveSceneInformation={onRemoveSceneInformation}
             />
           </div>
         )}
