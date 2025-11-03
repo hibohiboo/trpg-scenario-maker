@@ -32,5 +32,11 @@ export type {
   CharacterWithRole,
   ScenarioCharacterRelation,
 } from './scenarioCharacter';
+export type {
+  InformationItem,
+  InformationItemConnection,
+  InformationToSceneConnection,
+  SceneInformationConnection,
+} from './informationItem';
 export { Button, Loading, ErrorMessage, Layout, Modal, Tabs } from './common';
 export type { ButtonVariant, ButtonSize, Tab, TabsProps } from './common';
