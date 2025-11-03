@@ -71,7 +71,7 @@ When(
 );
 // モーダルでキャラクター情報を入力する
 When(
-  'プロンプトで {string} [説明: {string}, 役割: {string} ] を入力準備する',
+  'モーダルで {string} [説明: {string}, 役割: {string} ] を入力する',
   async function (
     this: CustomWorld,
     name: string,
@@ -126,7 +126,6 @@ When(
     });
   },
 );
-
 
 // 登場キャラクター一覧に表示される
 Then(
