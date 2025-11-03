@@ -24,13 +24,43 @@ describe('informationItemRepository', () => {
     await closeDatabase();
   });
 
-  it('情報項目を作成・取得・更新・削除できる', async () => {
-    // シナリオを作成
+  // ヘルパーメソッド: シナリオを作成
+  const createTestScenario = async () => {
     const scenarioId = uuidv4();
     await scenarioGraphRepository.create({
       id: scenarioId,
       title: 'テストシナリオ',
     });
+    return scenarioId;
+  };
+
+  // ヘルパーメソッド: シーンを作成
+  const createTestScene = async (scenarioId: string) => {
+    const sceneId = uuidv4();
+    await sceneGraphRepository.createScene({
+      scenarioId,
+      id: sceneId,
+      title: 'テストシーン',
+      description: 'シーン説明',
+      isMasterScene: false,
+    });
+    return sceneId;
+  };
+
+  // ヘルパーメソッド: 情報項目を作成
+  const createTestInformationItem = async (scenarioId: string, title = '手がかり') => {
+    const itemId = uuidv4();
+    await informationItemRepository.createInformationItem({
+      scenarioId,
+      id: itemId,
+      title,
+      description: '説明',
+    });
+    return itemId;
+  };
+
+  it('情報項目を作成・取得・更新・削除できる', async () => {
+    const scenarioId = await createTestScenario();
 
     // 情報項目を作成
     const itemId = uuidv4();
@@ -68,28 +98,9 @@ describe('informationItemRepository', () => {
   });
 
   it('情報項目同士の関連を作成・取得・削除できる', async () => {
-    // シナリオを作成
-    const scenarioId = uuidv4();
-    await scenarioGraphRepository.create({
-      id: scenarioId,
-      title: 'テストシナリオ',
-    });
-
-    // 情報項目を2つ作成
-    const item1Id = uuidv4();
-    const item2Id = uuidv4();
-    await informationItemRepository.createInformationItem({
-      scenarioId,
-      id: item1Id,
-      title: '情報1',
-      description: '説明1',
-    });
-    await informationItemRepository.createInformationItem({
-      scenarioId,
-      id: item2Id,
-      title: '情報2',
-      description: '説明2',
-    });
+    const scenarioId = await createTestScenario();
+    const item1Id = await createTestInformationItem(scenarioId, '情報1');
+    const item2Id = await createTestInformationItem(scenarioId, '情報2');
 
     // 関連を作成
     const connectionId = uuidv4();
@@ -117,31 +128,9 @@ describe('informationItemRepository', () => {
   });
 
   it('シーン→情報項目の関連を作成・取得・削除できる', async () => {
-    // シナリオを作成
-    const scenarioId = uuidv4();
-    await scenarioGraphRepository.create({
-      id: scenarioId,
-      title: 'テストシナリオ',
-    });
-
-    // シーンを作成
-    const sceneId = uuidv4();
-    await sceneGraphRepository.createScene({
-      scenarioId,
-      id: sceneId,
-      title: 'テストシーン',
-      description: 'シーン説明',
-      isMasterScene: false,
-    });
-
-    // 情報項目を作成
-    const itemId = uuidv4();
-    await informationItemRepository.createInformationItem({
-      scenarioId,
-      id: itemId,
-      title: '手がかり',
-      description: '説明',
-    });
+    const scenarioId = await createTestScenario();
+    const sceneId = await createTestScene(scenarioId);
+    const itemId = await createTestInformationItem(scenarioId);
 
     // シーン→情報項目の関連を作成
     const connectionId = uuidv4();
@@ -169,31 +158,9 @@ describe('informationItemRepository', () => {
   });
 
   it('情報項目→シーンの関連を作成・取得・削除できる', async () => {
-    // シナリオを作成
-    const scenarioId = uuidv4();
-    await scenarioGraphRepository.create({
-      id: scenarioId,
-      title: 'テストシナリオ',
-    });
-
-    // シーンを作成
-    const sceneId = uuidv4();
-    await sceneGraphRepository.createScene({
-      scenarioId,
-      id: sceneId,
-      title: 'テストシーン',
-      description: 'シーン説明',
-      isMasterScene: false,
-    });
-
-    // 情報項目を作成
-    const itemId = uuidv4();
-    await informationItemRepository.createInformationItem({
-      scenarioId,
-      id: itemId,
-      title: '手がかり',
-      description: '説明',
-    });
+    const scenarioId = await createTestScenario();
+    const sceneId = await createTestScene(scenarioId);
+    const itemId = await createTestInformationItem(scenarioId);
 
     // 情報項目→シーンの関連を作成
     const connectionId = uuidv4();
