@@ -3,7 +3,6 @@ import { SceneEventSchema } from './sceneEvent';
 import { DescriptionSchema } from './common';
 
 const SceneConnectionSchema = v.object({
-  /** ${source}|${target}をリレーションのIDとする */
   id: v.string(),
   source: v.string(),
   target: v.string(),

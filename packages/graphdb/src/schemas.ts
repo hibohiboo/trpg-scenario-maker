@@ -52,6 +52,17 @@ export const graphDbSchemas = {
         PRIMARY KEY (id)
       )`,
     },
+    {
+      name: 'InformationItem',
+      query: `
+      CREATE NODE TABLE InformationItem (
+        id STRING,
+        title STRING,
+        description STRING,
+        scenarioId STRING,
+        PRIMARY KEY (id)
+      )`,
+    },
   ],
   relationships: [
     {
@@ -108,6 +119,37 @@ export const graphDbSchemas = {
         FROM Character TO Character,
         scenarioId STRING,
         relationshipName STRING
+      )`,
+    },
+    {
+      name: 'HAS_INFORMATION',
+      query: `
+      CREATE REL TABLE HAS_INFORMATION (
+        FROM Scenario TO InformationItem
+      )`,
+    },
+    {
+      name: 'INFORMATION_RELATED_TO',
+      query: `
+      CREATE REL TABLE INFORMATION_RELATED_TO (
+        FROM InformationItem TO InformationItem,
+        id STRING
+      )`,
+    },
+    {
+      name: 'SCENE_HAS_INFO',
+      query: `
+      CREATE REL TABLE SCENE_HAS_INFO (
+        FROM Scene TO InformationItem,
+        id STRING
+      )`,
+    },
+    {
+      name: 'INFO_POINTS_TO_SCENE',
+      query: `
+      CREATE REL TABLE INFO_POINTS_TO_SCENE (
+        FROM InformationItem TO Scene,
+        id STRING
       )`,
     },
   ],

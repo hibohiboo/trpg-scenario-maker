@@ -1,7 +1,6 @@
-import { useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import {
-  readScenarioCharactersAction,
   addCharacterToScenarioAction,
   removeCharacterFromScenarioAction,
   updateCharacterRoleAction,
@@ -14,13 +13,6 @@ import {
 
 export const useScenarioCharacterList = (scenarioId: string) => {
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    if (scenarioId) {
-      console.log('scenarioId', scenarioId);
-      dispatch(readScenarioCharactersAction({ scenarioId }));
-    }
-  }, [dispatch, scenarioId]);
 
   const characters = useAppSelector((state) =>
     scenarioCharactersSelector(state, scenarioId),

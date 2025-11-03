@@ -1,16 +1,9 @@
-import {
-  SceneEditor,
-  ScenarioCharacterList,
-  ScenarioCharacterRelationshipList,
-  ScenarioCharacterRelationshipFormModal,
-  ScenarioCharacterFormModal,
-  ScenarioCharacterEditModal,
-  CharacterRelationshipGraph,
-  Loading,
-  ErrorMessage,
-} from '@trpg-scenario-maker/ui';
+import { Loading, ErrorMessage } from '@trpg-scenario-maker/ui';
 import { useScenarioDetailPage } from '../hooks/useScenarioDetailPage';
+import { CharacterTabContent } from './CharacterTabContent';
+import { InformationItemTabContent } from './InformationItemTabContent';
 import { Navigation } from './Navigation';
+import { SceneTabContent } from './SceneTabContent';
 
 export default function Page() {
   const {
@@ -60,6 +53,28 @@ export default function Page() {
     tabItems,
     currentTab,
     handleChangeTab,
+    informationItems,
+    informationConnections,
+    informationToSceneConnections,
+    sceneInformationConnections,
+    isInformationItemsLoading,
+    isInformationItemFormOpen,
+    editingInformationItem,
+    handleOpenInformationItemForm,
+    handleCloseInformationItemForm,
+    handleCreateInformationItem,
+    handleUpdateInformationItem,
+    handleDeleteInformationItem,
+    handleEditInformationItem,
+    isInformationConnectionModalOpen,
+    handleOpenInformationConnectionModal,
+    handleCloseInformationConnectionModal,
+    handleCreateInformationConnection,
+    handleRemoveInformationConnection,
+    handleAddInformationToScene,
+    handleRemoveInformationToScene,
+    handleAddSceneInformation,
+    handleRemoveSceneInformation,
   } = useScenarioDetailPage();
 
   if (isLoading) {
@@ -79,87 +94,83 @@ export default function Page() {
         onClick={handleChangeTab}
       />
       {currentTab === 'キャラクター' && (
-        <>
-          <div className="space-y-8">
-            {/* キャラクター一覧と関係性リスト */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-              <section className="lg:col-span-5">
-                <ScenarioCharacterList
-                  characters={characters}
-                  isLoading={isCharactersLoading}
-                  onCharacterClick={handleCharacterClick}
-                  onEditCharacter={handleOpenEditCharacter}
-                  onRemoveCharacter={handleRemoveCharacter}
-                  onCreateNew={handleOpenCharacterForm}
-                  onAddExisting={handleAddExistingCharacter}
-                />
-              </section>
-
-              <section className="lg:col-span-7">
-                <ScenarioCharacterRelationshipList
-                  relations={characterRelations}
-                  isLoading={isRelationsLoading}
-                  onAddRelationship={handleAddRelationship}
-                  onRemoveRelationship={handleRemoveRelationship}
-                />
-              </section>
-            </div>
-            {/* 関係性グラフビュー */}
-            <section>
-              <h2 className="text-xl font-semibold mb-4">関係性グラフ</h2>
-              <CharacterRelationshipGraph
-                characters={characters}
-                relations={characterRelations}
-                isLoading={isCharactersLoading || isRelationsLoading}
-              />
-            </section>
-          </div>
-          <ScenarioCharacterFormModal
-            isOpen={isCharacterFormOpen}
-            onClose={handleCloseCharacterForm}
-            onSubmit={handleCreateNewCharacter}
-          />
-          <ScenarioCharacterEditModal
-            isOpen={isCharacterEditOpen}
-            character={editingCharacter}
-            onClose={handleCloseEditCharacter}
-            onSubmit={handleUpdateCharacter}
-          />
-          <ScenarioCharacterRelationshipFormModal
-            isOpen={isRelationshipFormOpen}
-            characters={characters}
-            onClose={handleCloseRelationshipForm}
-            onSubmit={handleSubmitRelationship}
-          />
-        </>
+        <CharacterTabContent
+          characters={characters}
+          isCharactersLoading={isCharactersLoading}
+          handleCharacterClick={handleCharacterClick}
+          handleRemoveCharacter={handleRemoveCharacter}
+          isCharacterFormOpen={isCharacterFormOpen}
+          handleOpenCharacterForm={handleOpenCharacterForm}
+          handleCloseCharacterForm={handleCloseCharacterForm}
+          handleCreateNewCharacter={handleCreateNewCharacter}
+          isCharacterEditOpen={isCharacterEditOpen}
+          editingCharacter={editingCharacter}
+          handleOpenEditCharacter={handleOpenEditCharacter}
+          handleCloseEditCharacter={handleCloseEditCharacter}
+          handleUpdateCharacter={handleUpdateCharacter}
+          handleAddExistingCharacter={handleAddExistingCharacter}
+          characterRelations={characterRelations}
+          isRelationsLoading={isRelationsLoading}
+          isRelationshipFormOpen={isRelationshipFormOpen}
+          handleAddRelationship={handleAddRelationship}
+          handleCloseRelationshipForm={handleCloseRelationshipForm}
+          handleSubmitRelationship={handleSubmitRelationship}
+          handleRemoveRelationship={handleRemoveRelationship}
+        />
       )}
       {currentTab === 'シーン' && (
-        <>
-          <section>
-            <SceneEditor
-              scenarioId={id}
-              scenes={scenes}
-              connections={connections}
-              events={events}
-              isFormOpen={isFormOpen}
-              editingScene={editingScene}
-              onAddScene={handleAddScene}
-              onUpdateScene={handleUpdateScene}
-              onDeleteScene={handleDeleteScene}
-              onAddConnection={handleAddConnection}
-              onUpdateConnection={handleUpdateConnection}
-              onDeleteConnection={handleDeleteConnection}
-              onAddEvent={handleAddEvent}
-              onUpdateEvent={handleUpdateEvent}
-              onDeleteEvent={handleDeleteEvent}
-              onMoveEventUp={handleMoveEventUp}
-              onMoveEventDown={handleMoveEventDown}
-              onOpenForm={handleOpenForm}
-              onCloseForm={handleCloseForm}
-              onEditScene={handleEditScene}
-            />
-          </section>
-        </>
+        <SceneTabContent
+          id={id}
+          scenes={scenes}
+          connections={connections}
+          events={events}
+          isFormOpen={isFormOpen}
+          editingScene={editingScene}
+          handleAddScene={handleAddScene}
+          handleUpdateScene={handleUpdateScene}
+          handleDeleteScene={handleDeleteScene}
+          handleAddConnection={handleAddConnection}
+          handleUpdateConnection={handleUpdateConnection}
+          handleDeleteConnection={handleDeleteConnection}
+          handleAddEvent={handleAddEvent}
+          handleUpdateEvent={handleUpdateEvent}
+          handleDeleteEvent={handleDeleteEvent}
+          handleMoveEventUp={handleMoveEventUp}
+          handleMoveEventDown={handleMoveEventDown}
+          handleOpenForm={handleOpenForm}
+          handleCloseForm={handleCloseForm}
+          handleEditScene={handleEditScene}
+          informationItems={informationItems}
+          informationConnections={informationConnections}
+          informationToSceneConnections={informationToSceneConnections}
+          sceneInformationConnections={sceneInformationConnections}
+          handleAddSceneInformation={handleAddSceneInformation}
+          handleRemoveSceneInformation={handleRemoveSceneInformation}
+        />
+      )}
+      {currentTab === '情報項目' && (
+        <InformationItemTabContent
+          informationItems={informationItems}
+          informationConnections={informationConnections}
+          informationToSceneConnections={informationToSceneConnections}
+          scenes={scenes}
+          isInformationItemsLoading={isInformationItemsLoading}
+          isInformationItemFormOpen={isInformationItemFormOpen}
+          editingInformationItem={editingInformationItem}
+          handleOpenInformationItemForm={handleOpenInformationItemForm}
+          handleCloseInformationItemForm={handleCloseInformationItemForm}
+          handleCreateInformationItem={handleCreateInformationItem}
+          handleUpdateInformationItem={handleUpdateInformationItem}
+          handleDeleteInformationItem={handleDeleteInformationItem}
+          handleEditInformationItem={handleEditInformationItem}
+          isInformationConnectionModalOpen={isInformationConnectionModalOpen}
+          handleOpenInformationConnectionModal={handleOpenInformationConnectionModal}
+          handleCloseInformationConnectionModal={handleCloseInformationConnectionModal}
+          handleCreateInformationConnection={handleCreateInformationConnection}
+          handleRemoveInformationConnection={handleRemoveInformationConnection}
+          handleAddInformationToScene={handleAddInformationToScene}
+          handleRemoveInformationToScene={handleRemoveInformationToScene}
+        />
       )}
     </div>
   );

@@ -1,5 +1,6 @@
 import type { CharacterGraphHandlerMap } from '@/entities/character/workers/characterGraphHandlers';
 import type { CharacterRelationGraphHandlerMap } from '@/entities/character/workers/characterRelationGraphHandlers';
+import type { InformationItemGraphHandlerMap } from '@/entities/informationItem/workers/informationItemGraphHandlers';
 import type { ScenarioGraphHandlerMap } from '@/entities/scenario/workers/scenarioGraphHandlers';
 import type { ScenarioCharacterGraphHandlerMap } from '@/entities/scenarioCharacter/workers/scenarioCharacterGraphHandlers';
 import type { ScenarioCharacterRelationGraphHandlerMap } from '@/entities/scenarioCharacter/workers/scenarioCharacterRelationGraphHandlers';
@@ -12,6 +13,7 @@ import type { SceneEventHandlerMap } from '@/entities/sceneEvent/workers/sceneEv
  */
 export type GlobalHandlerMap = CharacterGraphHandlerMap &
   CharacterRelationGraphHandlerMap &
+  InformationItemGraphHandlerMap &
   ScenarioGraphHandlerMap &
   ScenarioCharacterGraphHandlerMap &
   ScenarioCharacterRelationGraphHandlerMap &

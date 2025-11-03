@@ -2,6 +2,7 @@ import { Button } from '../common';
 import { SceneBasicFields } from './form/SceneBasicFields';
 import { SceneConnectionsSection } from './form/SceneConnectionsSection';
 import { SceneEventsSection } from './form/SceneEventsSection';
+import { SceneInformationSection } from './form/SceneInformationSection';
 import { useSceneForm, type SceneFormProps } from './form/useSceneForm';
 
 const inputClassName =
@@ -11,11 +12,22 @@ const labelClassName = 'block text-sm font-medium text-gray-700';
 type FormState = ReturnType<typeof useSceneForm>;
 
 const getHasEventHandlers = (formState: FormState) =>
-  formState.onEventAdd &&
-  formState.onEventUpdate &&
-  formState.onEventDelete &&
-  formState.onEventMoveUp &&
-  formState.onEventMoveDown;
+  Boolean(
+    formState.onEventAdd &&
+      formState.onEventUpdate &&
+      formState.onEventDelete &&
+      formState.onEventMoveUp &&
+      formState.onEventMoveDown,
+  );
+
+const getHasInformationHandlers = (formState: FormState) =>
+  Boolean(
+    formState.scene &&
+      formState.informationItems &&
+      formState.sceneInformationConnections &&
+      formState.onAddSceneInformation &&
+      formState.onRemoveSceneInformation,
+  );
 
 type ButtonProps = Pick<
   FormState,
@@ -58,6 +70,7 @@ export function SceneForm(props: SceneFormProps) {
   } = formState;
 
   const hasEventHandlers = getHasEventHandlers(formState);
+  const hasInformationHandlers = getHasInformationHandlers(formState);
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <SceneBasicFields
@@ -90,6 +103,16 @@ export function SceneForm(props: SceneFormProps) {
           onConnectionDelete={formState.onConnectionDelete}
           onAddNextScene={formState.handleAddNextScene}
           onAddPreviousScene={formState.handleAddPreviousScene}
+          inputClassName={inputClassName}
+        />
+      )}
+      {hasInformationHandlers && (
+        <SceneInformationSection
+          connectedInformationItems={formState.connectedInformationItems}
+          availableInformationItems={formState.availableInformationItems}
+          onRemoveInformationItem={formState.onRemoveSceneInformation!}
+          onAddInformationItem={formState.onAddSceneInformation!}
+          sceneInformationConnections={formState.sceneInformationConnections!}
           inputClassName={inputClassName}
         />
       )}

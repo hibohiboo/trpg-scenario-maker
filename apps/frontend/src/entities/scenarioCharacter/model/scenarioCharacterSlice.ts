@@ -41,8 +41,6 @@ export const scenarioCharacterSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(readScenarioCharactersAction.fulfilled, (state, action) => {
-        console.log(action.meta);
-        console.log('payload', action.payload);
         const { scenarioId } = action.meta.arg;
         state.charactersByScenario[scenarioId] = action.payload;
         state.isLoading = false;

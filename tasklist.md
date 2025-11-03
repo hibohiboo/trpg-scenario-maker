@@ -1,223 +1,325 @@
-# シナリオ×キャラクター関係管理機能 実装タスクリスト
+# 情報項目機能追加タスクリスト
 
-## 目標
+## 概要
+シナリオ編集に情報項目（Information Item）を扱える機能を追加する。
+情報項目同士の関連、情報項目とシーンの関連を管理し、シーングラフで両方のつながりを確認可能にする。
 
-シナリオに登場するキャラクターを登録し、そのシナリオ内での関係を管理できるようにする
+**関係の種類:**
+1. **情報項目同士の関連**: InformationItem ⇔ InformationItem
+2. **シーンで獲得できる情報**: Scene → InformationItem（SCENE_HAS_INFO）
+3. **情報が指し示すシーン**: InformationItem → Scene（INFO_POINTS_TO_SCENE）
+   - 「この情報を獲得すると、このシーンに行ける」という関係
 
-## 前提条件
+---
 
-- キャラクター管理機能は既に実装済み（[character-relation-implementation.md](docs/character-relation-implementation.md)参照）
-- シナリオ管理機能は既に実装済み
-- グラフDB（Kùzu WASM）を使用
+## フェーズ1: データモデル設計・スキーマ定義
 
-## 実装方針
+### 1-1. Valibotスキーマ定義
+- [x] `packages/schema/src/informationItem.ts` 作成
+  - [x] InformationItem スキーマ定義
+  - [x] InformationItemConnection スキーマ定義（情報項目同士の関連）
+  - [x] SceneInformationConnection スキーマ定義（シーンで獲得できる情報）
+  - [x] InformationToSceneConnection スキーマ定義（情報が指し示すシーン）
+  - [x] パース関数の実装
+  - [x] バリデーション関数の実装
 
-1. シナリオとキャラクターの関連付け（APPEARS_IN関係）を追加
-2. シナリオ固有のキャラクター関係性（RELATES_IN_SCENARIO）を管理
-3. 既存のキャラクター関係（RELATES_TO）とは別に、シナリオごとの関係を扱う
+### 1-2. GraphDBスキーマ定義
+- [x] `packages/graphdb/src/schemas.ts` 更新
+  - [x] InformationItem ノードの定義
+  - [x] HAS_INFORMATION リレーション定義（Scenario → InformationItem）
+  - [x] INFORMATION_RELATED_TO リレーション定義（InformationItem → InformationItem）
+  - [x] SCENE_HAS_INFO リレーション定義（Scene → InformationItem：シーンで獲得できる情報）
+  - [x] INFO_POINTS_TO_SCENE リレーション定義（InformationItem → Scene：情報が指し示すシーン）
+  - [x] スキーマ作成Cypherクエリの追加
 
-## タスク一覧
+---
 
-### Phase 1: スキーマ設計 ✅
+## フェーズ2: バックエンド層実装（GraphDB Repository）
 
-- [x] **1-1. スキーマ定義の設計**
-  - [x] `ScenarioCharacter`スキーマの設計（シナリオ内でのキャラクター情報）
-  - [x] `ScenarioCharacterRelationship`スキーマの設計（シナリオ内での関係性）
+### 2-1. InformationItemRepository作成（統合実装・DRY原則）
+- [x] `packages/graphdb/src/queries/informationItemRepository.ts` 作成
+  - [x] createInformationItem - 情報項目作成
+  - [x] updateInformationItem - 情報項目更新
+  - [x] deleteInformationItem - 情報項目削除
+  - [x] getInformationItemsByScenarioId - シナリオの情報項目一覧取得
+  - [x] createInformationConnection - 情報項目同士の関連作成
+  - [x] deleteInformationConnection - 情報項目同士の関連削除
+  - [x] getInformationConnectionsByScenarioId - 情報項目の関連一覧取得
+  - [x] createSceneInformationConnection - シーン→情報項目の関連作成（SCENE_HAS_INFO）
+  - [x] deleteSceneInformationConnection - シーン→情報項目の関連削除
+  - [x] getSceneInformationConnectionsBySceneId - シーンで獲得できる情報一覧取得
+  - [x] createInformationToSceneConnection - 情報項目→シーンの関連作成（INFO_POINTS_TO_SCENE）
+  - [x] deleteInformationToSceneConnection - 情報項目→シーンの関連削除
+  - [x] getInformationToSceneConnectionsByInformationItemId - 情報が指し示すシーン一覧取得
 
-### Phase 2: バックエンド実装 ✅
+**備考:** YAGNI・DRY原則に従い、3つのRepositoryを1つに統合実装
 
-#### 2-1. スキーマ実装（packages/schema/src/） ✅
+### 2-2. ユニットテスト作成
+- [x] `packages/graphdb/src/queries/informationItemRepository.test.ts` 作成
+  - [x] 情報項目CRUD テスト
+  - [x] 情報項目同士の関連 テスト
+  - [x] シーン→情報項目の関連 テスト
+  - [x] 情報項目→シーンの関連 テスト
+  - [x] ヘルパーメソッド導入（DRY原則）
+- [x] 全テスト実行・通過確認
 
-- [x] **2-1-1. scenarioCharacter.ts作成**
-  - [x] `ScenarioCharacterSchema`定義（scenarioId, characterId, role等）
-  - [x] `ScenarioCharacterFormDataSchema`定義
-  - [x] `parseToScenarioCharacter`関数実装
-  - [x] `parseToScenarioCharacterList`関数実装
+---
 
-- [x] **2-1-2. scenarioCharacterRelationship.ts作成**
-  - [x] `ScenarioCharacterRelationshipSchema`定義
-  - [x] `ScenarioCharacterRelationshipFormDataSchema`定義
-  - [x] `parseToScenarioCharacterRelationship`関数実装
-  - [x] `parseToScenarioCharacterRelationshipList`関数実装
+## フェーズ3: Web Worker層実装
 
-- [x] **2-1-3. index.ts更新**
-  - [x] 新しいスキーマのエクスポート追加
+### 3-1. Worker Handlers作成
+- [x] `apps/frontend/src/entities/informationItem/workers/informationItemGraphHandlers.ts` 作成
+  - [x] getInformationItemsByScenarioId Handler
+  - [x] createInformationItem Handler
+  - [x] updateInformationItem Handler
+  - [x] deleteInformationItem Handler
+  - [x] getInformationConnectionsByScenarioId Handler
+  - [x] createInformationConnection Handler（情報項目同士）
+  - [x] deleteInformationConnection Handler（情報項目同士）
+  - [x] getSceneInformationConnectionsBySceneId Handler
+  - [x] createSceneInformationConnection Handler（シーン→情報）
+  - [x] deleteSceneInformationConnection Handler（シーン→情報）
+  - [x] getInformationToSceneConnectionsByInformationItemId Handler
+  - [x] createInformationToSceneConnection Handler（情報→シーン）
+  - [x] deleteInformationToSceneConnection Handler（情報→シーン）
 
-#### 2-2. グラフDBスキーマ更新（packages/graphdb/） ✅
+### 3-2. Worker登録
+- [x] `apps/frontend/src/workers/graphdb.worker.ts` 更新
+  - [x] informationItemGraphHandlers をインポート
+  - [x] ハンドラーマップに登録
+- [x] `apps/frontend/src/workers/types/handlerMaps.ts` 更新
+  - [x] InformationItemGraphHandlerMap を GlobalHandlerMap に追加
 
-- [x] **2-2-1. schemas.ts更新**
-  - [x] `APPEARS_IN`エッジテーブル定義（Character → Scenario、role付き）
-  - [x] `RELATES_IN_SCENARIO`エッジテーブル定義（Character → Character、scenarioId + relationshipName付き）
+---
 
-#### 2-3. リポジトリ実装（packages/graphdb/src/queries/） ✅
+## フェーズ4: フロントエンド層実装（API・State管理）
 
-- [x] **2-3-1. scenarioCharacterRepository.ts作成**
-  - [x] `addCharacterToScenario()`: キャラクターをシナリオに追加
-  - [x] `removeCharacterFromScenario()`: シナリオからキャラクター削除
-  - [x] `updateCharacterRole()`: シナリオ内での役割更新
-  - [x] `findCharactersByScenarioId()`: シナリオに登場するキャラクター一覧取得
+### 4-1. InformationItem API作成
+- [x] `apps/frontend/src/entities/informationItem/api/informationItemGraphApi.ts` 作成
+  - [x] getInformationItemsByScenarioId API
+  - [x] createInformationItem API
+  - [x] updateInformationItem API
+  - [x] deleteInformationItem API
+  - [x] getInformationConnectionsByScenarioId API
+  - [x] createInformationConnection API（情報項目同士）
+  - [x] deleteInformationConnection API（情報項目同士）
+  - [x] getSceneInformationConnectionsBySceneId API
+  - [x] createSceneInformationConnection API（シーン→情報）
+  - [x] deleteSceneInformationConnection API（シーン→情報）
+  - [x] getInformationToSceneConnectionsByInformationItemId API
+  - [x] createInformationToSceneConnection API（情報→シーン）
+  - [x] deleteInformationToSceneConnection API（情報→シーン）
+  - [x] save API（データ永続化）
 
-- [x] **2-3-2. scenarioCharacterRelationshipRepository.ts作成**
-  - [x] `create()`: シナリオ内関係性作成
-  - [x] `update()`: 関係性更新
-  - [x] `delete()`: 関係性削除
-  - [x] `findByScenarioId()`: シナリオ内の全関係性取得
-  - [x] `findByScenarioAndCharacterId()`: 特定キャラクターの関係性取得
+### 4-2. Redux State管理
+- [x] `apps/frontend/src/entities/informationItem/actions/informationItemActions.ts` 作成
+  - [x] 13のAsync Thunkアクション実装
+- [x] `apps/frontend/src/entities/informationItem/model/informationItemSlice.ts` 作成
+  - [x] InformationItemState型定義
+  - [x] 6つのReducers実装（フォーム制御、編集状態、クリア）
+  - [x] 39のextraReducers実装（全アクションのpending/fulfilled/rejected）
+- [x] `apps/frontend/src/app/store/rootReducer.ts` 更新
+  - [x] informationItemSlice を Redux Store に登録
+- [x] `packages/ui/src/informationItem/types.ts` 作成
+  - [x] InformationItem, InformationItemConnection, etc. 型定義
+- [x] `packages/ui/src/index.ts` 更新
+  - [x] InformationItem型のエクスポート
+- [x] `apps/frontend/src/entities/informationItem/index.ts` 作成
+  - [x] Public API定義（Feature-Sliced Design準拠）
+- [x] Lint・型チェック通過確認
 
-- [x] **2-3-3. index.ts更新**
-  - [x] 新しいリポジトリのエクスポート追加
+### 4-3. Custom Hooks作成
+- [x] `apps/frontend/src/entities/informationItem/hooks/useInformationItemEditor.ts` 作成
+  - [x] 統合Hook（List + Operations）
+  - [x] reload機能実装
+- [x] `apps/frontend/src/entities/informationItem/hooks/useInformationItemList.ts` 作成
+  - [x] 情報項目一覧取得Hook
+- [x] `apps/frontend/src/entities/informationItem/hooks/useInformationItemOperations.ts` 作成
+  - [x] 情報項目CRUD操作Hook
+  - [x] 情報項目同士の関連操作Hook
+  - [x] シーン-情報項目の関連操作Hook（双方向）
+- [x] `apps/frontend/src/entities/informationItem/hooks/useInformationItemFormState.ts` 作成
+  - [x] フォーム状態管理Hook
+- [x] `apps/frontend/src/entities/informationItem/index.ts` 更新
+  - [x] Hooks の Public API エクスポート
+- [x] Lint・型チェック通過確認
 
-#### 2-4. テスト実装 ✅
+---
 
-- [x] **2-4-1. scenarioCharacterRepository.test.ts作成**
-  - [x] キャラクター追加/削除テスト
-  - [x] 役割更新テスト
-  - [x] シナリオ別キャラクター取得テスト
+## フェーズ5: UIコンポーネント実装
 
-- [x] **2-4-2. scenarioCharacterRelationshipRepository.test.ts作成**
-  - [x] 関係性CRUD操作テスト
-  - [x] シナリオ別関係性取得テスト
-  - [x] キャラクター別関係性取得テスト
+### 5-1. 情報項目管理コンポーネント
+- [x] `packages/ui/src/informationItem/InformationItemList.tsx` 作成
+  - [x] 情報項目一覧表示
+  - [x] 情報項目選択機能
+  - [x] 新規作成ボタン
+  - [x] 削除ボタン
+- [x] `packages/ui/src/informationItem/InformationItemForm.tsx` 作成
+  - [x] 情報項目作成・編集フォーム
+  - [x] タイトル・説明入力フィールド
+  - [x] 送信・キャンセル・削除ボタン
+- [x] `packages/ui/src/informationItem/InformationItemCard.tsx` 作成
+  - [x] 情報項目カード表示
+  - [x] 削除ボタン
+- [x] `packages/ui/src/informationItem/index.ts` 作成
+  - [x] コンポーネントエクスポート
+- [x] `packages/ui/src/index.ts` 更新
+  - [x] Public API エクスポート
 
-- [x] **2-4-3. テスト実行・全テスト通過確認**
-  - [x] 統合テスト実行（9/9テスト通過）
-  - [x] lint・型チェック実行
+### 5-2. 関連管理コンポーネント
+- [ ] （YAGNI原則により後回し - 必要になった時点で実装）
 
-### Phase 3: フロントエンド実装 ✅
+### 5-3. Storybook作成
+- [x] `packages/ui/src/informationItem/InformationItemList.stories.tsx`
+  - [x] Default, Loading, Empty, SingleItem, NoDescription, ManyItems シナリオ
+- [x] `packages/ui/src/informationItem/InformationItemForm.stories.tsx`
+  - [x] CreateNew, Edit, EditWithoutCancel, EditWithoutDelete シナリオ
+- [x] `packages/ui/src/informationItem/InformationItemCard.stories.tsx`
+  - [x] Default, NoDescription, WithoutDelete, WithoutClick, LongDescription シナリオ
+- [x] Lint・型チェック通過確認
 
-#### 3-1. Entity層実装（apps/frontend/src/entities/scenarioCharacter/） ✅
+---
 
-- [x] **3-1-1. Worker層**
-  - [x] `scenarioCharacterGraphHandlers.ts`作成
-  - [x] `scenarioCharacterRelationGraphHandlers.ts`作成
-  - [x] `graphdb.worker.ts`にハンドラー登録
+## フェーズ6: シーングラフ統合
 
-- [x] **3-1-2. API層**
-  - [x] `scenarioCharacterGraphApi.ts`作成
-  - [x] `scenarioCharacterRelationGraphApi.ts`作成
+### 6-1. React Flowノード拡張
+- [ ] `packages/ui/src/scene/canvas/InformationItemNode.tsx` 作成
+  - 情報項目ノードコンポーネント
+  - スタイリング（シーンと区別できる色・形状）
 
-- [x] **3-1-3. Actions層**
-  - [x] `scenarioCharacterActions.ts`作成
-    - [x] `addCharacterToScenarioAction`
-    - [x] `removeCharacterFromScenarioAction`
-    - [x] `updateCharacterRoleAction`
-    - [x] `readScenarioCharactersAction`
-    - [x] `createScenarioCharacterRelationAction`
-    - [x] `updateScenarioCharacterRelationAction`
-    - [x] `deleteScenarioCharacterRelationAction`
-    - [x] `readScenarioCharacterRelationsAction`
+### 6-2. FlowCanvas更新
+- [ ] `packages/ui/src/scene/canvas/FlowCanvas.tsx` 更新
+  - 情報項目ノードの表示対応
+  - 情報項目エッジの表示対応
+  - ノードタイプ判定ロジック追加
 
-- [x] **3-1-4. Model層**
-  - [x] `scenarioCharacterSlice.ts`作成
-    - [x] State定義（シナリオ別キャラクター一覧、関係性一覧）
-    - [x] セレクタ実装
+### 6-3. グラフデータ統合
+- [ ] `apps/frontend/src/entities/scene/api/sceneGraphApi.ts` 更新
+  - getSceneGraphWithInformation 実装
+  - 情報項目を含むグラフデータ取得
+- [ ] `packages/graphdb/src/queries/sceneRepository.ts` 更新
+  - シーン + 情報項目の統合クエリ実装
 
-- [x] **3-1-5. Hooks層**
-  - [x] `useScenarioCharacterList.ts`作成
-  - [x] `useScenarioCharacterRelationships.ts`作成
+---
 
-- [x] **3-1-6. index.ts作成**
-  - [x] エンティティのエクスポート
+## フェーズ7: ページ統合
 
-#### 3-2. Store統合 ✅
+### 7-1. シナリオ編集ページ更新
+- [ ] `apps/frontend/src/entities/scenario/containers/Page.tsx` 更新
+  - 情報項目タブの追加
+  - 情報項目一覧の表示
+- [ ] `packages/ui/src/scenario/ScenarioPage.tsx` 更新
+  - レイアウト調整（情報項目セクション追加）
 
-- [x] **3-2-1. rootReducer.ts更新**
-  - [x] `scenarioCharacterSlice`追加
+### 7-2. ルーティング
+- [ ] `apps/frontend/src/app/router.tsx` 確認
+  - 情報項目ページのルート追加（必要な場合）
 
-- [x] **3-2-2. handlerMaps.ts更新**
-  - [x] `ScenarioCharacterGraphHandlerMap`追加
-  - [x] `ScenarioCharacterRelationGraphHandlerMap`追加
+---
 
-- [x] **3-2-3. 型チェック・lint実行**
-  - [x] 型チェック通過
-  - [x] lint通過
+## フェーズ8: E2E（BDD）テスト作成
 
-#### 3-3. UI層実装（packages/ui/src/）
+### 8-1. Featureファイル作成
+- [x] `apps/frontend/tests/features/information-item.feature` 作成
+  - [x] 基本シナリオ（作成・更新・削除）
+  - [x] 将来実装シナリオ（@futureタグ付き）
+  - [x] 現時点では@ignoreで無効化
 
-- [ ] **3-3-1. scenarioCharacter/コンポーネント作成**
-  - [ ] `ScenarioCharacterList.tsx`: シナリオに登録されたキャラクター一覧
-  - [ ] `ScenarioCharacterAddModal.tsx`: キャラクター追加モーダル（既存キャラクターから選択）
-  - [ ] `ScenarioCharacterRoleEdit.tsx`: 役割編集フォーム
-  - [ ] `ScenarioCharacterRelationshipGraph.tsx`: シナリオ内関係性グラフ表示
-  - [ ] `index.ts`: エクスポート
+**証跡: UI統合の依存関係**
+- 情報項目管理には専用ページまたはタブが必要
+- シナリオ詳細ページへの統合が前提条件
+- 現時点ではAPI・State・Hooks・UIコンポーネントは完成
+- **次段階**: シナリオ詳細ページへの統合実装後にBDDテスト有効化
 
-- [ ] **3-3-2. シナリオ編集画面への統合**
-  - [ ] シナリオ詳細ページにキャラクター管理セクション追加
-  - [ ] タブまたはアコーディオンでキャラクター一覧と関係性を表示
+### 8-2. Step実装
+- [ ] （UI統合完了後に実装）
+  - ページ統合後にステップ定義を作成
+  - ページオブジェクトパターンで実装
 
-- [ ] **3-3-3. lint・型チェック実行**
+### 8-3. BDDテスト実行
+- [ ] （UI統合完了後に実行）
+  - シナリオ詳細ページ統合完了後に@ignoreを削除
+  - `bun run test:e2e` で動作確認
 
-### Phase 4: テスト・品質保証
+---
 
-- [x] **4-1. BDDテスト実装（apps/frontend/tests/）**
-  - [x] `scenario-character.feature`作成
-    - [x] シナリオ内でキャラクター新規作成シナリオ
-    - [x] キャラクター役割更新シナリオ
-    - [x] シナリオ内関係性作成シナリオ
-    - [x] シナリオごとに異なる関係性管理シナリオ
-    - [x] キャラクター削除シナリオ
-  - [ ] `scenario-character.steps.ts`作成（フロントエンド実装後）
-  - [ ] テスト実行・全シナリオ通過確認（フロントエンド実装後）
+## フェーズ9: 統合テスト・品質保証
 
-- [ ] **4-2. 証跡記録**
-  - [ ] `docs/scenario-character-implementation.md`作成
-    - [ ] 実装内容
-    - [ ] アーキテクチャ
-    - [ ] ファイル一覧
-    - [ ] 技術的課題と解決策
+### 9-1. Lint・型チェック
+- [x] `bun run lint` 実行（全プロジェクト）
+  - [x] apps/frontend: 警告1件（既存TODO）、エラー0件
+  - [x] packages/graphdb: エラー0件
+  - [x] packages/schema: エラー0件
+  - [x] packages/ui: エラー0件
+- [x] TypeScript型エラー修正 - 問題なし
+
+### 9-2. ユニットテスト実行
+- [x] GraphDBユニットテスト: 4テストケース全通過
+  - informationItemRepository.test.ts
+
+### 9-3. ビルド確認
+- [x] `bun run build` 実行
+- [x] ビルド成功（23.607s）
+- [x] ビルドエラーなし
+
+### 9-4. 手動動作確認
+- [ ] 開発サーバー起動（`bun run dev`）
+- [ ] 情報項目登録動作確認
+- [ ] 情報項目同士の関連作成確認
+- [ ] シーン-情報項目の関連作成確認
+- [ ] シーングラフ表示確認（両方のつながり）
+
+---
+
+## フェーズ10: ドキュメント・完了
+
+### 10-1. ドキュメント更新
+- [ ] `readme.md` 更新
+  - 情報項目機能の説明追加
+  - スクリーンショット追加（任意）
+- [ ] `apps/frontend/README.md` 更新（必要な場合）
+
+### 10-2. 証跡記録
+- [ ] 設計判断の記録
+- [ ] 依存関係・制約事項の明確化
+- [ ] 完了基準の確認
+
+### 10-3. コミット・PR作成
+- [ ] 変更をコミット
+- [ ] PR作成・レビュー依頼
+
+---
+
+## 依存関係メモ
+
+- **GraphDBスキーマ** → Repository実装
+- **Repository実装** → Worker Handlers
+- **Worker Handlers** → Frontend API
+- **Frontend API** → Redux State
+- **Redux State** → Custom Hooks
+- **Custom Hooks** → UI Components
+- **UI Components** → Page統合
+- **Page統合** → BDDテスト
+
+---
 
 ## 完了基準
 
-- [x] バックエンドテスト全通過（統合テスト、lint、型チェック）
-- [x] フロントエンドEntity層実装完了（lint、型チェック通過）
-- [ ] UI層実装（必要に応じて）
-- [ ] BDDテスト全シナリオ通過（UI実装後）
-- [ ] 証跡ドキュメント作成完了
+1. ✅ GraphDBに情報項目ノード・リレーションが定義されている
+2. ✅ 情報項目のCRUD操作が可能
+3. ✅ 情報項目同士の関連が作成・削除可能
+4. ✅ シーン-情報項目の関連が作成・削除可能
+5. ✅ シーングラフで情報項目とその関連が表示される
+6. ✅ BDDテストが全て通過する
+7. ✅ Lint・型チェック・ビルドが成功する
+8. ✅ ドキュメントが更新されている
 
-## 実装進捗
+---
 
-### 完了した作業（YAGNI原則に従って最小実装）
+## 備考
 
-#### Phase 1-2: バックエンド実装 ✅
-- **GraphDBスキーマ**: `APPEARS_IN`, `RELATES_IN_SCENARIO` エッジ定義
-- **TypeScriptスキーマ**: `scenarioCharacter.ts`, `scenarioCharacterRelationship.ts`
-- **リポジトリ**: `scenarioCharacterRepository.ts`, `scenarioCharacterRelationshipRepository.ts`
-- **テスト**: 9/9テスト全通過
-- **品質保証**: lint・型チェック通過
-
-#### Phase 3: フロントエンドEntity層実装 ✅
-- **Worker層**: GraphDB操作ハンドラー（キャラクター関係、関係性）
-- **API層**: GraphDBWorkerClient経由のAPI（キャラクター関係、関係性）
-- **Actions層**: Redux非同期アクション（8種類のアクション）
-- **Model層**: Redux Toolkit slice（シナリオ別state管理）
-- **Hooks層**: React Hooks（`useScenarioCharacterList`, `useScenarioCharacterRelationships`）
-- **Store統合**: rootReducer、handlerMaps更新
-- **品質保証**: lint・型チェック通過
-
-#### Phase 4: BDD Feature定義 ✅
-- **Feature**: `scenario-character.feature` 作成完了
-  - シナリオ内でキャラクター新規作成
-  - キャラクター役割更新
-  - シナリオ内関係性作成
-  - シナリオごとに異なる関係性管理
-  - キャラクター削除
-
-### 次のステップ
-
-UI層実装は必要に応じて後で追加可能。現時点でバックエンドとEntity層の基盤は完成。
-
-## 技術スタック
-
-- **スキーマ検証**: Valibot
-- **グラフDB**: Kùzu WASM
-- **状態管理**: Redux Toolkit
-- **UI**: React + TypeScript
-- **スタイリング**: Tailwind CSS
-- **テスト**: Playwright（BDD）
-
-## 参考資料
-
-- [既存キャラクター関係管理実装](docs/character-relation-implementation.md)
-- [シナリオスキーマ](packages/schema/src/scenario.ts)
-- [キャラクタースキーマ](packages/schema/src/character.ts)
-- [SceneEventsSectionコンポーネント](packages/ui/src/scene/form/SceneEventsSection.tsx)（UI実装参考）
+- 改行コードは全てLFで統一
+- Valibotスキーマを境界で必ずパース（`as`型アサーション禁止）
+- Web Worker内でのDB操作はすべて非同期
+- UI実装はTailwind CSSでスタイリング
+- React Flowノードは既存のSceneNodeを参考に実装

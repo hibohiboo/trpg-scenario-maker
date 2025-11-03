@@ -11,6 +11,12 @@ import {
   type Node,
 } from '@xyflow/react';
 import { useState, useCallback, useEffect } from 'react';
+import type {
+  InformationItem,
+  InformationItemConnection,
+  InformationToSceneConnection,
+  SceneInformationConnection,
+} from '../../informationItem/types';
 import type { Scene, SceneConnection } from '../types';
 import '@xyflow/react/dist/style.css';
 import { getLayoutedElements, scenesToNodes } from './index';
@@ -22,6 +28,11 @@ export interface SceneFlowCanvasProps {
   onNodesChange?: (nodes: Scene[]) => void;
   onConnectionAdd?: (connection: Omit<SceneConnection, 'id'>) => void;
   onConnectionDelete?: (id: string) => void;
+  // 情報項目関連
+  informationItems?: InformationItem[];
+  informationConnections?: InformationItemConnection[];
+  informationToSceneConnections?: InformationToSceneConnection[];
+  sceneInformationConnections?: SceneInformationConnection[];
 }
 
 export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
@@ -32,12 +43,31 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
     onNodesChange: onNodesUpdate,
     onConnectionAdd,
     onConnectionDelete,
+    informationItems = [],
+    informationConnections = [],
+    informationToSceneConnections = [],
+    sceneInformationConnections = [],
   } = props;
   const [selectedScene, setSelectedScene] = useState<Scene | null>(null);
 
-  const initialNodes: Node[] = scenesToNodes(scenes, undefined, events);
+  // シーンノードの作成
+  const sceneNodes: Node[] = scenesToNodes(scenes, undefined, events);
 
-  const initialEdges: Edge[] = connections.map((conn) => ({
+  // 情報項目ノードの作成
+  const informationNodes: Node[] = informationItems.map((item, index) => ({
+    id: `info-${item.id}`,
+    type: 'informationItemNode',
+    data: item,
+    position: {
+      x: 250 * ((index + scenes.length) % 3),
+      y: 150 * Math.floor((index + scenes.length) / 3),
+    },
+  }));
+
+  const initialNodes: Node[] = [...sceneNodes, ...informationNodes];
+
+  // シーン間の接続エッジ
+  const sceneEdges: Edge[] = connections.map((conn) => ({
     id: conn.id,
     source: conn.source,
     target: conn.target,
@@ -45,6 +75,47 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
     animated: true,
     style: { stroke: '#6366f1', strokeWidth: 2 },
   }));
+
+  // 情報項目同士の接続エッジ
+  const informationEdges: Edge[] = informationConnections.map((conn) => ({
+    id: `info-conn-${conn.id}`,
+    source: `info-${conn.source}`,
+    target: `info-${conn.target}`,
+    type: 'smoothstep',
+    animated: false,
+    style: { stroke: '#f59e0b', strokeWidth: 2 },
+  }));
+
+  // 情報項目→シーンの接続エッジ
+  const informationToSceneEdges: Edge[] = informationToSceneConnections.map(
+    (conn) => ({
+      id: `info-to-scene-${conn.id}`,
+      source: `info-${conn.informationItemId}`,
+      target: conn.sceneId,
+      type: 'smoothstep',
+      animated: false,
+      style: { stroke: '#10b981', strokeWidth: 2, strokeDasharray: '5 5' },
+    }),
+  );
+
+  // シーン→情報項目の接続エッジ（獲得できる情報）
+  const sceneToInformationEdges: Edge[] = sceneInformationConnections.map(
+    (conn) => ({
+      id: `scene-to-info-${conn.id}`,
+      source: conn.sceneId,
+      target: `info-${conn.informationItemId}`,
+      type: 'smoothstep',
+      animated: false,
+      style: { stroke: '#8b5cf6', strokeWidth: 2, strokeDasharray: '5 5' },
+    }),
+  );
+
+  const initialEdges: Edge[] = [
+    ...sceneEdges,
+    ...informationEdges,
+    ...informationToSceneEdges,
+    ...sceneToInformationEdges,
+  ];
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -61,12 +132,24 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
   );
 
   useEffect(() => {
-    const newNodes: Node[] = scenesToNodes(scenes, nodes, events);
-    setNodes(newNodes);
-  }, [scenes, events, setNodes]);
+    const updatedSceneNodes: Node[] = scenesToNodes(scenes, nodes, events);
+    const updatedInformationNodes: Node[] = informationItems.map((item, index) => {
+      const existingNode = nodes.find((n) => n.id === `info-${item.id}`);
+      return {
+        id: `info-${item.id}`,
+        type: 'informationItemNode',
+        data: item,
+        position: existingNode?.position || {
+          x: 250 * ((index + scenes.length) % 3),
+          y: 150 * Math.floor((index + scenes.length) / 3),
+        },
+      };
+    });
+    setNodes([...updatedSceneNodes, ...updatedInformationNodes]);
+  }, [scenes, events, informationItems, setNodes]);
 
   useEffect(() => {
-    const newEdges: Edge[] = connections.map((conn) => ({
+    const updatedSceneEdges: Edge[] = connections.map((conn) => ({
       id: conn.id,
       source: conn.source,
       target: conn.target,
@@ -74,8 +157,51 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
       animated: true,
       style: { stroke: '#6366f1', strokeWidth: 2 },
     }));
-    setEdges(newEdges);
-  }, [connections, setEdges]);
+
+    const updatedInformationEdges: Edge[] = informationConnections.map((conn) => ({
+      id: `info-conn-${conn.id}`,
+      source: `info-${conn.source}`,
+      target: `info-${conn.target}`,
+      type: 'smoothstep',
+      animated: false,
+      style: { stroke: '#f59e0b', strokeWidth: 2 },
+    }));
+
+    const updatedInformationToSceneEdges: Edge[] = informationToSceneConnections.map(
+      (conn) => ({
+        id: `info-to-scene-${conn.id}`,
+        source: `info-${conn.informationItemId}`,
+        target: conn.sceneId,
+        type: 'smoothstep',
+        animated: false,
+        style: { stroke: '#10b981', strokeWidth: 2, strokeDasharray: '5 5' },
+      }),
+    );
+
+    const updatedSceneToInformationEdges: Edge[] = sceneInformationConnections.map(
+      (conn) => ({
+        id: `scene-to-info-${conn.id}`,
+        source: conn.sceneId,
+        target: `info-${conn.informationItemId}`,
+        type: 'smoothstep',
+        animated: false,
+        style: { stroke: '#8b5cf6', strokeWidth: 2, strokeDasharray: '5 5' },
+      }),
+    );
+
+    setEdges([
+      ...updatedSceneEdges,
+      ...updatedInformationEdges,
+      ...updatedInformationToSceneEdges,
+      ...updatedSceneToInformationEdges,
+    ]);
+  }, [
+    connections,
+    informationConnections,
+    informationToSceneConnections,
+    sceneInformationConnections,
+    setEdges,
+  ]);
 
   const handleConnect: OnConnect = useCallback(
     (connection: Connection) => {

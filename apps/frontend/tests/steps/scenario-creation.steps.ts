@@ -44,7 +44,7 @@ When(
 );
 
 When(
-  'フォームの {string} ボタンをクリックする',
+  'シーンフォームの {string} ボタンをクリックする',
   async function (this: CustomWorld, buttonText: string) {
     await this.page
       .locator('.bg-white')

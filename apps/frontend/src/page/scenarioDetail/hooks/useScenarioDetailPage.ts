@@ -8,6 +8,11 @@ import { useParams } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
 import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 import { characterGraphApi } from '@/entities/character';
+import {
+  useInformationItemList,
+  useInformationItemOperations,
+  useInformationItemFormState,
+} from '@/entities/informationItem';
 import { scenarioGraphApi } from '@/entities/scenario';
 import {
   useScenarioCharacterList,
@@ -39,9 +44,37 @@ export const useScenarioDetailPage = () => {
   const [isRelationshipFormOpen, setIsRelationshipFormOpen] = useState(false);
   const [isCharacterFormOpen, setIsCharacterFormOpen] = useState(false);
   const [isCharacterEditOpen, setIsCharacterEditOpen] = useState(false);
-  const [editingCharacter, setEditingCharacter] = useState<CharacterWithRole | null>(null);
+  const [editingCharacter, setEditingCharacter] =
+    useState<CharacterWithRole | null>(null);
   const currentTab = useAppSelector(scenarioDetailCurrentTabSelector);
   const tabItems = useAppSelector(scenarioDetailTabItemsSelector);
+
+  // 情報項目関連
+  const {
+    items: informationItems,
+    informationConnections,
+    informationToSceneConnections,
+    sceneInformationConnections,
+    isLoading: isInformationItemsLoading,
+  } = useInformationItemList();
+  const {
+    handleAddItem,
+    handleUpdateItem,
+    handleDeleteItem,
+    handleAddInformationConnection,
+    handleDeleteInformationConnection,
+    handleAddInformationToSceneConnection,
+    handleDeleteInformationToSceneConnection,
+    handleAddSceneInformationConnection,
+    handleDeleteSceneInformationConnection,
+  } = useInformationItemOperations();
+  const {
+    isFormOpen: isInformationItemFormOpen,
+    editingItem: editingInformationItem,
+    handleOpenForm: handleOpenInformationItemForm,
+    handleCloseForm: handleCloseInformationItemForm,
+    handleEditItem: handleEditInformationItem,
+  } = useInformationItemFormState();
   const { scenes, connections, isLoading, error } = useSceneList();
   const {
     handleAddScene,
@@ -282,6 +315,143 @@ export const useScenarioDetailPage = () => {
   const handleChangeTab = (tab: string) => {
     dispatch(setScenarioDetailCurrentTab(tab));
   };
+
+  const handleCreateInformationItem = async (data: {
+    title: string;
+    description: string;
+  }) => {
+    try {
+      await handleAddItem(data);
+      handleCloseInformationItemForm();
+    } catch (err) {
+      console.error('Failed to create information item:', err);
+      alert('情報項目の作成に失敗しました');
+    }
+  };
+
+  const handleUpdateInformationItem = async (
+    itemId: string,
+    data: { title: string; description: string },
+  ) => {
+    try {
+      await handleUpdateItem(itemId, data);
+      handleCloseInformationItemForm();
+    } catch (err) {
+      console.error('Failed to update information item:', err);
+      alert('情報項目の更新に失敗しました');
+    }
+  };
+
+  const handleDeleteInformationItem = async (itemId: string) => {
+    const item = informationItems.find((i) => i.id === itemId);
+    if (!item) return;
+
+    const confirmed = window.confirm(
+      `情報項目「${item.title}」を削除してもよろしいですか？\nこの操作は取り消せません。`,
+    );
+    if (confirmed) {
+      try {
+        await handleDeleteItem(itemId);
+        handleCloseInformationItemForm();
+      } catch (err) {
+        console.error('Failed to delete information item:', err);
+        alert('情報項目の削除に失敗しました');
+      }
+    }
+  };
+
+  const [
+    isInformationConnectionModalOpen,
+    setIsInformationConnectionModalOpen,
+  ] = useState(false);
+
+  const handleOpenInformationConnectionModal = () => {
+    setIsInformationConnectionModalOpen(true);
+  };
+
+  const handleCloseInformationConnectionModal = () => {
+    setIsInformationConnectionModalOpen(false);
+  };
+
+  const handleCreateInformationConnection = async (params: {
+    source: string;
+    target: string;
+  }) => {
+    try {
+      await handleAddInformationConnection(params);
+      await graphdbWorkerClient.save();
+      handleCloseInformationConnectionModal();
+    } catch (err) {
+      console.error('Failed to create information connection:', err);
+      alert('情報項目の関連作成に失敗しました');
+    }
+  };
+
+  const handleRemoveInformationConnection = async (connectionId: string) => {
+    const confirmed = window.confirm(
+      '情報項目の関連を削除してもよろしいですか？',
+    );
+    if (confirmed) {
+      try {
+        await handleDeleteInformationConnection(connectionId);
+        await graphdbWorkerClient.save();
+      } catch (err) {
+        console.error('Failed to remove information connection:', err);
+        alert('情報項目の関連削除に失敗しました');
+      }
+    }
+  };
+
+  const handleAddInformationToScene = async (
+    informationItemId: string,
+    sceneId: string,
+  ) => {
+    try {
+      await handleAddInformationToSceneConnection({
+        informationItemId,
+        sceneId,
+      });
+      await graphdbWorkerClient.save();
+    } catch (err) {
+      console.error('Failed to add information to scene connection:', err);
+      alert('情報項目とシーンの関連作成に失敗しました');
+    }
+  };
+
+  const handleRemoveInformationToScene = async (connectionId: string) => {
+    try {
+      await handleDeleteInformationToSceneConnection(connectionId);
+      await graphdbWorkerClient.save();
+    } catch (err) {
+      console.error('Failed to remove information to scene connection:', err);
+      alert('情報項目とシーンの関連削除に失敗しました');
+    }
+  };
+
+  // シーン→情報項目の関連操作
+  const handleAddSceneInformation = async (
+    sceneId: string,
+    informationItemId: string,
+  ) => {
+    try {
+      await handleAddSceneInformationConnection({ sceneId, informationItemId });
+      await graphdbWorkerClient.save();
+    } catch (err) {
+      console.error('Failed to add scene information connection:', err);
+      alert('シーンと情報項目の関連作成に失敗しました');
+    }
+  };
+
+  const handleRemoveSceneInformation = async (connectionId: string) => {
+    try {
+      await handleDeleteSceneInformationConnection(connectionId);
+      await graphdbWorkerClient.save();
+    } catch (err) {
+      console.error('Failed to remove scene information connection:', err);
+      alert('シーンと情報項目の関連削除に失敗しました');
+    }
+  };
+
   return {
     id,
     scenes,
@@ -330,5 +500,27 @@ export const useScenarioDetailPage = () => {
     tabItems,
     currentTab,
     handleChangeTab,
+    informationItems,
+    informationConnections,
+    informationToSceneConnections,
+    sceneInformationConnections,
+    isInformationItemsLoading,
+    isInformationItemFormOpen,
+    editingInformationItem,
+    handleOpenInformationItemForm,
+    handleCloseInformationItemForm,
+    handleCreateInformationItem,
+    handleUpdateInformationItem,
+    handleDeleteInformationItem,
+    handleEditInformationItem,
+    isInformationConnectionModalOpen,
+    handleOpenInformationConnectionModal,
+    handleCloseInformationConnectionModal,
+    handleCreateInformationConnection,
+    handleRemoveInformationConnection,
+    handleAddInformationToScene,
+    handleRemoveInformationToScene,
+    handleAddSceneInformation,
+    handleRemoveSceneInformation,
   };
 };

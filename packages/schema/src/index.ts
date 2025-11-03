@@ -6,3 +6,4 @@ export * from './relationship';
 export * from './scenarioCharacter';
 export * from './scenarioCharacterRelationship';
 export * from './characterNode';
+export * from './informationItem';

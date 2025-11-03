@@ -1,5 +1,9 @@
 import type { SceneEvent, SceneEventType } from '@trpg-scenario-maker/schema';
-import { useState, type FormEvent } from 'react';
+import { useState, type FormEvent, useMemo } from 'react';
+import type {
+  InformationItem,
+  SceneInformationConnection,
+} from '../../informationItem/types';
 import type { Scene, SceneConnection } from '../types';
 import { useSceneConnections } from './useSceneConnections';
 
@@ -21,6 +25,11 @@ export interface SceneFormProps {
   onEventDelete?: (eventId: string) => void;
   onEventMoveUp?: (eventId: string) => void;
   onEventMoveDown?: (eventId: string) => void;
+  // 情報項目関連
+  informationItems?: InformationItem[];
+  sceneInformationConnections?: SceneInformationConnection[];
+  onAddSceneInformation?: (informationItemId: string) => void;
+  onRemoveSceneInformation?: (connectionId: string) => void;
 }
 
 export const useSceneState = (scene?: Scene) => {
@@ -46,6 +55,8 @@ export const useSceneForm = (props: SceneFormProps) => {
     connections = [],
     onConnectionAdd,
     onSubmit,
+    informationItems = [],
+    sceneInformationConnections = [],
   } = props;
 
   const connectVM = useSceneConnections({
@@ -63,6 +74,24 @@ export const useSceneForm = (props: SceneFormProps) => {
     onSubmit({ title, description, isMasterScene });
   };
 
+  // このシーンに関連付けられている情報項目
+  const connectedInformationItems = useMemo(() => {
+    if (!scene) return [];
+    const connectedIds = sceneInformationConnections
+      .filter((conn) => conn.sceneId === scene.id)
+      .map((conn) => conn.informationItemId);
+    return informationItems.filter((item) => connectedIds.includes(item.id));
+  }, [scene, sceneInformationConnections, informationItems]);
+
+  // まだ関連付けられていない情報項目
+  const availableInformationItems = useMemo(() => {
+    if (!scene) return [];
+    const connectedIds = sceneInformationConnections
+      .filter((conn) => conn.sceneId === scene.id)
+      .map((conn) => conn.informationItemId);
+    return informationItems.filter((item) => !connectedIds.includes(item.id));
+  }, [scene, sceneInformationConnections, informationItems]);
+
   const submitLabel = scene ? '更新' : '作成';
   return {
     ...props,
@@ -71,5 +100,7 @@ export const useSceneForm = (props: SceneFormProps) => {
     handleSubmit,
     submitLabel,
     scene,
+    connectedInformationItems,
+    availableInformationItems,
   };
 };

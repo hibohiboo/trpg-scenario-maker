@@ -6,7 +6,7 @@ export interface ScenarioDetailState {
 }
 
 const initialState: ScenarioDetailState = {
-  tabItems: ['シーン', 'キャラクター'],
+  tabItems: ['シーン', 'キャラクター', '情報項目'],
   currentTab: 'シーン',
 };
 
