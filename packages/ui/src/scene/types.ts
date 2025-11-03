@@ -3,6 +3,11 @@ import type {
   SceneEventType as SchemaSceneEventType,
 } from '@trpg-scenario-maker/schema';
 import type { SceneConnection, Scene } from '@trpg-scenario-maker/schema/scene';
+import type {
+  InformationItem,
+  InformationItemConnection,
+  InformationToSceneConnection,
+} from '../informationItem/types';
 
 export type { SceneConnection, Scene, SceneEvent };
 
@@ -39,4 +44,8 @@ export interface SceneEditorProps {
   onOpenForm: () => void;
   onCloseForm: () => void;
   onEditScene: (scene: Scene) => void;
+  // 情報項目関連
+  informationItems?: InformationItem[];
+  informationConnections?: InformationItemConnection[];
+  informationToSceneConnections?: InformationToSceneConnection[];
 }

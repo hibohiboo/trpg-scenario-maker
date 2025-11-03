@@ -23,6 +23,9 @@ type SceneTabContentProps = Pick<
   | 'handleOpenForm'
   | 'handleCloseForm'
   | 'handleEditScene'
+  | 'informationItems'
+  | 'informationConnections'
+  | 'informationToSceneConnections'
 >;
 
 export function SceneTabContent({
@@ -46,6 +49,9 @@ export function SceneTabContent({
   handleOpenForm,
   handleCloseForm,
   handleEditScene,
+  informationItems,
+  informationConnections,
+  informationToSceneConnections,
 }: SceneTabContentProps) {
   return (
     <section>
@@ -70,6 +76,9 @@ export function SceneTabContent({
         onOpenForm={handleOpenForm}
         onCloseForm={handleCloseForm}
         onEditScene={handleEditScene}
+        informationItems={informationItems}
+        informationConnections={informationConnections}
+        informationToSceneConnections={informationToSceneConnections}
       />
     </section>
   );

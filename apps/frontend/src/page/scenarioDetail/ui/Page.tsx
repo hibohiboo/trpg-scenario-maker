@@ -137,6 +137,9 @@ export default function Page() {
           handleOpenForm={handleOpenForm}
           handleCloseForm={handleCloseForm}
           handleEditScene={handleEditScene}
+          informationItems={informationItems}
+          informationConnections={informationConnections}
+          informationToSceneConnections={informationToSceneConnections}
         />
       )}
       {currentTab === '情報項目' && (

@@ -81,6 +81,9 @@ const renderSceneFlow = (
   events: SceneEditorProps['events'],
   onAddConnection: SceneEditorProps['onAddConnection'],
   onDeleteConnection: SceneEditorProps['onDeleteConnection'],
+  informationItems?: SceneEditorProps['informationItems'],
+  informationConnections?: SceneEditorProps['informationConnections'],
+  informationToSceneConnections?: SceneEditorProps['informationToSceneConnections'],
 ) => (
   <SceneFlowCanvas
     scenes={scenes}
@@ -88,6 +91,9 @@ const renderSceneFlow = (
     events={events}
     onConnectionAdd={onAddConnection}
     onConnectionDelete={onDeleteConnection}
+    informationItems={informationItems}
+    informationConnections={informationConnections}
+    informationToSceneConnections={informationToSceneConnections}
   />
 );
 
@@ -111,6 +117,9 @@ export function SceneEditor({
   onOpenForm,
   onCloseForm,
   onEditScene,
+  informationItems,
+  informationConnections,
+  informationToSceneConnections,
 }: SceneEditorProps) {
   const handleAddScene = (scene: Omit<Scene, 'id'>) => {
     onAddScene(scene);
@@ -157,6 +166,9 @@ export function SceneEditor({
         events,
         onAddConnection,
         onDeleteConnection,
+        informationItems,
+        informationConnections,
+        informationToSceneConnections,
       )}
     </div>
   );
@@ -176,6 +188,9 @@ export function SceneEditor({
         events,
         onAddConnection,
         onDeleteConnection,
+        informationItems,
+        informationConnections,
+        informationToSceneConnections,
       ),
     },
   ];

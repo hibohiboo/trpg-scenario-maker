@@ -26,19 +26,13 @@ const inputClassName =
   'mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500';
 const labelClassName = 'block text-sm font-medium text-gray-700';
 
-/**
- * 情報項目作成・編集フォームコンポーネント
- */
-export function InformationItemForm({
+const useInformationItemForm = ({
   item,
   onSubmit,
-  onCancel,
-  onDelete,
   scenes = [],
   informationToSceneConnections = [],
   onAddSceneConnection,
-  onRemoveSceneConnection,
-}: InformationItemFormProps) {
+}: InformationItemFormProps) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
@@ -76,7 +70,41 @@ export function InformationItemForm({
       onAddSceneConnection(sceneId);
     }
   };
+  return {
+    handleSubmit,
+    handleSceneSelect,
+    connectedScenes,
+    submitLabel,
+    title,
+    description,
+    setTitle,
+    scenes,
+    setDescription,
+  };
+};
 
+/**
+ * 情報項目作成・編集フォームコンポーネント
+ */
+export function InformationItemForm(props: InformationItemFormProps) {
+  const {
+    item,
+    onCancel,
+    onDelete,
+    onAddSceneConnection,
+    onRemoveSceneConnection,
+  } = props;
+  const {
+    handleSubmit,
+    title,
+    setTitle,
+    scenes,
+    description,
+    setDescription,
+    connectedScenes,
+    handleSceneSelect,
+    submitLabel,
+  } = useInformationItemForm(props);
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
@@ -164,11 +192,11 @@ export function InformationItemForm({
         <Button type="submit" variant="primary">
           {submitLabel}
         </Button>
-        {onCancel && (
+        {
           <Button type="button" onClick={onCancel} variant="secondary">
             キャンセル
           </Button>
-        )}
+        }
         <div className="flex-1" />
         {item && onDelete && (
           <Button

@@ -10,10 +10,12 @@ import {
   type OnNodesChange,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
+import { InformationItemNode } from './InformationItemNode';
 import { SceneNode } from './SceneNode';
 
 const nodeTypes = {
   sceneNode: SceneNode,
+  informationItemNode: InformationItemNode,
 };
 
 interface FlowCanvasProps {
