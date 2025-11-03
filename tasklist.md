@@ -4,25 +4,33 @@
 シナリオ編集に情報項目（Information Item）を扱える機能を追加する。
 情報項目同士の関連、情報項目とシーンの関連を管理し、シーングラフで両方のつながりを確認可能にする。
 
+**関係の種類:**
+1. **情報項目同士の関連**: InformationItem ⇔ InformationItem
+2. **シーンで獲得できる情報**: Scene → InformationItem（SCENE_HAS_INFO）
+3. **情報が指し示すシーン**: InformationItem → Scene（INFO_POINTS_TO_SCENE）
+   - 「この情報を獲得すると、このシーンに行ける」という関係
+
 ---
 
 ## フェーズ1: データモデル設計・スキーマ定義
 
 ### 1-1. Valibotスキーマ定義
-- [ ] `packages/schema/src/informationItem.ts` 作成
-  - InformationItem スキーマ定義
-  - InformationItemConnection スキーマ定義（情報項目同士の関連）
-  - SceneInformationConnection スキーマ定義（シーン-情報項目の関連）
-  - パース関数の実装
-  - バリデーション関数の実装
+- [x] `packages/schema/src/informationItem.ts` 作成
+  - [x] InformationItem スキーマ定義
+  - [x] InformationItemConnection スキーマ定義（情報項目同士の関連）
+  - [x] SceneInformationConnection スキーマ定義（シーンで獲得できる情報）
+  - [x] InformationToSceneConnection スキーマ定義（情報が指し示すシーン）
+  - [x] パース関数の実装
+  - [x] バリデーション関数の実装
 
 ### 1-2. GraphDBスキーマ定義
-- [ ] `packages/graphdb/src/schemas.ts` 更新
-  - InformationItem ノードの定義
-  - HAS_INFORMATION リレーション定義（Scenario → InformationItem）
-  - RELATED_TO リレーション定義（InformationItem ⇔ InformationItem）
-  - SCENE_HAS_INFO リレーション定義（Scene → InformationItem）
-  - スキーマ作成Cypherクエリの追加
+- [x] `packages/graphdb/src/schemas.ts` 更新
+  - [x] InformationItem ノードの定義
+  - [x] HAS_INFORMATION リレーション定義（Scenario → InformationItem）
+  - [x] INFORMATION_RELATED_TO リレーション定義（InformationItem → InformationItem）
+  - [x] SCENE_HAS_INFO リレーション定義（Scene → InformationItem：シーンで獲得できる情報）
+  - [x] INFO_POINTS_TO_SCENE リレーション定義（InformationItem → Scene：情報が指し示すシーン）
+  - [x] スキーマ作成Cypherクエリの追加
 
 ---
 
@@ -44,10 +52,12 @@
 
 ### 2-3. SceneInformationConnectionRepository作成
 - [ ] `packages/graphdb/src/queries/sceneInformationConnectionRepository.ts` 作成
-  - createSceneInformationConnection - シーン-情報項目の関連作成
-  - deleteSceneInformationConnection - シーン-情報項目の関連削除
-  - getSceneInformationConnections - シーンの情報項目一覧取得
-  - getInformationItemScenes - 情報項目が登場するシーン一覧取得
+  - createSceneInformationConnection - シーン→情報項目の関連作成（SCENE_HAS_INFO）
+  - deleteSceneInformationConnection - シーン→情報項目の関連削除
+  - getSceneInformationConnections - シーンで獲得できる情報一覧取得
+  - createInformationToSceneConnection - 情報項目→シーンの関連作成（INFO_POINTS_TO_SCENE）
+  - deleteInformationToSceneConnection - 情報項目→シーンの関連削除
+  - getInformationToSceneConnections - 情報が指し示すシーン一覧取得
 
 ### 2-4. ユニットテスト作成
 - [ ] `packages/graphdb/tests/informationItemRepository.test.ts` 作成
@@ -65,10 +75,12 @@
   - updateInformationItemHandler
   - deleteInformationItemHandler
   - getInformationItemsHandler
-  - createInformationConnectionHandler
-  - deleteInformationConnectionHandler
-  - createSceneInformationConnectionHandler
-  - deleteSceneInformationConnectionHandler
+  - createInformationConnectionHandler（情報項目同士）
+  - deleteInformationConnectionHandler（情報項目同士）
+  - createSceneInformationConnectionHandler（シーン→情報）
+  - deleteSceneInformationConnectionHandler（シーン→情報）
+  - createInformationToSceneConnectionHandler（情報→シーン）
+  - deleteInformationToSceneConnectionHandler（情報→シーン）
 
 ### 3-2. Worker登録
 - [ ] `apps/frontend/src/workers/graphdb.worker.ts` 更新
@@ -85,10 +97,12 @@
   - updateInformationItem API
   - deleteInformationItem API
   - getInformationItemsByScenario API
-  - createInformationConnection API
-  - deleteInformationConnection API
-  - createSceneInformationConnection API
-  - deleteSceneInformationConnection API
+  - createInformationConnection API（情報項目同士）
+  - deleteInformationConnection API（情報項目同士）
+  - createSceneInformationConnection API（シーン→情報）
+  - deleteSceneInformationConnection API（シーン→情報）
+  - createInformationToSceneConnection API（情報→シーン）
+  - deleteInformationToSceneConnection API（情報→シーン）
 
 ### 4-2. Redux State管理
 - [ ] `apps/frontend/src/entities/informationItem/model/informationItemSlice.ts` 作成
