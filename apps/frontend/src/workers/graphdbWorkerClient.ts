@@ -96,10 +96,7 @@ class GraphDBWorkerClient extends BaseWorkerClient<
 
     // シナリオが存在しない場合、初期データを登録
     if (!scenarios || scenarios.length === 0) {
-      await this.execute(`
-        CREATE (s:Scenario {id: '3f81c321-1941-4247-9f5d-37bb6a9e8e45', title: 'サンプルシナリオ'})
-        RETURN s
-      `);
+      await this.sendRequest({ type: 'initSampleData' });
       await this.save();
     }
   }

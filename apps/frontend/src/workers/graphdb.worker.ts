@@ -7,6 +7,7 @@ import {
   setItem,
   getItem,
 } from '@trpg-scenario-maker/graphdb';
+import { initSampleData } from '@trpg-scenario-maker/graphdb/db';
 import { characterGraphHandlers } from '@/entities/character/workers/characterGraphHandlers';
 import { characterRelationGraphHandlers } from '@/entities/character/workers/characterRelationGraphHandlers';
 import { informationItemGraphHandlers } from '@/entities/informationItem/workers/informationItemGraphHandlers';
@@ -44,6 +45,14 @@ const handlers = new Map<string, HandlerFunction>();
 handlers.set('init', async () => {
   await initializeDatabase();
   return { success: true, data: { message: 'Database initialized' } };
+});
+
+/**
+ * サンプルデータ登録ハンドラー
+ */
+handlers.set('initSampleData', async () => {
+  await initSampleData();
+  return { success: true, data: { message: 'add sample data' } };
 });
 
 /**

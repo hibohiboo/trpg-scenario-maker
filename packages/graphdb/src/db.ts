@@ -1,5 +1,6 @@
 // eslint-disable-next-line camelcase
 import kuzu_wasm from '@kuzu/kuzu-wasm';
+import { sampleHasScene, sampleScenaData } from './migration';
 import type { Database, Connection, KuzuModule } from '@kuzu/kuzu-wasm';
 
 let kuzu: KuzuModule | null = null;
@@ -80,4 +81,19 @@ export async function closeDatabase(): Promise<void> {
     db.close();
     db = null;
   }
+}
+
+export async function initSampleData() {
+  await executeQuery(`
+        CREATE (s:Scenario {id: '3f81c321-1941-4247-9f5d-37bb6a9e8e45', title: 'サンプルシナリオ'})
+        RETURN s
+      `);
+  writeFSVFile(sampleScenaData.key, sampleScenaData.value);
+  await executeQuery(
+    `COPY ${sampleScenaData.table} FROM "${sampleScenaData.key}"`,
+  );
+  writeFSVFile(sampleHasScene.key, sampleHasScene.value);
+  await executeQuery(
+    `COPY ${sampleHasScene.table} FROM "${sampleHasScene.key}"`,
+  );
 }
