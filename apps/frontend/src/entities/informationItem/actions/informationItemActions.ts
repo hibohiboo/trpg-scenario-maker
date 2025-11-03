@@ -57,21 +57,19 @@ export const readInformationConnectionsAction = createAsyncThunk<
     await informationItemGraphApi.getInformationConnectionsByScenarioId(
       scenarioId,
     );
+  console.log('occcc', connections);
   return connections;
 });
 
 export const createInformationConnectionAction = createAsyncThunk<
   InformationItemConnection,
   Omit<InformationItemConnection, 'id'>
->(
-  'informationItem/createInformationConnection',
-  async (connection) => {
-    const newConnection =
-      await informationItemGraphApi.createInformationConnection(connection);
-    await informationItemGraphApi.save();
-    return newConnection;
-  },
-);
+>('informationItem/createInformationConnection', async (connection) => {
+  const newConnection =
+    await informationItemGraphApi.createInformationConnection(connection);
+  await informationItemGraphApi.save();
+  return newConnection;
+});
 
 export const deleteInformationConnectionAction = createAsyncThunk<
   string,
@@ -96,17 +94,12 @@ export const readSceneInformationConnectionsAction = createAsyncThunk<
 export const createSceneInformationConnectionAction = createAsyncThunk<
   SceneInformationConnection,
   Omit<SceneInformationConnection, 'id'>
->(
-  'informationItem/createSceneInformationConnection',
-  async (connection) => {
-    const newConnection =
-      await informationItemGraphApi.createSceneInformationConnection(
-        connection,
-      );
-    await informationItemGraphApi.save();
-    return newConnection;
-  },
-);
+>('informationItem/createSceneInformationConnection', async (connection) => {
+  const newConnection =
+    await informationItemGraphApi.createSceneInformationConnection(connection);
+  await informationItemGraphApi.save();
+  return newConnection;
+});
 
 export const deleteSceneInformationConnectionAction = createAsyncThunk<
   string,
@@ -134,17 +127,14 @@ export const readInformationToSceneConnectionsAction = createAsyncThunk<
 export const createInformationToSceneConnectionAction = createAsyncThunk<
   InformationToSceneConnection,
   Omit<InformationToSceneConnection, 'id'>
->(
-  'informationItem/createInformationToSceneConnection',
-  async (connection) => {
-    const newConnection =
-      await informationItemGraphApi.createInformationToSceneConnection(
-        connection,
-      );
-    await informationItemGraphApi.save();
-    return newConnection;
-  },
-);
+>('informationItem/createInformationToSceneConnection', async (connection) => {
+  const newConnection =
+    await informationItemGraphApi.createInformationToSceneConnection(
+      connection,
+    );
+  await informationItemGraphApi.save();
+  return newConnection;
+});
 
 export const deleteInformationToSceneConnectionAction = createAsyncThunk<
   string,

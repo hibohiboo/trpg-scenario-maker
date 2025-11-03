@@ -14,6 +14,8 @@ import {
   useInformationItemFormState,
   setCurrentScenarioId,
   readInformationItemsAction,
+  readSceneInformationConnectionsAction,
+  readInformationConnectionsAction,
 } from '@/entities/informationItem';
 import { scenarioGraphApi } from '@/entities/scenario';
 import {
@@ -46,7 +48,8 @@ export const useScenarioDetailPage = () => {
   const [isRelationshipFormOpen, setIsRelationshipFormOpen] = useState(false);
   const [isCharacterFormOpen, setIsCharacterFormOpen] = useState(false);
   const [isCharacterEditOpen, setIsCharacterEditOpen] = useState(false);
-  const [editingCharacter, setEditingCharacter] = useState<CharacterWithRole | null>(null);
+  const [editingCharacter, setEditingCharacter] =
+    useState<CharacterWithRole | null>(null);
   const currentTab = useAppSelector(scenarioDetailCurrentTabSelector);
   const tabItems = useAppSelector(scenarioDetailTabItemsSelector);
 
@@ -54,6 +57,8 @@ export const useScenarioDetailPage = () => {
   useEffect(() => {
     dispatch(setCurrentScenarioId(id));
     dispatch(readInformationItemsAction(id));
+    dispatch(readSceneInformationConnectionsAction(id));
+    dispatch(readInformationConnectionsAction(id));
   }, [dispatch, id]);
 
   // 情報項目関連
@@ -361,8 +366,10 @@ export const useScenarioDetailPage = () => {
     }
   };
 
-  const [isInformationConnectionModalOpen, setIsInformationConnectionModalOpen] =
-    useState(false);
+  const [
+    isInformationConnectionModalOpen,
+    setIsInformationConnectionModalOpen,
+  ] = useState(false);
 
   const handleOpenInformationConnectionModal = () => {
     setIsInformationConnectionModalOpen(true);
