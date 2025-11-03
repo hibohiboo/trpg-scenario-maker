@@ -129,12 +129,20 @@
 - [x] Lint・型チェック通過確認
 
 ### 4-3. Custom Hooks作成
-- [ ] `apps/frontend/src/entities/informationItem/hooks/useInformationItemEditor.ts` 作成
-  - 情報項目作成・編集・削除Hook
-- [ ] `apps/frontend/src/entities/informationItem/hooks/useInformationItemConnections.ts` 作成
-  - 情報項目同士の関連操作Hook
-- [ ] `apps/frontend/src/entities/informationItem/hooks/useSceneInformationConnections.ts` 作成
-  - シーン-情報項目の関連操作Hook
+- [x] `apps/frontend/src/entities/informationItem/hooks/useInformationItemEditor.ts` 作成
+  - [x] 統合Hook（List + Operations）
+  - [x] reload機能実装
+- [x] `apps/frontend/src/entities/informationItem/hooks/useInformationItemList.ts` 作成
+  - [x] 情報項目一覧取得Hook
+- [x] `apps/frontend/src/entities/informationItem/hooks/useInformationItemOperations.ts` 作成
+  - [x] 情報項目CRUD操作Hook
+  - [x] 情報項目同士の関連操作Hook
+  - [x] シーン-情報項目の関連操作Hook（双方向）
+- [x] `apps/frontend/src/entities/informationItem/hooks/useInformationItemFormState.ts` 作成
+  - [x] フォーム状態管理Hook
+- [x] `apps/frontend/src/entities/informationItem/index.ts` 更新
+  - [x] Hooks の Public API エクスポート
+- [x] Lint・型チェック通過確認
 
 ---
 
