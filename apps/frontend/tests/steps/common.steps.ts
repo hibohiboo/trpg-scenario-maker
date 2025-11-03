@@ -61,7 +61,7 @@ When(
     await expect(modal.getByRole('button', { name: buttonText })).toBeVisible();
     await modal.getByRole('button', { name: buttonText }).click();
     // モーダルが閉じるまで待つ
-    await modal.waitFor({ state: 'hidden', timeout: 5000 });
+    await modal.waitFor({ state: 'hidden', timeout: 1000 });
   },
 );
 
@@ -81,5 +81,43 @@ When(
   async function (this: CustomWorld, linkText: string) {
     await this.page.getByRole('link', { name: linkText }).click();
     await this.page.waitForLoadState('networkidle');
+  },
+);
+
+// フォーム入力（汎用）
+When(
+  '説明に {string} と入力する',
+  async function (this: CustomWorld, description: string) {
+    await this.page.getByLabel('説明').fill(description);
+  },
+);
+
+When(
+  'タイトルを {string} に変更する',
+  async function (this: CustomWorld, newTitle: string) {
+    const titleInput = this.page.getByLabel('タイトル');
+    await titleInput.clear();
+    await titleInput.fill(newTitle);
+  },
+);
+
+When(
+  '説明を {string} に変更する',
+  async function (this: CustomWorld, newDescription: string) {
+    const descriptionInput = this.page.getByLabel('説明');
+    await descriptionInput.clear();
+    await descriptionInput.fill(newDescription);
+  },
+);
+
+// フォーム送信（汎用）
+When(
+  'フォームの {string} ボタンをクリックする',
+  async function (this: CustomWorld, buttonText: string) {
+    await this.page
+      .getByRole('button', { name: buttonText, exact: true })
+      .click();
+    // フォームの送信処理が完了するまで少し待つ
+    await this.page.waitForTimeout(50);
   },
 );
