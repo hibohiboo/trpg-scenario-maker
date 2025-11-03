@@ -89,6 +89,29 @@ export const readSceneInformationConnectionsAction = createAsyncThunk<
     );
   return connections;
 });
+export const readInformationToSceneByScenarioIdConnectionsAction =
+  createAsyncThunk<SceneInformationConnection[], string>(
+    'informationItem/readInformationToSceneByScenarioIdConnectionsAction',
+    async (sceneId) => {
+      const connections =
+        await informationItemGraphApi.getInformationToSceneConnectionsByScenarioId(
+          sceneId,
+        );
+      return connections;
+    },
+  );
+
+export const readSceneInformationConnectionsByScenarioIdConnectionsAction =
+  createAsyncThunk<SceneInformationConnection[], string>(
+    'informationItem/readSceneInformationConnectionsByScenarioIdConnectionsAction',
+    async (sceneId) => {
+      const connections =
+        await informationItemGraphApi.getSceneInformationConnectionsByScenarioId(
+          sceneId,
+        );
+      return connections;
+    },
+  );
 
 export const createSceneInformationConnectionAction = createAsyncThunk<
   SceneInformationConnection,

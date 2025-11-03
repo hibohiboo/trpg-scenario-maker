@@ -184,6 +184,31 @@ export const informationItemGraphHandlers = [
       return { success: true };
     },
   },
+  {
+    type: 'informationItem:graph:getSceneInformationConnectionsByScenarioId',
+    handler: async (payload: unknown) => {
+      const { scenarioId } =
+        parseGetInformationConnectionsByScenarioIdPayload(payload);
+      const result =
+        await informationItemRepository.getSceneInformationConnectionsByScenarioId(
+          scenarioId,
+        );
+      return { data: parseSceneInformationConnectionListSchema(result) };
+    },
+  },
+  {
+    type: 'informationItem:graph:getInformationToSceneConnectionsByScenarioId',
+    handler: async (payload: unknown) => {
+      const { scenarioId } =
+        parseGetInformationConnectionsByScenarioIdPayload(payload);
+
+      const result =
+        await informationItemRepository.getInformationToSceneConnectionsByScenarioId(
+          scenarioId,
+        );
+      return { data: parseInformationToSceneConnectionListSchema(result) };
+    },
+  },
 ] as const;
 
 type InformationItemGraphHandler =

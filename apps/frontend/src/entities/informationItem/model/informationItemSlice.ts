@@ -17,8 +17,10 @@ import {
   deleteSceneInformationConnectionAction,
   readInformationConnectionsAction,
   readInformationItemsAction,
+  readInformationToSceneByScenarioIdConnectionsAction,
   readInformationToSceneConnectionsAction,
   readSceneInformationConnectionsAction,
+  readSceneInformationConnectionsByScenarioIdConnectionsAction,
   updateInformationItemAction,
 } from '../actions/informationItemActions';
 
@@ -90,7 +92,8 @@ export const informationItemSlice = createSlice({
       .addCase(readInformationItemsAction.rejected, (state, action) => {
         state.isLoading = false;
         console.warn(action.type, action);
-        state.error = action.error.message || 'Failed to load information items';
+        state.error =
+          action.error.message || 'Failed to load information items';
       });
 
     // Create Information Item
@@ -212,7 +215,30 @@ export const informationItemSlice = createSlice({
             'Failed to load scene information connections';
         },
       );
-
+    builder
+      .addCase(
+        readSceneInformationConnectionsByScenarioIdConnectionsAction.pending,
+        (state) => {
+          state.isLoading = true;
+          state.error = null;
+        },
+      )
+      .addCase(
+        readSceneInformationConnectionsByScenarioIdConnectionsAction.fulfilled,
+        (state, action) => {
+          state.sceneInformationConnections = action.payload;
+          state.isLoading = false;
+        },
+      )
+      .addCase(
+        readSceneInformationConnectionsByScenarioIdConnectionsAction.rejected,
+        (state, action) => {
+          state.isLoading = false;
+          state.error =
+            action.error.message ||
+            'Failed to load scene information connections by scenarioId';
+        },
+      );
     // Create Scene Information Connection
     builder
       .addCase(createSceneInformationConnectionAction.pending, (state) => {
@@ -278,7 +304,30 @@ export const informationItemSlice = createSlice({
             'Failed to load information to scene connections';
         },
       );
-
+    builder
+      .addCase(
+        readInformationToSceneByScenarioIdConnectionsAction.pending,
+        (state) => {
+          state.isLoading = true;
+          state.error = null;
+        },
+      )
+      .addCase(
+        readInformationToSceneByScenarioIdConnectionsAction.fulfilled,
+        (state, action) => {
+          state.informationToSceneConnections = action.payload;
+          state.isLoading = false;
+        },
+      )
+      .addCase(
+        readInformationToSceneByScenarioIdConnectionsAction.rejected,
+        (state, action) => {
+          state.isLoading = false;
+          state.error =
+            action.error.message ||
+            'Failed to load information to scene connections by scenarioId';
+        },
+      );
     // Create Information To Scene Connection
     builder
       .addCase(createInformationToSceneConnectionAction.pending, (state) => {

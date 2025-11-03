@@ -53,7 +53,9 @@ export const informationItemRepository = {
       setClauses.push(`item.title = '${escapeCypherString(params.title)}'`);
     }
     if (params.description !== undefined) {
-      setClauses.push(`item.description = '${escapeCypherString(params.description)}'`);
+      setClauses.push(
+        `item.description = '${escapeCypherString(params.description)}'`,
+      );
     }
 
     if (setClauses.length === 0) {
@@ -90,7 +92,11 @@ export const informationItemRepository = {
   /**
    * 情報項目同士の関連を作成
    */
-  async createInformationConnection(params: { id: string; source: string; target: string }) {
+  async createInformationConnection(params: {
+    id: string;
+    source: string;
+    target: string;
+  }) {
     return executeQuery(`
       MATCH (source:InformationItem {id: '${params.source}'}), (target:InformationItem {id: '${params.target}'})
       CREATE (source)-[r:INFORMATION_RELATED_TO {id: '${params.id}'}]->(target)
@@ -117,11 +123,20 @@ export const informationItemRepository = {
       RETURN r.id AS id, '${sceneId}' AS sceneId, item.id AS informationItemId
     `);
   },
-
+  async getSceneInformationConnectionsByScenarioId(scenarioId: string) {
+    return executeQuery(`
+      MATCH (s:Scenario {id: '${scenarioId}'})-[:HAS_SCENE]->(scene:Scene)-[r:SCENE_HAS_INFO]->(item:InformationItem)
+      RETURN r.id AS id, scene.id AS sceneId, item.id AS informationItemId
+    `);
+  },
   /**
    * シーン→情報項目の関連を作成
    */
-  async createSceneInformationConnection(params: { id: string; sceneId: string; informationItemId: string }) {
+  async createSceneInformationConnection(params: {
+    id: string;
+    sceneId: string;
+    informationItemId: string;
+  }) {
     return executeQuery(`
       MATCH (scene:Scene {id: '${params.sceneId}'}), (item:InformationItem {id: '${params.informationItemId}'})
       CREATE (scene)-[r:SCENE_HAS_INFO {id: '${params.id}'}]->(item)
@@ -142,17 +157,28 @@ export const informationItemRepository = {
   /**
    * 情報項目→シーンの関連を取得
    */
-  async getInformationToSceneConnectionsByInformationItemId(informationItemId: string) {
+  async getInformationToSceneConnectionsByInformationItemId(
+    informationItemId: string,
+  ) {
     return executeQuery(`
       MATCH (item:InformationItem {id: '${informationItemId}'})-[r:INFO_POINTS_TO_SCENE]->(scene:Scene)
       RETURN r.id AS id, '${informationItemId}' AS informationItemId, scene.id AS sceneId
     `);
   },
-
+  async getInformationToSceneConnectionsByScenarioId(scenarioId: string) {
+    return executeQuery(`
+      MATCH (s:Scenario {id: '${scenarioId}'})-[:HAS_INFORMATION]->(item:InformationItem)-[r:INFO_POINTS_TO_SCENE]->(scene:Scene)
+      RETURN r.id AS id, item.id AS informationItemId, scene.id AS sceneId
+    `);
+  },
   /**
    * 情報項目→シーンの関連を作成
    */
-  async createInformationToSceneConnection(params: { id: string; informationItemId: string; sceneId: string }) {
+  async createInformationToSceneConnection(params: {
+    id: string;
+    informationItemId: string;
+    sceneId: string;
+  }) {
     return executeQuery(`
       MATCH (item:InformationItem {id: '${params.informationItemId}'}), (scene:Scene {id: '${params.sceneId}'})
       CREATE (item)-[r:INFO_POINTS_TO_SCENE {id: '${params.id}'}]->(scene)

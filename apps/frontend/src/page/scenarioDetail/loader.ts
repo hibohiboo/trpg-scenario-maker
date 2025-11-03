@@ -4,8 +4,9 @@ import {
   readInformationItemsAction,
   readSceneInformationConnectionsAction,
   readInformationConnectionsAction,
-  readInformationToSceneConnectionsAction,
   setCurrentScenarioId as setInformationCurrentScenarioId,
+  readInformationToSceneByScenarioIdConnectionsAction,
+  readSceneInformationConnectionsByScenarioIdConnectionsAction,
 } from '@/entities/informationItem';
 import { readScenarioAction } from '@/entities/scenario/actions/scenarioActions';
 import { readScenarioCharactersAction } from '@/entities/scenarioCharacter';
@@ -44,7 +45,10 @@ export const scenarioDetailLoader = async ({ params }: LoaderFunctionArgs) => {
   dispatch(readInformationItemsAction(scenarioId));
   dispatch(readSceneInformationConnectionsAction(scenarioId));
   dispatch(readInformationConnectionsAction(scenarioId));
-  dispatch(readInformationToSceneConnectionsAction(scenarioId));
+  dispatch(readInformationToSceneByScenarioIdConnectionsAction(scenarioId));
+  dispatch(
+    readSceneInformationConnectionsByScenarioIdConnectionsAction(scenarioId),
+  );
   const scenes = await dispatch(readScenesAction(scenarioId)).unwrap();
   await Promise.all(
     scenes.map((scene) => dispatch(readEventsAction(scene.id))),

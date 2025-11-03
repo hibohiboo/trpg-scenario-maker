@@ -167,6 +167,34 @@ export const informationItemGraphApi = {
   },
 
   /**
+   * シナリオに属するシーン→情報項目の関連を取得
+   */
+  getSceneInformationConnectionsByScenarioId: async (
+    scenarioId: string,
+  ): Promise<SceneInformationConnection[]> => {
+    const result = await graphdbWorkerClient.request(
+      'informationItem:graph:getSceneInformationConnectionsByScenarioId',
+      { scenarioId },
+    );
+
+    return result;
+  },
+
+  /**
+   * シナリオに属する情報項目→シーンの関連を取得
+   */
+  getInformationToSceneConnectionsByScenarioId: async (
+    scenarioId: string,
+  ): Promise<InformationToSceneConnection[]> => {
+    const result = await graphdbWorkerClient.request(
+      'informationItem:graph:getInformationToSceneConnectionsByScenarioId',
+      { scenarioId },
+    );
+
+    return result;
+  },
+
+  /**
    * 情報項目に関連するシーンの関連を取得（情報項目→シーン）
    */
   getInformationToSceneConnectionsByInformationItemId: async (
