@@ -34,6 +34,7 @@ export function InformationItemTabContent({
           items={informationItems}
           isLoading={isInformationItemsLoading}
           onItemClick={handleEditInformationItem}
+          onEdit={handleEditInformationItem}
           onCreateNew={handleOpenInformationItemForm}
           onDelete={handleDeleteInformationItem}
         />

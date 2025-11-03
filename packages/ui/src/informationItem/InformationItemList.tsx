@@ -9,6 +9,8 @@ export interface InformationItemListProps {
   isLoading?: boolean;
   /** 情報項目クリック時のコールバック */
   onItemClick?: (item: InformationItem) => void;
+  /** 編集ボタンクリック時のコールバック */
+  onEdit?: (item: InformationItem) => void;
   /** 新規作成ボタンクリック時のコールバック */
   onCreateNew?: () => void;
   /** 削除ボタンクリック時のコールバック */
@@ -22,6 +24,7 @@ export function InformationItemList({
   items,
   isLoading,
   onItemClick,
+  onEdit,
   onCreateNew,
   onDelete,
 }: InformationItemListProps) {
@@ -49,11 +52,11 @@ export function InformationItemList({
           {items.map((item) => (
             <div
               key={item.id}
-              className="border border-gray-300 rounded-md p-4 hover:bg-gray-50"
+              className="flex items-start justify-between p-4 border border-gray-300 rounded-lg hover:bg-gray-50"
             >
               <div
-                className="cursor-pointer"
                 onClick={() => onItemClick?.(item)}
+                className="flex-1 cursor-pointer"
               >
                 <h3 className="font-bold text-lg">{item.title}</h3>
                 {item.description && (
@@ -62,17 +65,27 @@ export function InformationItemList({
                   </p>
                 )}
               </div>
-              {onDelete && (
-                <div className="mt-2 flex justify-end">
+              <div className="flex gap-2 ml-2">
+                {onEdit && (
+                  <Button
+                    onClick={() => onEdit(item)}
+                    variant="ghost"
+                    size="sm"
+                  >
+                    編集
+                  </Button>
+                )}
+                {onDelete && (
                   <Button
                     onClick={() => onDelete(item.id)}
-                    variant="danger"
+                    variant="ghost"
                     size="sm"
+                    className="text-red-600 hover:bg-red-50"
                   >
                     削除
                   </Button>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           ))}
         </div>

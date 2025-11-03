@@ -20,6 +20,9 @@ const meta = {
     onItemClick: {
       description: '情報項目クリック時のコールバック',
     },
+    onEdit: {
+      description: '編集ボタンクリック時のコールバック',
+    },
     onCreateNew: {
       description: '新規作成ボタンクリック時のコールバック',
     },
@@ -29,6 +32,7 @@ const meta = {
   },
   args: {
     onItemClick: fn(),
+    onEdit: fn(),
     onCreateNew: fn(),
     onDelete: fn(),
   },
