@@ -246,16 +246,21 @@
 ## フェーズ9: 統合テスト・品質保証
 
 ### 9-1. Lint・型チェック
-- [ ] `bun run lint` 実行（全プロジェクト）
-- [ ] TypeScript型エラー修正
+- [x] `bun run lint` 実行（全プロジェクト）
+  - [x] apps/frontend: 警告1件（既存TODO）、エラー0件
+  - [x] packages/graphdb: エラー0件
+  - [x] packages/schema: エラー0件
+  - [x] packages/ui: エラー0件
+- [x] TypeScript型エラー修正 - 問題なし
 
 ### 9-2. ユニットテスト実行
-- [ ] `bun test` 実行（全パッケージ）
-- [ ] 全テスト通過確認
+- [x] GraphDBユニットテスト: 4テストケース全通過
+  - informationItemRepository.test.ts
 
 ### 9-3. ビルド確認
-- [ ] `bun run build` 実行
-- [ ] ビルドエラー修正
+- [x] `bun run build` 実行
+- [x] ビルド成功（23.607s）
+- [x] ビルドエラーなし
 
 ### 9-4. 手動動作確認
 - [ ] 開発サーバー起動（`bun run dev`）
