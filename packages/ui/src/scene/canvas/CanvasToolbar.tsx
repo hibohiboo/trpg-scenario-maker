@@ -12,8 +12,20 @@ export function CanvasToolbar({ onLayout }: CanvasToolbarProps) {
         <ul className="mt-1 space-y-1 text-gray-600">
           <li>• ノードをドラッグして移動</li>
           <li>• ノードの端からドラッグして接続</li>
-          <li>• 接続線を選択して Backspace キーで削除</li>
         </ul>
+        <details>
+          <summary>凡例</summary>
+          <ul className="mt-1 space-y-1 text-gray-600">
+            <li>• 青色（アニメーション付き）: シーン間の接続</li>
+            <li>• オレンジ色: 情報項目同士の接続</li>
+            <li>
+              • 緑色（破線）: 情報項目→シーンへの接続（情報が指し示すシーン）
+            </li>
+            <li>
+              • 紫色（破線）: シーン→情報項目への接続（シーンで獲得できる情報）
+            </li>
+          </ul>
+        </details>
       </div>
       <div className="flex flex-col gap-2 rounded-lg bg-white p-3 shadow-md">
         <p className="text-sm font-semibold text-gray-700">自動整列：</p>
