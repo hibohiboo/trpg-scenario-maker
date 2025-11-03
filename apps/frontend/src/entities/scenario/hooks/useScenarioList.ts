@@ -22,8 +22,6 @@ export const useScenarioList = () => {
   );
 
   const handleClick = (scenario: Scenario) => {
-    // TODO: 詳細画面への遷移実装
-    console.log('Clicked scenario:', scenario.id);
     navigate(`/scenario/${scenario.id}`);
   };
 
