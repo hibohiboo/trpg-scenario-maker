@@ -77,7 +77,7 @@ export default function Page() {
           />
         </section>
 
-        <section className="lg:col-span-3">
+        <section className="lg:col-span-4">
           <ScenarioCharacterRelationshipList
             relations={characterRelations}
             isLoading={isRelationsLoading}
