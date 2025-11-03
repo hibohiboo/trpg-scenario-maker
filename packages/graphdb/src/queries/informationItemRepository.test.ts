@@ -171,6 +171,15 @@ describe('informationItemRepository', () => {
     expect(connections).toHaveLength(1);
     expect(connections[0]?.id).toBe(connectionId);
 
+    // シナリオ単位での関連を取得
+    const getResult2 =
+      await informationItemRepository.getSceneInformationConnectionsByScenarioId(
+        scenarioId,
+      );
+    const connections2 = parseSceneInformationConnectionListSchema(getResult2);
+    expect(connections2).toHaveLength(1);
+    expect(connections2[0]?.id).toBe(connectionId);
+
     // 関連を削除
     await informationItemRepository.deleteSceneInformationConnection(
       connectionId,
