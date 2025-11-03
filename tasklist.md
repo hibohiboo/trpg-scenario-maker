@@ -36,80 +36,97 @@
 
 ## フェーズ2: バックエンド層実装（GraphDB Repository）
 
-### 2-1. InformationItemRepository作成
-- [ ] `packages/graphdb/src/queries/informationItemRepository.ts` 作成
-  - createInformationItem - 情報項目作成
-  - updateInformationItem - 情報項目更新
-  - deleteInformationItem - 情報項目削除
-  - getInformationItemsByScenario - シナリオの情報項目一覧取得
-  - getInformationItemById - 情報項目詳細取得
+### 2-1. InformationItemRepository作成（統合実装・DRY原則）
+- [x] `packages/graphdb/src/queries/informationItemRepository.ts` 作成
+  - [x] createInformationItem - 情報項目作成
+  - [x] updateInformationItem - 情報項目更新
+  - [x] deleteInformationItem - 情報項目削除
+  - [x] getInformationItemsByScenarioId - シナリオの情報項目一覧取得
+  - [x] createInformationConnection - 情報項目同士の関連作成
+  - [x] deleteInformationConnection - 情報項目同士の関連削除
+  - [x] getInformationConnectionsByScenarioId - 情報項目の関連一覧取得
+  - [x] createSceneInformationConnection - シーン→情報項目の関連作成（SCENE_HAS_INFO）
+  - [x] deleteSceneInformationConnection - シーン→情報項目の関連削除
+  - [x] getSceneInformationConnectionsBySceneId - シーンで獲得できる情報一覧取得
+  - [x] createInformationToSceneConnection - 情報項目→シーンの関連作成（INFO_POINTS_TO_SCENE）
+  - [x] deleteInformationToSceneConnection - 情報項目→シーンの関連削除
+  - [x] getInformationToSceneConnectionsByInformationItemId - 情報が指し示すシーン一覧取得
 
-### 2-2. InformationItemConnectionRepository作成
-- [ ] `packages/graphdb/src/queries/informationItemConnectionRepository.ts` 作成
-  - createInformationConnection - 情報項目同士の関連作成
-  - deleteInformationConnection - 情報項目同士の関連削除
-  - getInformationConnections - 情報項目の関連一覧取得
+**備考:** YAGNI・DRY原則に従い、3つのRepositoryを1つに統合実装
 
-### 2-3. SceneInformationConnectionRepository作成
-- [ ] `packages/graphdb/src/queries/sceneInformationConnectionRepository.ts` 作成
-  - createSceneInformationConnection - シーン→情報項目の関連作成（SCENE_HAS_INFO）
-  - deleteSceneInformationConnection - シーン→情報項目の関連削除
-  - getSceneInformationConnections - シーンで獲得できる情報一覧取得
-  - createInformationToSceneConnection - 情報項目→シーンの関連作成（INFO_POINTS_TO_SCENE）
-  - deleteInformationToSceneConnection - 情報項目→シーンの関連削除
-  - getInformationToSceneConnections - 情報が指し示すシーン一覧取得
-
-### 2-4. ユニットテスト作成
-- [ ] `packages/graphdb/tests/informationItemRepository.test.ts` 作成
-- [ ] `packages/graphdb/tests/informationItemConnectionRepository.test.ts` 作成
-- [ ] `packages/graphdb/tests/sceneInformationConnectionRepository.test.ts` 作成
-- [ ] 全テスト実行・通過確認
+### 2-2. ユニットテスト作成
+- [x] `packages/graphdb/src/queries/informationItemRepository.test.ts` 作成
+  - [x] 情報項目CRUD テスト
+  - [x] 情報項目同士の関連 テスト
+  - [x] シーン→情報項目の関連 テスト
+  - [x] 情報項目→シーンの関連 テスト
+  - [x] ヘルパーメソッド導入（DRY原則）
+- [x] 全テスト実行・通過確認
 
 ---
 
 ## フェーズ3: Web Worker層実装
 
 ### 3-1. Worker Handlers作成
-- [ ] `apps/frontend/src/entities/informationItem/workers/informationItemHandlers.ts` 作成
-  - createInformationItemHandler
-  - updateInformationItemHandler
-  - deleteInformationItemHandler
-  - getInformationItemsHandler
-  - createInformationConnectionHandler（情報項目同士）
-  - deleteInformationConnectionHandler（情報項目同士）
-  - createSceneInformationConnectionHandler（シーン→情報）
-  - deleteSceneInformationConnectionHandler（シーン→情報）
-  - createInformationToSceneConnectionHandler（情報→シーン）
-  - deleteInformationToSceneConnectionHandler（情報→シーン）
+- [x] `apps/frontend/src/entities/informationItem/workers/informationItemGraphHandlers.ts` 作成
+  - [x] getInformationItemsByScenarioId Handler
+  - [x] createInformationItem Handler
+  - [x] updateInformationItem Handler
+  - [x] deleteInformationItem Handler
+  - [x] getInformationConnectionsByScenarioId Handler
+  - [x] createInformationConnection Handler（情報項目同士）
+  - [x] deleteInformationConnection Handler（情報項目同士）
+  - [x] getSceneInformationConnectionsBySceneId Handler
+  - [x] createSceneInformationConnection Handler（シーン→情報）
+  - [x] deleteSceneInformationConnection Handler（シーン→情報）
+  - [x] getInformationToSceneConnectionsByInformationItemId Handler
+  - [x] createInformationToSceneConnection Handler（情報→シーン）
+  - [x] deleteInformationToSceneConnection Handler（情報→シーン）
 
 ### 3-2. Worker登録
-- [ ] `apps/frontend/src/workers/graphdb.worker.ts` 更新
-  - informationItemHandlers をインポート
-  - ハンドラーマップに登録
+- [x] `apps/frontend/src/workers/graphdb.worker.ts` 更新
+  - [x] informationItemGraphHandlers をインポート
+  - [x] ハンドラーマップに登録
+- [x] `apps/frontend/src/workers/types/handlerMaps.ts` 更新
+  - [x] InformationItemGraphHandlerMap を GlobalHandlerMap に追加
 
 ---
 
 ## フェーズ4: フロントエンド層実装（API・State管理）
 
 ### 4-1. InformationItem API作成
-- [ ] `apps/frontend/src/entities/informationItem/api/informationItemApi.ts` 作成
-  - createInformationItem API
-  - updateInformationItem API
-  - deleteInformationItem API
-  - getInformationItemsByScenario API
-  - createInformationConnection API（情報項目同士）
-  - deleteInformationConnection API（情報項目同士）
-  - createSceneInformationConnection API（シーン→情報）
-  - deleteSceneInformationConnection API（シーン→情報）
-  - createInformationToSceneConnection API（情報→シーン）
-  - deleteInformationToSceneConnection API（情報→シーン）
+- [x] `apps/frontend/src/entities/informationItem/api/informationItemGraphApi.ts` 作成
+  - [x] getInformationItemsByScenarioId API
+  - [x] createInformationItem API
+  - [x] updateInformationItem API
+  - [x] deleteInformationItem API
+  - [x] getInformationConnectionsByScenarioId API
+  - [x] createInformationConnection API（情報項目同士）
+  - [x] deleteInformationConnection API（情報項目同士）
+  - [x] getSceneInformationConnectionsBySceneId API
+  - [x] createSceneInformationConnection API（シーン→情報）
+  - [x] deleteSceneInformationConnection API（シーン→情報）
+  - [x] getInformationToSceneConnectionsByInformationItemId API
+  - [x] createInformationToSceneConnection API（情報→シーン）
+  - [x] deleteInformationToSceneConnection API（情報→シーン）
+  - [x] save API（データ永続化）
 
 ### 4-2. Redux State管理
-- [ ] `apps/frontend/src/entities/informationItem/model/informationItemSlice.ts` 作成
-  - State型定義
-  - Reducers実装
-  - Thunks実装（非同期アクション）
-  - Selectors実装
+- [x] `apps/frontend/src/entities/informationItem/actions/informationItemActions.ts` 作成
+  - [x] 13のAsync Thunkアクション実装
+- [x] `apps/frontend/src/entities/informationItem/model/informationItemSlice.ts` 作成
+  - [x] InformationItemState型定義
+  - [x] 6つのReducers実装（フォーム制御、編集状態、クリア）
+  - [x] 39のextraReducers実装（全アクションのpending/fulfilled/rejected）
+- [x] `apps/frontend/src/app/store/rootReducer.ts` 更新
+  - [x] informationItemSlice を Redux Store に登録
+- [x] `packages/ui/src/informationItem/types.ts` 作成
+  - [x] InformationItem, InformationItemConnection, etc. 型定義
+- [x] `packages/ui/src/index.ts` 更新
+  - [x] InformationItem型のエクスポート
+- [x] `apps/frontend/src/entities/informationItem/index.ts` 作成
+  - [x] Public API定義（Feature-Sliced Design準拠）
+- [x] Lint・型チェック通過確認
 
 ### 4-3. Custom Hooks作成
 - [ ] `apps/frontend/src/entities/informationItem/hooks/useInformationItemEditor.ts` 作成
