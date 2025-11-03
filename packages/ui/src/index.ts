@@ -19,5 +19,18 @@ export type {
   Relationship,
   RelationshipFormData,
 } from './character';
+export {
+  ScenarioCharacterList,
+  ScenarioCharacterRelationshipList,
+  ScenarioCharacterRelationshipFormModal,
+  ScenarioCharacterFormModal,
+  ScenarioCharacterEditModal,
+  CharacterRelationshipGraph,
+  CharacterNode,
+} from './scenarioCharacter';
+export type {
+  CharacterWithRole,
+  ScenarioCharacterRelation,
+} from './scenarioCharacter';
 export { Button, Loading, ErrorMessage, Layout, Modal, Tabs } from './common';
 export type { ButtonVariant, ButtonSize, Tab, TabsProps } from './common';

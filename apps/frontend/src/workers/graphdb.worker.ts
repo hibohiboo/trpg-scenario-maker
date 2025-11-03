@@ -10,6 +10,8 @@ import {
 import { characterGraphHandlers } from '@/entities/character/workers/characterGraphHandlers';
 import { characterRelationGraphHandlers } from '@/entities/character/workers/characterRelationGraphHandlers';
 import { scenarioGraphHandlers } from '@/entities/scenario/workers/scenarioGraphHandlers';
+import { scenarioCharacterGraphHandlers } from '@/entities/scenarioCharacter/workers/scenarioCharacterGraphHandlers';
+import { scenarioCharacterRelationGraphHandlers } from '@/entities/scenarioCharacter/workers/scenarioCharacterRelationGraphHandlers';
 import { sceneGraphHandlers } from '@/entities/scene/workers/sceneGraphHandlers';
 import { sceneEventHandlers } from '@/entities/sceneEvent/workers/sceneEventHandlers';
 
@@ -132,6 +134,16 @@ characterGraphHandlers.forEach(({ type, handler }) => {
 
 // キャラクター関係性グラフハンドラーを登録
 characterRelationGraphHandlers.forEach(({ type, handler }) => {
+  handlers.set(type, handler);
+});
+
+// シナリオ×キャラクターグラフハンドラーを登録
+scenarioCharacterGraphHandlers.forEach(({ type, handler }) => {
+  handlers.set(type, handler);
+});
+
+// シナリオ×キャラクター関係性グラフハンドラーを登録
+scenarioCharacterRelationGraphHandlers.forEach(({ type, handler }) => {
   handlers.set(type, handler);
 });
 

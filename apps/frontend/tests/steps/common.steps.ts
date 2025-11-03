@@ -6,7 +6,7 @@ import {
   setDefaultTimeout,
   setWorldConstructor,
 } from '@cucumber/cucumber';
-import { chromium, Page } from '@playwright/test';
+import { chromium, expect, Page } from '@playwright/test';
 
 export interface CustomWorld {
   page: Page;
@@ -57,10 +57,11 @@ When('モーダルを閉じる', async function (this: CustomWorld) {
 When(
   'モーダルの {string} ボタンをクリックする',
   async function (this: CustomWorld, buttonText: string) {
-    await this.page
-      .locator('[role="dialog"]')
-      .getByRole('button', { name: buttonText })
-      .click();
+    const modal = this.page.locator('[role="dialog"]');
+    await expect(modal.getByRole('button', { name: buttonText })).toBeVisible();
+    await modal.getByRole('button', { name: buttonText }).click();
+    // モーダルが閉じるまで待つ
+    await modal.waitFor({ state: 'hidden', timeout: 5000 });
   },
 );
 
