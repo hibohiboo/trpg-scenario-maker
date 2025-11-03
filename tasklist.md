@@ -220,23 +220,26 @@
 ## フェーズ8: E2E（BDD）テスト作成
 
 ### 8-1. Featureファイル作成
-- [ ] `apps/frontend/tests/features/information-item.feature` 作成
-  ```gherkin
-  Feature: 情報項目管理
-    Scenario: 情報項目を登録する
-    Scenario: 情報項目同士の関連を登録する
-    Scenario: 情報項目とシーンの関連を登録する
-    Scenario: シーングラフで両方のつながりを確認する
-  ```
+- [x] `apps/frontend/tests/features/information-item.feature` 作成
+  - [x] 基本シナリオ（作成・更新・削除）
+  - [x] 将来実装シナリオ（@futureタグ付き）
+  - [x] 現時点では@ignoreで無効化
+
+**証跡: UI統合の依存関係**
+- 情報項目管理には専用ページまたはタブが必要
+- シナリオ詳細ページへの統合が前提条件
+- 現時点ではAPI・State・Hooks・UIコンポーネントは完成
+- **次段階**: シナリオ詳細ページへの統合実装後にBDDテスト有効化
 
 ### 8-2. Step実装
-- [ ] `apps/frontend/tests/steps/information-item.steps.ts` 作成
-  - Given/When/Then ステップ実装
-  - ページオブジェクト実装
+- [ ] （UI統合完了後に実装）
+  - ページ統合後にステップ定義を作成
+  - ページオブジェクトパターンで実装
 
 ### 8-3. BDDテスト実行
-- [ ] `bun run test:e2e` 実行（apps/frontend）
-- [ ] 全シナリオ通過確認
+- [ ] （UI統合完了後に実行）
+  - シナリオ詳細ページ統合完了後に@ignoreを削除
+  - `bun run test:e2e` で動作確認
 
 ---
 
