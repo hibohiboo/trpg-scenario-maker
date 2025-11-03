@@ -183,10 +183,7 @@ export const useScenarioDetailPage = () => {
     }
   };
 
-  const handleAddExistingCharacter = () => {
-    // TODO: 既存キャラクター選択モーダルを開く
-    console.log('Add existing character');
-  };
+  const handleAddExistingCharacter = undefined;
 
   const handleEditCharacter = async (character: CharacterWithRole) => {
     const newRole = window.prompt(
