@@ -113,3 +113,47 @@ Given(
     await this.page.getByRole('button', { name: '作成', exact: true }).click();
   },
 );
+
+// When: 関連を追加ボタンをクリック
+When(
+  '情報項目の関連を追加ボタンをクリックする',
+  async function (this: CustomWorld) {
+    await this.page.getByRole('button', { name: '関連を追加' }).click();
+  },
+);
+
+// When: モーダルで関連元と関連先を選択
+When(
+  'モーダルで関連元 {string} と関連先 {string} を選択する',
+  async function (
+    this: CustomWorld,
+    sourceItem: string,
+    targetItem: string,
+  ) {
+    // モーダルが開くのを待つ
+    const modal = this.page.locator('[role="dialog"]');
+    await modal.waitFor({ state: 'visible', timeout: 5000 });
+
+    // 関連元と関連先を選択
+    const selects = await modal.locator('select').all();
+    await selects[0].selectOption({ label: sourceItem });
+    await selects[1].selectOption({ label: targetItem });
+  },
+);
+
+// Then: 情報項目の関連一覧に表示される
+Then(
+  '情報項目の関連一覧に {string} から {string} への関連が表示される',
+  async function (
+    this: CustomWorld,
+    sourceItem: string,
+    targetItem: string,
+  ) {
+    // 関連が表示されることを確認
+    const relationshipPattern = new RegExp(`${sourceItem}.*→.*${targetItem}`);
+    const relationshipRow = this.page
+      .locator('.information-item-connection-item')
+      .filter({ hasText: relationshipPattern });
+    await expect(relationshipRow.first()).toBeVisible();
+  },
+);

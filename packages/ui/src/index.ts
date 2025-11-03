@@ -36,6 +36,8 @@ export {
   InformationItemList,
   InformationItemForm,
   InformationItemCard,
+  InformationItemConnectionList,
+  InformationItemConnectionFormModal,
 } from './informationItem';
 export type {
   InformationItem,
@@ -45,6 +47,9 @@ export type {
   InformationItemListProps,
   InformationItemFormProps,
   InformationItemCardProps,
+  InformationItemConnectionListProps,
+  InformationItemConnectionFormModalProps,
+  InformationItemConnectionDisplay,
 } from './informationItem';
 export { Button, Loading, ErrorMessage, Layout, Modal, Tabs } from './common';
 export type { ButtonVariant, ButtonSize, Tab, TabsProps } from './common';

@@ -57,10 +57,18 @@ export const useScenarioDetailPage = () => {
   }, [dispatch, id]);
 
   // 情報項目関連
-  const { items: informationItems, isLoading: isInformationItemsLoading } =
-    useInformationItemList();
-  const { handleAddItem, handleUpdateItem, handleDeleteItem } =
-    useInformationItemOperations();
+  const {
+    items: informationItems,
+    informationConnections,
+    isLoading: isInformationItemsLoading,
+  } = useInformationItemList();
+  const {
+    handleAddItem,
+    handleUpdateItem,
+    handleDeleteItem,
+    handleAddInformationConnection,
+    handleDeleteInformationConnection,
+  } = useInformationItemOperations();
   const {
     isFormOpen: isInformationItemFormOpen,
     editingItem: editingInformationItem,
@@ -353,6 +361,46 @@ export const useScenarioDetailPage = () => {
     }
   };
 
+  const [isInformationConnectionModalOpen, setIsInformationConnectionModalOpen] =
+    useState(false);
+
+  const handleOpenInformationConnectionModal = () => {
+    setIsInformationConnectionModalOpen(true);
+  };
+
+  const handleCloseInformationConnectionModal = () => {
+    setIsInformationConnectionModalOpen(false);
+  };
+
+  const handleCreateInformationConnection = async (params: {
+    source: string;
+    target: string;
+  }) => {
+    try {
+      await handleAddInformationConnection(params);
+      await graphdbWorkerClient.save();
+      handleCloseInformationConnectionModal();
+    } catch (err) {
+      console.error('Failed to create information connection:', err);
+      alert('情報項目の関連作成に失敗しました');
+    }
+  };
+
+  const handleRemoveInformationConnection = async (connectionId: string) => {
+    const confirmed = window.confirm(
+      '情報項目の関連を削除してもよろしいですか？',
+    );
+    if (confirmed) {
+      try {
+        await handleDeleteInformationConnection(connectionId);
+        await graphdbWorkerClient.save();
+      } catch (err) {
+        console.error('Failed to remove information connection:', err);
+        alert('情報項目の関連削除に失敗しました');
+      }
+    }
+  };
+
   return {
     id,
     scenes,
@@ -402,6 +450,7 @@ export const useScenarioDetailPage = () => {
     currentTab,
     handleChangeTab,
     informationItems,
+    informationConnections,
     isInformationItemsLoading,
     isInformationItemFormOpen,
     editingInformationItem,
@@ -411,5 +460,10 @@ export const useScenarioDetailPage = () => {
     handleUpdateInformationItem,
     handleDeleteInformationItem,
     handleEditInformationItem,
+    isInformationConnectionModalOpen,
+    handleOpenInformationConnectionModal,
+    handleCloseInformationConnectionModal,
+    handleCreateInformationConnection,
+    handleRemoveInformationConnection,
   };
 };

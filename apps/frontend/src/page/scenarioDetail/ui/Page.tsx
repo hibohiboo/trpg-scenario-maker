@@ -54,6 +54,7 @@ export default function Page() {
     currentTab,
     handleChangeTab,
     informationItems,
+    informationConnections,
     isInformationItemsLoading,
     isInformationItemFormOpen,
     editingInformationItem,
@@ -63,6 +64,11 @@ export default function Page() {
     handleUpdateInformationItem,
     handleDeleteInformationItem,
     handleEditInformationItem,
+    isInformationConnectionModalOpen,
+    handleOpenInformationConnectionModal,
+    handleCloseInformationConnectionModal,
+    handleCreateInformationConnection,
+    handleRemoveInformationConnection,
   } = useScenarioDetailPage();
 
   if (isLoading) {
@@ -133,6 +139,7 @@ export default function Page() {
       {currentTab === '情報項目' && (
         <InformationItemTabContent
           informationItems={informationItems}
+          informationConnections={informationConnections}
           isInformationItemsLoading={isInformationItemsLoading}
           isInformationItemFormOpen={isInformationItemFormOpen}
           editingInformationItem={editingInformationItem}
@@ -142,6 +149,11 @@ export default function Page() {
           handleUpdateInformationItem={handleUpdateInformationItem}
           handleDeleteInformationItem={handleDeleteInformationItem}
           handleEditInformationItem={handleEditInformationItem}
+          isInformationConnectionModalOpen={isInformationConnectionModalOpen}
+          handleOpenInformationConnectionModal={handleOpenInformationConnectionModal}
+          handleCloseInformationConnectionModal={handleCloseInformationConnectionModal}
+          handleCreateInformationConnection={handleCreateInformationConnection}
+          handleRemoveInformationConnection={handleRemoveInformationConnection}
         />
       )}
     </div>
