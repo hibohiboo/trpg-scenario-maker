@@ -5,6 +5,7 @@ import {
   ScenarioCharacterRelationshipFormModal,
   ScenarioCharacterFormModal,
   ScenarioCharacterEditModal,
+  CharacterRelationshipGraph,
   Loading,
   ErrorMessage,
 } from '@trpg-scenario-maker/ui';
@@ -79,27 +80,40 @@ export default function Page() {
       />
       {currentTab === 'キャラクター' && (
         <>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <section className="lg:col-span-5">
-              <ScenarioCharacterList
+          <div className="space-y-8">
+            {/* 関係性グラフビュー */}
+            <section>
+              <h2 className="text-xl font-semibold mb-4">関係性グラフ</h2>
+              <CharacterRelationshipGraph
                 characters={characters}
-                isLoading={isCharactersLoading}
-                onCharacterClick={handleCharacterClick}
-                onEditCharacter={handleOpenEditCharacter}
-                onRemoveCharacter={handleRemoveCharacter}
-                onCreateNew={handleOpenCharacterForm}
-                onAddExisting={handleAddExistingCharacter}
+                relations={characterRelations}
+                isLoading={isCharactersLoading || isRelationsLoading}
               />
             </section>
 
-            <section className="lg:col-span-4">
-              <ScenarioCharacterRelationshipList
-                relations={characterRelations}
-                isLoading={isRelationsLoading}
-                onAddRelationship={handleAddRelationship}
-                onRemoveRelationship={handleRemoveRelationship}
-              />
-            </section>
+            {/* キャラクター一覧と関係性リスト */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              <section className="lg:col-span-5">
+                <ScenarioCharacterList
+                  characters={characters}
+                  isLoading={isCharactersLoading}
+                  onCharacterClick={handleCharacterClick}
+                  onEditCharacter={handleOpenEditCharacter}
+                  onRemoveCharacter={handleRemoveCharacter}
+                  onCreateNew={handleOpenCharacterForm}
+                  onAddExisting={handleAddExistingCharacter}
+                />
+              </section>
+
+              <section className="lg:col-span-7">
+                <ScenarioCharacterRelationshipList
+                  relations={characterRelations}
+                  isLoading={isRelationsLoading}
+                  onAddRelationship={handleAddRelationship}
+                  onRemoveRelationship={handleRemoveRelationship}
+                />
+              </section>
+            </div>
           </div>
           <ScenarioCharacterFormModal
             isOpen={isCharacterFormOpen}
