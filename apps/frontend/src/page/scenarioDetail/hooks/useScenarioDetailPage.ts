@@ -3,7 +3,7 @@ import type {
   CharacterWithRole,
   ScenarioCharacterRelation,
 } from '@trpg-scenario-maker/ui';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
 import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
@@ -12,6 +12,8 @@ import {
   useInformationItemList,
   useInformationItemOperations,
   useInformationItemFormState,
+  setCurrentScenarioId,
+  readInformationItemsAction,
 } from '@/entities/informationItem';
 import { scenarioGraphApi } from '@/entities/scenario';
 import {
@@ -47,6 +49,12 @@ export const useScenarioDetailPage = () => {
   const [editingCharacter, setEditingCharacter] = useState<CharacterWithRole | null>(null);
   const currentTab = useAppSelector(scenarioDetailCurrentTabSelector);
   const tabItems = useAppSelector(scenarioDetailTabItemsSelector);
+
+  // シナリオIDを情報項目のステートに設定し、情報項目を読み込む
+  useEffect(() => {
+    dispatch(setCurrentScenarioId(id));
+    dispatch(readInformationItemsAction(id));
+  }, [dispatch, id]);
 
   // 情報項目関連
   const { items: informationItems, isLoading: isInformationItemsLoading } =
