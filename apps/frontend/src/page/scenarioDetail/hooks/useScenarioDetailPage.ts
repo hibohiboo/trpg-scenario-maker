@@ -53,6 +53,7 @@ export const useScenarioDetailPage = () => {
   const {
     items: informationItems,
     informationConnections,
+    informationToSceneConnections,
     isLoading: isInformationItemsLoading,
   } = useInformationItemList();
   const {
@@ -61,6 +62,8 @@ export const useScenarioDetailPage = () => {
     handleDeleteItem,
     handleAddInformationConnection,
     handleDeleteInformationConnection,
+    handleAddInformationToSceneConnection,
+    handleDeleteInformationToSceneConnection,
   } = useInformationItemOperations();
   const {
     isFormOpen: isInformationItemFormOpen,
@@ -396,6 +399,32 @@ export const useScenarioDetailPage = () => {
     }
   };
 
+  const handleAddInformationToScene = async (
+    informationItemId: string,
+    sceneId: string,
+  ) => {
+    try {
+      await handleAddInformationToSceneConnection({
+        informationItemId,
+        sceneId,
+      });
+      await graphdbWorkerClient.save();
+    } catch (err) {
+      console.error('Failed to add information to scene connection:', err);
+      alert('情報項目とシーンの関連作成に失敗しました');
+    }
+  };
+
+  const handleRemoveInformationToScene = async (connectionId: string) => {
+    try {
+      await handleDeleteInformationToSceneConnection(connectionId);
+      await graphdbWorkerClient.save();
+    } catch (err) {
+      console.error('Failed to remove information to scene connection:', err);
+      alert('情報項目とシーンの関連削除に失敗しました');
+    }
+  };
+
   return {
     id,
     scenes,
@@ -446,6 +475,7 @@ export const useScenarioDetailPage = () => {
     handleChangeTab,
     informationItems,
     informationConnections,
+    informationToSceneConnections,
     isInformationItemsLoading,
     isInformationItemFormOpen,
     editingInformationItem,
@@ -460,5 +490,7 @@ export const useScenarioDetailPage = () => {
     handleCloseInformationConnectionModal,
     handleCreateInformationConnection,
     handleRemoveInformationConnection,
+    handleAddInformationToScene,
+    handleRemoveInformationToScene,
   };
 };

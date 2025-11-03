@@ -5,6 +5,7 @@ import {
   readSceneInformationConnectionsAction,
   readInformationConnectionsAction,
   readInformationToSceneConnectionsAction,
+  setCurrentScenarioId as setInformationCurrentScenarioId,
 } from '@/entities/informationItem';
 import { readScenarioAction } from '@/entities/scenario/actions/scenarioActions';
 import { readScenarioCharactersAction } from '@/entities/scenarioCharacter';
@@ -34,7 +35,7 @@ export const scenarioDetailLoader = async ({ params }: LoaderFunctionArgs) => {
   const scenarioId = existingScenario.id;
   dispatch(setCurrentScenarioId(scenarioId));
   dispatch(readConnectionsAction(scenarioId));
-  dispatch(setCurrentScenarioId(scenarioId));
+  dispatch(setInformationCurrentScenarioId(scenarioId));
 
   // シナリオで使用するキャラクターを読み込み
   dispatch(readScenarioCharactersAction({ scenarioId }));

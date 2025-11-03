@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '../common/Button';
-import type { InformationItem } from './types';
+import type { Scene } from '../scene/types';
+import type { InformationItem, InformationToSceneConnection } from './types';
 
 export interface InformationItemFormProps {
   /** 編集対象の情報項目（新規作成時はundefined） */
@@ -11,6 +12,14 @@ export interface InformationItemFormProps {
   onCancel?: () => void;
   /** 削除時のコールバック */
   onDelete?: (id: string) => void;
+  /** シーン一覧（指し示すシーン選択用） */
+  scenes?: Scene[];
+  /** 情報項目→シーン関連一覧 */
+  informationToSceneConnections?: InformationToSceneConnection[];
+  /** 指し示すシーン追加時のコールバック */
+  onAddSceneConnection?: (sceneId: string) => void;
+  /** 指し示すシーン削除時のコールバック */
+  onRemoveSceneConnection?: (connectionId: string) => void;
 }
 
 const inputClassName =
@@ -25,6 +34,10 @@ export function InformationItemForm({
   onSubmit,
   onCancel,
   onDelete,
+  scenes = [],
+  informationToSceneConnections = [],
+  onAddSceneConnection,
+  onRemoveSceneConnection,
 }: InformationItemFormProps) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -45,6 +58,24 @@ export function InformationItemForm({
   };
 
   const submitLabel = item ? '更新' : '作成';
+
+  // 編集中の情報項目が指し示すシーンのリスト
+  const connectedScenes = item
+    ? informationToSceneConnections
+        .filter((conn) => conn.informationItemId === item.id)
+        .map((conn) => {
+          const scene = scenes.find((s) => s.id === conn.sceneId);
+          return { connection: conn, scene };
+        })
+        .filter((i) => i.scene !== undefined)
+    : [];
+
+  const handleSceneSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const sceneId = e.target.value;
+    if (sceneId && onAddSceneConnection) {
+      onAddSceneConnection(sceneId);
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -74,6 +105,60 @@ export function InformationItemForm({
           rows={4}
         />
       </div>
+
+      {/* 指し示すシーンセクション（編集時のみ表示） */}
+      {item && (
+        <div className="border-t pt-6">
+          <h3 className="text-lg font-semibold mb-4">指し示すシーン</h3>
+
+          {/* 既存の関連一覧 */}
+          {connectedScenes.length > 0 ? (
+            <div className="space-y-2 mb-4">
+              {connectedScenes.map(({ connection, scene }) => (
+                <div
+                  key={connection.id}
+                  className="flex items-center justify-between p-3 border border-gray-300 rounded-lg information-to-scene-connection-item"
+                >
+                  <span className="font-semibold">{scene?.title}</span>
+                  {onRemoveSceneConnection && (
+                    <Button
+                      type="button"
+                      onClick={() => onRemoveSceneConnection(connection.id)}
+                      variant="ghost"
+                      size="sm"
+                      className="text-red-600 hover:bg-red-50"
+                    >
+                      削除
+                    </Button>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-sm mb-4">
+              指し示すシーンが設定されていません
+            </p>
+          )}
+
+          {/* シーン追加フォーム */}
+          {onAddSceneConnection && scenes.length > 0 && (
+            <div>
+              <select
+                value=""
+                onChange={handleSceneSelect}
+                className={inputClassName}
+              >
+                <option value="">シーンを選択</option>
+                {scenes.map((scene) => (
+                  <option key={scene.id} value={scene.id}>
+                    {scene.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="flex gap-2 items-center">
         <Button type="submit" variant="primary">

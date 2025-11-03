@@ -55,6 +55,7 @@ export default function Page() {
     handleChangeTab,
     informationItems,
     informationConnections,
+    informationToSceneConnections,
     isInformationItemsLoading,
     isInformationItemFormOpen,
     editingInformationItem,
@@ -69,6 +70,8 @@ export default function Page() {
     handleCloseInformationConnectionModal,
     handleCreateInformationConnection,
     handleRemoveInformationConnection,
+    handleAddInformationToScene,
+    handleRemoveInformationToScene,
   } = useScenarioDetailPage();
 
   if (isLoading) {
@@ -140,6 +143,8 @@ export default function Page() {
         <InformationItemTabContent
           informationItems={informationItems}
           informationConnections={informationConnections}
+          informationToSceneConnections={informationToSceneConnections}
+          scenes={scenes}
           isInformationItemsLoading={isInformationItemsLoading}
           isInformationItemFormOpen={isInformationItemFormOpen}
           editingInformationItem={editingInformationItem}
@@ -154,6 +159,8 @@ export default function Page() {
           handleCloseInformationConnectionModal={handleCloseInformationConnectionModal}
           handleCreateInformationConnection={handleCreateInformationConnection}
           handleRemoveInformationConnection={handleRemoveInformationConnection}
+          handleAddInformationToScene={handleAddInformationToScene}
+          handleRemoveInformationToScene={handleRemoveInformationToScene}
         />
       )}
     </div>

@@ -12,6 +12,8 @@ type InformationItemTabContentProps = Pick<
   ReturnType<typeof useScenarioDetailPage>,
   | 'informationItems'
   | 'informationConnections'
+  | 'informationToSceneConnections'
+  | 'scenes'
   | 'isInformationItemsLoading'
   | 'isInformationItemFormOpen'
   | 'editingInformationItem'
@@ -26,11 +28,15 @@ type InformationItemTabContentProps = Pick<
   | 'handleCloseInformationConnectionModal'
   | 'handleCreateInformationConnection'
   | 'handleRemoveInformationConnection'
+  | 'handleAddInformationToScene'
+  | 'handleRemoveInformationToScene'
 >;
 
 export function InformationItemTabContent({
   informationItems,
   informationConnections,
+  informationToSceneConnections,
+  scenes,
   isInformationItemsLoading,
   isInformationItemFormOpen,
   editingInformationItem,
@@ -45,6 +51,8 @@ export function InformationItemTabContent({
   handleCloseInformationConnectionModal,
   handleCreateInformationConnection,
   handleRemoveInformationConnection,
+  handleAddInformationToScene,
+  handleRemoveInformationToScene,
 }: InformationItemTabContentProps) {
   // 接続データを表示用に変換
   const connectionDisplays: InformationItemConnectionDisplay[] = useMemo(
@@ -99,6 +107,15 @@ export function InformationItemTabContent({
               onDelete={
                 editingInformationItem ? handleDeleteInformationItem : undefined
               }
+              scenes={scenes}
+              informationToSceneConnections={informationToSceneConnections}
+              onAddSceneConnection={
+                editingInformationItem
+                  ? (sceneId) =>
+                      handleAddInformationToScene(editingInformationItem.id, sceneId)
+                  : undefined
+              }
+              onRemoveSceneConnection={handleRemoveInformationToScene}
             />
           </section>
         )}

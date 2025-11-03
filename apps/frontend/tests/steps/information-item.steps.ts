@@ -157,3 +157,62 @@ Then(
     await expect(relationshipRow.first()).toBeVisible();
   },
 );
+
+// Given: シナリオにシーンが登録されている
+Given(
+  'シナリオ {string} にシーン {string} が登録されている',
+  async function (this: CustomWorld, scenarioTitle: string, sceneTitle: string) {
+    // シナリオの詳細ページを開く
+    await this.page.getByRole('link', { name: 'シナリオ一覧' }).click();
+    await this.page.waitForLoadState('networkidle');
+    await this.page.getByText(scenarioTitle).click();
+    await this.page.waitForLoadState('networkidle');
+
+    // シーンタブをクリック
+    await this.page
+      .getByRole('listitem')
+      .getByText('シーン', { exact: true })
+      .click();
+
+    // シーンを追加ボタンをクリック
+    await this.page.getByRole('button', { name: 'シーンを追加' }).click();
+
+    // シーン情報を入力
+    await this.page.locator('#scene-title').fill(sceneTitle);
+    await this.page
+      .locator('#scene-description')
+      .fill(`${sceneTitle}の説明`);
+
+    // 作成ボタンをクリック
+    await this.page
+      .locator('.bg-white')
+      .getByRole('button', { name: '作成' })
+      .click();
+  },
+);
+
+// When: 指し示すシーンセクションでシーンを選択
+When(
+  '"指し示すシーン" セクションで {string} を選択する',
+  async function (this: CustomWorld, sceneTitle: string) {
+    // 指し示すシーンセクションのselectを見つける
+    const select = this.page.locator('select').filter({ hasText: 'シーンを選択' });
+    await select.selectOption({ label: sceneTitle });
+  },
+);
+
+// Then: 情報項目が指し示すシーンに表示される
+Then(
+  '情報項目 {string} が指し示すシーンに {string} が表示される',
+  async function (
+    this: CustomWorld,
+    _itemTitle: string,
+    sceneTitle: string,
+  ) {
+    // 指し示すシーンの一覧にシーンが表示されることを確認
+    const sceneRow = this.page
+      .locator('.information-to-scene-connection-item')
+      .filter({ hasText: sceneTitle });
+    await expect(sceneRow).toBeVisible();
+  },
+);
