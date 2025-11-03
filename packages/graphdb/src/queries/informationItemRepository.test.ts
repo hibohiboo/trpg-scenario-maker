@@ -48,7 +48,10 @@ describe('informationItemRepository', () => {
   };
 
   // ヘルパーメソッド: 情報項目を作成
-  const createTestInformationItem = async (scenarioId: string, title = '手がかり') => {
+  const createTestInformationItem = async (
+    scenarioId: string,
+    title = '手がかり',
+  ) => {
     const itemId = uuidv4();
     await informationItemRepository.createInformationItem({
       scenarioId,
@@ -77,7 +80,10 @@ describe('informationItemRepository', () => {
     expect(created?.description).toBe('これは重要な情報です');
 
     // 情報項目を取得
-    const getResult = await informationItemRepository.getInformationItemsByScenarioId(scenarioId);
+    const getResult =
+      await informationItemRepository.getInformationItemsByScenarioId(
+        scenarioId,
+      );
     const items = parseInformationItemListSchema(getResult);
     expect(items).toHaveLength(1);
     expect(items[0]?.id).toBe(itemId);
@@ -93,7 +99,10 @@ describe('informationItemRepository', () => {
 
     // 情報項目を削除
     await informationItemRepository.deleteInformationItem(itemId);
-    const afterDelete = await informationItemRepository.getInformationItemsByScenarioId(scenarioId);
+    const afterDelete =
+      await informationItemRepository.getInformationItemsByScenarioId(
+        scenarioId,
+      );
     expect(afterDelete).toHaveLength(0);
   });
 
@@ -104,11 +113,12 @@ describe('informationItemRepository', () => {
 
     // 関連を作成
     const connectionId = uuidv4();
-    const createResult = await informationItemRepository.createInformationConnection({
-      id: connectionId,
-      source: item1Id,
-      target: item2Id,
-    });
+    const createResult =
+      await informationItemRepository.createInformationConnection({
+        id: connectionId,
+        source: item1Id,
+        target: item2Id,
+      });
 
     const [created] = parseInformationItemConnectionListSchema(createResult);
     expect(created?.id).toBe(connectionId);
@@ -116,14 +126,20 @@ describe('informationItemRepository', () => {
     expect(created?.target).toBe(item2Id);
 
     // 関連を取得
-    const getResult = await informationItemRepository.getInformationConnectionsByScenarioId(scenarioId);
+    const getResult =
+      await informationItemRepository.getInformationConnectionsByScenarioId(
+        scenarioId,
+      );
     const connections = parseInformationItemConnectionListSchema(getResult);
     expect(connections).toHaveLength(1);
     expect(connections[0]?.id).toBe(connectionId);
 
     // 関連を削除
     await informationItemRepository.deleteInformationConnection(connectionId);
-    const afterDelete = await informationItemRepository.getInformationConnectionsByScenarioId(scenarioId);
+    const afterDelete =
+      await informationItemRepository.getInformationConnectionsByScenarioId(
+        scenarioId,
+      );
     expect(afterDelete).toHaveLength(0);
   });
 
@@ -134,11 +150,12 @@ describe('informationItemRepository', () => {
 
     // シーン→情報項目の関連を作成
     const connectionId = uuidv4();
-    const createResult = await informationItemRepository.createSceneInformationConnection({
-      id: connectionId,
-      sceneId,
-      informationItemId: itemId,
-    });
+    const createResult =
+      await informationItemRepository.createSceneInformationConnection({
+        id: connectionId,
+        sceneId,
+        informationItemId: itemId,
+      });
 
     const [created] = parseSceneInformationConnectionListSchema(createResult);
     expect(created?.id).toBe(connectionId);
@@ -146,14 +163,22 @@ describe('informationItemRepository', () => {
     expect(created?.informationItemId).toBe(itemId);
 
     // 関連を取得
-    const getResult = await informationItemRepository.getSceneInformationConnectionsBySceneId(sceneId);
+    const getResult =
+      await informationItemRepository.getSceneInformationConnectionsBySceneId(
+        sceneId,
+      );
     const connections = parseSceneInformationConnectionListSchema(getResult);
     expect(connections).toHaveLength(1);
     expect(connections[0]?.id).toBe(connectionId);
 
     // 関連を削除
-    await informationItemRepository.deleteSceneInformationConnection(connectionId);
-    const afterDelete = await informationItemRepository.getSceneInformationConnectionsBySceneId(sceneId);
+    await informationItemRepository.deleteSceneInformationConnection(
+      connectionId,
+    );
+    const afterDelete =
+      await informationItemRepository.getSceneInformationConnectionsBySceneId(
+        sceneId,
+      );
     expect(afterDelete).toHaveLength(0);
   });
 
@@ -164,11 +189,12 @@ describe('informationItemRepository', () => {
 
     // 情報項目→シーンの関連を作成
     const connectionId = uuidv4();
-    const createResult = await informationItemRepository.createInformationToSceneConnection({
-      id: connectionId,
-      informationItemId: itemId,
-      sceneId,
-    });
+    const createResult =
+      await informationItemRepository.createInformationToSceneConnection({
+        id: connectionId,
+        informationItemId: itemId,
+        sceneId,
+      });
 
     const [created] = parseInformationToSceneConnectionListSchema(createResult);
     expect(created?.id).toBe(connectionId);
@@ -176,14 +202,32 @@ describe('informationItemRepository', () => {
     expect(created?.sceneId).toBe(sceneId);
 
     // 関連を取得
-    const getResult = await informationItemRepository.getInformationToSceneConnectionsByInformationItemId(itemId);
+    const getResult =
+      await informationItemRepository.getInformationToSceneConnectionsByInformationItemId(
+        itemId,
+      );
     const connections = parseInformationToSceneConnectionListSchema(getResult);
     expect(connections).toHaveLength(1);
     expect(connections[0]?.id).toBe(connectionId);
 
+    // シナリオIDで関連を取得
+    const getResult2 =
+      await informationItemRepository.getInformationToSceneConnectionsByScenarioId(
+        scenarioId,
+      );
+    const connections2 =
+      parseInformationToSceneConnectionListSchema(getResult2);
+    expect(connections2).toHaveLength(1);
+    expect(connections2[0]?.id).toBe(connectionId);
+
     // 関連を削除
-    await informationItemRepository.deleteInformationToSceneConnection(connectionId);
-    const afterDelete = await informationItemRepository.getInformationToSceneConnectionsByInformationItemId(itemId);
+    await informationItemRepository.deleteInformationToSceneConnection(
+      connectionId,
+    );
+    const afterDelete =
+      await informationItemRepository.getInformationToSceneConnectionsByInformationItemId(
+        itemId,
+      );
     expect(afterDelete).toHaveLength(0);
   });
 });
