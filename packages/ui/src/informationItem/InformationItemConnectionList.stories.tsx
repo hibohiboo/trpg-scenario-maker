@@ -1,19 +1,22 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { InformationItemConnectionList } from './InformationItemConnectionList';
 import type { InformationItem } from './types';
 
 const mockItems: InformationItem[] = [
   {
+    scenarioId: 'x',
     id: '1',
     title: '古代の予言',
     description: '世界の滅亡を予言する古文書',
   },
   {
+    scenarioId: 'x',
     id: '2',
     title: '魔法の杖',
     description: '強大な力を秘めた杖',
   },
   {
+    scenarioId: 'x',
     id: '3',
     title: '封印の鍵',
     description: '古代神殿を開く鍵',
