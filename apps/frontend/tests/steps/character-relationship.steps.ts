@@ -58,7 +58,9 @@ When(
 Then(
   'キャラクター一覧に {string} が表示される',
   async function (this: CustomWorld, characterName: string) {
-    await expect(this.page.getByText(characterName)).toBeVisible();
+    await expect(
+      this.page.getByText(characterName, { exact: true }),
+    ).toBeVisible();
   },
 );
 

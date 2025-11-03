@@ -80,7 +80,7 @@
   "typescript.tsserver.experimental.enableProjectDiagnostics": false, // 大規模プロジェクトでの診断負荷を軽減
   // git統合の最適化
   "git.enabled": true,
-  "git.autorefresh": false,
+  "git.autorefresh": true,
   "git.autofetch": false,
   "git.decorations.enabled": false
   // ファイルサイズ制限
