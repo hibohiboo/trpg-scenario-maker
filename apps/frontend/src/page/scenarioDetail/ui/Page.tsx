@@ -81,16 +81,6 @@ export default function Page() {
       {currentTab === 'キャラクター' && (
         <>
           <div className="space-y-8">
-            {/* 関係性グラフビュー */}
-            <section>
-              <h2 className="text-xl font-semibold mb-4">関係性グラフ</h2>
-              <CharacterRelationshipGraph
-                characters={characters}
-                relations={characterRelations}
-                isLoading={isCharactersLoading || isRelationsLoading}
-              />
-            </section>
-
             {/* キャラクター一覧と関係性リスト */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               <section className="lg:col-span-5">
@@ -114,6 +104,15 @@ export default function Page() {
                 />
               </section>
             </div>
+            {/* 関係性グラフビュー */}
+            <section>
+              <h2 className="text-xl font-semibold mb-4">関係性グラフ</h2>
+              <CharacterRelationshipGraph
+                characters={characters}
+                relations={characterRelations}
+                isLoading={isCharactersLoading || isRelationsLoading}
+              />
+            </section>
           </div>
           <ScenarioCharacterFormModal
             isOpen={isCharacterFormOpen}
