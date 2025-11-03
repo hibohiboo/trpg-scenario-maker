@@ -216,3 +216,49 @@ Then(
     await expect(sceneRow).toBeVisible();
   },
 );
+
+// When: シーンを編集する
+When(
+  'シーン {string} を編集する',
+  async function (this: CustomWorld, sceneTitle: string) {
+    // シーン一覧からシーンを見つけて編集ボタンをクリック
+    const sceneCard = this.page
+      .locator('div')
+      .filter({ hasText: sceneTitle })
+      .first();
+    await sceneCard.getByRole('button', { name: '編集' }).click();
+    // モーダルが開くまで少し待つ
+    await this.page.waitForTimeout(500);
+  },
+);
+
+// When: 獲得できる情報セクションで情報項目を選択
+When(
+  '"獲得できる情報" セクションで {string} を選択する',
+  async function (this: CustomWorld, itemTitle: string) {
+    // 獲得できる情報セクションのselectを見つける
+    const modal = this.page.locator('[role="dialog"]');
+    const section = modal.locator('text=獲得できる情報').locator('..');
+    const select = section.locator('select');
+    await select.selectOption({ label: itemTitle });
+    // 選択が反映されるまで少し待つ
+    await this.page.waitForTimeout(300);
+  },
+);
+
+// Then: シーンの獲得情報に表示される
+Then(
+  'シーン {string} の獲得情報に {string} が表示される',
+  async function (
+    this: CustomWorld,
+    _sceneTitle: string,
+    itemTitle: string,
+  ) {
+    // 獲得できる情報の一覧に情報項目が表示されることを確認
+    const modal = this.page.locator('[role="dialog"]');
+    const itemRow = modal
+      .locator('.scene-information-item')
+      .filter({ hasText: itemTitle });
+    await expect(itemRow).toBeVisible();
+  },
+);
