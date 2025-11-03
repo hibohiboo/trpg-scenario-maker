@@ -61,7 +61,7 @@ When(
   },
 );
 
-// プロンプトで入力準備する
+// モーダルでキャラクター情報を入力する
 When(
   'プロンプトで {string} [説明: {string}, 役割: {string} ] を入力準備する',
   async function (
@@ -70,20 +70,14 @@ When(
     description: string,
     role: string,
   ) {
-    // window.promptのモックを設定
-    await this.page.evaluate(
-      ({ n, d, r }: { n: string; d: string; r: string }) => {
-        let callCount = 0;
-        window.prompt = (() => {
-          callCount++;
-          if (callCount === 1) return n; // キャラクター名
-          if (callCount === 2) return d; // 説明
-          if (callCount === 3) return r; // 役割
-          return '';
-        }) as typeof prompt;
-      },
-      { n: name, d: description, r: role },
-    );
+    // モーダルが開くのを待つ
+    const modal = this.page.locator('[role="dialog"]');
+    await modal.waitFor({ state: 'visible', timeout: 5000 });
+
+    // 各フィールドに入力
+    await modal.getByLabel('キャラクター名').fill(name);
+    await modal.getByLabel('キャラクター説明').fill(description);
+    await modal.getByLabel('役割').fill(role);
   },
 );
 
@@ -230,26 +224,23 @@ Given(
     await this.page.getByText(scenarioTitle).click();
     await this.page.waitForLoadState('networkidle');
 
-    // window.promptのモックを設定
-    await this.page.evaluate(
-      ({ name, desc, r }: { name: string; desc: string; r: string }) => {
-        let callCount = 0;
-        window.prompt = (() => {
-          callCount++;
-          if (callCount === 1) return name; // キャラクター名
-          if (callCount === 2) return desc; // 説明
-          if (callCount === 3) return r; // 役割
-          return '';
-        }) as typeof prompt;
-      },
-      { name: characterName, desc: `${characterName}の説明`, r: role },
-    );
-
     // キャラクターを作成ボタンをクリック
     await this.page.getByRole('button', { name: 'キャラクターを作成' }).click();
 
-    // 少し待つ
-    await this.page.waitForTimeout(1000);
+    // モーダルが開くのを待つ
+    const modal = this.page.locator('[role="dialog"]');
+    await modal.waitFor({ state: 'visible', timeout: 5000 });
+
+    // 各フィールドに入力
+    await modal.getByLabel('キャラクター名').fill(characterName);
+    await modal.getByLabel('キャラクター説明').fill(`${characterName}の説明`);
+    await modal.getByLabel('役割').fill(role);
+
+    // 作成ボタンをクリック
+    await modal.getByRole('button', { name: '作成' }).click();
+
+    // モーダルが閉じるのを待つ
+    await modal.waitFor({ state: 'hidden', timeout: 5000 });
   },
 );
 

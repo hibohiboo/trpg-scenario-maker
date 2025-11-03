@@ -32,6 +32,7 @@ export const useScenarioDetailPage = () => {
 
   const dispatch = useAppDispatch();
   const [isRelationshipFormOpen, setIsRelationshipFormOpen] = useState(false);
+  const [isCharacterFormOpen, setIsCharacterFormOpen] = useState(false);
 
   const { scenes, connections, isLoading, error } = useSceneList();
   const {
@@ -149,24 +150,30 @@ export const useScenarioDetailPage = () => {
     }
   };
 
-  const handleCreateNewCharacter = async () => {
-    const name = window.prompt('キャラクター名を入力してください');
-    if (!name) return;
+  const handleOpenCharacterForm = () => {
+    setIsCharacterFormOpen(true);
+  };
 
-    const description = window.prompt('キャラクターの説明を入力してください（省略可）') || '';
-    const role = window.prompt('シナリオ内での役割を入力してください（省略可）') || '';
+  const handleCloseCharacterForm = () => {
+    setIsCharacterFormOpen(false);
+  };
 
+  const handleCreateNewCharacter = async (params: {
+    name: string;
+    description: string;
+    role: string;
+  }) => {
     try {
       // キャラクターを作成
       const characterId = uuidv4();
       await characterGraphApi.create({
         id: characterId,
-        name,
-        description,
+        name: params.name,
+        description: params.description,
       });
 
       // シナリオに追加
-      await addCharacter(characterId, role);
+      await addCharacter(characterId, params.role);
 
       // 保存
       await graphdbWorkerClient.save();
@@ -278,6 +285,9 @@ export const useScenarioDetailPage = () => {
     handleCharacterClick,
     handleEditCharacter,
     handleRemoveCharacter,
+    isCharacterFormOpen,
+    handleOpenCharacterForm,
+    handleCloseCharacterForm,
     handleCreateNewCharacter,
     handleAddExistingCharacter,
     characterRelations,

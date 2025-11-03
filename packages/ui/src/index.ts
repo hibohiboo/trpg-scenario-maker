@@ -23,6 +23,7 @@ export {
   ScenarioCharacterList,
   ScenarioCharacterRelationshipList,
   ScenarioCharacterRelationshipFormModal,
+  ScenarioCharacterFormModal,
 } from './scenarioCharacter';
 export type {
   CharacterWithRole,
