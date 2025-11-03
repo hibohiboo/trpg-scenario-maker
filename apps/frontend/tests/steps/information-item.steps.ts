@@ -39,7 +39,7 @@ When(
       .locator('div')
       .filter({ hasText: itemTitle })
       .first();
-    await itemCard.getByRole('button', { name: '削除' }).click();
+    await itemCard.getByRole('button', { name: '削除' }).first().click();
     // 削除処理が完了するまで少し待つ
     await this.page.waitForTimeout(500);
   },
@@ -125,11 +125,7 @@ When(
 // When: モーダルで関連元と関連先を選択
 When(
   'モーダルで関連元 {string} と関連先 {string} を選択する',
-  async function (
-    this: CustomWorld,
-    sourceItem: string,
-    targetItem: string,
-  ) {
+  async function (this: CustomWorld, sourceItem: string, targetItem: string) {
     // モーダルが開くのを待つ
     const modal = this.page.locator('[role="dialog"]');
     await modal.waitFor({ state: 'visible', timeout: 5000 });
@@ -144,11 +140,7 @@ When(
 // Then: 情報項目の関連一覧に表示される
 Then(
   '情報項目の関連一覧に {string} から {string} への関連が表示される',
-  async function (
-    this: CustomWorld,
-    sourceItem: string,
-    targetItem: string,
-  ) {
+  async function (this: CustomWorld, sourceItem: string, targetItem: string) {
     // 関連が表示されることを確認
     const relationshipPattern = new RegExp(`${sourceItem}.*→.*${targetItem}`);
     const relationshipRow = this.page
@@ -161,7 +153,11 @@ Then(
 // Given: シナリオにシーンが登録されている
 Given(
   'シナリオ {string} にシーン {string} が登録されている',
-  async function (this: CustomWorld, scenarioTitle: string, sceneTitle: string) {
+  async function (
+    this: CustomWorld,
+    scenarioTitle: string,
+    sceneTitle: string,
+  ) {
     // シナリオの詳細ページを開く
     await this.page.getByRole('link', { name: 'シナリオ一覧' }).click();
     await this.page.waitForLoadState('networkidle');
@@ -179,9 +175,7 @@ Given(
 
     // シーン情報を入力
     await this.page.locator('#scene-title').fill(sceneTitle);
-    await this.page
-      .locator('#scene-description')
-      .fill(`${sceneTitle}の説明`);
+    await this.page.locator('#scene-description').fill(`${sceneTitle}の説明`);
 
     // 作成ボタンをクリック
     await this.page
@@ -196,7 +190,9 @@ When(
   '"指し示すシーン" セクションで {string} を選択する',
   async function (this: CustomWorld, sceneTitle: string) {
     // 指し示すシーンセクションのselectを見つける
-    const select = this.page.locator('select').filter({ hasText: 'シーンを選択' });
+    const select = this.page
+      .locator('select')
+      .filter({ hasText: 'シーンを選択' });
     await select.selectOption({ label: sceneTitle });
   },
 );
@@ -204,11 +200,7 @@ When(
 // Then: 情報項目が指し示すシーンに表示される
 Then(
   '情報項目 {string} が指し示すシーンに {string} が表示される',
-  async function (
-    this: CustomWorld,
-    _itemTitle: string,
-    sceneTitle: string,
-  ) {
+  async function (this: CustomWorld, _itemTitle: string, sceneTitle: string) {
     // 指し示すシーンの一覧にシーンが表示されることを確認
     const sceneRow = this.page
       .locator('.information-to-scene-connection-item')
@@ -226,7 +218,7 @@ When(
       .locator('div')
       .filter({ hasText: sceneTitle })
       .first();
-    await sceneCard.getByRole('button', { name: '編集' }).click();
+    await sceneCard.getByRole('button', { name: '編集' }).first().click();
     // モーダルが開くまで少し待つ
     await this.page.waitForTimeout(500);
   },
@@ -249,16 +241,13 @@ When(
 // Then: シーンの獲得情報に表示される
 Then(
   'シーン {string} の獲得情報に {string} が表示される',
-  async function (
-    this: CustomWorld,
-    _sceneTitle: string,
-    itemTitle: string,
-  ) {
+  async function (this: CustomWorld, _sceneTitle: string, itemTitle: string) {
     // 獲得できる情報の一覧に情報項目が表示されることを確認
     const modal = this.page.locator('[role="dialog"]');
     const itemRow = modal
       .locator('.scene-information-item')
-      .filter({ hasText: itemTitle });
+      .filter({ hasText: itemTitle })
+      .first();
     await expect(itemRow).toBeVisible();
   },
 );
