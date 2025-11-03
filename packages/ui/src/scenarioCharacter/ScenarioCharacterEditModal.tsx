@@ -40,6 +40,12 @@ export function ScenarioCharacterEditModal({
       setRole(character.role || '');
     }
   }, [character]);
+  const handleClose = () => {
+    setName('');
+    setDescription('');
+    setRole('');
+    onClose();
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,13 +64,6 @@ export function ScenarioCharacterEditModal({
       role,
     });
     handleClose();
-  };
-
-  const handleClose = () => {
-    setName('');
-    setDescription('');
-    setRole('');
-    onClose();
   };
 
   return (

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Modal } from '../common/Modal';
 import { Button } from '../common/Button';
+import { Modal } from '../common/Modal';
 import type { CharacterWithRole } from './types';
 
 export interface ScenarioCharacterRelationshipFormModalProps {
@@ -30,7 +30,12 @@ export function ScenarioCharacterRelationshipFormModal({
   const [fromCharacterId, setFromCharacterId] = useState('');
   const [toCharacterId, setToCharacterId] = useState('');
   const [relationshipName, setRelationshipName] = useState('');
-
+  const handleClose = () => {
+    setFromCharacterId('');
+    setToCharacterId('');
+    setRelationshipName('');
+    onClose();
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -48,18 +53,14 @@ export function ScenarioCharacterRelationshipFormModal({
     handleClose();
   };
 
-  const handleClose = () => {
-    setFromCharacterId('');
-    setToCharacterId('');
-    setRelationshipName('');
-    onClose();
-  };
-
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="関係性を追加">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="from-character" className="block text-sm font-medium mb-1">
+          <label
+            htmlFor="from-character"
+            className="block text-sm font-medium mb-1"
+          >
             関係元キャラクター
           </label>
           <select
@@ -78,7 +79,10 @@ export function ScenarioCharacterRelationshipFormModal({
         </div>
 
         <div>
-          <label htmlFor="to-character" className="block text-sm font-medium mb-1">
+          <label
+            htmlFor="to-character"
+            className="block text-sm font-medium mb-1"
+          >
             関係先キャラクター
           </label>
           <select
@@ -97,7 +101,10 @@ export function ScenarioCharacterRelationshipFormModal({
         </div>
 
         <div>
-          <label htmlFor="relationship-name" className="block text-sm font-medium mb-1">
+          <label
+            htmlFor="relationship-name"
+            className="block text-sm font-medium mb-1"
+          >
             関係名
           </label>
           <input

@@ -1,5 +1,5 @@
-import type { CharacterNodeData } from '@trpg-scenario-maker/schema';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { CharacterNodeData } from '@trpg-scenario-maker/schema';
 import { ReactFlowProvider } from '@xyflow/react';
 import { CharacterNode } from './CharacterNode';
 

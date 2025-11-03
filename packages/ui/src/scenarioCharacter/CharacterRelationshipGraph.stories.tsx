@@ -7,6 +7,12 @@ const meta = {
   component: CharacterRelationshipGraph,
   parameters: {
     layout: 'padded',
+    docs: {
+      description: {
+        component:
+          'キャラクター間の関係性を可視化するグラフコンポーネント。ReactFlowを使用し、縦方向・横方向の自動整列機能付き。',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {

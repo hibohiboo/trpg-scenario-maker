@@ -5,4 +5,6 @@ export * from './ScenarioCharacterFormModal';
 export * from './ScenarioCharacterEditModal';
 export * from './CharacterRelationshipGraph';
 export * from './CharacterNode';
+export * from './CharacterGraphToolbar';
+export * from './characterGraphUtils';
 export * from './types';

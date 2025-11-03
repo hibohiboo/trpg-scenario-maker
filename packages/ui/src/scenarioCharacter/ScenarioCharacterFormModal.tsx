@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Modal } from '../common/Modal';
 import { Button } from '../common/Button';
+import { Modal } from '../common/Modal';
 
 export interface ScenarioCharacterFormModalProps {
   /** モーダルの表示状態 */
@@ -26,7 +26,12 @@ export function ScenarioCharacterFormModal({
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [role, setRole] = useState('');
-
+  const handleClose = () => {
+    setName('');
+    setDescription('');
+    setRole('');
+    onClose();
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -39,18 +44,14 @@ export function ScenarioCharacterFormModal({
     handleClose();
   };
 
-  const handleClose = () => {
-    setName('');
-    setDescription('');
-    setRole('');
-    onClose();
-  };
-
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="キャラクターを作成">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="character-name" className="block text-sm font-medium mb-1">
+          <label
+            htmlFor="character-name"
+            className="block text-sm font-medium mb-1"
+          >
             キャラクター名 <span className="text-red-500">*</span>
           </label>
           <input
@@ -64,7 +65,10 @@ export function ScenarioCharacterFormModal({
         </div>
 
         <div>
-          <label htmlFor="character-description" className="block text-sm font-medium mb-1">
+          <label
+            htmlFor="character-description"
+            className="block text-sm font-medium mb-1"
+          >
             キャラクター説明
           </label>
           <textarea
@@ -78,7 +82,10 @@ export function ScenarioCharacterFormModal({
         </div>
 
         <div>
-          <label htmlFor="character-role" className="block text-sm font-medium mb-1">
+          <label
+            htmlFor="character-role"
+            className="block text-sm font-medium mb-1"
+          >
             役割
           </label>
           <input

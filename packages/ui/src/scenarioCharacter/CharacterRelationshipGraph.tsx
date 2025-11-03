@@ -3,10 +3,15 @@ import {
   Controls,
   MiniMap,
   ReactFlow,
+  useEdgesState,
+  useNodesState,
   type Edge,
   type Node,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
+import { useCallback } from 'react';
+import { CharacterGraphToolbar } from './CharacterGraphToolbar';
+import { getLayoutedCharacterElements } from './characterGraphUtils';
 import { CharacterNode } from './CharacterNode';
 import type { CharacterWithRole, ScenarioCharacterRelationship } from './types';
 
@@ -68,8 +73,22 @@ export function CharacterRelationshipGraph({
   relations,
   isLoading,
 }: CharacterRelationshipGraphProps) {
-  const nodes = convertToNodes(characters);
-  const edges = convertToEdges(relations);
+  const initialNodes = convertToNodes(characters);
+  const initialEdges = convertToEdges(relations);
+
+  const [nodes, setNodes] = useNodesState(initialNodes);
+  const [edges, setEdges] = useEdgesState(initialEdges);
+
+  const onLayout = useCallback(
+    (direction: 'TB' | 'LR') => {
+      const { nodes: layoutedNodes, edges: layoutedEdges } =
+        getLayoutedCharacterElements(nodes, edges, direction);
+
+      setNodes([...layoutedNodes]);
+      setEdges([...layoutedEdges]);
+    },
+    [nodes, edges, setNodes, setEdges],
+  );
 
   if (isLoading) {
     return (
@@ -91,7 +110,7 @@ export function CharacterRelationshipGraph({
   }
 
   return (
-    <div className="w-full h-[600px] border-2 border-gray-200 rounded-lg overflow-hidden">
+    <div className="w-full h-[600px] border-2 border-gray-200 rounded-lg overflow-hidden relative">
       <style>{`
         .react-flow__handle {
           width: 12px !important;
@@ -119,6 +138,7 @@ export function CharacterRelationshipGraph({
           stroke-width: 3px !important;
         }
       `}</style>
+      <CharacterGraphToolbar onLayout={onLayout} />
       <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} fitView>
         <Background />
         <Controls />
