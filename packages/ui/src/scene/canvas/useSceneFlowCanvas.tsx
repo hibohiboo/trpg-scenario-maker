@@ -15,6 +15,7 @@ import type {
   InformationItem,
   InformationItemConnection,
   InformationToSceneConnection,
+  SceneInformationConnection,
 } from '../../informationItem/types';
 import type { Scene, SceneConnection } from '../types';
 import '@xyflow/react/dist/style.css';
@@ -31,6 +32,7 @@ export interface SceneFlowCanvasProps {
   informationItems?: InformationItem[];
   informationConnections?: InformationItemConnection[];
   informationToSceneConnections?: InformationToSceneConnection[];
+  sceneInformationConnections?: SceneInformationConnection[];
 }
 
 export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
@@ -44,6 +46,7 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
     informationItems = [],
     informationConnections = [],
     informationToSceneConnections = [],
+    sceneInformationConnections = [],
   } = props;
   const [selectedScene, setSelectedScene] = useState<Scene | null>(null);
 
@@ -95,10 +98,23 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
     }),
   );
 
+  // シーン→情報項目の接続エッジ（獲得できる情報）
+  const sceneToInformationEdges: Edge[] = sceneInformationConnections.map(
+    (conn) => ({
+      id: `scene-to-info-${conn.id}`,
+      source: conn.sceneId,
+      target: `info-${conn.informationItemId}`,
+      type: 'smoothstep',
+      animated: false,
+      style: { stroke: '#8b5cf6', strokeWidth: 2, strokeDasharray: '5 5' },
+    }),
+  );
+
   const initialEdges: Edge[] = [
     ...sceneEdges,
     ...informationEdges,
     ...informationToSceneEdges,
+    ...sceneToInformationEdges,
   ];
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -162,11 +178,28 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
       }),
     );
 
-    setEdges([...sceneEdges, ...informationEdges, ...informationToSceneEdges]);
+    const sceneToInformationEdges: Edge[] = sceneInformationConnections.map(
+      (conn) => ({
+        id: `scene-to-info-${conn.id}`,
+        source: conn.sceneId,
+        target: `info-${conn.informationItemId}`,
+        type: 'smoothstep',
+        animated: false,
+        style: { stroke: '#8b5cf6', strokeWidth: 2, strokeDasharray: '5 5' },
+      }),
+    );
+
+    setEdges([
+      ...sceneEdges,
+      ...informationEdges,
+      ...informationToSceneEdges,
+      ...sceneToInformationEdges,
+    ]);
   }, [
     connections,
     informationConnections,
     informationToSceneConnections,
+    sceneInformationConnections,
     setEdges,
   ]);
 

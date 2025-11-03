@@ -84,6 +84,7 @@ const renderSceneFlow = (
   informationItems?: SceneEditorProps['informationItems'],
   informationConnections?: SceneEditorProps['informationConnections'],
   informationToSceneConnections?: SceneEditorProps['informationToSceneConnections'],
+  sceneInformationConnections?: SceneEditorProps['sceneInformationConnections'],
 ) => (
   <SceneFlowCanvas
     scenes={scenes}
@@ -94,6 +95,7 @@ const renderSceneFlow = (
     informationItems={informationItems}
     informationConnections={informationConnections}
     informationToSceneConnections={informationToSceneConnections}
+    sceneInformationConnections={sceneInformationConnections}
   />
 );
 
@@ -172,6 +174,7 @@ export function SceneEditor({
         informationItems,
         informationConnections,
         informationToSceneConnections,
+        sceneInformationConnections,
       )}
     </div>
   );
@@ -194,6 +197,7 @@ export function SceneEditor({
         informationItems,
         informationConnections,
         informationToSceneConnections,
+        sceneInformationConnections,
       ),
     },
   ];
