@@ -443,6 +443,19 @@ React Flowを使用したシーン間の関係性を視覚的に表示・編集�
 - [react-markdown](https://github.com/remarkjs/react-markdown) - Markdownレンダリング
 - [remark-gfm](https://github.com/remarkjs/remark-gfm) - GitHub Flavored Markdownサポート
 
+### 情報項目管理
+
+シナリオに登場する情報（手がかり、秘密、証拠など）を管理し、シーンとの関連を可視化できます。
+
+**主な機能:**
+
+- 情報項目の作成・編集・削除
+- 情報項目同士の関連付け
+- シーンで獲得できる情報の設定（Scene → InformationItem）
+- 情報が指し示すシーンの設定（InformationItem → Scene）
+  - 例：「この情報を手に入れると、次のシーンに行ける」
+- シーングラフ上での情報項目の表示・関連の可視化
+
 ## ロードマップ
 
 -[ ] BDDの残り
