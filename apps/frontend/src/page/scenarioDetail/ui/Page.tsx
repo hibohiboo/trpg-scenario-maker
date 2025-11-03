@@ -64,27 +64,28 @@ export default function Page() {
     <div className="space-y-8">
       <h1 className="text-3xl font-bold">シナリオ編集</h1>
 
-      <section>
-        <ScenarioCharacterList
-          characters={characters}
-          isLoading={isCharactersLoading}
-          onCharacterClick={handleCharacterClick}
-          onEditCharacter={handleEditCharacter}
-          onRemoveCharacter={handleRemoveCharacter}
-          onCreateNew={handleOpenCharacterForm}
-          onAddExisting={handleAddExistingCharacter}
-        />
-      </section>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <section className="lg:col-span-5">
+          <ScenarioCharacterList
+            characters={characters}
+            isLoading={isCharactersLoading}
+            onCharacterClick={handleCharacterClick}
+            onEditCharacter={handleEditCharacter}
+            onRemoveCharacter={handleRemoveCharacter}
+            onCreateNew={handleOpenCharacterForm}
+            onAddExisting={handleAddExistingCharacter}
+          />
+        </section>
 
-      <section>
-        <ScenarioCharacterRelationshipList
-          relations={characterRelations}
-          isLoading={isRelationsLoading}
-          onAddRelationship={handleAddRelationship}
-          onRemoveRelationship={handleRemoveRelationship}
-        />
-      </section>
-
+        <section className="lg:col-span-3">
+          <ScenarioCharacterRelationshipList
+            relations={characterRelations}
+            isLoading={isRelationsLoading}
+            onAddRelationship={handleAddRelationship}
+            onRemoveRelationship={handleRemoveRelationship}
+          />
+        </section>
+      </div>
       <ScenarioCharacterFormModal
         isOpen={isCharacterFormOpen}
         onClose={handleCloseCharacterForm}
