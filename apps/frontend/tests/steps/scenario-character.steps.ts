@@ -60,7 +60,15 @@ When(
     ).toBeVisible();
   },
 );
-
+When(
+  'シナリオ編集ページの {string} のタブをクリックする',
+  async function (this: CustomWorld, name) {
+    await this.page
+      .getByRole('listitem')
+      .getByText(name, { exact: true })
+      .click();
+  },
+);
 // モーダルでキャラクター情報を入力する
 When(
   'プロンプトで {string} [説明: {string}, 役割: {string} ] を入力準備する',
@@ -86,12 +94,9 @@ When(
   'プロンプトで役割 {string} を入力準備する',
   async function (this: CustomWorld, role: string) {
     // window.promptのモックを設定（役割のみ）
-    await this.page.evaluate(
-      (r: string) => {
-        window.prompt = (() => r) as typeof prompt;
-      },
-      role,
-    );
+    await this.page.evaluate((r: string) => {
+      window.prompt = (() => r) as typeof prompt;
+    }, role);
   },
 );
 
@@ -117,15 +122,7 @@ When(
   ) {
     // window.promptのモックを設定（3回の呼び出しに対応）
     await this.page.evaluate(
-      ({
-        from,
-        to,
-        rel,
-      }: {
-        from: string;
-        to: string;
-        rel: string;
-      }) => {
+      ({ from, to, rel }: { from: string; to: string; rel: string }) => {
         let callCount = 0;
         window.prompt = (() => {
           callCount++;
@@ -223,7 +220,10 @@ Given(
     await this.page.waitForLoadState('networkidle');
     await this.page.getByText(scenarioTitle).click();
     await this.page.waitForLoadState('networkidle');
-
+    await this.page
+      .getByRole('listitem')
+      .getByText('キャラクター', { exact: true })
+      .click();
     // キャラクターを作成ボタンをクリック
     await this.page.getByRole('button', { name: 'キャラクターを作成' }).click();
 

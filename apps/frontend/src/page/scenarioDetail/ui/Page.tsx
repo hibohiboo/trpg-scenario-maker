@@ -8,6 +8,7 @@ import {
   ErrorMessage,
 } from '@trpg-scenario-maker/ui';
 import { useScenarioDetailPage } from '../hooks/useScenarioDetailPage';
+import { Navigation } from './Navigation';
 
 export default function Page() {
   const {
@@ -50,6 +51,9 @@ export default function Page() {
     handleCloseRelationshipForm,
     handleSubmitRelationship,
     handleRemoveRelationship,
+    tabItems,
+    currentTab,
+    handleChangeTab,
   } = useScenarioDetailPage();
 
   if (isLoading) {
@@ -63,66 +67,76 @@ export default function Page() {
   return (
     <div className="space-y-8">
       <h1 className="text-3xl font-bold">シナリオ編集</h1>
+      <Navigation
+        current={currentTab}
+        items={tabItems}
+        onClick={handleChangeTab}
+      />
+      {currentTab === 'キャラクター' && (
+        <>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <section className="lg:col-span-5">
+              <ScenarioCharacterList
+                characters={characters}
+                isLoading={isCharactersLoading}
+                onCharacterClick={handleCharacterClick}
+                onEditCharacter={handleEditCharacter}
+                onRemoveCharacter={handleRemoveCharacter}
+                onCreateNew={handleOpenCharacterForm}
+                onAddExisting={handleAddExistingCharacter}
+              />
+            </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <section className="lg:col-span-5">
-          <ScenarioCharacterList
+            <section className="lg:col-span-4">
+              <ScenarioCharacterRelationshipList
+                relations={characterRelations}
+                isLoading={isRelationsLoading}
+                onAddRelationship={handleAddRelationship}
+                onRemoveRelationship={handleRemoveRelationship}
+              />
+            </section>
+          </div>
+          <ScenarioCharacterFormModal
+            isOpen={isCharacterFormOpen}
+            onClose={handleCloseCharacterForm}
+            onSubmit={handleCreateNewCharacter}
+          />
+          <ScenarioCharacterRelationshipFormModal
+            isOpen={isRelationshipFormOpen}
             characters={characters}
-            isLoading={isCharactersLoading}
-            onCharacterClick={handleCharacterClick}
-            onEditCharacter={handleEditCharacter}
-            onRemoveCharacter={handleRemoveCharacter}
-            onCreateNew={handleOpenCharacterForm}
-            onAddExisting={handleAddExistingCharacter}
+            onClose={handleCloseRelationshipForm}
+            onSubmit={handleSubmitRelationship}
           />
-        </section>
-
-        <section className="lg:col-span-4">
-          <ScenarioCharacterRelationshipList
-            relations={characterRelations}
-            isLoading={isRelationsLoading}
-            onAddRelationship={handleAddRelationship}
-            onRemoveRelationship={handleRemoveRelationship}
-          />
-        </section>
-      </div>
-      <ScenarioCharacterFormModal
-        isOpen={isCharacterFormOpen}
-        onClose={handleCloseCharacterForm}
-        onSubmit={handleCreateNewCharacter}
-      />
-
-      <ScenarioCharacterRelationshipFormModal
-        isOpen={isRelationshipFormOpen}
-        characters={characters}
-        onClose={handleCloseRelationshipForm}
-        onSubmit={handleSubmitRelationship}
-      />
-
-      <section>
-        <SceneEditor
-          scenarioId={id}
-          scenes={scenes}
-          connections={connections}
-          events={events}
-          isFormOpen={isFormOpen}
-          editingScene={editingScene}
-          onAddScene={handleAddScene}
-          onUpdateScene={handleUpdateScene}
-          onDeleteScene={handleDeleteScene}
-          onAddConnection={handleAddConnection}
-          onUpdateConnection={handleUpdateConnection}
-          onDeleteConnection={handleDeleteConnection}
-          onAddEvent={handleAddEvent}
-          onUpdateEvent={handleUpdateEvent}
-          onDeleteEvent={handleDeleteEvent}
-          onMoveEventUp={handleMoveEventUp}
-          onMoveEventDown={handleMoveEventDown}
-          onOpenForm={handleOpenForm}
-          onCloseForm={handleCloseForm}
-          onEditScene={handleEditScene}
-        />
-      </section>
+        </>
+      )}
+      {currentTab === 'シーン' && (
+        <>
+          <section>
+            <SceneEditor
+              scenarioId={id}
+              scenes={scenes}
+              connections={connections}
+              events={events}
+              isFormOpen={isFormOpen}
+              editingScene={editingScene}
+              onAddScene={handleAddScene}
+              onUpdateScene={handleUpdateScene}
+              onDeleteScene={handleDeleteScene}
+              onAddConnection={handleAddConnection}
+              onUpdateConnection={handleUpdateConnection}
+              onDeleteConnection={handleDeleteConnection}
+              onAddEvent={handleAddEvent}
+              onUpdateEvent={handleUpdateEvent}
+              onDeleteEvent={handleDeleteEvent}
+              onMoveEventUp={handleMoveEventUp}
+              onMoveEventDown={handleMoveEventDown}
+              onOpenForm={handleOpenForm}
+              onCloseForm={handleCloseForm}
+              onEditScene={handleEditScene}
+            />
+          </section>
+        </>
+      )}
     </div>
   );
 }

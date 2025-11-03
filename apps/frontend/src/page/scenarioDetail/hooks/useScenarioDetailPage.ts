@@ -25,6 +25,11 @@ import {
   sceneEventSlice,
 } from '@/entities/sceneEvent';
 import { useAppSelector, useAppDispatch } from '@/shared/lib/store';
+import {
+  scenarioDetailCurrentTabSelector,
+  scenarioDetailTabItemsSelector,
+  setScenarioDetailCurrentTab,
+} from '../models/scenarioDetailSlice';
 
 export const useScenarioDetailPage = () => {
   const { id } = useParams();
@@ -33,7 +38,8 @@ export const useScenarioDetailPage = () => {
   const dispatch = useAppDispatch();
   const [isRelationshipFormOpen, setIsRelationshipFormOpen] = useState(false);
   const [isCharacterFormOpen, setIsCharacterFormOpen] = useState(false);
-
+  const currentTab = useAppSelector(scenarioDetailCurrentTabSelector);
+  const tabItems = useAppSelector(scenarioDetailTabItemsSelector);
   const { scenes, connections, isLoading, error } = useSceneList();
   const {
     handleAddScene,
@@ -252,7 +258,9 @@ export const useScenarioDetailPage = () => {
       }
     }
   };
-
+  const handleChangeTab = (tab: string) => {
+    dispatch(setScenarioDetailCurrentTab(tab));
+  };
   return {
     id,
     scenes,
@@ -294,5 +302,8 @@ export const useScenarioDetailPage = () => {
     handleCloseRelationshipForm,
     handleSubmitRelationship,
     handleRemoveRelationship,
+    tabItems,
+    currentTab,
+    handleChangeTab,
   };
 };
