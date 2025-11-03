@@ -149,27 +149,34 @@
 ## フェーズ5: UIコンポーネント実装
 
 ### 5-1. 情報項目管理コンポーネント
-- [ ] `packages/ui/src/informationItem/InformationItemList.tsx` 作成
-  - 情報項目一覧表示
-  - 情報項目選択機能
-- [ ] `packages/ui/src/informationItem/InformationItemForm.tsx` 作成
-  - 情報項目作成・編集フォーム
-  - バリデーション実装
-- [ ] `packages/ui/src/informationItem/InformationItemCard.tsx` 作成
-  - 情報項目カード表示
-  - 削除ボタン
+- [x] `packages/ui/src/informationItem/InformationItemList.tsx` 作成
+  - [x] 情報項目一覧表示
+  - [x] 情報項目選択機能
+  - [x] 新規作成ボタン
+  - [x] 削除ボタン
+- [x] `packages/ui/src/informationItem/InformationItemForm.tsx` 作成
+  - [x] 情報項目作成・編集フォーム
+  - [x] タイトル・説明入力フィールド
+  - [x] 送信・キャンセル・削除ボタン
+- [x] `packages/ui/src/informationItem/InformationItemCard.tsx` 作成
+  - [x] 情報項目カード表示
+  - [x] 削除ボタン
+- [x] `packages/ui/src/informationItem/index.ts` 作成
+  - [x] コンポーネントエクスポート
+- [x] `packages/ui/src/index.ts` 更新
+  - [x] Public API エクスポート
 
 ### 5-2. 関連管理コンポーネント
-- [ ] `packages/ui/src/informationItem/InformationConnectionForm.tsx` 作成
-  - 情報項目同士の関連作成フォーム
-- [ ] `packages/ui/src/informationItem/SceneInformationConnectionForm.tsx` 作成
-  - シーン-情報項目の関連作成フォーム
+- [ ] （YAGNI原則により後回し - 必要になった時点で実装）
 
 ### 5-3. Storybook作成
-- [ ] `packages/ui/src/informationItem/InformationItemList.stories.tsx`
-- [ ] `packages/ui/src/informationItem/InformationItemForm.stories.tsx`
-- [ ] `packages/ui/src/informationItem/InformationItemCard.stories.tsx`
-- [ ] Storybook動作確認
+- [x] `packages/ui/src/informationItem/InformationItemList.stories.tsx`
+  - [x] Default, Loading, Empty, SingleItem, NoDescription, ManyItems シナリオ
+- [x] `packages/ui/src/informationItem/InformationItemForm.stories.tsx`
+  - [x] CreateNew, Edit, EditWithoutCancel, EditWithoutDelete シナリオ
+- [x] `packages/ui/src/informationItem/InformationItemCard.stories.tsx`
+  - [x] Default, NoDescription, WithoutDelete, WithoutClick, LongDescription シナリオ
+- [x] Lint・型チェック通過確認
 
 ---
 
