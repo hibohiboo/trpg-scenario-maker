@@ -132,8 +132,8 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
   );
 
   useEffect(() => {
-    const sceneNodes: Node[] = scenesToNodes(scenes, nodes, events);
-    const informationNodes: Node[] = informationItems.map((item, index) => {
+    const updatedSceneNodes: Node[] = scenesToNodes(scenes, nodes, events);
+    const updatedInformationNodes: Node[] = informationItems.map((item, index) => {
       const existingNode = nodes.find((n) => n.id === `info-${item.id}`);
       return {
         id: `info-${item.id}`,
@@ -145,11 +145,11 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
         },
       };
     });
-    setNodes([...sceneNodes, ...informationNodes]);
+    setNodes([...updatedSceneNodes, ...updatedInformationNodes]);
   }, [scenes, events, informationItems, setNodes]);
 
   useEffect(() => {
-    const sceneEdges: Edge[] = connections.map((conn) => ({
+    const updatedSceneEdges: Edge[] = connections.map((conn) => ({
       id: conn.id,
       source: conn.source,
       target: conn.target,
@@ -158,7 +158,7 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
       style: { stroke: '#6366f1', strokeWidth: 2 },
     }));
 
-    const informationEdges: Edge[] = informationConnections.map((conn) => ({
+    const updatedInformationEdges: Edge[] = informationConnections.map((conn) => ({
       id: `info-conn-${conn.id}`,
       source: `info-${conn.source}`,
       target: `info-${conn.target}`,
@@ -167,7 +167,7 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
       style: { stroke: '#f59e0b', strokeWidth: 2 },
     }));
 
-    const informationToSceneEdges: Edge[] = informationToSceneConnections.map(
+    const updatedInformationToSceneEdges: Edge[] = informationToSceneConnections.map(
       (conn) => ({
         id: `info-to-scene-${conn.id}`,
         source: `info-${conn.informationItemId}`,
@@ -178,7 +178,7 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
       }),
     );
 
-    const sceneToInformationEdges: Edge[] = sceneInformationConnections.map(
+    const updatedSceneToInformationEdges: Edge[] = sceneInformationConnections.map(
       (conn) => ({
         id: `scene-to-info-${conn.id}`,
         source: conn.sceneId,
@@ -190,10 +190,10 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
     );
 
     setEdges([
-      ...sceneEdges,
-      ...informationEdges,
-      ...informationToSceneEdges,
-      ...sceneToInformationEdges,
+      ...updatedSceneEdges,
+      ...updatedInformationEdges,
+      ...updatedInformationToSceneEdges,
+      ...updatedSceneToInformationEdges,
     ]);
   }, [
     connections,
