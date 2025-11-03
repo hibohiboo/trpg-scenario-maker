@@ -1,4 +1,5 @@
 import * as v from 'valibot';
+import { OptionalToStringSchema } from './common';
 
 /**
  * シナリオに登場するキャラクタースキーマ
@@ -11,9 +12,9 @@ export const ScenarioCharacterSchema = v.object({
   /** キャラクター名 */
   name: v.string(),
   /** キャラクター説明 */
-  description: v.optional(v.string(), ''),
+  description: OptionalToStringSchema,
   /** シナリオ内での役割（例: "主人公", "敵", "協力者"） */
-  role: v.optional(v.string(), ''),
+  role: OptionalToStringSchema,
 });
 
 /**
@@ -25,7 +26,7 @@ export const ScenarioCharacterFormDataSchema = v.object({
   /** キャラクターID */
   characterId: v.string(),
   /** シナリオ内での役割 */
-  role: v.optional(v.string(), ''),
+  role: OptionalToStringSchema,
 });
 
 /**
@@ -51,7 +52,7 @@ export const parseToScenarioCharacter = (data: unknown): ScenarioCharacter => {
  * シナリオキャラクターリストをパース
  */
 export const parseToScenarioCharacterList = (
-  data: unknown
+  data: unknown,
 ): ScenarioCharacter[] => {
   return v.parse(v.array(ScenarioCharacterSchema), data);
 };

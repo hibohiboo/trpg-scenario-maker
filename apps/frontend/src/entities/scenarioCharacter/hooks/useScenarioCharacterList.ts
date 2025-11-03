@@ -17,6 +17,7 @@ export const useScenarioCharacterList = (scenarioId: string) => {
 
   useEffect(() => {
     if (scenarioId) {
+      console.log('scenarioId', scenarioId);
       dispatch(readScenarioCharactersAction({ scenarioId }));
     }
   }, [dispatch, scenarioId]);
