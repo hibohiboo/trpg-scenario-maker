@@ -8,6 +8,11 @@ import { useParams } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
 import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 import { characterGraphApi } from '@/entities/character';
+import {
+  useInformationItemList,
+  useInformationItemOperations,
+  useInformationItemFormState,
+} from '@/entities/informationItem';
 import { scenarioGraphApi } from '@/entities/scenario';
 import {
   useScenarioCharacterList,
@@ -42,6 +47,19 @@ export const useScenarioDetailPage = () => {
   const [editingCharacter, setEditingCharacter] = useState<CharacterWithRole | null>(null);
   const currentTab = useAppSelector(scenarioDetailCurrentTabSelector);
   const tabItems = useAppSelector(scenarioDetailTabItemsSelector);
+
+  // 情報項目関連
+  const { items: informationItems, isLoading: isInformationItemsLoading } =
+    useInformationItemList();
+  const { handleAddItem, handleUpdateItem, handleDeleteItem } =
+    useInformationItemOperations();
+  const {
+    isFormOpen: isInformationItemFormOpen,
+    editingItem: editingInformationItem,
+    handleOpenForm: handleOpenInformationItemForm,
+    handleCloseForm: handleCloseInformationItemForm,
+    handleEditItem: handleEditInformationItem,
+  } = useInformationItemFormState();
   const { scenes, connections, isLoading, error } = useSceneList();
   const {
     handleAddScene,
@@ -282,6 +300,51 @@ export const useScenarioDetailPage = () => {
   const handleChangeTab = (tab: string) => {
     dispatch(setScenarioDetailCurrentTab(tab));
   };
+
+  const handleCreateInformationItem = async (data: {
+    title: string;
+    description: string;
+  }) => {
+    try {
+      await handleAddItem(data);
+      handleCloseInformationItemForm();
+    } catch (err) {
+      console.error('Failed to create information item:', err);
+      alert('情報項目の作成に失敗しました');
+    }
+  };
+
+  const handleUpdateInformationItem = async (
+    itemId: string,
+    data: { title: string; description: string },
+  ) => {
+    try {
+      await handleUpdateItem(itemId, data);
+      handleCloseInformationItemForm();
+    } catch (err) {
+      console.error('Failed to update information item:', err);
+      alert('情報項目の更新に失敗しました');
+    }
+  };
+
+  const handleDeleteInformationItem = async (itemId: string) => {
+    const item = informationItems.find((i) => i.id === itemId);
+    if (!item) return;
+
+    const confirmed = window.confirm(
+      `情報項目「${item.title}」を削除してもよろしいですか？\nこの操作は取り消せません。`,
+    );
+    if (confirmed) {
+      try {
+        await handleDeleteItem(itemId);
+        handleCloseInformationItemForm();
+      } catch (err) {
+        console.error('Failed to delete information item:', err);
+        alert('情報項目の削除に失敗しました');
+      }
+    }
+  };
+
   return {
     id,
     scenes,
@@ -330,5 +393,15 @@ export const useScenarioDetailPage = () => {
     tabItems,
     currentTab,
     handleChangeTab,
+    informationItems,
+    isInformationItemsLoading,
+    isInformationItemFormOpen,
+    editingInformationItem,
+    handleOpenInformationItemForm,
+    handleCloseInformationItemForm,
+    handleCreateInformationItem,
+    handleUpdateInformationItem,
+    handleDeleteInformationItem,
+    handleEditInformationItem,
   };
 };
