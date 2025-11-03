@@ -101,6 +101,17 @@ When(
   },
 );
 
+// 削除確認ダイアログでOKを選択する準備
+When(
+  '削除確認ダイアログで {string} を選択する準備をする',
+  async function (this: CustomWorld, _choice: string) {
+    // window.confirmのモックを設定（常にtrueを返す）
+    await this.page.evaluate(() => {
+      window.confirm = (() => true) as typeof confirm;
+    });
+  },
+);
+
 // プロンプトで関係性を入力準備する
 When(
   'プロンプトで関係性 [関係元: {string}, 関係先: {string}, 関係名: {string} ] を入力準備する',
