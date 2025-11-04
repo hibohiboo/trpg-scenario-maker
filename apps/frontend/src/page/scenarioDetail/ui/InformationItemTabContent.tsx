@@ -75,8 +75,8 @@ export function InformationItemTabContent({
     [informationConnections, informationItems],
   );
   return (
-    <div className="space-y-8">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div className="space-y-8 lg:flex gap-8">
+      <div className="grid  grid-cols-1 lg:grid-cols-2 gap-8">
         <section>
           <InformationItemList
             items={informationItems}
@@ -112,7 +112,10 @@ export function InformationItemTabContent({
               onAddSceneConnection={
                 editingInformationItem
                   ? (sceneId) =>
-                      handleAddInformationToScene(editingInformationItem.id, sceneId)
+                      handleAddInformationToScene(
+                        editingInformationItem.id,
+                        sceneId,
+                      )
                   : undefined
               }
               onRemoveSceneConnection={handleRemoveInformationToScene}
