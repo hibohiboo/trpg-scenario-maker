@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router';
 
 const navigationItems = [
   { path: '/', label: 'シナリオ一覧' },
+  { path: '/agreement', label: '利用規約' },
   // { path: '/characters', label: 'キャラクター管理' },
 ];
 
