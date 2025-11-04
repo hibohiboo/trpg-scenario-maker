@@ -17,7 +17,11 @@ export const CharacterNode = memo((props: NodeProps) => {
 
   return (
     <div className="character-node px-4 py-3 shadow-md rounded-lg bg-white border-2 border-blue-500 min-w-[150px]">
-      <Handle type="target" position={Position.Top} />
+      {/* 4方向のハンドルを追加 */}
+      <Handle type="target" position={Position.Top} id="top" />
+      <Handle type="target" position={Position.Left} id="left" />
+      <Handle type="source" position={Position.Right} id="right" />
+      <Handle type="source" position={Position.Bottom} id="bottom" />
 
       <div className="flex flex-col gap-1">
         <div className="text-base font-bold text-gray-900 text-center">
@@ -36,8 +40,6 @@ export const CharacterNode = memo((props: NodeProps) => {
           </div>
         )}
       </div>
-
-      <Handle type="source" position={Position.Bottom} />
     </div>
   );
 });

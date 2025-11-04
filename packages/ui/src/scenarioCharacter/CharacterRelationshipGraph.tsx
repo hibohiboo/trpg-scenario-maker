@@ -9,7 +9,7 @@ import {
   type Node,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { CharacterGraphToolbar } from './CharacterGraphToolbar';
 import { getLayoutedCharacterElements } from './characterGraphUtils';
 import { CharacterNode } from './CharacterNode';
@@ -49,19 +49,58 @@ function convertToNodes(characters: CharacterWithRole[]): Node[] {
 
 /**
  * キャラクター関係性をReactFlowのエッジ形式に変換
+ * 双方向の関係を検出してカーブで表現
  */
-function convertToEdges(relations: ScenarioCharacterRelationship[]): Edge[] {
-  return relations.map((relation, index) => ({
-    id: `edge-${index}`,
-    source: relation.fromCharacterId,
-    target: relation.toCharacterId,
-    label: relation.relationshipName,
-    type: 'default',
-    animated: true,
-    style: { stroke: '#3b82f6', strokeWidth: 2 },
-    labelStyle: { fill: '#1e40af', fontWeight: 600 },
-    labelBgStyle: { fill: '#eff6ff' },
-  }));
+function convertToEdges(
+  relations: ScenarioCharacterRelationship[],
+  direction: 'TB' | 'LR' = 'TB',
+): Edge[] {
+  // 双方向関係の検出
+  const bidirectionalPairs = new Set<string>();
+  const edgeMap = new Map<string, ScenarioCharacterRelationship>();
+
+  relations.forEach((relation) => {
+    const key = `${relation.fromCharacterId}-${relation.toCharacterId}`;
+    const reverseKey = `${relation.toCharacterId}-${relation.fromCharacterId}`;
+
+    edgeMap.set(key, relation);
+
+    if (edgeMap.has(reverseKey)) {
+      bidirectionalPairs.add(key);
+      bidirectionalPairs.add(reverseKey);
+    }
+  });
+
+  return relations.map((relation, index) => {
+    const key = `${relation.fromCharacterId}-${relation.toCharacterId}`;
+    const isBidirectional = bidirectionalPairs.has(key);
+
+    // レイアウト方向に応じたハンドル位置を決定
+    const isVertical = direction === 'TB';
+    const sourceHandle = isVertical ? 'bottom' : 'right';
+    const targetHandle = isVertical ? 'top' : 'left';
+
+    return {
+      id: `edge-${index}`,
+      source: relation.fromCharacterId,
+      target: relation.toCharacterId,
+      sourceHandle,
+      targetHandle,
+      label: relation.relationshipName,
+      type: isBidirectional ? 'smoothstep' : 'default',
+      animated: true,
+      style: {
+        stroke: '#3b82f6',
+        strokeWidth: 2,
+      },
+      labelStyle: { fill: '#1e40af', fontWeight: 600 },
+      labelBgStyle: { fill: '#eff6ff' },
+      // 双方向の場合はカーブを追加
+      ...(isBidirectional && {
+        pathOptions: { offset: 20, borderRadius: 10 },
+      }),
+    };
+  });
 }
 
 /**
@@ -73,21 +112,28 @@ export function CharacterRelationshipGraph({
   relations,
   isLoading,
 }: CharacterRelationshipGraphProps) {
+  const [direction, setDirection] = useState<'TB' | 'LR'>('TB');
+
   const initialNodes = convertToNodes(characters);
-  const initialEdges = convertToEdges(relations);
+  const initialEdges = convertToEdges(relations, direction);
 
   const [nodes, setNodes] = useNodesState(initialNodes);
   const [edges, setEdges] = useEdgesState(initialEdges);
 
   const onLayout = useCallback(
-    (direction: 'TB' | 'LR') => {
+    (newDirection: 'TB' | 'LR') => {
+      setDirection(newDirection);
+
+      // エッジをレイアウト方向に応じて再生成
+      const updatedEdges = convertToEdges(relations, newDirection);
+
       const { nodes: layoutedNodes, edges: layoutedEdges } =
-        getLayoutedCharacterElements(nodes, edges, direction);
+        getLayoutedCharacterElements(nodes, updatedEdges, newDirection);
 
       setNodes([...layoutedNodes]);
       setEdges([...layoutedEdges]);
     },
-    [nodes, edges, setNodes, setEdges],
+    [nodes, relations, setNodes, setEdges],
   );
 
   if (isLoading) {
