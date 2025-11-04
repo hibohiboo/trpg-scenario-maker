@@ -36,10 +36,7 @@ interface LayoutProps {
   currentPath?: string;
 }
 
-const maxWidthClasses: Record<
-  NonNullable<LayoutProps['maxWidth']>,
-  string
-> = {
+const maxWidthClasses: Record<NonNullable<LayoutProps['maxWidth']>, string> = {
   container: 'container',
   full: 'w-full',
   lg: 'max-w-screen-lg',
@@ -65,7 +62,9 @@ export function Layout({
   const widthClass = maxWidthClasses[maxWidth];
 
   return (
-    <div className={`${widthClass} mx-auto ${paddingX} ${paddingY} ${className}`}>
+    <div
+      className={`${widthClass} mx-auto ${paddingX} ${paddingY} ${className}`}
+    >
       {navigationItems && navigationItems.length > 0 && (
         <Navigation items={navigationItems} currentPath={currentPath} />
       )}

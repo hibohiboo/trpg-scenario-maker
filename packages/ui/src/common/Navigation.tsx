@@ -1,3 +1,4 @@
+import { FaGithub } from 'react-icons/fa';
 import { Link } from 'react-router';
 
 export interface NavigationItem {
@@ -19,7 +20,7 @@ export interface NavigationProps {
  */
 export function Navigation({ items, currentPath = '' }: NavigationProps) {
   return (
-    <nav className="mb-6 border-b border-gray-200">
+    <nav className="mb-6 border-b border-gray-200 flex justify-between">
       <ul className="flex space-x-4">
         {items.map((item) => {
           const isActive = currentPath === item.path;
@@ -39,6 +40,12 @@ export function Navigation({ items, currentPath = '' }: NavigationProps) {
           );
         })}
       </ul>
+      <a
+        href="https://github.com/hibohiboo/trpg-scenario-maker"
+        target="_blank"
+      >
+        <FaGithub size="2em" />
+      </a>
     </nav>
   );
 }
