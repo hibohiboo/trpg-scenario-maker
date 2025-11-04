@@ -257,3 +257,87 @@ export const CircularRelationship: Story = {
     isLoading: false,
   },
 };
+
+export const BidirectionalRelationships: Story = {
+  args: {
+    characters: [
+      {
+        scenarioId: 's1',
+        characterId: 'c1',
+        name: '探偵',
+        description: '事件を追う名探偵',
+        role: '主人公',
+      },
+      {
+        scenarioId: 's1',
+        characterId: 'c2',
+        name: '助手',
+        description: '探偵の相棒',
+        role: '協力者',
+      },
+      {
+        scenarioId: 's1',
+        characterId: 'c3',
+        name: '警部',
+        description: '警察の重鎮',
+        role: 'サポーター',
+      },
+      {
+        scenarioId: 's1',
+        characterId: 'c4',
+        name: '犯人',
+        description: '事件の真犯人',
+        role: '敵',
+      },
+    ],
+    relations: [
+      // 双方向関係: 探偵と助手
+      {
+        scenarioId: 's1',
+        fromCharacterId: 'c1',
+        toCharacterId: 'c2',
+        relationshipName: '信頼する',
+      },
+      {
+        scenarioId: 's1',
+        fromCharacterId: 'c2',
+        toCharacterId: 'c1',
+        relationshipName: '尊敬する',
+      },
+      // 双方向関係: 探偵と警部
+      {
+        scenarioId: 's1',
+        fromCharacterId: 'c1',
+        toCharacterId: 'c3',
+        relationshipName: '協力する',
+      },
+      {
+        scenarioId: 's1',
+        fromCharacterId: 'c3',
+        toCharacterId: 'c1',
+        relationshipName: '頼る',
+      },
+      // 片方向関係: 探偵から犯人へ
+      {
+        scenarioId: 's1',
+        fromCharacterId: 'c1',
+        toCharacterId: 'c4',
+        relationshipName: '追跡する',
+      },
+      // 双方向関係: 助手と犯人
+      {
+        scenarioId: 's1',
+        fromCharacterId: 'c2',
+        toCharacterId: 'c4',
+        relationshipName: '警戒する',
+      },
+      {
+        scenarioId: 's1',
+        fromCharacterId: 'c4',
+        toCharacterId: 'c2',
+        relationshipName: '狙う',
+      },
+    ],
+    isLoading: false,
+  },
+};

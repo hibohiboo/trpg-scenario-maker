@@ -1,5 +1,6 @@
 import {
   Background,
+  ConnectionMode,
   Controls,
   MiniMap,
   ReactFlow,
@@ -76,8 +77,8 @@ export function CharacterRelationshipGraph({
   const initialNodes = convertToNodes(characters);
   const initialEdges = convertToEdges(relations);
 
-  const [nodes, setNodes] = useNodesState(initialNodes);
-  const [edges, setEdges] = useEdgesState(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onLayout = useCallback(
     (direction: 'TB' | 'LR') => {
@@ -103,7 +104,9 @@ export function CharacterRelationshipGraph({
       <div className="w-full h-[600px] flex items-center justify-center bg-gray-50 rounded-lg border-2 border-gray-200">
         <div className="text-center text-gray-500">
           <p className="text-lg mb-2">キャラクターが登録されていません</p>
-          <p className="text-sm">キャラクターを追加して関係性を可視化しましょう</p>
+          <p className="text-sm">
+            キャラクターを追加して関係性を可視化しましょう
+          </p>
         </div>
       </div>
     );
@@ -139,7 +142,15 @@ export function CharacterRelationshipGraph({
         }
       `}</style>
       <CharacterGraphToolbar onLayout={onLayout} />
-      <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} fitView>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        nodeTypes={nodeTypes}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        connectionMode={ConnectionMode.Strict}
+        fitView
+      >
         <Background />
         <Controls />
         <MiniMap />
