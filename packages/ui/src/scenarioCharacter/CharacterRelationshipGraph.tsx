@@ -152,8 +152,8 @@ export function CharacterRelationshipGraph({
   const initialNodes = convertToNodes(characters);
   const initialEdges = convertToEdges(relations, direction);
 
-  const [nodes, setNodes] = useNodesState(initialNodes);
-  const [edges, setEdges] = useEdgesState(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onLayout = useCallback(
     (newDirection: 'TB' | 'LR') => {
@@ -220,7 +220,14 @@ export function CharacterRelationshipGraph({
         }
       `}</style>
       <CharacterGraphToolbar onLayout={onLayout} />
-      <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} fitView>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        nodeTypes={nodeTypes}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        fitView
+      >
         <Background />
         <Controls />
         <MiniMap />
