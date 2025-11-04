@@ -1,4 +1,5 @@
 import { createBrowserRouter } from 'react-router';
+import { AgreementPage } from '@/page/agreement';
 import {
   CharacterRelationshipPage,
   characterRelationshipLoader,
@@ -33,6 +34,10 @@ export const createRouter = (_: { dispatch: AppDispatch }) =>
             path: 'characters',
             element: <CharacterRelationshipPage />,
             loader: characterRelationshipLoader,
+          },
+          {
+            path: 'agreement',
+            element: <AgreementPage />,
           },
         ],
       },
