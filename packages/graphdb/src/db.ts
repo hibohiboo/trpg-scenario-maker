@@ -1,5 +1,6 @@
 // eslint-disable-next-line camelcase
 import kuzu_wasm from '@kuzu/kuzu-wasm';
+import { sampleData } from './migration';
 import type { Database, Connection, KuzuModule } from '@kuzu/kuzu-wasm';
 
 let kuzu: KuzuModule | null = null;
@@ -80,4 +81,13 @@ export async function closeDatabase(): Promise<void> {
     db.close();
     db = null;
   }
+}
+
+export async function initSampleData() {
+  await Promise.all(
+    sampleData.map(async (d) => {
+      writeFSVFile(d.key, d.value);
+      await executeQuery(`COPY ${d.table} FROM "${d.key}"`);
+    }),
+  );
 }
