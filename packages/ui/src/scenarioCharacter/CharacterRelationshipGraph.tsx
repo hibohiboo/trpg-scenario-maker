@@ -48,15 +48,37 @@ function convertToNodes(characters: CharacterWithRole[]): Node[] {
 }
 
 /**
- * キャラクター関係性をReactFlowのエッジ形式に変換
- * 双方向の関係を検出してカーブで表現
+ * ハンドルIDを決定する
  */
-function convertToEdges(
+function determineHandles(
+  isBidirectional: boolean,
+  order: number | undefined,
+  direction: 'TB' | 'LR',
+): { sourceHandle: string; targetHandle: string } {
+  const isVertical = direction === 'TB';
+
+  if (isBidirectional && order === 2) {
+    // 2番目のエッジは -2 のハンドルを使用
+    return {
+      sourceHandle: isVertical ? 'bottom-2' : 'right-2',
+      targetHandle: isVertical ? 'top-2' : 'left-2',
+    };
+  }
+
+  // 1番目のエッジまたは単方向エッジは -1 のハンドルを使用
+  return {
+    sourceHandle: isVertical ? 'bottom-1' : 'right-1',
+    targetHandle: isVertical ? 'top-1' : 'left-1',
+  };
+}
+
+/**
+ * 双方向関係を検出する
+ */
+function detectBidirectionalRelations(
   relations: ScenarioCharacterRelationship[],
-  direction: 'TB' | 'LR' = 'TB',
-): Edge[] {
-  // 双方向関係の検出
-  const bidirectionalPairs = new Set<string>();
+): Map<string, number> {
+  const bidirectionalPairs = new Map<string, number>();
   const edgeMap = new Map<string, ScenarioCharacterRelationship>();
 
   relations.forEach((relation) => {
@@ -66,19 +88,36 @@ function convertToEdges(
     edgeMap.set(key, relation);
 
     if (edgeMap.has(reverseKey)) {
-      bidirectionalPairs.add(key);
-      bidirectionalPairs.add(reverseKey);
+      if (!bidirectionalPairs.has(reverseKey)) {
+        bidirectionalPairs.set(reverseKey, 1);
+      }
+      bidirectionalPairs.set(key, 2);
     }
   });
 
+  return bidirectionalPairs;
+}
+
+/**
+ * キャラクター関係性をReactFlowのエッジ形式に変換
+ * 双方向の関係を検出してカーブで表現
+ */
+function convertToEdges(
+  relations: ScenarioCharacterRelationship[],
+  direction: 'TB' | 'LR' = 'TB',
+): Edge[] {
+  const bidirectionalPairs = detectBidirectionalRelations(relations);
+
   return relations.map((relation, index) => {
     const key = `${relation.fromCharacterId}-${relation.toCharacterId}`;
-    const isBidirectional = bidirectionalPairs.has(key);
+    const order = bidirectionalPairs.get(key);
+    const isBidirectional = order !== undefined;
 
-    // レイアウト方向に応じたハンドル位置を決定
-    const isVertical = direction === 'TB';
-    const sourceHandle = isVertical ? 'bottom' : 'right';
-    const targetHandle = isVertical ? 'top' : 'left';
+    const { sourceHandle, targetHandle } = determineHandles(
+      isBidirectional,
+      order,
+      direction,
+    );
 
     return {
       id: `edge-${index}`,
@@ -95,10 +134,6 @@ function convertToEdges(
       },
       labelStyle: { fill: '#1e40af', fontWeight: 600 },
       labelBgStyle: { fill: '#eff6ff' },
-      // 双方向の場合はカーブを追加
-      ...(isBidirectional && {
-        pathOptions: { offset: 20, borderRadius: 10 },
-      }),
     };
   });
 }
