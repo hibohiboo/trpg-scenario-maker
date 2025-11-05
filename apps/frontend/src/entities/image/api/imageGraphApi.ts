@@ -63,7 +63,10 @@ export const imageGraphApi = {
     characterId: string;
     imageId: string;
   }): Promise<void> {
-    await graphdbWorkerClient.request('image:graph:unlinkFromCharacter', params);
+    await graphdbWorkerClient.request(
+      'image:graph:unlinkFromCharacter',
+      params,
+    );
   },
 
   /**
@@ -121,9 +124,12 @@ export const imageGraphApi = {
    * IDで画像ノードを取得
    */
   async getNodeById(imageId: string): Promise<{ id: string } | null> {
-    const result = await graphdbWorkerClient.request('image:graph:getNodeById', {
-      imageId,
-    });
+    const result = await graphdbWorkerClient.request(
+      'image:graph:getNodeById',
+      {
+        imageId,
+      },
+    );
 
     return result;
   },

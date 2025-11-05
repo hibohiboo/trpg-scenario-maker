@@ -1,6 +1,4 @@
-import { createImageRepository } from '@trpg-scenario-maker/rdb';
-import { parseToImage, parseToImageList } from '@trpg-scenario-maker/schema';
-import { getRdbDatabase } from '@/workers/rdb/rdbDatabase';
+import { imageRepository } from '@trpg-scenario-maker/rdb';
 
 /**
  * 画像のRDB操作ハンドラー
@@ -10,9 +8,7 @@ export const imageRdbHandlers = [
     type: 'image:rdb:create',
     handler: async (payload: unknown) => {
       const { dataUrl } = payload as { dataUrl: string };
-      const database = getRdbDatabase();
-      const repository = createImageRepository(database);
-      const result = await repository.create(dataUrl);
+      const result = await imageRepository.create(dataUrl);
 
       return { data: result };
     },
@@ -21,9 +17,7 @@ export const imageRdbHandlers = [
     type: 'image:rdb:getById',
     handler: async (payload: unknown) => {
       const { id } = payload as { id: string };
-      const database = getRdbDatabase();
-      const repository = createImageRepository(database);
-      const result = await repository.findById(id);
+      const result = await imageRepository.findById(id);
 
       return { data: result };
     },
@@ -32,9 +26,7 @@ export const imageRdbHandlers = [
     type: 'image:rdb:getByIds',
     handler: async (payload: unknown) => {
       const { ids } = payload as { ids: string[] };
-      const database = getRdbDatabase();
-      const repository = createImageRepository(database);
-      const result = await repository.findByIds(ids);
+      const result = await imageRepository.findByIds(ids);
 
       return { data: result };
     },
@@ -43,9 +35,7 @@ export const imageRdbHandlers = [
     type: 'image:rdb:delete',
     handler: async (payload: unknown) => {
       const { id } = payload as { id: string };
-      const database = getRdbDatabase();
-      const repository = createImageRepository(database);
-      await repository.delete(id);
+      await imageRepository.delete(id);
 
       return { success: true };
     },
