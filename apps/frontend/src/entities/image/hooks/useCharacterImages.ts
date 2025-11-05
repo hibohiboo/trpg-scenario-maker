@@ -22,7 +22,9 @@ export const useCharacterImages = (characterId: string | null) => {
 
   // セレクターを使用して状態を取得
   const images = useSelector(selectImagesByCharacterId(characterId));
-  const primaryImageId = useSelector(selectPrimaryImageIdByCharacterId(characterId));
+  const primaryImageId = useSelector(
+    selectPrimaryImageIdByCharacterId(characterId),
+  );
   const loading = useSelector(selectLoadingByCharacterId(characterId));
   const error = useSelector(selectErrorByCharacterId(characterId));
 
@@ -62,7 +64,7 @@ export const useCharacterImages = (characterId: string | null) => {
       if (!characterId) {
         throw new Error('Character ID is required');
       }
-
+      console.log('main', primaryImageId, imageId);
       await dispatch(
         setPrimaryImageAction({
           characterId,

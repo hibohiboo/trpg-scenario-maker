@@ -32,7 +32,14 @@ export const createImageRepository = (
       })
       .from(imagesTable)
       .where(eq(imagesTable.id, id));
-    return result ?? null;
+
+    if (!result) return null;
+
+    // Redux stateで使用するため、Date型をISO文字列に変換
+    return {
+      ...result,
+      createdAt: result.createdAt?.toISOString(),
+    };
   },
 
   /**
@@ -41,7 +48,7 @@ export const createImageRepository = (
   async findByIds(ids: string[]) {
     if (ids.length === 0) return [];
 
-    return database
+    const results = await database
       .select({
         id: imagesTable.id,
         dataUrl: imagesTable.dataUrl,
@@ -49,6 +56,12 @@ export const createImageRepository = (
       })
       .from(imagesTable)
       .where(inArray(imagesTable.id, ids));
+
+    // Redux stateで使用するため、Date型をISO文字列に変換
+    return results.map((result) => ({
+      ...result,
+      createdAt: result.createdAt?.toISOString(),
+    }));
   },
 
   /**

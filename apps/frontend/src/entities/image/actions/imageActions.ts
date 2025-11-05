@@ -1,8 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import type { Image } from '@trpg-scenario-maker/schema';
-import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 import { imageGraphApi } from '../api/imageGraphApi';
 import { imageRdbApi } from '../api/imageRdbApi';
+import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 
 /**
  * キャラクターの画像一覧を取得
@@ -28,17 +28,20 @@ export const fetchCharacterImagesAction = createAsyncThunk<
   const imageIds = imageLinks.map((link) => link.imageId);
   const imageData = await imageRdbApi.getImagesByIds(imageIds);
 
-  // isPrimaryフラグをマージ
+  // isPrimaryフラグをマージし、createdAtをシリアライズ可能な形式に変換
   const imagesWithPrimary = imageData.map((img) => {
     const link = imageLinks.find((l) => l.imageId === img.id);
     return {
       ...img,
+      createdAt: img.createdAt instanceof Date ? img.createdAt.toISOString() : img.createdAt,
       isPrimary: link?.isPrimary || false,
     };
   });
 
   // isPrimary順でソート
-  imagesWithPrimary.sort((a, b) => (b.isPrimary ? 1 : 0) - (a.isPrimary ? 1 : 0));
+  imagesWithPrimary.sort(
+    (a, b) => (b.isPrimary ? 1 : 0) - (a.isPrimary ? 1 : 0),
+  );
 
   return {
     images: imagesWithPrimary,
@@ -53,6 +56,20 @@ export const addImageAction = createAsyncThunk<
   void,
   { characterId: string; dataUrl: string; isPrimary?: boolean }
 >('image/addImage', async ({ characterId, dataUrl, isPrimary = false }) => {
+  // メイン画像として追加する場合、既存のメイン画像をfalseに
+  if (isPrimary) {
+    const imageLinks = await imageGraphApi.getImagesByCharacterId(characterId);
+    const currentPrimaryImage = imageLinks.find((link) => link.isPrimary);
+
+    if (currentPrimaryImage) {
+      await imageGraphApi.updateLink({
+        characterId,
+        imageId: currentPrimaryImage.imageId,
+        isPrimary: false,
+      });
+    }
+  }
+
   // RDBに画像データを保存
   const { id: imageId } = await imageRdbApi.createImage(dataUrl);
 
@@ -76,26 +93,29 @@ export const addImageAction = createAsyncThunk<
 export const setPrimaryImageAction = createAsyncThunk<
   void,
   { characterId: string; imageId: string; currentPrimaryImageId: string | null }
->('image/setPrimaryImage', async ({ characterId, imageId, currentPrimaryImageId }) => {
-  // 既存のメイン画像をfalseに
-  if (currentPrimaryImageId && currentPrimaryImageId !== imageId) {
+>(
+  'image/setPrimaryImage',
+  async ({ characterId, imageId, currentPrimaryImageId }) => {
+    // 既存のメイン画像をfalseに
+    if (currentPrimaryImageId && currentPrimaryImageId !== imageId) {
+      await imageGraphApi.updateLink({
+        characterId,
+        imageId: currentPrimaryImageId,
+        isPrimary: false,
+      });
+    }
+
+    // 新しい画像をメインに設定
     await imageGraphApi.updateLink({
       characterId,
-      imageId: currentPrimaryImageId,
-      isPrimary: false,
+      imageId,
+      isPrimary: true,
     });
-  }
 
-  // 新しい画像をメインに設定
-  await imageGraphApi.updateLink({
-    characterId,
-    imageId,
-    isPrimary: true,
-  });
-
-  // データを保存
-  await graphdbWorkerClient.save();
-});
+    // データを保存
+    await graphdbWorkerClient.save();
+  },
+);
 
 /**
  * 画像を削除
