@@ -20,9 +20,6 @@ export const imagesTable = pgTable('images', {
   id: uuid().primaryKey().defaultRandom(),
   dataUrl: text('data_url').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at')
-    .notNull()
-    .$onUpdate(() => new Date()),
 });
 
 export type NewImage = typeof imagesTable.$inferInsert;

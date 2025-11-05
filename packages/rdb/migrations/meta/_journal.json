@@ -15,6 +15,13 @@
       "when": 1762350817806,
       "tag": "0001_spicy_venus",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1762351112339,
+      "tag": "0002_tired_ultimates",
+      "breakpoints": true
     }
   ]
 }
