@@ -12,3 +12,6 @@ export {
   setPrimaryImageAction,
   deleteImageAction,
 } from './actions/imageActions';
+export { CharacterImageGallery } from './ui/CharacterImageGallery';
+export { CharacterImageUploadModal } from './ui/CharacterImageUploadModal';
+export { CharacterImageManager } from './ui/CharacterImageManager';
