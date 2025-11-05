@@ -66,7 +66,7 @@ When(
 
 When(
   '画像 {string} にマウスをホバーする',
-  async function (this: CustomWorld, imageName: string) {
+  async function (this: CustomWorld, _imageName: string) {
     // 画像コンテナを取得（alt属性またはdata属性で識別）
     const imageContainer = this.page
       .locator('.group')
@@ -87,6 +87,16 @@ When(
         await dialog.dismiss();
       }
     });
+  },
+);
+
+When(
+  '登場キャラクター {string} をクリックする',
+  async function (this: CustomWorld, characterName: string) {
+    const characterRow = this.page
+      .locator('.scenario-character-item')
+      .filter({ hasText: characterName });
+    await characterRow.click();
   },
 );
 
