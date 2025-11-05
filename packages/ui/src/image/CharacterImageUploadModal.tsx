@@ -1,46 +1,38 @@
-import { ImageInput } from '@trpg-scenario-maker/ui';
 import { useState } from 'react';
+import ImageInput from './ImageInput';
 
-interface CharacterImageUploadModalProps {
+export interface CharacterImageUploadModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onUpload: (dataUrl: string, isPrimary: boolean) => Promise<void>;
+  onSubmit: (dataUrl: string, isPrimary: boolean) => void;
   hasExistingImages: boolean;
+  uploading?: boolean;
 }
 
 /**
- * キャラクター画像アップロードモーダル
+ * キャラクター画像アップロードモーダル（プレゼンテーショナル）
  */
 export function CharacterImageUploadModal({
   isOpen,
   onClose,
-  onUpload,
+  onSubmit,
   hasExistingImages,
+  uploading = false,
 }: CharacterImageUploadModalProps) {
   const [dataUrl, setDataUrl] = useState<string>('');
   const [isPrimary, setIsPrimary] = useState<boolean>(false);
-  const [uploading, setUploading] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!dataUrl) {
       alert('画像を選択してください');
       return;
     }
 
-    setUploading(true);
-    try {
-      await onUpload(dataUrl, isPrimary);
-      setDataUrl('');
-      setIsPrimary(false);
-      onClose();
-    } catch (error) {
-      console.error('Failed to upload image:', error);
-      alert('画像のアップロードに失敗しました');
-    } finally {
-      setUploading(false);
-    }
+    onSubmit(dataUrl, isPrimary);
+    setDataUrl('');
+    setIsPrimary(false);
   };
 
   const handleClose = () => {
@@ -59,7 +51,7 @@ export function CharacterImageUploadModal({
           <button
             onClick={handleClose}
             disabled={uploading}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-500 hover:text-gray-700 disabled:opacity-50"
           >
             ✕
           </button>
@@ -76,6 +68,7 @@ export function CharacterImageUploadModal({
                 checked={isPrimary}
                 onChange={(e) => setIsPrimary(e.target.checked)}
                 className="rounded"
+                disabled={uploading}
               />
               <label htmlFor="isPrimary" className="text-sm">
                 この画像をメイン画像に設定
@@ -87,7 +80,7 @@ export function CharacterImageUploadModal({
             <button
               onClick={handleClose}
               disabled={uploading}
-              className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
+              className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
             >
               キャンセル
             </button>

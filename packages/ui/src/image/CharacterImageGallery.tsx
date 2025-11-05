@@ -1,7 +1,11 @@
-import type { Image } from '@trpg-scenario-maker/schema';
+export interface ImageData {
+  id: string;
+  dataUrl: string;
+  isPrimary?: boolean;
+}
 
-interface CharacterImageGalleryProps {
-  images: (Image & { isPrimary?: boolean })[];
+export interface CharacterImageGalleryProps {
+  images: ImageData[];
   primaryImageId: string | null;
   loading: boolean;
   error: string | null;
@@ -11,7 +15,7 @@ interface CharacterImageGalleryProps {
 }
 
 /**
- * キャラクターの画像ギャラリーコンポーネント
+ * キャラクターの画像ギャラリーコンポーネント（プレゼンテーショナル）
  */
 export function CharacterImageGallery({
   images,
@@ -93,7 +97,9 @@ export function CharacterImageGallery({
                   <button
                     onClick={() => {
                       if (
-                        window.confirm('この画像を削除してもよろしいですか？')
+                        window.confirm(
+                          'この画像を削除してもよろしいですか？',
+                        )
                       ) {
                         onDelete(image.id);
                       }

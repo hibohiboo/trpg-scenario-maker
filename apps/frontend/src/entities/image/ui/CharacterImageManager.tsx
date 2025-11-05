@@ -1,7 +1,9 @@
+import {
+  CharacterImageGallery,
+  CharacterImageUploadModal,
+} from '@trpg-scenario-maker/ui';
 import { useState } from 'react';
 import { useCharacterImages } from '../hooks/useCharacterImages';
-import { CharacterImageGallery } from './CharacterImageGallery';
-import { CharacterImageUploadModal } from './CharacterImageUploadModal';
 
 interface CharacterImageManagerProps {
   characterId: string | null;
@@ -15,6 +17,7 @@ export function CharacterImageManager({
   characterId,
 }: CharacterImageManagerProps) {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const {
     images,
     primaryImageId,
@@ -29,8 +32,17 @@ export function CharacterImageManager({
     setIsUploadModalOpen(true);
   };
 
-  const handleUpload = async (dataUrl: string, isPrimary: boolean) => {
-    await addImage(dataUrl, isPrimary);
+  const handleSubmit = async (dataUrl: string, isPrimary: boolean) => {
+    setUploading(true);
+    try {
+      await addImage(dataUrl, isPrimary);
+      setIsUploadModalOpen(false);
+    } catch (err) {
+      console.error('Failed to upload image:', err);
+      alert('画像のアップロードに失敗しました');
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSetPrimary = async (imageId: string) => {
@@ -73,8 +85,9 @@ export function CharacterImageManager({
       <CharacterImageUploadModal
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
-        onUpload={handleUpload}
+        onSubmit={handleSubmit}
         hasExistingImages={images.length > 0}
+        uploading={uploading}
       />
     </>
   );
