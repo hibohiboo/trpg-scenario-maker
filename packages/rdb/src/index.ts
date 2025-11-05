@@ -1,11 +1,10 @@
 import { db } from './db/db';
-import { createScenarioRepository } from './queries/scenarioRepository';
 import { createImageRepository } from './queries/imageRepository';
-
-export * from './queries/scenarioRepository';
-export * from './queries/imageRepository';
+import { createScenarioRepository } from './queries/scenarioRepository';
 
 export * from './db/db';
 export * from './db/runMigrate';
-export const scenarioRepository = createScenarioRepository(db);
+export * from './queries/imageRepository';
+export * from './queries/scenarioRepository';
 export const imageRepository = createImageRepository(db);
+export const scenarioRepository = createScenarioRepository(db);

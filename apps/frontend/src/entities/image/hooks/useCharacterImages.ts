@@ -1,65 +1,39 @@
-import type { Image } from '@trpg-scenario-maker/schema';
-import { useState, useEffect, useCallback } from 'react';
-import { imageGraphApi } from '../api/imageGraphApi';
-import { imageRdbApi } from '../api/imageRdbApi';
+import { useEffect, useCallback } from 'react';
+import { useSelector } from 'react-redux';
+import { useAppDispatch } from '@/shared/lib/store';
+import {
+  fetchCharacterImagesAction,
+  addImageAction,
+  setPrimaryImageAction,
+  deleteImageAction,
+} from '../actions/imageActions';
+import {
+  selectImagesByCharacterId,
+  selectPrimaryImageIdByCharacterId,
+  selectLoadingByCharacterId,
+  selectErrorByCharacterId,
+} from '../model/imageSlice';
 
 /**
  * キャラクターの画像管理Hook
  */
 export const useCharacterImages = (characterId: string | null) => {
-  const [images, setImages] = useState<Image[]>([]);
-  const [primaryImageId, setPrimaryImageId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+
+  // セレクターを使用して状態を取得
+  const images = useSelector(selectImagesByCharacterId(characterId));
+  const primaryImageId = useSelector(selectPrimaryImageIdByCharacterId(characterId));
+  const loading = useSelector(selectLoadingByCharacterId(characterId));
+  const error = useSelector(selectErrorByCharacterId(characterId));
 
   // キャラクターの画像一覧を取得
   const fetchImages = useCallback(async () => {
     if (!characterId) {
-      setImages([]);
-      setPrimaryImageId(null);
       return;
     }
 
-    setLoading(true);
-    setError(null);
-
-    try {
-      // GraphDBからキャラクターの画像ID一覧を取得
-      const imageLinks = await imageGraphApi.getImagesByCharacterId(characterId);
-
-      if (imageLinks.length === 0) {
-        setImages([]);
-        setPrimaryImageId(null);
-        return;
-      }
-
-      // RDBから画像データを取得
-      const imageIds = imageLinks.map((link) => link.imageId);
-      const imageData = await imageRdbApi.getImagesByIds(imageIds);
-
-      // isPrimaryフラグをマージ
-      const imagesWithPrimary = imageData.map((img) => {
-        const link = imageLinks.find((l) => l.imageId === img.id);
-        return {
-          ...img,
-          isPrimary: link?.isPrimary || false,
-        };
-      });
-
-      // isPrimary順でソート
-      imagesWithPrimary.sort((a, b) => (b.isPrimary ? 1 : 0) - (a.isPrimary ? 1 : 0));
-
-      setImages(imagesWithPrimary);
-      setPrimaryImageId(
-        imageLinks.find((link) => link.isPrimary)?.imageId || null,
-      );
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch images');
-      console.error('Failed to fetch character images:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [characterId]);
+    await dispatch(fetchCharacterImagesAction({ characterId })).unwrap();
+  }, [characterId, dispatch]);
 
   // 画像を追加
   const addImage = useCallback(
@@ -68,36 +42,18 @@ export const useCharacterImages = (characterId: string | null) => {
         throw new Error('Character ID is required');
       }
 
-      setLoading(true);
-      setError(null);
-
-      try {
-        // RDBに画像データを保存
-        const { id: imageId } = await imageRdbApi.createImage(dataUrl);
-
-        // GraphDBに画像ノードを作成
-        await imageGraphApi.createNode(imageId);
-
-        // キャラクターと画像を関連付け
-        await imageGraphApi.linkToCharacter({
+      await dispatch(
+        addImageAction({
           characterId,
-          imageId,
+          dataUrl,
           isPrimary,
-        });
+        }),
+      ).unwrap();
 
-        // 画像一覧を再取得
-        await fetchImages();
-
-        return imageId;
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to add image');
-        console.error('Failed to add image:', err);
-        throw err;
-      } finally {
-        setLoading(false);
-      }
+      // 画像一覧を再取得
+      await fetchImages();
     },
-    [characterId, fetchImages],
+    [characterId, dispatch, fetchImages],
   );
 
   // メイン画像を設定
@@ -107,39 +63,18 @@ export const useCharacterImages = (characterId: string | null) => {
         throw new Error('Character ID is required');
       }
 
-      setLoading(true);
-      setError(null);
-
-      try {
-        // 既存のメイン画像をfalseに
-        if (primaryImageId && primaryImageId !== imageId) {
-          await imageGraphApi.updateLink({
-            characterId,
-            imageId: primaryImageId,
-            isPrimary: false,
-          });
-        }
-
-        // 新しい画像をメインに設定
-        await imageGraphApi.updateLink({
+      await dispatch(
+        setPrimaryImageAction({
           characterId,
           imageId,
-          isPrimary: true,
-        });
+          currentPrimaryImageId: primaryImageId,
+        }),
+      ).unwrap();
 
-        // 画像一覧を再取得
-        await fetchImages();
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'Failed to set primary image',
-        );
-        console.error('Failed to set primary image:', err);
-        throw err;
-      } finally {
-        setLoading(false);
-      }
+      // 画像一覧を再取得
+      await fetchImages();
     },
-    [characterId, primaryImageId, fetchImages],
+    [characterId, primaryImageId, dispatch, fetchImages],
   );
 
   // 画像を削除
@@ -149,36 +84,17 @@ export const useCharacterImages = (characterId: string | null) => {
         throw new Error('Character ID is required');
       }
 
-      setLoading(true);
-      setError(null);
-
-      try {
-        // キャラクターとの関連を削除
-        await imageGraphApi.unlinkFromCharacter({
+      await dispatch(
+        deleteImageAction({
           characterId,
           imageId,
-        });
+        }),
+      ).unwrap();
 
-        // 他のキャラクターが使用していないか確認
-        const characters = await imageGraphApi.getCharactersByImageId(imageId);
-
-        // 誰も使用していなければ画像ノードとデータを削除
-        if (characters.length === 0) {
-          await imageGraphApi.deleteNode(imageId);
-          await imageRdbApi.deleteImage(imageId);
-        }
-
-        // 画像一覧を再取得
-        await fetchImages();
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to delete image');
-        console.error('Failed to delete image:', err);
-        throw err;
-      } finally {
-        setLoading(false);
-      }
+      // 画像一覧を再取得
+      await fetchImages();
     },
-    [characterId, fetchImages],
+    [characterId, dispatch, fetchImages],
   );
 
   // 初回読み込み
