@@ -2,7 +2,7 @@ import {
   parseSceneListSchema,
   parseSceneConnectionListSchema,
 } from '@trpg-scenario-maker/schema';
-import { v4 as uuidv4 } from 'uuid';
+import { generateUUID } from '@trpg-scenario-maker/utility';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { initializeDatabase, closeDatabase, executeQuery } from '../db';
 import { graphDbSchemas } from '../schemas';
@@ -22,7 +22,7 @@ describe('sceneGraphRepositoryでescapeCypherStringを通してマークダウ�
   });
   it('シナリオを作成できる', async () => {
     // テスト用シナリオを作成
-    const scenarioId = uuidv4();
+    const scenarioId = generateUUID();
     const result = await scenarioGraphRepository.create({
       id: scenarioId,
       title: 'テストシナリオ',
@@ -41,14 +41,14 @@ describe('sceneGraphRepositoryでescapeCypherStringを通してマークダウ�
   describe('改行文字を含むマークダウンのテスト', () => {
     it('改行文字を含むdescriptionでシーンを作成できる', async () => {
       // テスト用シナリオを作成
-      const scenarioId = uuidv4();
+      const scenarioId = generateUUID();
       await scenarioGraphRepository.create({
         id: scenarioId,
         title: 'テストシナリオ',
       });
 
       // マークダウンを含むシーンを作成
-      const sceneId = uuidv4();
+      const sceneId = generateUUID();
       const markdownDescription = `# 見出し
 
 ## サブ見出し
@@ -78,13 +78,13 @@ describe('sceneGraphRepositoryでescapeCypherStringを通してマークダウ�
 
     it('改行文字を含むdescriptionでシーンを更新できる', async () => {
       // テスト用シナリオとシーンを作成
-      const scenarioId = uuidv4();
+      const scenarioId = generateUUID();
       await scenarioGraphRepository.create({
         id: scenarioId,
         title: 'テストシナリオ',
       });
 
-      const sceneId = uuidv4();
+      const sceneId = generateUUID();
       await sceneGraphRepository.createScene({
         scenarioId,
         id: sceneId,
@@ -115,13 +115,13 @@ const code = "example";
     });
 
     it('シングルクォートとバックスラッシュを含むテキストを扱える', async () => {
-      const scenarioId = uuidv4();
+      const scenarioId = generateUUID();
       await scenarioGraphRepository.create({
         id: scenarioId,
         title: 'テストシナリオ',
       });
 
-      const sceneId = uuidv4();
+      const sceneId = generateUUID();
       const specialDescription = `It's a test with 'quotes' and backslash: \\
 And multiple lines
 With special chars: \t\r\n`;
@@ -140,13 +140,13 @@ With special chars: \t\r\n`;
     });
 
     it('descriptionが空文字列でシーンを作成できる', async () => {
-      const scenarioId = uuidv4();
+      const scenarioId = generateUUID();
       await scenarioGraphRepository.create({
         id: scenarioId,
         title: 'テストシナリオ',
       });
 
-      const sceneId = uuidv4();
+      const sceneId = generateUUID();
       const result = await sceneGraphRepository.createScene({
         scenarioId,
         id: sceneId,
@@ -163,13 +163,13 @@ With special chars: \t\r\n`;
     });
 
     it('descriptionが空文字列でシーンを更新できる', async () => {
-      const scenarioId = uuidv4();
+      const scenarioId = generateUUID();
       await scenarioGraphRepository.create({
         id: scenarioId,
         title: 'テストシナリオ',
       });
 
-      const sceneId = uuidv4();
+      const sceneId = generateUUID();
       await sceneGraphRepository.createScene({
         scenarioId,
         id: sceneId,
@@ -190,14 +190,14 @@ With special chars: \t\r\n`;
     });
 
     it('getScenesByScenarioIdで空のdescriptionを持つシーンを取得できる', async () => {
-      const scenarioId = uuidv4();
+      const scenarioId = generateUUID();
       await scenarioGraphRepository.create({
         id: scenarioId,
         title: 'テストシナリオ',
       });
 
       // 空のdescriptionを持つシーンを作成
-      const sceneId1 = uuidv4();
+      const sceneId1 = generateUUID();
       await sceneGraphRepository.createScene({
         scenarioId,
         id: sceneId1,
@@ -207,7 +207,7 @@ With special chars: \t\r\n`;
       });
 
       // 通常のdescriptionを持つシーンを作成
-      const sceneId2 = uuidv4();
+      const sceneId2 = generateUUID();
       await sceneGraphRepository.createScene({
         scenarioId,
         id: sceneId2,
@@ -233,14 +233,14 @@ With special chars: \t\r\n`;
 
   describe('シーン接続のテスト', () => {
     it('createConnectionでsourceとtargetのidが|で結合されたidが取得される', async () => {
-      const scenarioId = uuidv4();
+      const scenarioId = generateUUID();
       await scenarioGraphRepository.create({
         id: scenarioId,
         title: 'テストシナリオ',
       });
 
       // 2つのシーンを作成
-      const sourceSceneId = uuidv4();
+      const sourceSceneId = generateUUID();
       await sceneGraphRepository.createScene({
         scenarioId,
         id: sourceSceneId,
@@ -249,7 +249,7 @@ With special chars: \t\r\n`;
         isMasterScene: false,
       });
 
-      const targetSceneId = uuidv4();
+      const targetSceneId = generateUUID();
       await sceneGraphRepository.createScene({
         scenarioId,
         id: targetSceneId,
@@ -275,14 +275,14 @@ With special chars: \t\r\n`;
     });
 
     it('getConnectionsByScenarioIdで接続一覧を取得できる', async () => {
-      const scenarioId = uuidv4();
+      const scenarioId = generateUUID();
       await scenarioGraphRepository.create({
         id: scenarioId,
         title: 'テストシナリオ',
       });
 
       // 3つのシーンを作成
-      const scene1Id = uuidv4();
+      const scene1Id = generateUUID();
       await sceneGraphRepository.createScene({
         scenarioId,
         id: scene1Id,
@@ -291,7 +291,7 @@ With special chars: \t\r\n`;
         isMasterScene: false,
       });
 
-      const scene2Id = uuidv4();
+      const scene2Id = generateUUID();
       await sceneGraphRepository.createScene({
         scenarioId,
         id: scene2Id,
@@ -300,7 +300,7 @@ With special chars: \t\r\n`;
         isMasterScene: false,
       });
 
-      const scene3Id = uuidv4();
+      const scene3Id = generateUUID();
       await sceneGraphRepository.createScene({
         scenarioId,
         id: scene3Id,

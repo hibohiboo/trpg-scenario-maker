@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import type { Relationship } from '@trpg-scenario-maker/schema';
-import { v4 as uuidv4 } from 'uuid';
+import { generateUUID } from '@trpg-scenario-maker/utility';
 import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 import { characterRelationGraphApi } from '../api/characterRelationGraphApi';
 import {
@@ -22,7 +22,7 @@ export const createRelationshipAction = createAsyncThunk<
   { dispatch: AppDispatch }
 >('relationship/create', async (payload, { dispatch }) => {
   const newRelationship = await characterRelationGraphApi.create({
-    id: uuidv4(),
+    id: generateUUID(),
     fromCharacterId: payload.fromCharacterId,
     toCharacterId: payload.toCharacterId,
     relationshipName: payload.relationshipName,

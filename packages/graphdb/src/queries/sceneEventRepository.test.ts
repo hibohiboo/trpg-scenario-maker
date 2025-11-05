@@ -1,5 +1,5 @@
 import { parseSceneEventListSchema } from '@trpg-scenario-maker/schema';
-import { v4 as uuidv4 } from 'uuid';
+import { generateUUID } from '@trpg-scenario-maker/utility';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { initializeDatabase, closeDatabase, executeQuery } from '../db';
 import { graphDbSchemas } from '../schemas';
@@ -9,12 +9,12 @@ import { sceneGraphRepository } from './sceneRepository';
 
 const initScene = async () => {
   // テスト用シナリオとシーンを作成
-  const scenarioId = uuidv4();
+  const scenarioId = generateUUID();
   await scenarioGraphRepository.create({
     id: scenarioId,
     title: 'テストシナリオ',
   });
-  const sceneId = uuidv4();
+  const sceneId = generateUUID();
   await sceneGraphRepository.createScene({
     scenarioId,
     id: sceneId,
@@ -42,7 +42,7 @@ describe('sceneEventRepository', () => {
       const { sceneId } = await initScene();
 
       // イベントを作成
-      const eventId = uuidv4();
+      const eventId = generateUUID();
       const result = await sceneEventRepository.createEvent({
         sceneId,
         id: eventId,
@@ -65,9 +65,14 @@ describe('sceneEventRepository', () => {
       const { sceneId } = await initScene();
 
       const events = [
-        { id: uuidv4(), type: 'start', content: '開始', sortOrder: 0 },
-        { id: uuidv4(), type: 'conversation', content: '会話', sortOrder: 1 },
-        { id: uuidv4(), type: 'battle', content: '戦闘', sortOrder: 2 },
+        { id: generateUUID(), type: 'start', content: '開始', sortOrder: 0 },
+        {
+          id: generateUUID(),
+          type: 'conversation',
+          content: '会話',
+          sortOrder: 1,
+        },
+        { id: generateUUID(), type: 'battle', content: '戦闘', sortOrder: 2 },
       ];
 
       for (const event of events) {
@@ -90,7 +95,7 @@ describe('sceneEventRepository', () => {
     it('特殊文字を含むcontentでイベントを作成できる', async () => {
       const { sceneId } = await initScene();
 
-      const eventId = uuidv4();
+      const eventId = generateUUID();
       const specialContent = `マスターとの会話:
 「依頼を受けてくれるか？」
 - 選択肢1: 受ける
@@ -113,7 +118,7 @@ describe('sceneEventRepository', () => {
   describe('getEventsBySceneId', () => {
     it('シーンに紐づくイベントを取得できる', async () => {
       const { sceneId } = await initScene();
-      const eventId = uuidv4();
+      const eventId = generateUUID();
 
       await sceneEventRepository.createEvent({
         sceneId,
@@ -144,7 +149,7 @@ describe('sceneEventRepository', () => {
       // 順序を逆に作成
       await sceneEventRepository.createEvent({
         sceneId,
-        id: uuidv4(),
+        id: generateUUID(),
         type: 'ending',
         content: '終了',
         sortOrder: 2,
@@ -152,7 +157,7 @@ describe('sceneEventRepository', () => {
 
       await sceneEventRepository.createEvent({
         sceneId,
-        id: uuidv4(),
+        id: generateUUID(),
         type: 'conversation',
         content: '会話',
         sortOrder: 1,
@@ -160,7 +165,7 @@ describe('sceneEventRepository', () => {
 
       await sceneEventRepository.createEvent({
         sceneId,
-        id: uuidv4(),
+        id: generateUUID(),
         type: 'start',
         content: '開始',
         sortOrder: 0,
@@ -181,7 +186,7 @@ describe('sceneEventRepository', () => {
   describe('updateEvent', () => {
     it('イベントのtypeを更新できる', async () => {
       const { sceneId } = await initScene();
-      const eventId = uuidv4();
+      const eventId = generateUUID();
       await sceneEventRepository.createEvent({
         sceneId,
         id: eventId,
@@ -201,7 +206,7 @@ describe('sceneEventRepository', () => {
 
     it('イベントのcontentを更新できる', async () => {
       const { sceneId } = await initScene();
-      const eventId = uuidv4();
+      const eventId = generateUUID();
       await sceneEventRepository.createEvent({
         sceneId,
         id: eventId,
@@ -222,7 +227,7 @@ describe('sceneEventRepository', () => {
 
     it('イベントのorderを更新できる', async () => {
       const { sceneId } = await initScene();
-      const eventId = uuidv4();
+      const eventId = generateUUID();
       await sceneEventRepository.createEvent({
         sceneId,
         id: eventId,
@@ -242,7 +247,7 @@ describe('sceneEventRepository', () => {
 
     it('複数フィールドを同時に更新できる', async () => {
       const { sceneId } = await initScene();
-      const eventId = uuidv4();
+      const eventId = generateUUID();
       await sceneEventRepository.createEvent({
         sceneId,
         id: eventId,
@@ -267,7 +272,7 @@ describe('sceneEventRepository', () => {
   describe('deleteEvent', () => {
     it('イベントを削除できる', async () => {
       const { sceneId } = await initScene();
-      const eventId = uuidv4();
+      const eventId = generateUUID();
       await sceneEventRepository.createEvent({
         sceneId,
         id: eventId,
@@ -284,9 +289,9 @@ describe('sceneEventRepository', () => {
 
     it('複数イベントのうち1つを削除できる', async () => {
       const { sceneId } = await initScene();
-      const event1Id = uuidv4();
-      const event2Id = uuidv4();
-      const event3Id = uuidv4();
+      const event1Id = generateUUID();
+      const event2Id = generateUUID();
+      const event3Id = generateUUID();
       await sceneEventRepository.createEvent({
         sceneId,
         id: event1Id,
@@ -322,9 +327,9 @@ describe('sceneEventRepository', () => {
   describe('updateEventOrder', () => {
     it('複数イベントの順序を一括更新できる', async () => {
       const { sceneId } = await initScene();
-      const event1Id = uuidv4();
-      const event2Id = uuidv4();
-      const event3Id = uuidv4();
+      const event1Id = generateUUID();
+      const event2Id = generateUUID();
+      const event3Id = generateUUID();
       await sceneEventRepository.createEvent({
         sceneId,
         id: event1Id,
@@ -379,7 +384,7 @@ describe('sceneEventRepository', () => {
       for (let i = 0; i < eventTypes.length; i++) {
         await sceneEventRepository.createEvent({
           sceneId,
-          id: uuidv4(),
+          id: generateUUID(),
           type: eventTypes[i],
           content: `${eventTypes[i]}イベント`,
           sortOrder: i,

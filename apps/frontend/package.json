@@ -19,13 +19,13 @@
     "@trpg-scenario-maker/rdb": "workspace:*",
     "@trpg-scenario-maker/schema": "workspace:*",
     "@trpg-scenario-maker/ui": "workspace:*",
+    "@trpg-scenario-maker/utility": "workspace:*",
     "coi-serviceworker": "^0.1.7",
     "date-fns": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-router": "catalog:",
-    "react-redux": "^9.2.0",
-    "uuid": "^13.0.0"
+    "react-redux": "^9.2.0"
   },
   "devDependencies": {
     "@cucumber/cucumber": "^12.2.0",

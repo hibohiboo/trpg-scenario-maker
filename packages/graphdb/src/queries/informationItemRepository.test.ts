@@ -4,7 +4,7 @@ import {
   parseSceneInformationConnectionListSchema,
   parseInformationToSceneConnectionListSchema,
 } from '@trpg-scenario-maker/schema';
-import { v4 as uuidv4 } from 'uuid';
+import { generateUUID } from '@trpg-scenario-maker/utility';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { initializeDatabase, closeDatabase, executeQuery } from '../db';
 import { graphDbSchemas } from '../schemas';
@@ -26,7 +26,7 @@ describe('informationItemRepository', () => {
 
   // ヘルパーメソッド: シナリオを作成
   const createTestScenario = async () => {
-    const scenarioId = uuidv4();
+    const scenarioId = generateUUID();
     await scenarioGraphRepository.create({
       id: scenarioId,
       title: 'テストシナリオ',
@@ -36,7 +36,7 @@ describe('informationItemRepository', () => {
 
   // ヘルパーメソッド: シーンを作成
   const createTestScene = async (scenarioId: string) => {
-    const sceneId = uuidv4();
+    const sceneId = generateUUID();
     await sceneGraphRepository.createScene({
       scenarioId,
       id: sceneId,
@@ -52,7 +52,7 @@ describe('informationItemRepository', () => {
     scenarioId: string,
     title = '手がかり',
   ) => {
-    const itemId = uuidv4();
+    const itemId = generateUUID();
     await informationItemRepository.createInformationItem({
       scenarioId,
       id: itemId,
@@ -66,7 +66,7 @@ describe('informationItemRepository', () => {
     const scenarioId = await createTestScenario();
 
     // 情報項目を作成
-    const itemId = uuidv4();
+    const itemId = generateUUID();
     const createResult = await informationItemRepository.createInformationItem({
       scenarioId,
       id: itemId,
@@ -112,7 +112,7 @@ describe('informationItemRepository', () => {
     const item2Id = await createTestInformationItem(scenarioId, '情報2');
 
     // 関連を作成
-    const connectionId = uuidv4();
+    const connectionId = generateUUID();
     const createResult =
       await informationItemRepository.createInformationConnection({
         id: connectionId,
@@ -149,7 +149,7 @@ describe('informationItemRepository', () => {
     const itemId = await createTestInformationItem(scenarioId);
 
     // シーン→情報項目の関連を作成
-    const connectionId = uuidv4();
+    const connectionId = generateUUID();
     const createResult =
       await informationItemRepository.createSceneInformationConnection({
         id: connectionId,
@@ -197,7 +197,7 @@ describe('informationItemRepository', () => {
     const itemId = await createTestInformationItem(scenarioId);
 
     // 情報項目→シーンの関連を作成
-    const connectionId = uuidv4();
+    const connectionId = generateUUID();
     const createResult =
       await informationItemRepository.createInformationToSceneConnection({
         id: connectionId,

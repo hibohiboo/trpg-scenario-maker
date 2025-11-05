@@ -13,6 +13,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "uuid": "^13.0.0",
     "valibot": "^1.1.0"
   },
   "devDependencies": {
