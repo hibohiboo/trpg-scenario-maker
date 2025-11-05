@@ -1,5 +1,6 @@
 import * as v from 'valibot';
-import { DescriptionSchema } from './common';
+import { DescriptionSchema, OptionalToStringSchema } from './common';
+import { ImageSchema } from './image';
 
 /**
  * キャラクタースキーマ
@@ -11,6 +12,24 @@ export const CharacterSchema = v.object({
   name: v.string(),
   /** 説明 */
   description: DescriptionSchema,
+  /** メイン画像ID */
+  primaryImageId: OptionalToStringSchema,
+});
+
+/**
+ * 画像配列を含むキャラクタースキーマ
+ */
+export const CharacterWithImagesSchema = v.object({
+  /** キャラクターID */
+  id: v.string(),
+  /** キャラクター名 */
+  name: v.string(),
+  /** 説明 */
+  description: DescriptionSchema,
+  /** メイン画像ID */
+  primaryImageId: OptionalToStringSchema,
+  /** 画像配列 */
+  images: v.optional(v.array(ImageSchema)),
 });
 
 /**
