@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 import { imagesTable } from '../schema';
 import type { PgliteDatabase } from 'drizzle-orm/pglite';
 
@@ -48,7 +48,7 @@ export const createImageRepository = (
         createdAt: imagesTable.createdAt,
       })
       .from(imagesTable)
-      .where(eq(imagesTable.id, ids[0])); // TODO: IN句に対応
+      .where(inArray(imagesTable.id, ids));
   },
 
   /**

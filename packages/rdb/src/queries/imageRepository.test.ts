@@ -73,13 +73,15 @@ describe('ImageRepository', () => {
   describe('findByIds', () => {
     it('複数のIDで画像を取得できる', async () => {
       const dataUrl1 = 'data:image/png;base64,image1';
+      const dataUrl2 = 'data:image/png;base64,image2';
       const created1 = await imageRepository.create(dataUrl1);
+      const created2 = await imageRepository.create(dataUrl2);
 
-      const results = await imageRepository.findByIds([created1.id]);
+      const results = await imageRepository.findByIds([created1.id, created2.id]);
 
-      expect(results).toHaveLength(1);
-      expect(results[0].id).toBe(created1.id);
-      expect(results[0].dataUrl).toBe(dataUrl1);
+      expect(results).toHaveLength(2);
+      expect(results.find((r) => r.id === created1.id)?.dataUrl).toBe(dataUrl1);
+      expect(results.find((r) => r.id === created2.id)?.dataUrl).toBe(dataUrl2);
     });
 
     it('空配列の場合空配列を返す', async () => {
