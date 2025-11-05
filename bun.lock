@@ -28,13 +28,13 @@
         "@trpg-scenario-maker/rdb": "workspace:*",
         "@trpg-scenario-maker/schema": "workspace:*",
         "@trpg-scenario-maker/ui": "workspace:*",
+        "@trpg-scenario-maker/utility": "workspace:*",
         "coi-serviceworker": "^0.1.7",
         "date-fns": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:",
         "react-redux": "^9.2.0",
         "react-router": "catalog:",
-        "uuid": "^13.0.0",
       },
       "devDependencies": {
         "@cucumber/cucumber": "^12.2.0",
@@ -77,10 +77,10 @@
       "devDependencies": {
         "@trpg-scenario-maker/eslint-config-custom": "workspace:*",
         "@trpg-scenario-maker/tsconfig": "workspace:*",
+        "@trpg-scenario-maker/utility": "workspace:*",
         "@vitest/browser": "^4.0.6",
         "apache-arrow": "^21.1.0",
         "eslint": "catalog:testing",
-        "uuid": "^13.0.0",
       },
     },
     "packages/rdb": {
@@ -160,6 +160,7 @@
     "packages/utility": {
       "name": "@trpg-scenario-maker/utility",
       "dependencies": {
+        "uuid": "^13.0.0",
         "valibot": "^1.1.0",
       },
       "devDependencies": {

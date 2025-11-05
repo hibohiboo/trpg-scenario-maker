@@ -3,9 +3,9 @@ import type {
   CharacterWithRole,
   ScenarioCharacterRelation,
 } from '@trpg-scenario-maker/ui';
+import { generateUUID } from '@trpg-scenario-maker/utility';
 import { useState } from 'react';
 import { useParams } from 'react-router';
-import { v4 as uuidv4 } from 'uuid';
 import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 import { characterGraphApi } from '@/entities/character';
 import {
@@ -206,7 +206,7 @@ export const useScenarioDetailPage = () => {
   }) => {
     try {
       // キャラクターを作成
-      const characterId = uuidv4();
+      const characterId = generateUUID();
       await characterGraphApi.create({
         id: characterId,
         name: params.name,
