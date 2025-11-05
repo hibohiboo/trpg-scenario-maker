@@ -4,3 +4,4 @@ export { imageRdbHandlers } from './workers/imageRdbHandlers';
 export { imageGraphHandlers } from './workers/imageGraphHandlers';
 export type { ImageRdbHandlerMap } from './workers/imageRdbHandlers';
 export type { ImageGraphHandlerMap } from './workers/imageGraphHandlers';
+export { useCharacterImages } from './hooks/useCharacterImages';

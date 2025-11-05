@@ -1,6 +1,6 @@
 import { runMigrate } from '@trpg-scenario-maker/rdb/db/runMigrate';
-import { scenarioHandlers } from '@/entities/scenario/workers/scenarioHandlers';
 import { imageRdbHandlers } from '@/entities/image/workers/imageRdbHandlers';
+import { scenarioHandlers } from '@/entities/scenario/workers/scenarioHandlers';
 
 // 汎用リクエスト/レスポンス型
 export interface DBWorkerRequest {
