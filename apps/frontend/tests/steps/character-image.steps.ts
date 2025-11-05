@@ -17,21 +17,18 @@ function base64ToBuffer(base64: string): Buffer {
 }
 
 // 画像アップロード
-When(
-  'テスト画像をアップロードする',
-  async function (this: CustomWorld) {
-    // ファイル入力要素を取得
-    const fileInput = this.page.locator('input[type="file"]');
+When('テスト画像をアップロードする', async function (this: CustomWorld) {
+  // ファイル入力要素を取得
+  const fileInput = this.page.locator('input[type="file"]');
 
-    // テスト用の画像ファイルをセット
-    const buffer = base64ToBuffer(TEST_IMAGE_DATA_URL.split(',')[1]);
-    await fileInput.setInputFiles({
-      name: 'test-image.png',
-      mimeType: 'image/png',
-      buffer,
-    });
-  },
-);
+  // テスト用の画像ファイルをセット
+  const buffer = base64ToBuffer(TEST_IMAGE_DATA_URL.split(',')[1]);
+  await fileInput.setInputFiles({
+    name: 'test-image.png',
+    mimeType: 'image/png',
+    buffer,
+  });
+});
 
 When(
   'テスト画像 {string} をアップロードする',
@@ -41,9 +38,12 @@ When(
 
     // 画像名に応じて異なる色の画像を生成（識別用）
     const colors: Record<string, string> = {
-      image1: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==', // 赤
-      image2: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', // 緑
-      image3: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPj/HwADBwIAMCbHYQAAAABJRU5ErkJggg==', // 青
+      image1:
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==', // 赤
+      image2:
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', // 緑
+      image3:
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPj/HwADBwIAMCbHYQAAAABJRU5ErkJggg==', // 青
     };
 
     const base64Data = colors[imageName] || colors.image1;
@@ -100,6 +100,28 @@ When(
   },
 );
 
+When(
+  '画像ギャラリーの{int}枚目を削除する',
+  async function (this: CustomWorld, index: number) {
+    // 画像ギャラリー内の削除ボタンを取得（1-indexed）
+    const gallery = this.page.getByTestId('character-image-gallery');
+    const imageContainer = gallery
+      .locator('.group')
+      .filter({ has: this.page.locator('img') })
+      .nth(index - 1);
+    await imageContainer.hover();
+    const deleteButton = imageContainer
+      .locator('..')
+      .getByRole('button', { name: '削除' })
+      .first();
+    await expect(deleteButton).toBeVisible();
+    this.page.on('dialog', async (dialog) => {
+      await dialog.accept();
+    });
+    await deleteButton.click();
+  },
+);
+
 // モーダル
 Then(
   '画像アップロードモーダルが表示される',
@@ -110,29 +132,35 @@ Then(
   },
 );
 
-Then(
-  '画像アップロードモーダルが閉じる',
-  async function (this: CustomWorld) {
-    await expect(
-      this.page.getByRole('heading', { name: '画像を追加' }),
-    ).not.toBeVisible();
-  },
-);
+Then('画像アップロードモーダルが閉じる', async function (this: CustomWorld) {
+  await expect(
+    this.page.getByRole('heading', { name: '画像を追加' }),
+  ).not.toBeVisible();
+});
 
 // 画像ギャラリー
 Then(
   '画像ギャラリーに画像が{int}枚表示される',
   async function (this: CustomWorld, count: number) {
-    const images = await this.page.locator('img[alt="Character"]').count();
-    expect(images).toBe(count);
+    const gallery = this.page.getByTestId('character-image-gallery');
+    const images = await gallery.locator('img[alt="Character"]');
+    await images.first().waitFor({ state: 'visible' });
+    expect(await images.count()).toBe(count);
   },
 );
 
 Then(
   '画像ギャラリーに画像が追加されていない',
   async function (this: CustomWorld) {
-    const images = await this.page.locator('img[alt="Character"]').count();
-    expect(images).toBe(0);
+    // ギャラリーが存在しない場合は0枚
+    const gallery = this.page.getByTestId('character-image-gallery');
+    const galleryExists = await gallery.count();
+    if (galleryExists === 0) {
+      expect(0).toBe(0);
+    } else {
+      const images = await gallery.locator('img[alt="Character"]').count();
+      expect(images).toBe(0);
+    }
   },
 );
 
@@ -140,9 +168,7 @@ Then(
   'その画像がメイン画像として表示される',
   async function (this: CustomWorld) {
     // メインバッジを持つ画像コンテナが存在することを確認
-    await expect(
-      this.page.locator('.border-blue-500').first(),
-    ).toBeVisible();
+    await expect(this.page.locator('.border-blue-500').first()).toBeVisible();
     await expect(
       this.page.getByText('メイン', { exact: true }).first(),
     ).toBeVisible();

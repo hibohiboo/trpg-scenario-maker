@@ -65,7 +65,10 @@ export function CharacterImageGallery({
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+          data-testid="character-image-gallery"
+        >
           {images.map((image) => {
             const isPrimary = image.id === primaryImageId;
             return (
