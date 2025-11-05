@@ -121,6 +121,7 @@
       "dependencies": {
         "@dagrejs/dagre": "^1.1.5",
         "@trpg-scenario-maker/schema": "workspace:*",
+        "@trpg-scenario-maker/utility": "workspace:*",
         "@xyflow/react": "^12.9.2",
         "date-fns": "catalog:",
         "react": "catalog:",
@@ -152,6 +153,18 @@
         "postcss-load-config": "^6.0.1",
         "storybook": "^10.0.2",
         "tailwindcss": "^4.1.16",
+        "typescript": "catalog:building",
+      },
+    },
+    "packages/utility": {
+      "name": "@trpg-scenario-maker/utility",
+      "dependencies": {
+        "valibot": "^1.1.0",
+      },
+      "devDependencies": {
+        "@trpg-scenario-maker/eslint-config-custom": "workspace:*",
+        "@trpg-scenario-maker/tsconfig": "workspace:*",
+        "eslint": "catalog:testing",
         "typescript": "catalog:building",
       },
     },
@@ -531,6 +544,8 @@
     "@trpg-scenario-maker/tsconfig": ["@trpg-scenario-maker/tsconfig@workspace:packages/tsconfig"],
 
     "@trpg-scenario-maker/ui": ["@trpg-scenario-maker/ui@workspace:packages/ui"],
+
+    "@trpg-scenario-maker/utility": ["@trpg-scenario-maker/utility@workspace:packages/utility"],
 
     "@tsconfig/node10": ["@tsconfig/node10@1.0.11", "", {}, "sha512-DcRjDCujK/kCk/cUe8Xz8ZSpm8mS3mNNpta+jGCA6USEDfktlNvm1+IuZ9eTcDbNk41BHwpHHeW+N1lKCz4zOw=="],
 

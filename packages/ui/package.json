@@ -19,6 +19,7 @@
   "dependencies": {
     "@dagrejs/dagre": "^1.1.5",
     "@trpg-scenario-maker/schema": "workspace:*",
+    "@trpg-scenario-maker/utility": "workspace:*",
     "@xyflow/react": "^12.9.2",
     "date-fns": "catalog:",
     "react": "catalog:",

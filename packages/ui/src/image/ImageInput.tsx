@@ -1,3 +1,4 @@
+import { dataUrlToBlob } from '@trpg-scenario-maker/utility';
 import React, { useState, useRef, type DragEvent, useId } from 'react';
 
 export default function ImageUploadDataUrlPreview({
@@ -78,6 +79,19 @@ export default function ImageUploadDataUrlPreview({
       alert('Copy failed — try selecting the text manually.');
     }
   };
+  const downloadImage = () => {
+    if (!dataUrl) return;
+    const blob = dataUrlToBlob(dataUrl);
+    // ▼ BlobからURLを作りダウンロード
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'downloaded_image.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="max-w-xl mx-auto p-4">
@@ -153,6 +167,14 @@ export default function ImageUploadDataUrlPreview({
                   className="w-full text-xs p-2 rounded border resize-none"
                 />
               </div>
+
+              <button
+                onClick={downloadImage}
+                disabled={!dataUrl}
+                className="px-3 py-2 border rounded"
+              >
+                Download Image
+              </button>
             </>
           )}
         </div>

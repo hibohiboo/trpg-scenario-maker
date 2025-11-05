@@ -1,0 +1,24 @@
+{
+  "name": "@trpg-scenario-maker/utility",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "ncu": "ncu -u",
+    "lint": "eslint . --fix && tsc -b",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "valibot": "^1.1.0"
+  },
+  "devDependencies": {
+    "@trpg-scenario-maker/eslint-config-custom": "workspace:*",
+    "@trpg-scenario-maker/tsconfig": "workspace:*",
+    "eslint": "catalog:testing",
+    "typescript": "catalog:building"
+  }
+}
