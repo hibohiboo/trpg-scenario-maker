@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { generateUUID } from '@trpg-scenario-maker/utility';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { initializeDatabase, closeDatabase, executeQuery } from '../db';
 import { graphDbSchemas } from '../schemas';
@@ -12,7 +12,7 @@ const createTestCharacter = async (params: {
   name: string;
   description: string;
 }) => {
-  const id = uuidv4();
+  const id = generateUUID();
   await characterGraphRepository.create({
     id,
     name: params.name,
@@ -36,7 +36,7 @@ describe('imageGraphRepository', () => {
   describe('画像ノードCRUD操作', () => {
     it('画像ノードを作成できる', async () => {
       // Arrange
-      const imageId = uuidv4();
+      const imageId = generateUUID();
 
       // Act
       const result = await imageGraphRepository.createImageNode(imageId);
@@ -48,7 +48,7 @@ describe('imageGraphRepository', () => {
 
     it('画像ノードをIDで取得できる', async () => {
       // Arrange
-      const imageId = uuidv4();
+      const imageId = generateUUID();
       await imageGraphRepository.createImageNode(imageId);
 
       // Act
@@ -61,8 +61,8 @@ describe('imageGraphRepository', () => {
 
     it('全画像ノードを取得できる', async () => {
       // Arrange
-      const imageId1 = uuidv4();
-      const imageId2 = uuidv4();
+      const imageId1 = generateUUID();
+      const imageId2 = generateUUID();
       await imageGraphRepository.createImageNode(imageId1);
       await imageGraphRepository.createImageNode(imageId2);
 
@@ -71,15 +71,19 @@ describe('imageGraphRepository', () => {
 
       // Assert
       expect(result.length).toBeGreaterThanOrEqual(2);
-      const foundImage1 = result.find((img: { id: string }) => img.id === imageId1);
-      const foundImage2 = result.find((img: { id: string }) => img.id === imageId2);
+      const foundImage1 = result.find(
+        (img: { id: string }) => img.id === imageId1,
+      );
+      const foundImage2 = result.find(
+        (img: { id: string }) => img.id === imageId2,
+      );
       expect(foundImage1).toBeDefined();
       expect(foundImage2).toBeDefined();
     });
 
     it('画像ノードを削除できる', async () => {
       // Arrange
-      const imageId = uuidv4();
+      const imageId = generateUUID();
       await imageGraphRepository.createImageNode(imageId);
 
       // Act
@@ -98,7 +102,7 @@ describe('imageGraphRepository', () => {
         name: 'テストキャラ',
         description: 'テスト',
       });
-      const imageId = uuidv4();
+      const imageId = generateUUID();
       await imageGraphRepository.createImageNode(imageId);
 
       // Act
@@ -121,8 +125,8 @@ describe('imageGraphRepository', () => {
         name: 'テストキャラ2',
         description: 'テスト',
       });
-      const imageId1 = uuidv4();
-      const imageId2 = uuidv4();
+      const imageId1 = generateUUID();
+      const imageId2 = generateUUID();
       await imageGraphRepository.createImageNode(imageId1);
       await imageGraphRepository.createImageNode(imageId2);
       await imageGraphRepository.linkImageToCharacter({
@@ -137,7 +141,9 @@ describe('imageGraphRepository', () => {
       });
 
       // Act
-      const result = await imageGraphRepository.findImagesByCharacterId(character.id);
+      const result = await imageGraphRepository.findImagesByCharacterId(
+        character.id,
+      );
 
       // Assert
       expect(result).toHaveLength(2);
@@ -154,8 +160,8 @@ describe('imageGraphRepository', () => {
         name: 'テストキャラ3',
         description: 'テスト',
       });
-      const imageId1 = uuidv4();
-      const imageId2 = uuidv4();
+      const imageId1 = generateUUID();
+      const imageId2 = generateUUID();
       await imageGraphRepository.createImageNode(imageId1);
       await imageGraphRepository.createImageNode(imageId2);
       await imageGraphRepository.linkImageToCharacter({
@@ -186,7 +192,7 @@ describe('imageGraphRepository', () => {
         name: 'テストキャラ4',
         description: 'テスト',
       });
-      const imageId = uuidv4();
+      const imageId = generateUUID();
       await imageGraphRepository.createImageNode(imageId);
       await imageGraphRepository.linkImageToCharacter({
         characterId: character.id,
@@ -212,7 +218,7 @@ describe('imageGraphRepository', () => {
         name: 'テストキャラ5',
         description: 'テスト',
       });
-      const imageId = uuidv4();
+      const imageId = generateUUID();
       await imageGraphRepository.createImageNode(imageId);
       await imageGraphRepository.linkImageToCharacter({
         characterId: character.id,
@@ -227,7 +233,9 @@ describe('imageGraphRepository', () => {
       });
 
       // Assert
-      const result = await imageGraphRepository.findImagesByCharacterId(character.id);
+      const result = await imageGraphRepository.findImagesByCharacterId(
+        character.id,
+      );
       expect(result).toHaveLength(0);
     });
 
@@ -241,7 +249,7 @@ describe('imageGraphRepository', () => {
         name: 'キャラB',
         description: 'テスト',
       });
-      const imageId = uuidv4();
+      const imageId = generateUUID();
       await imageGraphRepository.createImageNode(imageId);
       await imageGraphRepository.linkImageToCharacter({
         characterId: character1.id,
@@ -255,7 +263,8 @@ describe('imageGraphRepository', () => {
       });
 
       // Act
-      const result = await imageGraphRepository.findCharactersByImageId(imageId);
+      const result =
+        await imageGraphRepository.findCharactersByImageId(imageId);
 
       // Assert
       expect(result).toHaveLength(2);
@@ -279,7 +288,7 @@ describe('imageGraphRepository', () => {
         name: 'テストキャラ6',
         description: 'テスト',
       });
-      const imageId = uuidv4();
+      const imageId = generateUUID();
       await imageGraphRepository.createImageNode(imageId);
       await imageGraphRepository.linkImageToCharacter({
         characterId: character.id,
@@ -291,9 +300,8 @@ describe('imageGraphRepository', () => {
       await imageGraphRepository.deleteImageNode(imageId);
 
       // Assert
-      const characterImages = await imageGraphRepository.findImagesByCharacterId(
-        character.id,
-      );
+      const characterImages =
+        await imageGraphRepository.findImagesByCharacterId(character.id);
       expect(characterImages).toHaveLength(0);
       const imageNode = await imageGraphRepository.findImageNodeById(imageId);
       expect(imageNode).toHaveLength(0);
