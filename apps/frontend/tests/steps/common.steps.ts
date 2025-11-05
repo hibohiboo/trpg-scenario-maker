@@ -45,6 +45,7 @@ When(
   async function (this: CustomWorld, buttonText: string) {
     await this.page
       .getByRole('button', { name: buttonText, exact: true })
+      .first()
       .click();
   },
 );
