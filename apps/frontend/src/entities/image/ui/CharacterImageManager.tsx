@@ -35,7 +35,9 @@ export function CharacterImageManager({
   const handleSubmit = async (dataUrl: string, isPrimary: boolean) => {
     setUploading(true);
     try {
-      await addImage(dataUrl, isPrimary);
+      // 最初の画像は自動的にメイン画像にする
+      const shouldBePrimary = images.length === 0 || isPrimary;
+      await addImage(dataUrl, shouldBePrimary);
       setIsUploadModalOpen(false);
     } catch (err) {
       console.error('Failed to upload image:', err);
