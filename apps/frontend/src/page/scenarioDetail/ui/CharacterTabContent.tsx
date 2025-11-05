@@ -5,14 +5,18 @@ import {
   ScenarioCharacterFormModal,
   ScenarioCharacterEditModal,
   CharacterRelationshipGraph,
+  CharacterDetailPanel,
 } from '@trpg-scenario-maker/ui';
+import { CharacterImageManager } from '@/entities/image';
 import type { useScenarioDetailPage } from '../hooks/useScenarioDetailPage';
 
 type CharacterTabContentProps = Pick<
   ReturnType<typeof useScenarioDetailPage>,
   | 'characters'
   | 'isCharactersLoading'
+  | 'selectedCharacter'
   | 'handleCharacterClick'
+  | 'handleCloseCharacterDetail'
   | 'handleRemoveCharacter'
   | 'isCharacterFormOpen'
   | 'handleOpenCharacterForm'
@@ -36,7 +40,9 @@ type CharacterTabContentProps = Pick<
 export function CharacterTabContent({
   characters,
   isCharactersLoading,
+  selectedCharacter,
   handleCharacterClick,
+  handleCloseCharacterDetail,
   handleRemoveCharacter,
   isCharacterFormOpen,
   handleOpenCharacterForm,
@@ -74,12 +80,23 @@ export function CharacterTabContent({
           </section>
 
           <section className="lg:col-span-7">
-            <ScenarioCharacterRelationshipList
-              relations={characterRelations}
-              isLoading={isRelationsLoading}
-              onAddRelationship={handleAddRelationship}
-              onRemoveRelationship={handleRemoveRelationship}
-            />
+            {selectedCharacter ? (
+              <CharacterDetailPanel
+                character={selectedCharacter}
+                onClose={handleCloseCharacterDetail}
+              >
+                <CharacterImageManager
+                  characterId={selectedCharacter.characterId}
+                />
+              </CharacterDetailPanel>
+            ) : (
+              <ScenarioCharacterRelationshipList
+                relations={characterRelations}
+                isLoading={isRelationsLoading}
+                onAddRelationship={handleAddRelationship}
+                onRemoveRelationship={handleRemoveRelationship}
+              />
+            )}
           </section>
         </div>
         {/* 関係性グラフビュー */}

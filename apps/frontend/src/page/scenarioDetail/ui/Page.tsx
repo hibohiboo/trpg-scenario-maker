@@ -31,7 +31,9 @@ export default function Page() {
     handleEditScene,
     characters,
     isCharactersLoading,
+    selectedCharacter,
     handleCharacterClick,
+    handleCloseCharacterDetail,
     handleRemoveCharacter,
     isCharacterFormOpen,
     handleOpenCharacterForm,
@@ -97,7 +99,9 @@ export default function Page() {
         <CharacterTabContent
           characters={characters}
           isCharactersLoading={isCharactersLoading}
+          selectedCharacter={selectedCharacter}
           handleCharacterClick={handleCharacterClick}
+          handleCloseCharacterDetail={handleCloseCharacterDetail}
           handleRemoveCharacter={handleRemoveCharacter}
           isCharacterFormOpen={isCharacterFormOpen}
           handleOpenCharacterForm={handleOpenCharacterForm}

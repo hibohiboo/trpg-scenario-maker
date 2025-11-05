@@ -46,6 +46,8 @@ export const useScenarioDetailPage = () => {
   const [isCharacterEditOpen, setIsCharacterEditOpen] = useState(false);
   const [editingCharacter, setEditingCharacter] =
     useState<CharacterWithRole | null>(null);
+  const [selectedCharacter, setSelectedCharacter] =
+    useState<CharacterWithRole | null>(null);
   const currentTab = useAppSelector(scenarioDetailCurrentTabSelector);
   const tabItems = useAppSelector(scenarioDetailTabItemsSelector);
 
@@ -175,8 +177,11 @@ export const useScenarioDetailPage = () => {
   };
 
   const handleCharacterClick = (character: CharacterWithRole) => {
-    // TODO: キャラクター詳細ページへ遷移、または編集モーダルを開く
-    console.log('Character clicked:', character);
+    setSelectedCharacter(character);
+  };
+
+  const handleCloseCharacterDetail = () => {
+    setSelectedCharacter(null);
   };
 
   const handleRemoveCharacter = async (characterId: string) => {
@@ -478,7 +483,9 @@ export const useScenarioDetailPage = () => {
     handleSave,
     characters,
     isCharactersLoading,
+    selectedCharacter,
     handleCharacterClick,
+    handleCloseCharacterDetail,
     handleRemoveCharacter,
     isCharacterFormOpen,
     handleOpenCharacterForm,

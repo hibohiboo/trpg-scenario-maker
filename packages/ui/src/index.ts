@@ -27,10 +27,12 @@ export {
   ScenarioCharacterEditModal,
   CharacterRelationshipGraph,
   CharacterNode,
+  CharacterDetailPanel,
 } from './scenarioCharacter';
 export type {
   CharacterWithRole,
   ScenarioCharacterRelation,
+  CharacterDetailPanelProps,
 } from './scenarioCharacter';
 export {
   InformationItemList,
