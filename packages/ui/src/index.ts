@@ -53,3 +53,13 @@ export type {
 } from './informationItem';
 export { Button, Loading, ErrorMessage, Layout, Modal, Tabs } from './common';
 export type { ButtonVariant, ButtonSize, Tab, TabsProps } from './common';
+export {
+  ImageInput,
+  CharacterImageGallery,
+  CharacterImageUploadModal,
+} from './image';
+export type {
+  ImageData,
+  CharacterImageGalleryProps,
+  CharacterImageUploadModalProps,
+} from './image';

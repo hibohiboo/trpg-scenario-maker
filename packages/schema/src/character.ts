@@ -1,5 +1,6 @@
 import * as v from 'valibot';
-import { DescriptionSchema } from './common';
+import { DescriptionSchema, OptionalToStringSchema } from './common';
+import { ImageSchema } from './image';
 
 /**
  * キャラクタースキーマ
@@ -11,6 +12,22 @@ export const CharacterSchema = v.object({
   name: v.string(),
   /** 説明 */
   description: DescriptionSchema,
+});
+
+/**
+ * 画像情報を含むキャラクタースキーマ
+ */
+export const CharacterWithImagesSchema = v.object({
+  /** キャラクターID */
+  id: v.string(),
+  /** キャラクター名 */
+  name: v.string(),
+  /** 説明 */
+  description: DescriptionSchema,
+  /** メイン画像ID */
+  primaryImageId: OptionalToStringSchema,
+  /** 画像配列 */
+  images: v.optional(v.array(ImageSchema)),
 });
 
 /**
@@ -29,6 +46,11 @@ export const CharacterFormDataSchema = v.object({
 export type Character = v.InferOutput<typeof CharacterSchema>;
 
 /**
+ * 画像情報を含むキャラクターの型
+ */
+export type CharacterWithImages = v.InferOutput<typeof CharacterWithImagesSchema>;
+
+/**
  * キャラクター作成・更新用の入力データ型
  */
 export type CharacterFormData = v.InferOutput<typeof CharacterFormDataSchema>;
@@ -42,4 +64,18 @@ export const parseToCharacter = (data: unknown): Character => {
 
 export const parseToCharacterList = (data: unknown) => {
   return v.parse(v.array(CharacterSchema), data);
+};
+
+/**
+ * 画像情報を含むキャラクターをパース
+ */
+export const parseToCharacterWithImages = (data: unknown): CharacterWithImages => {
+  return v.parse(CharacterWithImagesSchema, data);
+};
+
+/**
+ * 画像情報を含むキャラクターリストをパース
+ */
+export const parseToCharacterWithImagesList = (data: unknown): CharacterWithImages[] => {
+  return v.parse(v.array(CharacterWithImagesSchema), data);
 };

@@ -1,4 +1,5 @@
 import { runMigrate } from '@trpg-scenario-maker/rdb/db/runMigrate';
+import { imageRdbHandlers } from '@/entities/image/workers/imageRdbHandlers';
 import { scenarioHandlers } from '@/entities/scenario/workers/scenarioHandlers';
 
 // 汎用リクエスト/レスポンス型
@@ -31,6 +32,11 @@ handlers.set('migrate', async () => {
 
 // シナリオハンドラーを登録
 scenarioHandlers.forEach(({ type, handler }) => {
+  handlers.set(type, handler);
+});
+
+// 画像ハンドラーを登録
+imageRdbHandlers.forEach(({ type, handler }) => {
   handlers.set(type, handler);
 });
 
