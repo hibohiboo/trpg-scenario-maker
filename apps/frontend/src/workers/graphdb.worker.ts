@@ -10,6 +10,7 @@ import {
 import { initSampleData } from '@trpg-scenario-maker/graphdb/db';
 import { characterGraphHandlers } from '@/entities/character/workers/characterGraphHandlers';
 import { characterRelationGraphHandlers } from '@/entities/character/workers/characterRelationGraphHandlers';
+import { imageGraphHandlers } from '@/entities/image/workers/imageGraphHandlers';
 import { informationItemGraphHandlers } from '@/entities/informationItem/workers/informationItemGraphHandlers';
 import { scenarioGraphHandlers } from '@/entities/scenario/workers/scenarioGraphHandlers';
 import { scenarioCharacterGraphHandlers } from '@/entities/scenarioCharacter/workers/scenarioCharacterGraphHandlers';
@@ -144,6 +145,11 @@ characterGraphHandlers.forEach(({ type, handler }) => {
 
 // キャラクター関係性グラフハンドラーを登録
 characterRelationGraphHandlers.forEach(({ type, handler }) => {
+  handlers.set(type, handler);
+});
+
+// 画像グラフハンドラーを登録
+imageGraphHandlers.forEach(({ type, handler }) => {
   handlers.set(type, handler);
 });
 
