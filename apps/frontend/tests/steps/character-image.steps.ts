@@ -151,7 +151,7 @@ Then(
 
 Then(
   '画像 {string} がメイン画像として表示される',
-  async function (this: CustomWorld, imageName: string) {
+  async function (this: CustomWorld, _imageName: string) {
     // メインバッジが表示されていることを確認
     await expect(
       this.page.getByText('メイン', { exact: true }).first(),
@@ -161,7 +161,7 @@ Then(
 
 Then(
   '画像 {string} は通常の画像として表示される',
-  async function (this: CustomWorld, imageName: string) {
+  async function (this: CustomWorld, _imageName: string) {
     // この画像はメインバッジを持たないことを確認
     // 実装では画像の順序やデータ属性で識別する必要があるかもしれません
     const mainBadges = await this.page
@@ -174,7 +174,7 @@ Then(
 
 Then(
   '画像 {string} は表示されない',
-  async function (this: CustomWorld, imageName: string) {
+  async function (this: CustomWorld, _imageName: string) {
     // 削除後、画像の総数が減っていることで確認
     // 具体的な画像の識別が必要な場合はdata属性などを追加
   },
