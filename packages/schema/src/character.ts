@@ -12,12 +12,10 @@ export const CharacterSchema = v.object({
   name: v.string(),
   /** 説明 */
   description: DescriptionSchema,
-  /** メイン画像ID */
-  primaryImageId: OptionalToStringSchema,
 });
 
 /**
- * 画像配列を含むキャラクタースキーマ
+ * 画像情報を含むキャラクタースキーマ
  */
 export const CharacterWithImagesSchema = v.object({
   /** キャラクターID */
