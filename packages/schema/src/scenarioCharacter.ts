@@ -18,6 +18,24 @@ export const ScenarioCharacterSchema = v.object({
 });
 
 /**
+ * 画像情報を含むシナリオキャラクタースキーマ
+ */
+export const ScenarioCharacterWithImageSchema = v.object({
+  /** シナリオID */
+  scenarioId: v.string(),
+  /** キャラクターID */
+  characterId: v.string(),
+  /** キャラクター名 */
+  name: v.string(),
+  /** キャラクター説明 */
+  description: OptionalToStringSchema,
+  /** シナリオ内での役割（例: "主人公", "敵", "協力者"） */
+  role: OptionalToStringSchema,
+  /** メイン画像ID */
+  primaryImageId: OptionalToStringSchema,
+});
+
+/**
  * シナリオキャラクター作成・更新用の入力データスキーマ
  */
 export const ScenarioCharacterFormDataSchema = v.object({
@@ -33,6 +51,11 @@ export const ScenarioCharacterFormDataSchema = v.object({
  * シナリオキャラクターの型
  */
 export type ScenarioCharacter = v.InferOutput<typeof ScenarioCharacterSchema>;
+
+/**
+ * 画像情報を含むシナリオキャラクターの型
+ */
+export type ScenarioCharacterWithImage = v.InferOutput<typeof ScenarioCharacterWithImageSchema>;
 
 /**
  * シナリオキャラクター作成・更新用の入力データ型
@@ -55,4 +78,20 @@ export const parseToScenarioCharacterList = (
   data: unknown,
 ): ScenarioCharacter[] => {
   return v.parse(v.array(ScenarioCharacterSchema), data);
+};
+
+/**
+ * 画像情報を含むシナリオキャラクターをパース
+ */
+export const parseToScenarioCharacterWithImage = (data: unknown): ScenarioCharacterWithImage => {
+  return v.parse(ScenarioCharacterWithImageSchema, data);
+};
+
+/**
+ * 画像情報を含むシナリオキャラクターリストをパース
+ */
+export const parseToScenarioCharacterWithImageList = (
+  data: unknown,
+): ScenarioCharacterWithImage[] => {
+  return v.parse(v.array(ScenarioCharacterWithImageSchema), data);
 };
