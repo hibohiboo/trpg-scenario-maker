@@ -48,10 +48,12 @@ export const imageGraphApi = {
     imageId: string;
     isPrimary: boolean;
   }> {
+    console.log('updateLink', params);
     const result = await graphdbWorkerClient.request(
       'image:graph:updateLink',
       params,
     );
+    console.log('updateLink:reult', result);
 
     return result;
   },

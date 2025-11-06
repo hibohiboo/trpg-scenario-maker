@@ -1,3 +1,9 @@
+import {
+  parseCharacterImageInfoList,
+  parseCharacterImageLinkList,
+  parseImageCharacterInfoList,
+  parseImageNodeList,
+} from '@trpg-scenario-maker/schema';
 import { generateUUID } from '@trpg-scenario-maker/utility';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { initializeDatabase, closeDatabase, executeQuery } from '../db';
@@ -40,10 +46,10 @@ describe('imageGraphRepository', () => {
 
       // Act
       const result = await imageGraphRepository.createImageNode(imageId);
-
+      const parsed = parseImageNodeList(result);
       // Assert
       expect(result).toHaveLength(1);
-      expect(result[0].id).toBe(imageId);
+      expect(parsed[0].id).toBe(imageId);
     });
 
     it('画像ノードをIDで取得できる', async () => {
@@ -53,10 +59,10 @@ describe('imageGraphRepository', () => {
 
       // Act
       const result = await imageGraphRepository.findImageNodeById(imageId);
-
+      const parsed = parseImageNodeList(result);
       // Assert
       expect(result).toHaveLength(1);
-      expect(result[0].id).toBe(imageId);
+      expect(parsed[0].id).toBe(imageId);
     });
 
     it('全画像ノードを取得できる', async () => {
@@ -68,13 +74,13 @@ describe('imageGraphRepository', () => {
 
       // Act
       const result = await imageGraphRepository.findAllImageNodes();
-
+      const parsed = parseImageNodeList(result);
       // Assert
-      expect(result.length).toBeGreaterThanOrEqual(2);
-      const foundImage1 = result.find(
+      expect(parsed.length).toBeGreaterThanOrEqual(2);
+      const foundImage1 = parsed.find(
         (img: { id: string }) => img.id === imageId1,
       );
-      const foundImage2 = result.find(
+      const foundImage2 = parsed.find(
         (img: { id: string }) => img.id === imageId2,
       );
       expect(foundImage1).toBeDefined();
@@ -111,12 +117,13 @@ describe('imageGraphRepository', () => {
         imageId,
         isPrimary: true,
       });
+      const parsed = parseCharacterImageLinkList(result);
 
       // Assert
       expect(result).toHaveLength(1);
-      expect(result[0].characterId).toBe(character.id);
-      expect(result[0].imageId).toBe(imageId);
-      expect(result[0].isPrimary).toBe(true);
+      expect(parsed[0].characterId).toBe(character.id);
+      expect(parsed[0].imageId).toBe(imageId);
+      expect(parsed[0].isPrimary).toBe(true);
     });
 
     it('キャラクターの全画像を取得できる', async () => {
@@ -144,14 +151,14 @@ describe('imageGraphRepository', () => {
       const result = await imageGraphRepository.findImagesByCharacterId(
         character.id,
       );
-
+      const parsed = parseCharacterImageInfoList(result);
       // Assert
       expect(result).toHaveLength(2);
       // isPrimary=trueが最初に来る
-      expect(result[0].imageId).toBe(imageId1);
-      expect(result[0].isPrimary).toBe(true);
-      expect(result[1].imageId).toBe(imageId2);
-      expect(result[1].isPrimary).toBe(false);
+      expect(parsed[0].imageId).toBe(imageId1);
+      expect(parsed[0].isPrimary).toBe(true);
+      expect(parsed[1].imageId).toBe(imageId2);
+      expect(parsed[1].isPrimary).toBe(false);
     });
 
     it('キャラクターのメイン画像を取得できる', async () => {
@@ -179,11 +186,11 @@ describe('imageGraphRepository', () => {
       const result = await imageGraphRepository.findPrimaryImageByCharacterId(
         character.id,
       );
-
+      const parsed = parseCharacterImageInfoList(result);
       // Assert
       expect(result).toHaveLength(1);
-      expect(result[0].imageId).toBe(imageId2);
-      expect(result[0].isPrimary).toBe(true);
+      expect(parsed[0].imageId).toBe(imageId2);
+      expect(parsed[0].isPrimary).toBe(true);
     });
 
     it('画像関連のisPrimaryを更新できる', async () => {
@@ -207,9 +214,10 @@ describe('imageGraphRepository', () => {
         isPrimary: true,
       });
 
+      const parsed = parseCharacterImageInfoList(result);
       // Assert
       expect(result).toHaveLength(1);
-      expect(result[0].isPrimary).toBe(true);
+      expect(parsed[0].isPrimary).toBe(true);
     });
 
     it('キャラクターから画像関連を削除できる', async () => {
@@ -265,13 +273,14 @@ describe('imageGraphRepository', () => {
       // Act
       const result =
         await imageGraphRepository.findCharactersByImageId(imageId);
+      const parsed = parseImageCharacterInfoList(result);
 
       // Assert
       expect(result).toHaveLength(2);
-      const foundChar1 = result.find(
+      const foundChar1 = parsed.find(
         (r: { characterId: string }) => r.characterId === character1.id,
       );
-      const foundChar2 = result.find(
+      const foundChar2 = parsed.find(
         (r: { characterId: string }) => r.characterId === character2.id,
       );
       expect(foundChar1).toBeDefined();
