@@ -138,14 +138,6 @@ Then('画像アップロードモーダルが閉じる', async function (this: C
   ).not.toBeVisible();
 });
 
-When(
-  '{string} チェックボックスをチェックする',
-  async function (this: CustomWorld, label: string) {
-    const checkbox = this.page.getByLabel(label);
-    await checkbox.check();
-  },
-);
-
 // 画像ギャラリー
 Then(
   '画像ギャラリーに画像が{int}枚表示される',

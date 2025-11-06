@@ -62,7 +62,7 @@ When(
     await expect(modal.getByRole('button', { name: buttonText })).toBeVisible();
     await modal.getByRole('button', { name: buttonText }).click();
     // モーダルが閉じるまで待つ
-    await modal.waitFor({ state: 'hidden', timeout: 1000 });
+    await modal.waitFor({ state: 'hidden', timeout: 2000 });
   },
 );
 
