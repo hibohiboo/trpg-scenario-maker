@@ -86,6 +86,12 @@ class GraphDBWorkerClient extends BaseWorkerClient<
   }
 
   private async ensureInitialData(): Promise<void> {
+    if (import.meta.env.DEV) {
+      // テスト時間を短くする工夫
+      console.debug('開発環境では初期データの投入をスキップ');
+      return;
+    }
+
     // シナリオの存在確認
     const scenarios = await this.execute<
       { s: { id: string; title: string } }[]

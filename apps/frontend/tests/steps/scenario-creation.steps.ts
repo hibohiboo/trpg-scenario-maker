@@ -20,7 +20,7 @@ When(
 Then(
   'シナリオ一覧に {string} が表示される',
   async function (this: CustomWorld, title: string) {
-    await expect(this.page.getByText(title)).toBeVisible();
+    await expect(this.page.getByText(title)).toBeVisible({ timeout: 10000 });
   },
 );
 

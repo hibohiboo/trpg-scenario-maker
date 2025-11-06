@@ -195,6 +195,26 @@ bun run test:e2e
 
 テストシナリオは [apps/frontend/tests/features/](apps/frontend/tests/features/) に配置されています。
 
+##### @ignoreタグについて
+
+GitHub Actions では基本的な機能のみ回帰テストを行い、パイプラインの短縮を図っています。基本機能以外のシナリオには `@ignore` タグを付けており、CI実行時にはスキップされます。
+
+```gherkin
+@ignore
+Scenario: 情報項目を更新する
+  Given シナリオ "謎の屋敷" に情報項目 "日記" (説明: "古い日記") が登録されている
+  ...
+```
+
+**ローカル環境での実行:**
+
+必要なときには、ローカル環境で `@ignore` を外して実施してください。
+
+```bash
+# @ignoreタグを含む全てのシナリオを実行
+bun run test:e2e -- --tags "not @wip"
+```
+
 ### 依存関係の更新
 
 ```bash
