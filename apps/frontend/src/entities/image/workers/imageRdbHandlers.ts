@@ -18,17 +18,25 @@ export const imageRdbHandlers = [
     handler: async (payload: unknown) => {
       const { id } = payload as { id: string };
       const result = await imageRepository.findById(id);
+      const data =
+        result == null
+          ? null
+          : // Redux stateで使用するため、Date型をISO文字列に変換
+            { ...result, createdAt: result.createdAt?.toISOString() };
 
-      return { data: result };
+      return { data };
     },
   },
   {
     type: 'image:rdb:getByIds',
     handler: async (payload: unknown) => {
       const { ids } = payload as { ids: string[] };
-      const result = await imageRepository.findByIds(ids);
-
-      return { data: result };
+      const results = await imageRepository.findByIds(ids);
+      const data = results.map((r) => ({
+        ...r,
+        createdAt: r.createdAt?.toISOString(),
+      }));
+      return { data };
     },
   },
   {
@@ -45,7 +53,9 @@ export const imageRdbHandlers = [
 type ImageRdbHandler = (typeof imageRdbHandlers)[number];
 
 export type ImageRdbHandlerMap = {
-  [H in ImageRdbHandler as H['type']]: ReturnType<H['handler']> extends Promise<{
+  [H in ImageRdbHandler as H['type']]: ReturnType<
+    H['handler']
+  > extends Promise<{
     data: infer D;
   }>
     ? D

@@ -35,11 +35,7 @@ export const createImageRepository = (
 
     if (!result) return null;
 
-    // Redux stateで使用するため、Date型をISO文字列に変換
-    return {
-      ...result,
-      createdAt: result.createdAt?.toISOString(),
-    };
+    return result;
   },
 
   /**
@@ -57,11 +53,7 @@ export const createImageRepository = (
       .from(imagesTable)
       .where(inArray(imagesTable.id, ids));
 
-    // Redux stateで使用するため、Date型をISO文字列に変換
-    return results.map((result) => ({
-      ...result,
-      createdAt: result.createdAt?.toISOString(),
-    }));
+    return results;
   },
 
   /**
