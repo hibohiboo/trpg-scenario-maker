@@ -107,7 +107,8 @@ export const imageGraphHandlers = [
     type: 'image:graph:getCharactersByImageId',
     handler: async (payload: unknown) => {
       const { imageId } = parseImageIdPayload(payload);
-      const result = await imageGraphRepository.findCharactersByImageId(imageId);
+      const result =
+        await imageGraphRepository.findCharactersByImageId(imageId);
       const data = parseImageCharacterInfoList(result);
 
       return { data };

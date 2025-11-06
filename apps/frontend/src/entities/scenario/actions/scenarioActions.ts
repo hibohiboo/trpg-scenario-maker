@@ -1,8 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import {
-  scenarioToString,
-  type SerializableScenario,
-} from '@trpg-scenario-maker/schema';
+import { type SerializableScenario } from '@trpg-scenario-maker/schema';
 import { generateUUID } from '@trpg-scenario-maker/utility';
 import { scenarioApi } from '../api/scenarioApi';
 import { scenarioGraphApi } from '../api/scenarioGraphApi';
@@ -24,7 +21,7 @@ export const createScenarioAction = createAsyncThunk<
   await scenarioGraphApi.create(newScenario);
   await scenarioGraphApi.save();
   dispatch(closeCreateModal());
-  return scenarioToString(newScenario);
+  return newScenario;
 });
 export const updateScenarioAction = createAsyncThunk<
   SerializableScenario,
@@ -35,7 +32,7 @@ export const updateScenarioAction = createAsyncThunk<
     title: payload.title,
   });
   dispatch(closeEditModal());
-  return scenarioToString(updatedScenario);
+  return updatedScenario;
 });
 export const deleteScenarioAction = createAsyncThunk<
   string,
@@ -51,7 +48,7 @@ export const readScenarioAction = createAsyncThunk<
   void
 >('readScenario', async (_) => {
   const scenarios = await scenarioApi.getList();
-  return scenarios.map(scenarioToString);
+  return scenarios;
 });
 
 export const getCountSample = async () => {
