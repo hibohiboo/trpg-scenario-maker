@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import ImageInput from './ImageInput';
 import { Modal, Button } from '../common';
+import ImageInput from './ImageInput';
 
 export interface CharacterImageUploadModalProps {
   isOpen: boolean;
