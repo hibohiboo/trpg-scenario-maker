@@ -55,5 +55,6 @@ function chunkRule(moduleId: string) {
   if (moduleId.includes('react-markdown') || moduleId.includes('remark-gfm'))
     return 'markdown';
   if (moduleId.includes('react')) return 'react';
+  if (moduleId.includes('drizzle') || moduleId.includes('pglite')) return 'rdb';
   return 'vendor';
 }
