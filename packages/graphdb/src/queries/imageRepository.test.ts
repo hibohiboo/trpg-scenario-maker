@@ -315,5 +315,79 @@ describe('imageGraphRepository', () => {
       const imageNode = await imageGraphRepository.findImageNodeById(imageId);
       expect(imageNode).toHaveLength(0);
     });
+
+    it('3つの画像のうち1つ目がメインのとき、2つ目をメインに切り替えできる', async () => {
+      // Arrange: 1キャラクターに3つの画像を登録
+      const character = await createTestCharacter({
+        name: 'テストキャラ7',
+        description: 'テスト',
+      });
+      const imageId1 = generateUUID();
+      const imageId2 = generateUUID();
+      const imageId3 = generateUUID();
+
+      await imageGraphRepository.createImageNode(imageId1);
+      await imageGraphRepository.createImageNode(imageId2);
+      await imageGraphRepository.createImageNode(imageId3);
+
+      // 1つ目をメイン画像として登録
+      await imageGraphRepository.linkImageToCharacter({
+        characterId: character.id,
+        imageId: imageId1,
+        isPrimary: true,
+      });
+      await imageGraphRepository.linkImageToCharacter({
+        characterId: character.id,
+        imageId: imageId2,
+        isPrimary: false,
+      });
+      await imageGraphRepository.linkImageToCharacter({
+        characterId: character.id,
+        imageId: imageId3,
+        isPrimary: false,
+      });
+
+      // 初期状態確認
+      const initialImages = await imageGraphRepository.findImagesByCharacterId(
+        character.id,
+      );
+      const initialParsed = parseCharacterImageInfoList(initialImages);
+      expect(initialImages).toHaveLength(3);
+      expect(initialParsed[0].imageId).toBe(imageId1);
+      expect(initialParsed[0].isPrimary).toBe(true);
+
+      // Act: 1つ目をfalseに、2つ目をtrueに更新
+      await imageGraphRepository.updateImageLink({
+        characterId: character.id,
+        imageId: imageId1,
+        isPrimary: false,
+      });
+      await imageGraphRepository.updateImageLink({
+        characterId: character.id,
+        imageId: imageId2,
+        isPrimary: true,
+      });
+
+      // Assert: 2つ目がメイン画像になっている
+      const updatedImages = await imageGraphRepository.findImagesByCharacterId(
+        character.id,
+      );
+      const updatedParsed = parseCharacterImageInfoList(updatedImages);
+      expect(updatedImages).toHaveLength(3);
+      // isPrimary=trueが最初に来る
+      expect(updatedParsed[0].imageId).toBe(imageId2);
+      expect(updatedParsed[0].isPrimary).toBe(true);
+      // 1つ目と3つ目はfalse
+      expect(updatedParsed[1].isPrimary).toBe(false);
+      expect(updatedParsed[2].isPrimary).toBe(false);
+
+      // メイン画像取得APIでも確認
+      const primaryImage =
+        await imageGraphRepository.findPrimaryImageByCharacterId(character.id);
+      const primaryParsed = parseCharacterImageInfoList(primaryImage);
+      expect(primaryImage).toHaveLength(1);
+      expect(primaryParsed[0].imageId).toBe(imageId2);
+      expect(primaryParsed[0].isPrimary).toBe(true);
+    });
   });
 });
