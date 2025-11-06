@@ -14,41 +14,42 @@ const compat = new FlatCompat({
   baseDirectory: dirname,
 });
 
-export default defineConfig({
-  files: ['**/*.ts', '**/*.tsx'],
-  ignores: ['dist', 'public'],
-  extends: [
-    ...customConfig,
-    ...compat.extends(
-      'plugin:@conarti/eslint-plugin-feature-sliced/recommended',
-    ),
-    reactRefresh.configs.vite,
-  ],
-  plugins: { 'react-hooks': reactHooks },
-  rules: {
-    'react-refresh/only-export-components': [
-      'warn',
-      { allowConstantExport: true },
+export default defineConfig([
+  {
+    files: ['**/*.ts', '**/*.tsx'],
+    ignores: ['dist', 'public'],
+    extends: [
+      ...customConfig,
+      ...compat.extends(
+        'plugin:@conarti/eslint-plugin-feature-sliced/recommended',
+      ),
+      reactRefresh.configs.vite,
     ],
-    'import/extensions': ['off'],
-
-    'no-alert': 'off',
-    'no-console': 'off',
-    // Redux Toolkit uses immer internally to allow "mutating" state
-    'no-param-reassign': [
-      'error',
-      { props: true, ignorePropertyModificationsFor: ['state'] },
-    ],
-    // Allow TO DO comments for future implementation
-    'sonarjs/todo-tag': 'warn',
-  },
-  languageOptions: {
-    ecmaVersion: 2022,
-    sourceType: 'module',
-    globals: {
-      ...globals.node,
-      ...globals.browser,
-      myCustomGlobal: 'readonly',
+    plugins: { 'react-hooks': reactHooks },
+    rules: {
+      // 'react-refresh/only-export-components': [
+      //   'warn',
+      //   { allowConstantExport: true },
+      // ],
+      // 'import/extensions': ['off'],
+      // 'no-alert': 'off',
+      // 'no-console': 'off',
+      // // Redux Toolkit uses immer internally to allow "mutating" state
+      // 'no-param-reassign': [
+      //   'error',
+      //   { props: true, ignorePropertyModificationsFor: ['state'] },
+      // ],
+      // // Allow TO DO comments for future implementation
+      // 'sonarjs/todo-tag': 'warn',
+    },
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      globals: {
+        ...globals.node,
+        ...globals.browser,
+        myCustomGlobal: 'readonly',
+      },
     },
   },
-});
+]);
