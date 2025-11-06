@@ -1,4 +1,5 @@
 import { PGlite } from '@electric-sql/pglite';
+import { generateUUID } from '@trpg-scenario-maker/utility';
 import { drizzle } from 'drizzle-orm/pglite';
 import { describe, it, expect, beforeAll, afterEach } from 'vitest';
 import { createScenarioRepository } from './scenarioRepository';
@@ -40,11 +41,11 @@ describe('scenarioRepository', () => {
 
     it('シナリオが作成された後、正しい件数を返す', async () => {
       await repository.create({
-        id: crypto.randomUUID(),
+        id: generateUUID(),
         title: 'テストシナリオ1',
       });
       await repository.create({
-        id: crypto.randomUUID(),
+        id: generateUUID(),
         title: 'テストシナリオ2',
       });
 
@@ -61,7 +62,7 @@ describe('scenarioRepository', () => {
 
     it('全シナリオを更新日時の降順で取得できる', async () => {
       const scenario1 = await repository.create({
-        id: crypto.randomUUID(),
+        id: generateUUID(),
         title: 'シナリオ1',
       });
 
@@ -71,7 +72,7 @@ describe('scenarioRepository', () => {
       });
 
       const scenario2 = await repository.create({
-        id: crypto.randomUUID(),
+        id: generateUUID(),
         title: 'シナリオ2',
       });
 
@@ -86,7 +87,7 @@ describe('scenarioRepository', () => {
   describe('create', () => {
     it('新しいシナリオを作成できる', async () => {
       const newScenario = {
-        id: crypto.randomUUID(),
+        id: generateUUID(),
         title: 'テストシナリオ',
       };
 
@@ -104,7 +105,7 @@ describe('scenarioRepository', () => {
     it('既存のシナリオを更新できる', async () => {
       // まずシナリオを作成
       const newScenario = {
-        id: crypto.randomUUID(),
+        id: generateUUID(),
         title: '更新前のタイトル',
       };
       const created = await repository.create(newScenario);
@@ -131,7 +132,7 @@ describe('scenarioRepository', () => {
     it('シナリオを削除できる', async () => {
       // まずシナリオを作成
       const newScenario = {
-        id: crypto.randomUUID(),
+        id: generateUUID(),
         title: '削除対象シナリオ',
       };
       const created = await repository.create(newScenario);

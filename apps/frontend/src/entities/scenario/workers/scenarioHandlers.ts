@@ -7,6 +7,7 @@ import {
   parseScenario,
   parseScenarioCount,
 } from '@trpg-scenario-maker/schema';
+import { generateUUID } from '@trpg-scenario-maker/utility';
 
 // ===== シナリオ操作ハンドラー =====
 // 循環依存を避けるため、ハンドラーを配列形式でエクスポート
@@ -32,7 +33,7 @@ export const scenarioHandlers = [
     handler: async (payload: unknown) => {
       const { title } = parseCreateScenarioPayload(payload);
       const newScenario = await scenarioRepository.create({
-        id: crypto.randomUUID(),
+        id: generateUUID(),
         title,
       });
       const data = parseScenario(newScenario);

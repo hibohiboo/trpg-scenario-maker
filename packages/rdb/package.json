@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.3.11",
-    "drizzle-orm": "^0.44.7"
+    "drizzle-orm": "^0.44.7",
+    "@trpg-scenario-maker/utility": "workspace:*"
   }
 }

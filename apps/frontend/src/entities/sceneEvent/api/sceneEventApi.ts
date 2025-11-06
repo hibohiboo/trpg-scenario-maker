@@ -1,4 +1,5 @@
 import type { SceneEvent } from '@trpg-scenario-maker/ui';
+import { generateUUID } from '@trpg-scenario-maker/utility';
 import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 
 /**
@@ -25,7 +26,7 @@ export const sceneEventApi = {
     sceneId: string,
     event: Omit<SceneEvent, 'id'>,
   ): Promise<SceneEvent> => {
-    const id = crypto.randomUUID();
+    const id = generateUUID();
 
     const result = await graphdbWorkerClient.request(
       'sceneEvent:graph:createEvent',
