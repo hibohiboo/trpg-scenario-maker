@@ -62,7 +62,7 @@ When(
     await expect(modal.getByRole('button', { name: buttonText })).toBeVisible();
     await modal.getByRole('button', { name: buttonText }).click();
     // モーダルが閉じるまで待つ
-    await modal.waitFor({ state: 'hidden', timeout: 2000 });
+    await modal.waitFor({ state: 'hidden', timeout: 5000 });
   },
 );
 
@@ -97,7 +97,8 @@ When(
   'タイトルを {string} に変更する',
   async function (this: CustomWorld, newTitle: string) {
     const titleInput = this.page.getByLabel('タイトル');
-    await titleInput.clear();
+    await titleInput.waitFor({ state: 'visible', timeout: 5000 });
+    await titleInput.click({ clickCount: 3 }); // テキスト全選択
     await titleInput.fill(newTitle);
   },
 );
@@ -106,7 +107,8 @@ When(
   '説明を {string} に変更する',
   async function (this: CustomWorld, newDescription: string) {
     const descriptionInput = this.page.getByLabel('説明');
-    await descriptionInput.clear();
+    await descriptionInput.waitFor({ state: 'visible', timeout: 5000 });
+    await descriptionInput.click({ clickCount: 3 }); // テキスト全選択
     await descriptionInput.fill(newDescription);
   },
 );

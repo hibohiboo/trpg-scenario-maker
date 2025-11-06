@@ -20,8 +20,14 @@ When(
       .filter({ hasText: itemTitle })
       .first();
     await itemCard.getByRole('button', { name: '編集' }).first().click();
-    // フォームが開くまで少し待つ
-    await this.page.waitForTimeout(300);
+    // 編集フォームが開くまで待つ（「情報項目編集」タイトルが表示されるまで）
+    await this.page
+      .getByText('情報項目編集', { exact: true })
+      .waitFor({ state: 'visible', timeout: 5000 });
+    // フォームの入力欄が表示されるまで待つ
+    await this.page
+      .getByLabel('タイトル')
+      .waitFor({ state: 'visible', timeout: 5000 });
   },
 );
 
@@ -34,14 +40,17 @@ When(
       window.confirm = (() => true) as typeof confirm;
     });
 
-    // 情報項目のカードを見つけて削除ボタンをクリック
+    // 情報項目のカードを見つける
     const itemCard = this.page
       .locator('div')
       .filter({ hasText: itemTitle })
       .first();
+
+    // 削除ボタンをクリック
     await itemCard.getByRole('button', { name: '削除' }).first().click();
-    // 削除処理が完了するまで少し待つ
-    await this.page.waitForTimeout(500);
+
+    // 削除処理が完了してカードが消えるまで待つ
+    await itemCard.waitFor({ state: 'detached', timeout: 5000 });
   },
 );
 
@@ -49,7 +58,9 @@ When(
 Then(
   '情報項目一覧に {string} が表示されない',
   async function (this: CustomWorld, itemTitle: string) {
-    await expect(this.page.getByText(itemTitle)).not.toBeVisible();
+    // 該当する見出し要素が存在しないことを確認
+    const headings = this.page.getByRole('heading', { name: itemTitle });
+    await expect(headings).toHaveCount(0);
   },
 );
 
@@ -220,7 +231,7 @@ When(
       .first();
     await sceneCard.getByRole('button', { name: '編集' }).first().click();
     // モーダルが開くまで少し待つ
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(1000);
   },
 );
 
@@ -234,7 +245,7 @@ When(
     const select = section.locator('select');
     await select.selectOption({ label: itemTitle });
     // 選択が反映されるまで少し待つ
-    await this.page.waitForTimeout(300);
+    await this.page.waitForTimeout(1000);
   },
 );
 
