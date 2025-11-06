@@ -15,9 +15,11 @@ export const imageRdbHandlers = [
     type: 'image:rdb:create',
     handler: async (payload: unknown) => {
       const { dataUrl } = parseCreateImagePayload(payload);
-      const result = await imageRepository.create(dataUrl);
+      const { id } = await imageRepository.create(dataUrl);
+
       const data = parseToImage({
-        ...result,
+        id,
+        dataUrl,
       });
 
       return { data };
