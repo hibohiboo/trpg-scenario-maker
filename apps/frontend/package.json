@@ -14,7 +14,7 @@
     "codegen": "playwright codegen"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^2.9.2",
+    "@reduxjs/toolkit": "^2.10.1",
     "@trpg-scenario-maker/graphdb": "workspace:*",
     "@trpg-scenario-maker/rdb": "workspace:*",
     "@trpg-scenario-maker/schema": "workspace:*",
