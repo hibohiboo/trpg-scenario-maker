@@ -1,8 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import type { Image } from '@trpg-scenario-maker/schema';
+import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 import { imageGraphApi } from '../api/imageGraphApi';
 import { imageRdbApi } from '../api/imageRdbApi';
-import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 
 /**
  * キャラクターの画像一覧を取得
@@ -33,7 +33,7 @@ export const fetchCharacterImagesAction = createAsyncThunk<
     const link = imageLinks.find((l) => l.imageId === img.id);
     return {
       ...img,
-      createdAt: img.createdAt instanceof Date ? img.createdAt.toISOString() : img.createdAt,
+      createdAt: img.createdAt,
       isPrimary: link?.isPrimary || false,
     };
   });
