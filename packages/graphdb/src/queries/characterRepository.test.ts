@@ -2,7 +2,7 @@ import {
   parseToCharacterList,
   parseToRelationshipList,
 } from '@trpg-scenario-maker/schema';
-import { v4 as uuidv4 } from 'uuid';
+import { generateUUID } from '@trpg-scenario-maker/utility';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { initializeDatabase, closeDatabase, executeQuery } from '../db';
 import { graphDbSchemas } from '../schemas';
@@ -16,7 +16,7 @@ const createTestCharacter = async (params: {
   name: string;
   description: string;
 }) => {
-  const id = uuidv4();
+  const id = generateUUID();
   await characterGraphRepository.create({
     id,
     name: params.name,
@@ -33,7 +33,7 @@ const createTestRelationship = async (params: {
   toCharacterId: string;
   relationshipName: string;
 }) => {
-  const id = uuidv4();
+  const id = generateUUID();
   await characterRelationshipGraphRepository.create({
     id,
     ...params,
@@ -56,7 +56,7 @@ describe('characterGraphRepository', () => {
   describe('キャラクターCRUD操作', () => {
     it('キャラクターを作成できる', async () => {
       // Arrange
-      const characterId = uuidv4();
+      const characterId = generateUUID();
       const characterData = {
         id: characterId,
         name: 'テストキャラクター',
@@ -75,7 +75,7 @@ describe('characterGraphRepository', () => {
 
     it('キャラクターを更新できる', async () => {
       // Arrange
-      const characterId = uuidv4();
+      const characterId = generateUUID();
       await characterGraphRepository.create({
         id: characterId,
         name: '初期名',
@@ -99,7 +99,7 @@ describe('characterGraphRepository', () => {
 
     it('キャラクターを削除できる', async () => {
       // Arrange
-      const characterId = uuidv4();
+      const characterId = generateUUID();
       await characterGraphRepository.create({
         id: characterId,
         name: '削除テスト',
@@ -116,8 +116,8 @@ describe('characterGraphRepository', () => {
     });
 
     it('全キャラクターを取得できる', async () => {
-      const char1Id = uuidv4();
-      const char2Id = uuidv4();
+      const char1Id = generateUUID();
+      const char2Id = generateUUID();
 
       await characterGraphRepository.create({
         id: char1Id,
@@ -145,7 +145,7 @@ describe('characterGraphRepository', () => {
     });
 
     it('特殊文字を含む説明でキャラクターを作成できる', async () => {
-      const characterId = uuidv4();
+      const characterId = generateUUID();
       const specialDescription = `特殊文字テスト: 'シングルクォート'
 改行あり`;
 
@@ -197,9 +197,18 @@ describe('characterGraphRepository', () => {
 
     it('キャラクターの全関係性を取得できる', async () => {
       // Arrange
-      const char1 = await createTestCharacter({ name: 'キャラA', description: 'テスト' });
-      const char2 = await createTestCharacter({ name: 'キャラB', description: 'テスト' });
-      const char3 = await createTestCharacter({ name: 'キャラC', description: 'テスト' });
+      const char1 = await createTestCharacter({
+        name: 'キャラA',
+        description: 'テスト',
+      });
+      const char2 = await createTestCharacter({
+        name: 'キャラB',
+        description: 'テスト',
+      });
+      const char3 = await createTestCharacter({
+        name: 'キャラC',
+        description: 'テスト',
+      });
 
       await createTestRelationship({
         fromCharacterId: char1.id,
@@ -228,8 +237,14 @@ describe('characterGraphRepository', () => {
 
     it('関係性を更新できる', async () => {
       // Arrange
-      const char1 = await createTestCharacter({ name: 'キャラX', description: 'テスト' });
-      const char2 = await createTestCharacter({ name: 'キャラY', description: 'テスト' });
+      const char1 = await createTestCharacter({
+        name: 'キャラX',
+        description: 'テスト',
+      });
+      const char2 = await createTestCharacter({
+        name: 'キャラY',
+        description: 'テスト',
+      });
       const relationship = await createTestRelationship({
         fromCharacterId: char1.id,
         toCharacterId: char2.id,
@@ -252,8 +267,14 @@ describe('characterGraphRepository', () => {
 
     it('関係性を削除できる', async () => {
       // Arrange
-      const char1 = await createTestCharacter({ name: 'キャラP', description: 'テスト' });
-      const char2 = await createTestCharacter({ name: 'キャラQ', description: 'テスト' });
+      const char1 = await createTestCharacter({
+        name: 'キャラP',
+        description: 'テスト',
+      });
+      const char2 = await createTestCharacter({
+        name: 'キャラQ',
+        description: 'テスト',
+      });
       const relationship = await createTestRelationship({
         fromCharacterId: char1.id,
         toCharacterId: char2.id,
@@ -273,8 +294,14 @@ describe('characterGraphRepository', () => {
 
     it('全関係性を取得できる', async () => {
       // Arrange
-      const char1 = await createTestCharacter({ name: 'キャラM', description: 'テスト' });
-      const char2 = await createTestCharacter({ name: 'キャラN', description: 'テスト' });
+      const char1 = await createTestCharacter({
+        name: 'キャラM',
+        description: 'テスト',
+      });
+      const char2 = await createTestCharacter({
+        name: 'キャラN',
+        description: 'テスト',
+      });
       await createTestRelationship({
         fromCharacterId: char1.id,
         toCharacterId: char2.id,
@@ -298,8 +325,14 @@ describe('characterGraphRepository', () => {
 
     it('同じキャラクターペア間に複数の関係性を作成できる', async () => {
       // Arrange
-      const char1 = await createTestCharacter({ name: 'アリス', description: '主人公' });
-      const char2 = await createTestCharacter({ name: 'ボブ', description: '相手役' });
+      const char1 = await createTestCharacter({
+        name: 'アリス',
+        description: '主人公',
+      });
+      const char2 = await createTestCharacter({
+        name: 'ボブ',
+        description: '相手役',
+      });
 
       // Act
       const rel1 = await createTestRelationship({
@@ -326,13 +359,21 @@ describe('characterGraphRepository', () => {
 
       expect(outgoing).toHaveLength(2);
       expect(outgoing.find((r) => r.relationshipName === '友人')).toBeDefined();
-      expect(outgoing.find((r) => r.relationshipName === 'ライバル')).toBeDefined();
+      expect(
+        outgoing.find((r) => r.relationshipName === 'ライバル'),
+      ).toBeDefined();
     });
 
     it('同じキャラクターペア間の複数関係性から特定の関係性のみを更新できる', async () => {
       // Arrange
-      const char1 = await createTestCharacter({ name: 'アリス', description: '主人公' });
-      const char2 = await createTestCharacter({ name: 'ボブ', description: '相手役' });
+      const char1 = await createTestCharacter({
+        name: 'アリス',
+        description: '主人公',
+      });
+      const char2 = await createTestCharacter({
+        name: 'ボブ',
+        description: '相手役',
+      });
 
       const rel1 = await createTestRelationship({
         fromCharacterId: char1.id,
@@ -362,14 +403,24 @@ describe('characterGraphRepository', () => {
       const outgoing = parseToRelationshipList(result.outgoing);
 
       expect(outgoing).toHaveLength(2);
-      expect(outgoing.find((r) => r.id === rel1.id)?.relationshipName).toBe('親友');
-      expect(outgoing.find((r) => r.id === rel2.id)?.relationshipName).toBe('ライバル');
+      expect(outgoing.find((r) => r.id === rel1.id)?.relationshipName).toBe(
+        '親友',
+      );
+      expect(outgoing.find((r) => r.id === rel2.id)?.relationshipName).toBe(
+        'ライバル',
+      );
     });
 
     it('同じキャラクターペア間の複数関係性から特定の関係性のみを削除できる', async () => {
       // Arrange
-      const char1 = await createTestCharacter({ name: 'アリス', description: '主人公' });
-      const char2 = await createTestCharacter({ name: 'ボブ', description: '相手役' });
+      const char1 = await createTestCharacter({
+        name: 'アリス',
+        description: '主人公',
+      });
+      const char2 = await createTestCharacter({
+        name: 'ボブ',
+        description: '相手役',
+      });
 
       const rel1 = await createTestRelationship({
         fromCharacterId: char1.id,

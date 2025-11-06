@@ -2,7 +2,7 @@ import {
   parseToScenarioCharacterList,
   parseToScenarioCharacterRelationshipList,
 } from '@trpg-scenario-maker/schema';
-import { v4 as uuidv4 } from 'uuid';
+import { generateUUID } from '@trpg-scenario-maker/utility';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { initializeDatabase, closeDatabase, executeQuery } from '../db';
 import { graphDbSchemas } from '../schemas';
@@ -15,7 +15,7 @@ import { scenarioGraphRepository } from './scenarioRepository';
  * テスト用シナリオを作成するヘルパー関数
  */
 const createTestScenario = async (params: { title: string }) => {
-  const id = uuidv4();
+  const id = generateUUID();
   await scenarioGraphRepository.create({
     id,
     title: params.title,
@@ -30,7 +30,7 @@ const createTestCharacter = async (params: {
   name: string;
   description: string;
 }) => {
-  const id = uuidv4();
+  const id = generateUUID();
   await characterGraphRepository.create({
     id,
     name: params.name,

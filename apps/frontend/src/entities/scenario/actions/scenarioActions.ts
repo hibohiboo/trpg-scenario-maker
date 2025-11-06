@@ -3,7 +3,7 @@ import {
   scenarioToString,
   type SerializableScenario,
 } from '@trpg-scenario-maker/schema';
-import { v4 as uuidv4 } from 'uuid';
+import { generateUUID } from '@trpg-scenario-maker/utility';
 import { scenarioApi } from '../api/scenarioApi';
 import { scenarioGraphApi } from '../api/scenarioGraphApi';
 import {
@@ -19,7 +19,7 @@ export const createScenarioAction = createAsyncThunk<
 >('createScenario', async (payload, { dispatch }) => {
   const newScenario = await scenarioApi.create({
     title: payload.title,
-    id: uuidv4(),
+    id: generateUUID(),
   });
   await scenarioGraphApi.create(newScenario);
   await scenarioGraphApi.save();

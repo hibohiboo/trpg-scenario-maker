@@ -1,325 +1,476 @@
-# 情報項目機能追加タスクリスト
+# キャラクター画像機能実装タスクリスト
 
 ## 概要
-シナリオ編集に情報項目（Information Item）を扱える機能を追加する。
-情報項目同士の関連、情報項目とシーンの関連を管理し、シーングラフで両方のつながりを確認可能にする。
-
-**関係の種類:**
-1. **情報項目同士の関連**: InformationItem ⇔ InformationItem
-2. **シーンで獲得できる情報**: Scene → InformationItem（SCENE_HAS_INFO）
-3. **情報が指し示すシーン**: InformationItem → Scene（INFO_POINTS_TO_SCENE）
-   - 「この情報を獲得すると、このシーンに行ける」という関係
+キャラクターに画像を設定できる機能を実装する。
+- **1キャラクター:N画像の多対多関係**
+- 画像はUUIDをキーにData URLをRDBに保存
+- GraphDBは`Image`ノードと`HAS_IMAGE`リレーション（Character → Image）を持つ
+- `HAS_IMAGE`リレーションに`isPrimary`プロパティを持ち、メイン画像を指定可能
+- 表示時はRDBから画像を取得して表示
 
 ---
 
-## フェーズ1: データモデル設計・スキーマ定義
+## Phase 1: スキーマ・データベース層
 
-### 1-1. Valibotスキーマ定義
-- [x] `packages/schema/src/informationItem.ts` 作成
-  - [x] InformationItem スキーマ定義
-  - [x] InformationItemConnection スキーマ定義（情報項目同士の関連）
-  - [x] SceneInformationConnection スキーマ定義（シーンで獲得できる情報）
-  - [x] InformationToSceneConnection スキーマ定義（情報が指し示すシーン）
-  - [x] パース関数の実装
-  - [x] バリデーション関数の実装
+### 1.1 型定義の更新
 
-### 1-2. GraphDBスキーマ定義
-- [x] `packages/graphdb/src/schemas.ts` 更新
-  - [x] InformationItem ノードの定義
-  - [x] HAS_INFORMATION リレーション定義（Scenario → InformationItem）
-  - [x] INFORMATION_RELATED_TO リレーション定義（InformationItem → InformationItem）
-  - [x] SCENE_HAS_INFO リレーション定義（Scene → InformationItem：シーンで獲得できる情報）
-  - [x] INFO_POINTS_TO_SCENE リレーション定義（InformationItem → Scene：情報が指し示すシーン）
-  - [x] スキーマ作成Cypherクエリの追加
+#### 1.1.1 Image Schema作成
+- [ ] `packages/schema/src/image.ts` (新規作成)
+  - `ImageSchema` - 画像の基本スキーマ
+    ```typescript
+    export const ImageSchema = v.object({
+      id: v.string(),
+      dataUrl: v.string(),
+      createdAt: v.optional(v.string()),
+    });
+    ```
+  - `CharacterImageSchema` - キャラクター画像関連スキーマ
+    ```typescript
+    export const CharacterImageSchema = v.object({
+      characterId: v.string(),
+      imageId: v.string(),
+      isPrimary: v.boolean(),
+    });
+    ```
+  - パース関数: `parseToImage`, `parseToImageList`, `parseToCharacterImage`
 
----
+#### 1.1.2 Character Schema更新
+- [ ] `packages/schema/src/character.ts`
+  - `CharacterSchema`に`primaryImageId?: v.optional(v.string())`を追加
+  - `CharacterWithImagesSchema`を作成（画像配列を含む）
+    ```typescript
+    export const CharacterWithImagesSchema = v.object({
+      ...CharacterSchema.entries,
+      images: v.optional(v.array(ImageSchema)),
+    });
+    ```
 
-## フェーズ2: バックエンド層実装（GraphDB Repository）
+#### 1.1.3 ScenarioCharacter Schema更新
+- [ ] `packages/schema/src/scenarioCharacter.ts`
+  - `ScenarioCharacterSchema`に`primaryImageId?: v.optional(v.string())`を追加
 
-### 2-1. InformationItemRepository作成（統合実装・DRY原則）
-- [x] `packages/graphdb/src/queries/informationItemRepository.ts` 作成
-  - [x] createInformationItem - 情報項目作成
-  - [x] updateInformationItem - 情報項目更新
-  - [x] deleteInformationItem - 情報項目削除
-  - [x] getInformationItemsByScenarioId - シナリオの情報項目一覧取得
-  - [x] createInformationConnection - 情報項目同士の関連作成
-  - [x] deleteInformationConnection - 情報項目同士の関連削除
-  - [x] getInformationConnectionsByScenarioId - 情報項目の関連一覧取得
-  - [x] createSceneInformationConnection - シーン→情報項目の関連作成（SCENE_HAS_INFO）
-  - [x] deleteSceneInformationConnection - シーン→情報項目の関連削除
-  - [x] getSceneInformationConnectionsBySceneId - シーンで獲得できる情報一覧取得
-  - [x] createInformationToSceneConnection - 情報項目→シーンの関連作成（INFO_POINTS_TO_SCENE）
-  - [x] deleteInformationToSceneConnection - 情報項目→シーンの関連削除
-  - [x] getInformationToSceneConnectionsByInformationItemId - 情報が指し示すシーン一覧取得
+### 1.2 RDB スキーマ・マイグレーション
 
-**備考:** YAGNI・DRY原則に従い、3つのRepositoryを1つに統合実装
+#### 1.2.1 スキーマ定義
+- [ ] `packages/rdb/src/schema.ts`
+  - `images`テーブル定義追加
+    ```typescript
+    export const imagesTable = pgTable('images', {
+      id: uuid('id').primaryKey().defaultRandom(),
+      dataUrl: text('data_url').notNull(),
+      createdAt: timestamp('created_at').defaultNow().notNull(),
+      updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    });
+    ```
 
-### 2-2. ユニットテスト作成
-- [x] `packages/graphdb/src/queries/informationItemRepository.test.ts` 作成
-  - [x] 情報項目CRUD テスト
-  - [x] 情報項目同士の関連 テスト
-  - [x] シーン→情報項目の関連 テスト
-  - [x] 情報項目→シーンの関連 テスト
-  - [x] ヘルパーメソッド導入（DRY原則）
-- [x] 全テスト実行・通過確認
+  - `characterImages`中間テーブル定義追加
+    ```typescript
+    export const characterImagesTable = pgTable('character_images', {
+      characterId: uuid('character_id').notNull(),
+      imageId: uuid('image_id').notNull().references(() => imagesTable.id, { onDelete: 'cascade' }),
+      isPrimary: boolean('is_primary').default(false).notNull(),
+      createdAt: timestamp('created_at').defaultNow().notNull(),
+    }, (table) => ({
+      pk: primaryKey({ columns: [table.characterId, table.imageId] }),
+    }));
+    ```
 
----
+#### 1.2.2 マイグレーション作成
+- [ ] RDBマイグレーション生成
+  - `bun run db:generate` でマイグレーションファイル生成
+  - 生成されたSQLファイルを確認・調整
 
-## フェーズ3: Web Worker層実装
+### 1.3 GraphDB スキーマ更新
+- [ ] `packages/graphdb/src/schemas.ts`
+  - `Image`ノード定義追加
+    ```typescript
+    {
+      name: 'Image',
+      query: `
+        CREATE NODE TABLE Image (
+          id STRING,
+          PRIMARY KEY (id)
+        )`
+    }
+    ```
 
-### 3-1. Worker Handlers作成
-- [x] `apps/frontend/src/entities/informationItem/workers/informationItemGraphHandlers.ts` 作成
-  - [x] getInformationItemsByScenarioId Handler
-  - [x] createInformationItem Handler
-  - [x] updateInformationItem Handler
-  - [x] deleteInformationItem Handler
-  - [x] getInformationConnectionsByScenarioId Handler
-  - [x] createInformationConnection Handler（情報項目同士）
-  - [x] deleteInformationConnection Handler（情報項目同士）
-  - [x] getSceneInformationConnectionsBySceneId Handler
-  - [x] createSceneInformationConnection Handler（シーン→情報）
-  - [x] deleteSceneInformationConnection Handler（シーン→情報）
-  - [x] getInformationToSceneConnectionsByInformationItemId Handler
-  - [x] createInformationToSceneConnection Handler（情報→シーン）
-  - [x] deleteInformationToSceneConnection Handler（情報→シーン）
+  - `HAS_IMAGE`リレーション定義追加（isPrimaryプロパティ付き）
+    ```typescript
+    {
+      name: 'HAS_IMAGE',
+      query: `
+        CREATE REL TABLE HAS_IMAGE (
+          FROM Character TO Image,
+          isPrimary BOOLEAN
+        )`
+    }
+    ```
 
-### 3-2. Worker登録
-- [x] `apps/frontend/src/workers/graphdb.worker.ts` 更新
-  - [x] informationItemGraphHandlers をインポート
-  - [x] ハンドラーマップに登録
-- [x] `apps/frontend/src/workers/types/handlerMaps.ts` 更新
-  - [x] InformationItemGraphHandlerMap を GlobalHandlerMap に追加
-
----
-
-## フェーズ4: フロントエンド層実装（API・State管理）
-
-### 4-1. InformationItem API作成
-- [x] `apps/frontend/src/entities/informationItem/api/informationItemGraphApi.ts` 作成
-  - [x] getInformationItemsByScenarioId API
-  - [x] createInformationItem API
-  - [x] updateInformationItem API
-  - [x] deleteInformationItem API
-  - [x] getInformationConnectionsByScenarioId API
-  - [x] createInformationConnection API（情報項目同士）
-  - [x] deleteInformationConnection API（情報項目同士）
-  - [x] getSceneInformationConnectionsBySceneId API
-  - [x] createSceneInformationConnection API（シーン→情報）
-  - [x] deleteSceneInformationConnection API（シーン→情報）
-  - [x] getInformationToSceneConnectionsByInformationItemId API
-  - [x] createInformationToSceneConnection API（情報→シーン）
-  - [x] deleteInformationToSceneConnection API（情報→シーン）
-  - [x] save API（データ永続化）
-
-### 4-2. Redux State管理
-- [x] `apps/frontend/src/entities/informationItem/actions/informationItemActions.ts` 作成
-  - [x] 13のAsync Thunkアクション実装
-- [x] `apps/frontend/src/entities/informationItem/model/informationItemSlice.ts` 作成
-  - [x] InformationItemState型定義
-  - [x] 6つのReducers実装（フォーム制御、編集状態、クリア）
-  - [x] 39のextraReducers実装（全アクションのpending/fulfilled/rejected）
-- [x] `apps/frontend/src/app/store/rootReducer.ts` 更新
-  - [x] informationItemSlice を Redux Store に登録
-- [x] `packages/ui/src/informationItem/types.ts` 作成
-  - [x] InformationItem, InformationItemConnection, etc. 型定義
-- [x] `packages/ui/src/index.ts` 更新
-  - [x] InformationItem型のエクスポート
-- [x] `apps/frontend/src/entities/informationItem/index.ts` 作成
-  - [x] Public API定義（Feature-Sliced Design準拠）
-- [x] Lint・型チェック通過確認
-
-### 4-3. Custom Hooks作成
-- [x] `apps/frontend/src/entities/informationItem/hooks/useInformationItemEditor.ts` 作成
-  - [x] 統合Hook（List + Operations）
-  - [x] reload機能実装
-- [x] `apps/frontend/src/entities/informationItem/hooks/useInformationItemList.ts` 作成
-  - [x] 情報項目一覧取得Hook
-- [x] `apps/frontend/src/entities/informationItem/hooks/useInformationItemOperations.ts` 作成
-  - [x] 情報項目CRUD操作Hook
-  - [x] 情報項目同士の関連操作Hook
-  - [x] シーン-情報項目の関連操作Hook（双方向）
-- [x] `apps/frontend/src/entities/informationItem/hooks/useInformationItemFormState.ts` 作成
-  - [x] フォーム状態管理Hook
-- [x] `apps/frontend/src/entities/informationItem/index.ts` 更新
-  - [x] Hooks の Public API エクスポート
-- [x] Lint・型チェック通過確認
+### 1.4 テスト: スキーマバリデーション
+- [ ] `packages/schema/src/character.test.ts` (新規作成)
+  - `imageUrl`フィールドのバリデーションテスト
+  - オプショナルフィールドのテスト
 
 ---
 
-## フェーズ5: UIコンポーネント実装
+## Phase 2: バックエンド層（RDB）
 
-### 5-1. 情報項目管理コンポーネント
-- [x] `packages/ui/src/informationItem/InformationItemList.tsx` 作成
-  - [x] 情報項目一覧表示
-  - [x] 情報項目選択機能
-  - [x] 新規作成ボタン
-  - [x] 削除ボタン
-- [x] `packages/ui/src/informationItem/InformationItemForm.tsx` 作成
-  - [x] 情報項目作成・編集フォーム
-  - [x] タイトル・説明入力フィールド
-  - [x] 送信・キャンセル・削除ボタン
-- [x] `packages/ui/src/informationItem/InformationItemCard.tsx` 作成
-  - [x] 情報項目カード表示
-  - [x] 削除ボタン
-- [x] `packages/ui/src/informationItem/index.ts` 作成
-  - [x] コンポーネントエクスポート
-- [x] `packages/ui/src/index.ts` 更新
-  - [x] Public API エクスポート
+### 2.1 Image Repository作成
+- [ ] `packages/rdb/src/queries/imageRepository.ts` (新規作成)
+  - `create(dataUrl: string): Promise<{ id: string }>` - 画像作成（IDは自動生成）
+  - `findById(id: string): Promise<{ id: string; dataUrl: string } | null>`
+  - `delete(id: string): Promise<void>`
+  - `findByCharacterId(characterId: string): Promise<Image[]>` - キャラクターの全画像取得
 
-### 5-2. 関連管理コンポーネント
-- [ ] （YAGNI原則により後回し - 必要になった時点で実装）
+### 2.2 CharacterImage Repository作成
+- [ ] `packages/rdb/src/queries/characterImageRepository.ts` (新規作成)
+  - `link(characterId: string, imageId: string, isPrimary: boolean): Promise<void>` - 関連付け
+  - `unlink(characterId: string, imageId: string): Promise<void>` - 関連解除
+  - `setPrimary(characterId: string, imageId: string): Promise<void>` - メイン画像設定
+  - `findByCharacterId(characterId: string): Promise<CharacterImage[]>`
+  - `getPrimaryImage(characterId: string): Promise<Image | null>` - メイン画像取得
 
-### 5-3. Storybook作成
-- [x] `packages/ui/src/informationItem/InformationItemList.stories.tsx`
-  - [x] Default, Loading, Empty, SingleItem, NoDescription, ManyItems シナリオ
-- [x] `packages/ui/src/informationItem/InformationItemForm.stories.tsx`
-  - [x] CreateNew, Edit, EditWithoutCancel, EditWithoutDelete シナリオ
-- [x] `packages/ui/src/informationItem/InformationItemCard.stories.tsx`
-  - [x] Default, NoDescription, WithoutDelete, WithoutClick, LongDescription シナリオ
-- [x] Lint・型チェック通過確認
+### 2.3 テスト: Image Repository
+- [ ] `packages/rdb/src/queries/imageRepository.test.ts` (新規作成)
+  - CRUD操作のテスト
+  - エラーハンドリングテスト
+
+### 2.4 テスト: CharacterImage Repository
+- [ ] `packages/rdb/src/queries/characterImageRepository.test.ts` (新規作成)
+  - 関連付け・解除のテスト
+  - メイン画像設定のテスト
+  - 複数画像の取得テスト
 
 ---
 
-## フェーズ6: シーングラフ統合
+## Phase 3: バックエンド層（GraphDB）
 
-### 6-1. React Flowノード拡張
-- [ ] `packages/ui/src/scene/canvas/InformationItemNode.tsx` 作成
-  - 情報項目ノードコンポーネント
-  - スタイリング（シーンと区別できる色・形状）
+### 3.1 Image Repository作成
+- [ ] `packages/graphdb/src/queries/imageRepository.ts` (新規作成)
+  - `createImageNode(id: string): Promise<void>` - Imageノード作成
+  - `deleteImageNode(id: string): Promise<void>` - Imageノード削除
+  - `linkToCharacter(characterId: string, imageId: string, isPrimary: boolean): Promise<void>` - HAS_IMAGEリレーション作成
+  - `unlinkFromCharacter(characterId: string, imageId: string): Promise<void>` - HAS_IMAGEリレーション削除
+  - `getCharacterImages(characterId: string): Promise<{ imageId: string; isPrimary: boolean }[]>` - キャラクターの画像ID一覧取得
 
-### 6-2. FlowCanvas更新
-- [ ] `packages/ui/src/scene/canvas/FlowCanvas.tsx` 更新
-  - 情報項目ノードの表示対応
-  - 情報項目エッジの表示対応
-  - ノードタイプ判定ロジック追加
+### 3.2 Character Repository更新
+- [ ] `packages/graphdb/src/queries/characterRepository.ts`
+  - `findById()`の戻り値に`primaryImageId?: string`を追加
+  - `findAll()`の戻り値に`primaryImageId?: string`を追加
+  - クエリで`HAS_IMAGE`リレーション（isPrimary=true）からメイン画像IDを取得
 
-### 6-3. グラフデータ統合
-- [ ] `apps/frontend/src/entities/scene/api/sceneGraphApi.ts` 更新
-  - getSceneGraphWithInformation 実装
-  - 情報項目を含むグラフデータ取得
-- [ ] `packages/graphdb/src/queries/sceneRepository.ts` 更新
-  - シーン + 情報項目の統合クエリ実装
+### 3.3 テスト: Image Repository
+- [ ] `packages/graphdb/src/queries/imageRepository.test.ts` (新規作成)
+  - Imageノードの作成・削除テスト
+  - HAS_IMAGEリレーションの作成・削除テスト
+  - 複数画像の取得テスト
+  - isPrimaryフラグのテスト
 
----
+### 3.4 テスト: Character Repository
+- [ ] `packages/graphdb/src/queries/characterRepository.test.ts`
+  - `primaryImageId`を含む取得処理のテスト
+  - 画像なしキャラクターの下位互換テスト
 
-## フェーズ7: ページ統合
-
-### 7-1. シナリオ編集ページ更新
-- [ ] `apps/frontend/src/entities/scenario/containers/Page.tsx` 更新
-  - 情報項目タブの追加
-  - 情報項目一覧の表示
-- [ ] `packages/ui/src/scenario/ScenarioPage.tsx` 更新
-  - レイアウト調整（情報項目セクション追加）
-
-### 7-2. ルーティング
-- [ ] `apps/frontend/src/app/router.tsx` 確認
-  - 情報項目ページのルート追加（必要な場合）
+### 3.3 統合テスト実行
+- [ ] `npm run test` (packages/graphdb)
+  - 全テスト通過確認
+  - lint・型チェック実行
 
 ---
 
-## フェーズ8: E2E（BDD）テスト作成
+## Phase 4: フロントエンド API層
 
-### 8-1. Featureファイル作成
-- [x] `apps/frontend/tests/features/information-item.feature` 作成
-  - [x] 基本シナリオ（作成・更新・削除）
-  - [x] 将来実装シナリオ（@futureタグ付き）
-  - [x] 現時点では@ignoreで無効化
+### 4.1 Image API作成
+- [ ] `apps/frontend/src/entities/image/api/imageApi.ts` (新規作成)
+  - RDB API:
+    - `createImage(dataUrl: string): Promise<{ id: string }>` - 画像作成
+    - `findImageById(id: string): Promise<{ dataUrl: string } | null>` - 画像取得
+    - `deleteImage(id: string): Promise<void>` - 画像削除
+    - `linkToCharacter(characterId: string, imageId: string, isPrimary: boolean): Promise<void>` - 関連付け
+    - `unlinkFromCharacter(characterId: string, imageId: string): Promise<void>` - 関連解除
+    - `getCharacterImages(characterId: string): Promise<Image[]>` - キャラクター画像一覧
+    - `getPrimaryImage(characterId: string): Promise<Image | null>` - メイン画像取得
 
-**証跡: UI統合の依存関係**
-- 情報項目管理には専用ページまたはタブが必要
-- シナリオ詳細ページへの統合が前提条件
-- 現時点ではAPI・State・Hooks・UIコンポーネントは完成
-- **次段階**: シナリオ詳細ページへの統合実装後にBDDテスト有効化
+### 4.2 Character Graph API更新
+- [ ] `apps/frontend/src/entities/character/api/characterGraphApi.ts`
+  - レスポンス型に`primaryImageId?: string`追加（変更なし、取得のみ）
 
-### 8-2. Step実装
-- [ ] （UI統合完了後に実装）
-  - ページ統合後にステップ定義を作成
-  - ページオブジェクトパターンで実装
+### 4.3 Redux State管理
 
-### 8-3. BDDテスト実行
-- [ ] （UI統合完了後に実行）
-  - シナリオ詳細ページ統合完了後に@ignoreを削除
-  - `bun run test:e2e` で動作確認
+#### 4.3.1 Image Slice作成
+- [ ] `apps/frontend/src/entities/image/model/imageSlice.ts` (新規作成)
+  - 状態定義:
+    ```typescript
+    {
+      imagesById: Record<string, string>, // id → dataUrl
+      characterImages: Record<string, string[]>, // characterId → imageIds
+    }
+    ```
+  - Actions:
+    - `setImage(id, dataUrl)` - 画像キャッシュ
+    - `removeImage(id)` - 画像削除
+    - `setCharacterImages(characterId, imageIds)` - キャラクター画像一覧設定
+    - `setCharacterPrimaryImage(characterId, imageId)` - メイン画像設定
+
+#### 4.3.2 Character Slice更新
+- [ ] `apps/frontend/src/entities/character/model/characterSlice.ts`
+  - 状態に追加:
+    - `createImageDataUrls: string[]` - 作成フォームの画像Data URL配列
+    - `editImageDataUrls: string[]` - 編集フォームの画像Data URL配列
+    - `createPrimaryImageIndex: number` - 作成時のメイン画像インデックス
+  - Actions追加:
+    - `addCreateImageDataUrl(dataUrl: string)` - 画像追加
+    - `removeCreateImageDataUrl(index: number)` - 画像削除
+    - `setCreatePrimaryImageIndex(index: number)` - メイン画像設定
+    - `clearCreateImages()` - 画像クリア
+
+### 4.4 Character Actions更新
+- [ ] `apps/frontend/src/entities/character/actions/characterActions.ts`
+  - `createCharacterAction`の実装更新:
+    1. `imageDataUrls`をループして`imageApi.createImage()`を呼び出し
+    2. 各画像IDを取得
+    3. キャラクター作成後、各画像を`imageApi.linkToCharacter()`で関連付け
+    4. メイン画像を`isPrimary: true`で設定
+    5. 画像をRedux stateにキャッシュ
+  - `updateCharacterAction`も同様の処理
+
+### 4.5 Hooks作成・更新
+
+#### 4.5.1 useCreateCharacter更新
+- [ ] `apps/frontend/src/entities/character/hooks/useCreateCharacter.ts`
+  - 返り値に追加:
+    - `imageDataUrls: string[]` - 画像URL配列
+    - `addImageDataUrl: (url: string) => void` - 画像追加
+    - `removeImageDataUrl: (index: number) => void` - 画像削除
+    - `primaryImageIndex: number` - メイン画像インデックス
+    - `setPrimaryImageIndex: (index: number) => void` - メイン画像設定
+
+#### 4.5.2 useCharacterImages作成
+- [ ] `apps/frontend/src/entities/image/hooks/useCharacterImages.ts` (新規作成)
+  - `useCharacterImages(characterId: string): { images: Image[]; primaryImage: Image | null }`
+  - キャラクターの画像一覧とメイン画像を取得
+  - Redux stateから取得、未キャッシュの場合はAPIから取得
+
+### 4.6 lint・型チェック
+- [ ] `npm run lint` (apps/frontend)
+- [ ] `npm run type-check` (apps/frontend)
 
 ---
 
-## フェーズ9: 統合テスト・品質保証
+## Phase 5: UI層
 
-### 9-1. Lint・型チェック
-- [x] `bun run lint` 実行（全プロジェクト）
-  - [x] apps/frontend: 警告1件（既存TODO）、エラー0件
-  - [x] packages/graphdb: エラー0件
-  - [x] packages/schema: エラー0件
-  - [x] packages/ui: エラー0件
-- [x] TypeScript型エラー修正 - 問題なし
+### 5.1 CharacterImageGallery作成
+- [ ] `packages/ui/src/character/CharacterImageGallery.tsx` (新規作成)
+  - 複数画像のサムネイル表示
+  - 画像追加ボタン（ImageInput統合）
+  - 画像削除ボタン
+  - メイン画像の選択UI（ラジオボタンまたはスター）
+  - Props:
+    - `images: { dataUrl: string; isPrimary: boolean }[]`
+    - `onAddImage: (dataUrl: string) => void`
+    - `onRemoveImage: (index: number) => void`
+    - `onSetPrimary: (index: number) => void`
 
-### 9-2. ユニットテスト実行
-- [x] GraphDBユニットテスト: 4テストケース全通過
-  - informationItemRepository.test.ts
+### 5.2 CharacterCreateModal更新
+- [ ] `packages/ui/src/character/CharacterCreateModal.tsx`
+  - Props追加:
+    - `imageDataUrls: string[]`
+    - `onAddImage?: (url: string) => void`
+    - `onRemoveImage?: (index: number) => void`
+    - `primaryImageIndex?: number`
+    - `onSetPrimaryImage?: (index: number) => void`
+  - `CharacterImageGallery`コンポーネントを統合
+  - フォームレイアウト調整
 
-### 9-3. ビルド確認
-- [x] `bun run build` 実行
-- [x] ビルド成功（23.607s）
-- [x] ビルドエラーなし
+### 5.3 CharacterList更新
+- [ ] `packages/ui/src/character/CharacterList.tsx`
+  - キャラクターカードにメイン画像表示追加
+  - 画像なしの場合のフォールバック表示
+  - レイアウト調整（画像サイズ、配置）
 
-### 9-4. 手動動作確認
-- [ ] 開発サーバー起動（`bun run dev`）
-- [ ] 情報項目登録動作確認
-- [ ] 情報項目同士の関連作成確認
-- [ ] シーン-情報項目の関連作成確認
-- [ ] シーングラフ表示確認（両方のつながり）
+### 5.4 型定義更新
+- [ ] `packages/ui/src/character/types.ts`
+  - `Character`型に`primaryImageId?: string`追加
+  - Props型の更新（画像配列対応）
+
+### 5.5 ScenarioCharacter関連UI（オプション）
+- [ ] `packages/ui/src/scenarioCharacter/ScenarioCharacterFormModal.tsx`
+  - 画像表示・編集機能追加
+- [ ] `packages/ui/src/scenarioCharacter/ScenarioCharacterList.tsx`
+  - メイン画像表示追加
+
+### 5.5 lint・型チェック・ビルド
+- [ ] `npm run lint` (packages/ui)
+- [ ] `npm run type-check` (packages/ui)
+- [ ] `npm run build` (packages/ui)
 
 ---
 
-## フェーズ10: ドキュメント・完了
+## Phase 6: E2Eテスト（BDD）
 
-### 10-1. ドキュメント更新
-- [ ] `readme.md` 更新
-  - 情報項目機能の説明追加
-  - スクリーンショット追加（任意）
-- [ ] `apps/frontend/README.md` 更新（必要な場合）
+### 6.1 Feature作成
+- [ ] `apps/frontend/tests/features/character-image.feature` (新規作成)
+  ```gherkin
+  Feature: キャラクター画像管理
 
-### 10-2. 証跡記録
-- [ ] 設計判断の記録
+  Scenario: キャラクター作成時に画像をアップロード
+    Given アプリケーションを開いている
+    When キャラクター作成モーダルを開く
+    And 画像ファイルをアップロードする
+    And キャラクター名に "テストキャラ" と入力する
+    And キャラクター説明に "テスト説明" と入力する
+    And 作成ボタンをクリックする
+    Then キャラクターリストに "テストキャラ" が表示される
+    And "テストキャラ" に画像が表示される
+
+  Scenario: 画像なしでキャラクター作成
+    Given アプリケーションを開いている
+    When キャラクター作成モーダルを開く
+    And キャラクター名に "画像なしキャラ" と入力する
+    And 作成ボタンをクリックする
+    Then キャラクターリストに "画像なしキャラ" が表示される
+    And "画像なしキャラ" に画像が表示されない
+
+  Scenario: キャラクター編集で画像を変更
+    Given キャラクター "既存キャラ" が存在する
+    When キャラクター編集モーダルを開く
+    And 新しい画像ファイルをアップロードする
+    And 保存ボタンをクリックする
+    Then "既存キャラ" に新しい画像が表示される
+  ```
+
+### 6.2 ステップ定義作成
+- [ ] `apps/frontend/tests/steps/character-image.steps.ts` (新規作成)
+  - `When('画像ファイルをアップロードする')`
+    - テスト用画像ファイルをImageInputにセット
+  - `Then('{string} に画像が表示される')`
+    - 画像要素の存在確認
+    - Data URL形式の確認
+  - `Then('{string} に画像が表示されない')`
+    - 画像要素の不在確認
+
+### 6.3 テスト実行
+- [ ] `npm run test:e2e` (apps/frontend)
+  - 全シナリオ通過確認
+  - 既存シナリオのリグレッションテスト
+
+---
+
+## Phase 7: 統合確認・リファクタリング
+
+### 7.1 統合動作確認
+- [ ] フロントエンド起動
+  - `npm run dev`
+  - キャラクター作成で画像アップロード
+  - キャラクター一覧で画像表示確認
+  - キャラクター編集で画像変更確認
+
+### 7.2 データベース確認
+- [ ] RDB: `images`テーブルにData URLが保存されているか
+- [ ] GraphDB: `Image`ノードと`HAS_IMAGE`リレーションが作成されているか
+
+### 7.3 パフォーマンス確認
+- [ ] 大きな画像（数MB）のアップロード動作
+- [ ] Data URLのサイズ制限（必要に応じて圧縮処理追加）
+- [ ] 画像キャッシュの動作確認
+
+### 7.4 エラーハンドリング確認
+- [ ] 不正な画像形式のアップロード
+- [ ] ネットワークエラー時の挙動
+- [ ] 画像削除時の整合性
+
+### 7.5 リファクタリング
+- [ ] コードの重複削除
+- [ ] コメント・ドキュメント追加
+- [ ] 型安全性の向上
+
+---
+
+## Phase 8: ドキュメント・完了確認
+
+### 8.1 証跡記録
+- [ ] `CLAUDE.md`に実装内容を追記
+  - 画像機能のデータフロー
+  - API仕様
+  - トラブルシューティング
+
+### 8.2 完了チェックリスト確認
+- [ ] バックエンドテスト: 統合テスト・lint・型チェック通過
+- [ ] フロントエンドテスト: lint・型チェック・ビルド成功
+- [ ] E2Eテスト: 全シナリオ通過
 - [ ] 依存関係・制約事項の明確化
-- [ ] 完了基準の確認
 
-### 10-3. コミット・PR作成
+### 8.3 Git操作
 - [ ] 変更をコミット
-- [ ] PR作成・レビュー依頼
+  ```bash
+  git add .
+  git commit -m "feat: add character image upload feature #36"
+  ```
+- [ ] ブランチをpush
+  ```bash
+  git push origin id/36/addImage
+  ```
 
 ---
 
-## 依存関係メモ
+## 補足: 設計判断記録
 
-- **GraphDBスキーマ** → Repository実装
-- **Repository実装** → Worker Handlers
-- **Worker Handlers** → Frontend API
-- **Frontend API** → Redux State
-- **Redux State** → Custom Hooks
-- **Custom Hooks** → UI Components
-- **UI Components** → Page統合
-- **Page統合** → BDDテスト
+### 画像保存方式
+- **選択**: RDBにData URL（base64）を保存
+- **理由**:
+  - ファイルシステム管理不要
+  - バックアップが容易
+  - トランザクション管理が簡単
+- **トレードオフ**: Data URLはサイズが大きい（base64エンコードで約1.37倍）
+
+### GraphDB構造
+- **選択**: `Image`ノード + `HAS_IMAGE`リレーション（1:N関係）
+- **理由**:
+  - 1キャラクターに複数画像を設定可能
+  - `isPrimary`プロパティでメイン画像を指定
+  - 画像の再利用が可能（複数キャラクターで同じ画像を共有可能）
+  - リレーショナルな構造で柔軟性が高い
+  - 将来的に画像メタデータ（アップロード日時、サイズなど）を追加可能
+
+### RDB構造
+- **選択**: `images`テーブル + `character_images`中間テーブル
+- **理由**:
+  - 多対多の関係を正規化
+  - `isPrimary`フラグで1キャラクターにつき1つのメイン画像を指定
+  - 外部キー制約（ON DELETE CASCADE）で整合性を保証
+  - 画像の削除時、関連する中間テーブルのレコードも自動削除
+
+### フロントエンド状態管理
+- **選択**: Redux stateで画像Data URLをキャッシュ
+- **理由**:
+  - 再取得の回数を削減（パフォーマンス向上）
+  - オフライン対応の可能性
+  - キャラクターごとの画像配列を管理
+- **注意**: メモリ使用量に注意（必要に応じてLRUキャッシュ実装）
+
+### UI設計
+- **選択**: 画像ギャラリーコンポーネント（CharacterImageGallery）
+- **理由**:
+  - 複数画像のサムネイル表示
+  - 画像の追加・削除が直感的
+  - メイン画像の選択がわかりやすい（ラジオボタンまたはスターアイコン）
+  - 再利用可能なコンポーネント
 
 ---
 
-## 完了基準
+## 進捗管理
 
-1. ✅ GraphDBに情報項目ノード・リレーションが定義されている
-2. ✅ 情報項目のCRUD操作が可能
-3. ✅ 情報項目同士の関連が作成・削除可能
-4. ✅ シーン-情報項目の関連が作成・削除可能
-5. ✅ シーングラフで情報項目とその関連が表示される
-6. ✅ BDDテストが全て通過する
-7. ✅ Lint・型チェック・ビルドが成功する
-8. ✅ ドキュメントが更新されている
+- **作成日**: 2025-11-05
+- **対象ブランチ**: `id/36/addImage`
+- **関連Issue**: #36
+- **担当**: Claude + User
 
----
-
-## 備考
-
-- 改行コードは全てLFで統一
-- Valibotスキーマを境界で必ずパース（`as`型アサーション禁止）
-- Web Worker内でのDB操作はすべて非同期
-- UI実装はTailwind CSSでスタイリング
-- React Flowノードは既存のSceneNodeを参考に実装
+### 進捗状況
+- [ ] Phase 1: スキーマ・データベース層
+- [ ] Phase 2: バックエンド層（RDB）
+- [ ] Phase 3: バックエンド層（GraphDB）
+- [ ] Phase 4: フロントエンド API層
+- [ ] Phase 5: UI層
+- [ ] Phase 6: E2Eテスト（BDD）
+- [ ] Phase 7: 統合確認・リファクタリング
+- [ ] Phase 8: ドキュメント・完了確認

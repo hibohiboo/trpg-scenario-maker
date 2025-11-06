@@ -1,6 +1,7 @@
 import { BaseWorkerClient } from './BaseWorkerClient';
 import type { DBWorkerRequest, DBWorkerResponse } from './db.worker';
 import DBWorker from './db.worker?worker';
+import type { GlobalRdbHandlerMap } from './types/handlerMaps';
 
 /**
  * DBWorkerクライアント（汎用）
@@ -31,12 +32,17 @@ class DBWorkerClient extends BaseWorkerClient<
    * 汎用リクエスト送信メソッド
    * エンティティAPIから直接使用される
    */
-  async request<T = unknown>(type: string, payload?: unknown): Promise<T> {
-    const response = await this.sendRequest<DBWorkerResponse & { data: T }>({
+  async request<K extends keyof GlobalRdbHandlerMap>(
+    type: K,
+    payload?: unknown,
+  ): Promise<GlobalRdbHandlerMap[K]> {
+    const response = await this.sendRequest<
+      DBWorkerResponse & { data: GlobalRdbHandlerMap[K] }
+    >({
       type,
       payload,
     });
-    return response.data as T;
+    return response.data as GlobalRdbHandlerMap[K];
   }
 }
 

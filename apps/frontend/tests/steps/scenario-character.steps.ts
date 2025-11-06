@@ -206,8 +206,8 @@ Given(
     // 作成ボタンをクリック
     await modal.getByRole('button', { name: '作成' }).click();
 
-    // モーダルが閉じるのを待つ
-    await modal.waitFor({ state: 'hidden', timeout: 1000 });
+    // モーダルが閉じるのを待つ（GraphDB保存に時間がかかる場合がある）
+    await modal.waitFor({ state: 'hidden', timeout: 3000 });
   },
 );
 

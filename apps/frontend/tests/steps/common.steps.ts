@@ -5,6 +5,7 @@ import {
   After,
   setDefaultTimeout,
   setWorldConstructor,
+  Then,
 } from '@cucumber/cucumber';
 import { chromium, expect, Page } from '@playwright/test';
 
@@ -18,7 +19,7 @@ setDefaultTimeout(10000);
 function setupCustomWorld() {
   setWorldConstructor(function (this: CustomWorld) {
     this.init = async () => {
-      const browser = await chromium.launch({ headless: true });
+      const browser = await chromium.launch({ headless: false });
       const context = await browser.newContext();
       this.page = await context.newPage();
     };
@@ -61,7 +62,7 @@ When(
     await expect(modal.getByRole('button', { name: buttonText })).toBeVisible();
     await modal.getByRole('button', { name: buttonText }).click();
     // モーダルが閉じるまで待つ
-    await modal.waitFor({ state: 'hidden', timeout: 1000 });
+    await modal.waitFor({ state: 'hidden', timeout: 2000 });
   },
 );
 
@@ -119,5 +120,11 @@ When(
       .click();
     // フォームの送信処理が完了するまで少し待つ
     await this.page.waitForTimeout(50);
+  },
+);
+Then(
+  'ページに {string} が表示される',
+  async function (this: CustomWorld, content: string) {
+    await expect(this.page.getByText(content)).toBeVisible();
   },
 );

@@ -27,10 +27,12 @@ export {
   ScenarioCharacterEditModal,
   CharacterRelationshipGraph,
   CharacterNode,
+  CharacterDetailPanel,
 } from './scenarioCharacter';
 export type {
   CharacterWithRole,
   ScenarioCharacterRelation,
+  CharacterDetailPanelProps,
 } from './scenarioCharacter';
 export {
   InformationItemList,
@@ -53,3 +55,13 @@ export type {
 } from './informationItem';
 export { Button, Loading, ErrorMessage, Layout, Modal, Tabs } from './common';
 export type { ButtonVariant, ButtonSize, Tab, TabsProps } from './common';
+export {
+  ImageInput,
+  CharacterImageGallery,
+  CharacterImageUploadModal,
+} from './image';
+export type {
+  ImageData,
+  CharacterImageGalleryProps,
+  CharacterImageUploadModalProps,
+} from './image';

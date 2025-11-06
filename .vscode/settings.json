@@ -82,6 +82,6 @@
   "git.enabled": true,
   "git.autorefresh": true,
   "git.autofetch": false,
-  "git.decorations.enabled": false
+  "git.decorations.enabled": true
   // ファイルサイズ制限
 }

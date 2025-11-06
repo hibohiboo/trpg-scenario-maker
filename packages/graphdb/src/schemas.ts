@@ -63,6 +63,14 @@ export const graphDbSchemas = {
         PRIMARY KEY (id)
       )`,
     },
+    {
+      name: 'Image',
+      query: `
+      CREATE NODE TABLE Image (
+        id STRING,
+        PRIMARY KEY (id)
+      )`,
+    },
   ],
   relationships: [
     {
@@ -150,6 +158,14 @@ export const graphDbSchemas = {
       CREATE REL TABLE INFO_POINTS_TO_SCENE (
         FROM InformationItem TO Scene,
         id STRING
+      )`,
+    },
+    {
+      name: 'HAS_IMAGE',
+      query: `
+      CREATE REL TABLE HAS_IMAGE (
+        FROM Character TO Image,
+        isPrimary BOOL
       )`,
     },
   ],

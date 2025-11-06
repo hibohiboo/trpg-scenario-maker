@@ -8,3 +8,4 @@ export * from './CharacterNode';
 export * from './CharacterGraphToolbar';
 export * from './characterGraphUtils';
 export * from './types';
+export * from './CharacterDetailPanel';
