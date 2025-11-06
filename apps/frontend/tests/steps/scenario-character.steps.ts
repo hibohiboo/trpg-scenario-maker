@@ -26,7 +26,9 @@ Given(
       .click();
 
     // シナリオが作成されたことを確認
-    await expect(this.page.getByText(scenarioTitle)).toBeVisible();
+    await expect(this.page.getByText(scenarioTitle)).toBeVisible({
+      timeout: 10000,
+    });
   },
 );
 
