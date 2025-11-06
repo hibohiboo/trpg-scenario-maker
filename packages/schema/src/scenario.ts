@@ -99,3 +99,66 @@ export const parseToScenario = (data: unknown): Scenario => {
   // その後Date型に変換
   return stringToScenario(scenarioString);
 };
+
+// === Payload Schemas ===
+
+/**
+ * シナリオ作成ペイロードスキーマ
+ */
+export const CreateScenarioPayloadSchema = v.object({
+  title: v.string(),
+});
+
+/**
+ * シナリオ更新ペイロードスキーマ
+ */
+export const UpdateScenarioPayloadSchema = v.object({
+  id: v.string(),
+  data: v.object({
+    title: v.string(),
+  }),
+});
+
+/**
+ * シナリオID取得ペイロードスキーマ
+ */
+export const ScenarioIdPayloadSchema = v.object({
+  id: v.string(),
+});
+
+// === Payload Parse Functions ===
+
+export const parseCreateScenarioPayload = (data: unknown) => {
+  return v.parse(CreateScenarioPayloadSchema, data);
+};
+
+export const parseUpdateScenarioPayload = (data: unknown) => {
+  return v.parse(UpdateScenarioPayloadSchema, data);
+};
+
+export const parseScenarioIdPayload = (data: unknown) => {
+  return v.parse(ScenarioIdPayloadSchema, data);
+};
+
+// === Response Parse Functions ===
+
+/**
+ * シナリオレスポンスをパース（string型）
+ */
+export const parseScenario = (data: unknown): SerializableScenario => {
+  return scenarioToString(v.parse(ScenarioSchema, data));
+};
+
+/**
+ * シナリオリストをパース（string型）
+ */
+export const parseScenarioList = (data: unknown): SerializableScenario[] => {
+  return v.parse(v.array(ScenarioSchema), data).map(scenarioToString);
+};
+
+/**
+ * シナリオ数をパース
+ */
+export const parseScenarioCount = (data: unknown): number => {
+  return v.parse(v.number(), data);
+};

@@ -1,4 +1,11 @@
 import { imageRepository } from '@trpg-scenario-maker/rdb';
+import {
+  parseCreateImagePayload,
+  parseImageIdRdbPayload,
+  parseImageIdsPayload,
+  parseToImage,
+  parseToImageList,
+} from '@trpg-scenario-maker/schema';
 
 /**
  * 画像のRDB操作ハンドラー
@@ -7,22 +14,27 @@ export const imageRdbHandlers = [
   {
     type: 'image:rdb:create',
     handler: async (payload: unknown) => {
-      const { dataUrl } = payload as { dataUrl: string };
+      const { dataUrl } = parseCreateImagePayload(payload);
       const result = await imageRepository.create(dataUrl);
+      const data = parseToImage({
+        ...result,
+      });
 
-      return { data: result };
+      return { data };
     },
   },
   {
     type: 'image:rdb:getById',
     handler: async (payload: unknown) => {
-      const { id } = payload as { id: string };
+      const { id } = parseImageIdRdbPayload(payload);
       const result = await imageRepository.findById(id);
       const data =
         result == null
           ? null
-          : // Redux stateで使用するため、Date型をISO文字列に変換
-            { ...result, createdAt: result.createdAt?.toISOString() };
+          : parseToImage({
+              ...result,
+              createdAt: result.createdAt?.toISOString(),
+            });
 
       return { data };
     },
@@ -30,19 +42,21 @@ export const imageRdbHandlers = [
   {
     type: 'image:rdb:getByIds',
     handler: async (payload: unknown) => {
-      const { ids } = payload as { ids: string[] };
+      const { ids } = parseImageIdsPayload(payload);
       const results = await imageRepository.findByIds(ids);
-      const data = results.map((r) => ({
-        ...r,
-        createdAt: r.createdAt?.toISOString(),
-      }));
+      const data = parseToImageList(
+        results.map((r) => ({
+          ...r,
+          createdAt: r.createdAt?.toISOString(),
+        })),
+      );
       return { data };
     },
   },
   {
     type: 'image:rdb:delete',
     handler: async (payload: unknown) => {
-      const { id } = payload as { id: string };
+      const { id } = parseImageIdRdbPayload(payload);
       await imageRepository.delete(id);
 
       return { success: true };

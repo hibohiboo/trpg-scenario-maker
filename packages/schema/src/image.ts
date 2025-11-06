@@ -176,3 +176,40 @@ export const parseImageCharacterInfoList = (data: unknown) => {
 export const parseCharacterImageInfoList = (data: unknown) => {
   return v.parse(v.array(CharacterImageInfoSchema), data);
 };
+
+// === RDB Payload Schemas ===
+
+/**
+ * 画像作成ペイロードスキーマ（RDB）
+ */
+export const CreateImagePayloadSchema = v.object({
+  dataUrl: v.string(),
+});
+
+/**
+ * 画像ID取得ペイロードスキーマ（RDB）
+ */
+export const ImageIdRdbPayloadSchema = v.object({
+  id: v.string(),
+});
+
+/**
+ * 画像ID配列取得ペイロードスキーマ（RDB）
+ */
+export const ImageIdsPayloadSchema = v.object({
+  ids: v.array(v.string()),
+});
+
+// === RDB Payload Parse Functions ===
+
+export const parseCreateImagePayload = (data: unknown) => {
+  return v.parse(CreateImagePayloadSchema, data);
+};
+
+export const parseImageIdRdbPayload = (data: unknown) => {
+  return v.parse(ImageIdRdbPayloadSchema, data);
+};
+
+export const parseImageIdsPayload = (data: unknown) => {
+  return v.parse(ImageIdsPayloadSchema, data);
+};
