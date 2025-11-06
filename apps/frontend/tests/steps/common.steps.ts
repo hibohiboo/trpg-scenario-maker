@@ -5,6 +5,7 @@ import {
   After,
   setDefaultTimeout,
   setWorldConstructor,
+  Then,
 } from '@cucumber/cucumber';
 import { chromium, expect, Page } from '@playwright/test';
 
@@ -119,5 +120,11 @@ When(
       .click();
     // フォームの送信処理が完了するまで少し待つ
     await this.page.waitForTimeout(50);
+  },
+);
+Then(
+  'ページに {string} が表示される',
+  async function (this: CustomWorld, content: string) {
+    await expect(this.page.getByText(content)).toBeVisible();
   },
 );
