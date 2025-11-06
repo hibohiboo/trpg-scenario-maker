@@ -1,5 +1,6 @@
 import { parseSceneConnectionSchema } from '@trpg-scenario-maker/schema/scene';
 import type { Scene, SceneConnection } from '@trpg-scenario-maker/ui';
+import { generateUUID } from '@trpg-scenario-maker/utility';
 import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 
 /**
@@ -40,14 +41,17 @@ export const sceneGraphApi = {
     scenarioId: string,
     scene: Omit<Scene, 'id'>,
   ): Promise<Scene> => {
-    const id = crypto.randomUUID();
-    const result = await graphdbWorkerClient.request('scene:graph:createScene', {
-      scenarioId,
-      id,
-      title: scene.title,
-      description: scene.description,
-      isMasterScene: scene.isMasterScene,
-    });
+    const id = generateUUID();
+    const result = await graphdbWorkerClient.request(
+      'scene:graph:createScene',
+      {
+        scenarioId,
+        id,
+        title: scene.title,
+        description: scene.description,
+        isMasterScene: scene.isMasterScene,
+      },
+    );
 
     return result;
   },

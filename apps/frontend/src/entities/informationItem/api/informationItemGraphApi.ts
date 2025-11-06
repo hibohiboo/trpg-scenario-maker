@@ -4,6 +4,7 @@ import type {
   InformationToSceneConnection,
   SceneInformationConnection,
 } from '@trpg-scenario-maker/ui';
+import { generateUUID } from '@trpg-scenario-maker/utility';
 import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 
 /**
@@ -32,7 +33,7 @@ export const informationItemGraphApi = {
     scenarioId: string,
     item: Omit<InformationItem, 'id' | 'scenarioId'>,
   ): Promise<InformationItem> => {
-    const id = crypto.randomUUID();
+    const id = generateUUID();
     const result = await graphdbWorkerClient.request(
       'informationItem:graph:createInformationItem',
       {
@@ -96,7 +97,7 @@ export const informationItemGraphApi = {
   createInformationConnection: async (
     connection: Omit<InformationItemConnection, 'id'>,
   ): Promise<InformationItemConnection> => {
-    const id = crypto.randomUUID();
+    const id = generateUUID();
     const result = await graphdbWorkerClient.request(
       'informationItem:graph:createInformationConnection',
       {
@@ -141,7 +142,7 @@ export const informationItemGraphApi = {
   createSceneInformationConnection: async (
     connection: Omit<SceneInformationConnection, 'id'>,
   ): Promise<SceneInformationConnection> => {
-    const id = crypto.randomUUID();
+    const id = generateUUID();
     const result = await graphdbWorkerClient.request(
       'informationItem:graph:createSceneInformationConnection',
       {
@@ -214,7 +215,7 @@ export const informationItemGraphApi = {
   createInformationToSceneConnection: async (
     connection: Omit<InformationToSceneConnection, 'id'>,
   ): Promise<InformationToSceneConnection> => {
-    const id = crypto.randomUUID();
+    const id = generateUUID();
     const result = await graphdbWorkerClient.request(
       'informationItem:graph:createInformationToSceneConnection',
       {

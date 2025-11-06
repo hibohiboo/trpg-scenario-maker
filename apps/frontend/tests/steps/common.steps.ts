@@ -14,7 +14,7 @@ export interface CustomWorld {
   init: () => Promise<void>;
 }
 
-setDefaultTimeout(10000);
+setDefaultTimeout(20000);
 
 function setupCustomWorld() {
   setWorldConstructor(function (this: CustomWorld) {

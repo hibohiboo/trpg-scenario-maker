@@ -88,6 +88,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@electric-sql/pglite": "^0.3.11",
+        "@trpg-scenario-maker/utility": "workspace:*",
         "drizzle-orm": "^0.44.7",
       },
       "devDependencies": {
