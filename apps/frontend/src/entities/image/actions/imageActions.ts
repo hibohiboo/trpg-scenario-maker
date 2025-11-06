@@ -124,11 +124,31 @@ export const deleteImageAction = createAsyncThunk<
   void,
   { characterId: string; imageId: string }
 >('image/deleteImage', async ({ characterId, imageId }) => {
+  // 削除前に、この画像がメイン画像かどうか確認
+  const imageLinks = await imageGraphApi.getImagesByCharacterId(characterId);
+  const deletedImageLink = imageLinks.find((link) => link.imageId === imageId);
+  const wasMainImage = deletedImageLink?.isPrimary || false;
+
   // キャラクターとの関連を削除
   await imageGraphApi.unlinkFromCharacter({
     characterId,
     imageId,
   });
+
+  // メイン画像を削除した場合、残りの画像の最初の1つをメイン画像に設定
+  if (wasMainImage) {
+    const remainingImages = imageLinks.filter(
+      (link) => link.imageId !== imageId,
+    );
+    if (remainingImages.length > 0) {
+      // 最初の画像をメイン画像に設定
+      await imageGraphApi.updateLink({
+        characterId,
+        imageId: remainingImages[0].imageId,
+        isPrimary: true,
+      });
+    }
+  }
 
   // 他のキャラクターが使用していないか確認
   const characters = await imageGraphApi.getCharactersByImageId(imageId);

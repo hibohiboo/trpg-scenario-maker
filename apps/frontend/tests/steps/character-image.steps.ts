@@ -138,12 +138,20 @@ Then('画像アップロードモーダルが閉じる', async function (this: C
   ).not.toBeVisible();
 });
 
+When(
+  '{string} チェックボックスをチェックする',
+  async function (this: CustomWorld, label: string) {
+    const checkbox = this.page.getByLabel(label);
+    await checkbox.check();
+  },
+);
+
 // 画像ギャラリー
 Then(
   '画像ギャラリーに画像が{int}枚表示される',
   async function (this: CustomWorld, count: number) {
     const gallery = this.page.getByTestId('character-image-gallery');
-    const images = await gallery.locator('img[alt="Character"]');
+    const images = gallery.locator('img[alt="Character"]');
     await images.first().waitFor({ state: 'visible' });
     expect(await images.count()).toBe(count);
   },
