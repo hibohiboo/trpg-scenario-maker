@@ -30,7 +30,7 @@
   "devDependencies": {
     "@cucumber/cucumber": "^12.2.0",
     "@playwright/test": "^1.56.1",
-    "@tailwindcss/vite": "^4.1.16",
+    "@tailwindcss/vite": "^4.1.17",
     "@trpg-scenario-maker/eslint-config-custom": "workspace:*",
     "@trpg-scenario-maker/tsconfig": "workspace:*",
     "@types/node": "catalog:",

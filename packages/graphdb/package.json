@@ -16,7 +16,7 @@
     "@trpg-scenario-maker/eslint-config-custom": "workspace:*",
     "@trpg-scenario-maker/tsconfig": "workspace:*",
     "@trpg-scenario-maker/utility": "workspace:*",
-    "@vitest/browser": "^4.0.7",
+    "@vitest/browser": "catalog:testing",
     "apache-arrow": "^21.1.0",
     "eslint": "catalog:testing"
   },
