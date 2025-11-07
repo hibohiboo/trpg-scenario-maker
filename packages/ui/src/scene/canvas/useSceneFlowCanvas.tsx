@@ -264,6 +264,7 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
   const handleNodeClick = useCallback(
     (_event: React.MouseEvent, node: Node) => {
       const scene = scenes.find((s) => s.id === node.id);
+
       if (scene) {
         setSelectedScene(scene);
       }
@@ -274,16 +275,6 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
   const handleCloseSidebar = useCallback(() => {
     setSelectedScene(null);
   }, [setSelectedScene]);
-
-  // 選択中のシーンの情報を最新のscenesから更新
-  useEffect(() => {
-    if (selectedScene) {
-      const updatedScene = scenes.find((s) => s.id === selectedScene.id);
-      if (updatedScene) {
-        setSelectedScene(updatedScene);
-      }
-    }
-  }, [scenes, selectedScene, setSelectedScene]);
 
   return {
     selectedScene,
