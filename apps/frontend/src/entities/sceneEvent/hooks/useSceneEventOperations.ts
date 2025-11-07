@@ -160,7 +160,7 @@ export const useSceneEventOperations = (): UseSceneEventOperationsResult => {
 
       await reorderEvents(sceneId, newOrders);
     },
-    [dispatch, reorderEvents],
+    [reorderEvents],
   );
 
   const moveEventDown = useCallback(
@@ -181,7 +181,7 @@ export const useSceneEventOperations = (): UseSceneEventOperationsResult => {
 
       await reorderEvents(sceneId, newOrders);
     },
-    [dispatch, reorderEvents],
+    [reorderEvents],
   );
 
   return {
