@@ -1,5 +1,6 @@
-export { Button } from './Button';
-export type { ButtonVariant, ButtonSize } from './Button';
+// Button は shared/button に移動しました
+export { Button } from '../shared/button';
+export type { ButtonVariant, ButtonSize } from '../shared/button';
 export { Loading } from './Loading';
 export { ErrorMessage } from './ErrorMessage';
 export { Layout } from './Layout';

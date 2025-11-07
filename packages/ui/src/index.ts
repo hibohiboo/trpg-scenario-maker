@@ -53,8 +53,13 @@ export type {
   InformationItemConnectionFormModalProps,
   InformationItemConnectionDisplay,
 } from './informationItem';
-export { Button, Loading, ErrorMessage, Layout, Modal, Tabs } from './common';
-export type { ButtonVariant, ButtonSize, Tab, TabsProps } from './common';
+// Shared層（新構造）
+export { Button } from './shared/button';
+export type { ButtonVariant, ButtonSize } from './shared/button';
+
+// Common層（後方互換性のため残す）
+export { Loading, ErrorMessage, Layout, Modal, Tabs } from './common';
+export type { Tab, TabsProps } from './common';
 export {
   ImageInput,
   CharacterImageGallery,
