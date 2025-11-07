@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import type { SceneEvent } from '@trpg-scenario-maker/ui';
 import { sceneEventApi } from '../api/sceneEventApi';
+import type { SceneEvent } from '@trpg-scenario-maker/ui';
 
 /**
  * シーンに属するイベントを読み込む

@@ -1,4 +1,3 @@
-import type { InformationItem } from '@trpg-scenario-maker/ui';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import {
   closeInformationItemForm,
@@ -6,6 +5,7 @@ import {
   openInformationItemForm,
   setEditingItem,
 } from '../model/informationItemSlice';
+import type { InformationItem } from '@trpg-scenario-maker/ui';
 
 /**
  * 情報項目フォームの状態を管理するカスタムフック

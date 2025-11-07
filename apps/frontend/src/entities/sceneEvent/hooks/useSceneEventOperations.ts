@@ -1,4 +1,3 @@
-import type { SceneEvent, SceneEventType } from '@trpg-scenario-maker/schema';
 import { useCallback } from 'react';
 import { useAppDispatch } from '@/shared/lib/store';
 import {
@@ -8,6 +7,7 @@ import {
   updateEventOrderAction,
   readEventsAction,
 } from '../actions/sceneEventActions';
+import type { SceneEvent, SceneEventType } from '@trpg-scenario-maker/schema';
 
 export interface UseSceneEventOperationsResult {
   /**

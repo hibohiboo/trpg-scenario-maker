@@ -1,4 +1,3 @@
-import type { LoaderFunctionArgs } from 'react-router';
 import { store } from '@/app/store';
 import {
   readInformationItemsAction,
@@ -16,6 +15,7 @@ import {
   setCurrentScenarioId,
 } from '@/entities/scene';
 import { readEventsAction } from '@/entities/sceneEvent';
+import type { LoaderFunctionArgs } from 'react-router';
 
 const { getState, dispatch } = store;
 

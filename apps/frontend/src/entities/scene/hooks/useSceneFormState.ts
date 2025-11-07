@@ -1,4 +1,3 @@
-import type { Scene } from '@trpg-scenario-maker/ui';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import {
   openSceneForm,
@@ -6,6 +5,7 @@ import {
   setEditingScene,
   sceneSlice,
 } from '../model/sceneSlice';
+import type { Scene } from '@trpg-scenario-maker/ui';
 
 /**
  * シーンフォームの状態を管理するカスタムフック

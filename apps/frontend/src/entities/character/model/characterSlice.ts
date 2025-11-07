@@ -1,12 +1,12 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import type { Character } from '@trpg-scenario-maker/schema';
 import {
   createCharacterAction,
   updateCharacterAction,
   deleteCharacterAction,
   readCharacterListAction,
 } from '../actions/characterActions';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import type { Character } from '@trpg-scenario-maker/schema';
 
 export interface CharacterState {
   characters: Character[];

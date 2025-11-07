@@ -1,11 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { informationItemGraphApi } from '../api/informationItemGraphApi';
 import type {
   InformationItem,
   InformationItemConnection,
   InformationToSceneConnection,
   SceneInformationConnection,
 } from '@trpg-scenario-maker/ui';
-import { informationItemGraphApi } from '../api/informationItemGraphApi';
 
 export const readInformationItemsAction = createAsyncThunk<
   InformationItem[],

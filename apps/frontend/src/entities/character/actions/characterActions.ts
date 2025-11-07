@@ -1,8 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import type { Character } from '@trpg-scenario-maker/schema';
 import { generateUUID } from '@trpg-scenario-maker/utility';
 import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 import { characterGraphApi } from '../api/characterGraphApi';
+import type { Character } from '@trpg-scenario-maker/schema';
 
 export const createCharacterAction = createAsyncThunk<
   Character,

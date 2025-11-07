@@ -1,4 +1,3 @@
-import type { Scene, SceneConnection } from '@trpg-scenario-maker/ui';
 import { useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import {
@@ -9,6 +8,7 @@ import {
   deleteConnectionAction,
 } from '../actions/sceneActions';
 import { sceneSlice } from '../model/sceneSlice';
+import type { Scene, SceneConnection } from '@trpg-scenario-maker/ui';
 
 /**
  * シーン操作（追加・更新・削除）を行うカスタムフック

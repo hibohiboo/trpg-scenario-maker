@@ -1,6 +1,4 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import type { Relationship } from '@trpg-scenario-maker/schema';
 import {
   createRelationshipAction,
   updateRelationshipAction,
@@ -8,6 +6,8 @@ import {
   readRelationshipsByCharacterIdAction,
   readAllRelationshipsAction,
 } from '../actions/relationshipActions';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import type { Relationship } from '@trpg-scenario-maker/schema';
 
 export interface RelationshipState {
   relationships: Relationship[];

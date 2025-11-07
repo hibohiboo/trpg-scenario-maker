@@ -1,4 +1,3 @@
-import type { Relationship } from '@trpg-scenario-maker/schema';
 import { useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import { deleteRelationshipAction } from '../actions/relationshipActions';
@@ -7,6 +6,7 @@ import {
   closeRelationshipDeleteModal,
   relationshipSlice,
 } from '../model/relationshipSlice';
+import type { Relationship } from '@trpg-scenario-maker/schema';
 
 /**
  * 関係性削除処理を行うHook

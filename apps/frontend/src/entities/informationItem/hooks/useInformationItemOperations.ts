@@ -1,9 +1,3 @@
-import type {
-  InformationItem,
-  InformationItemConnection,
-  InformationToSceneConnection,
-  SceneInformationConnection,
-} from '@trpg-scenario-maker/ui';
 import { useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import {
@@ -18,6 +12,12 @@ import {
   updateInformationItemAction,
 } from '../actions/informationItemActions';
 import { informationItemSlice } from '../model/informationItemSlice';
+import type {
+  InformationItem,
+  InformationItemConnection,
+  InformationToSceneConnection,
+  SceneInformationConnection,
+} from '@trpg-scenario-maker/ui';
 
 /**
  * 情報項目操作（追加・更新・削除）を行うカスタムフック

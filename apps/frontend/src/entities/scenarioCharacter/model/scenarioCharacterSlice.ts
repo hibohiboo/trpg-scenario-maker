@@ -1,8 +1,4 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
-import type {
-  ScenarioCharacter,
-  ScenarioCharacterRelationship,
-} from '@trpg-scenario-maker/schema';
 import {
   addCharacterToScenarioAction,
   removeCharacterFromScenarioAction,
@@ -13,6 +9,10 @@ import {
   deleteScenarioCharacterRelationAction,
   readScenarioCharacterRelationsAction,
 } from '../actions/scenarioCharacterActions';
+import type {
+  ScenarioCharacter,
+  ScenarioCharacterRelationship,
+} from '@trpg-scenario-maker/schema';
 
 export interface ScenarioCharacterState {
   // シナリオ別のキャラクター一覧（キー: scenarioId）

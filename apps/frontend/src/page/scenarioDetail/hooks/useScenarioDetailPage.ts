@@ -1,12 +1,6 @@
-import type {
-  SceneEventType,
-  CharacterWithRole,
-  ScenarioCharacterRelation,
-} from '@trpg-scenario-maker/ui';
 import { generateUUID } from '@trpg-scenario-maker/utility';
 import { useState } from 'react';
 import { useParams } from 'react-router';
-import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 import { characterGraphApi } from '@/entities/character';
 import {
   useInformationItemList,
@@ -30,11 +24,17 @@ import {
   sceneEventSlice,
 } from '@/entities/sceneEvent';
 import { useAppSelector, useAppDispatch } from '@/shared/lib/store';
+import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 import {
   scenarioDetailCurrentTabSelector,
   scenarioDetailTabItemsSelector,
   setScenarioDetailCurrentTab,
 } from '../models/scenarioDetailSlice';
+import type {
+  SceneEventType,
+  CharacterWithRole,
+  ScenarioCharacterRelation,
+} from '@trpg-scenario-maker/ui';
 
 export const useScenarioDetailPage = () => {
   const { id } = useParams();
