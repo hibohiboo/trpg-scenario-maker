@@ -147,6 +147,12 @@ export const relationshipSlice = createSlice({
       .addCase(createRelationshipAction.fulfilled, (state, action) => {
         state.isSubmitting = false;
         state.relationships.unshift(action.payload);
+
+        // closeRelationshipCreateModal
+        state.isCreateModalOpen = false;
+        state.createFromCharacterId = '';
+        state.createToCharacterId = '';
+        state.createRelationshipName = '';
       })
       .addCase(createRelationshipAction.rejected, (state) => {
         state.isSubmitting = false;
@@ -181,6 +187,13 @@ export const relationshipSlice = createSlice({
         if (incomingIndex !== -1) {
           state.incomingRelationships[incomingIndex] = action.payload;
         }
+
+        // closeRelationshipEditModal
+        state.isEditModalOpen = false;
+        state.editingRelationship = null;
+        state.editFromCharacterId = '';
+        state.editToCharacterId = '';
+        state.editRelationshipName = '';
       })
       .addCase(updateRelationshipAction.rejected, (state) => {
         state.isSubmitting = false;
@@ -205,6 +218,10 @@ export const relationshipSlice = createSlice({
         state.incomingRelationships = state.incomingRelationships.filter(
           (r) => r.id !== action.payload.id,
         );
+
+        // closeRelationshipDeleteModal
+        state.isDeleteModalOpen = false;
+        state.deletingRelationship = null;
       })
       .addCase(deleteRelationshipAction.rejected, (state) => {
         state.isDeleting = false;

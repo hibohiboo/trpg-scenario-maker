@@ -3,11 +3,6 @@ import type { Relationship } from '@trpg-scenario-maker/schema';
 import { generateUUID } from '@trpg-scenario-maker/utility';
 import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
 import { characterRelationGraphApi } from '../api/characterRelationGraphApi';
-import {
-  closeRelationshipCreateModal,
-  closeRelationshipDeleteModal,
-  closeRelationshipEditModal,
-} from '../model/relationshipSlice';
 
 /**
  * 関係性作成アクション
@@ -18,16 +13,15 @@ export const createRelationshipAction = createAsyncThunk<
     fromCharacterId: string;
     toCharacterId: string;
     relationshipName: string;
-  },
-  { dispatch: AppDispatch }
->('relationship/create', async (payload, { dispatch }) => {
+  }
+>('relationship/create', async (payload) => {
   const newRelationship = await characterRelationGraphApi.create({
     id: generateUUID(),
     fromCharacterId: payload.fromCharacterId,
     toCharacterId: payload.toCharacterId,
     relationshipName: payload.relationshipName,
   });
-  dispatch(closeRelationshipCreateModal());
+
   await graphdbWorkerClient.save();
   return newRelationship;
 });
@@ -40,11 +34,10 @@ export const updateRelationshipAction = createAsyncThunk<
   {
     id: string;
     relationshipName: string;
-  },
-  { dispatch: AppDispatch }
->('relationship/update', async (payload, { dispatch }) => {
+  }
+>('relationship/update', async (payload) => {
   const updatedRelationship = await characterRelationGraphApi.update(payload);
-  dispatch(closeRelationshipEditModal());
+
   await graphdbWorkerClient.save();
   return updatedRelationship;
 });
@@ -54,11 +47,10 @@ export const updateRelationshipAction = createAsyncThunk<
  */
 export const deleteRelationshipAction = createAsyncThunk<
   { id: string },
-  { id: string },
-  { dispatch: AppDispatch }
->('relationship/delete', async (payload, { dispatch }) => {
+  { id: string }
+>('relationship/delete', async (payload) => {
   await characterRelationGraphApi.delete(payload);
-  dispatch(closeRelationshipDeleteModal());
+
   await graphdbWorkerClient.save();
   return payload;
 });

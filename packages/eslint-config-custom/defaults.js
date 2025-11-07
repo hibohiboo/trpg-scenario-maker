@@ -1,3 +1,5 @@
+// @ts-check
+
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { FlatCompat } from '@eslint/eslintrc';
@@ -6,7 +8,8 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import eslintConfigPrettier from 'eslint-config-prettier/flat';
 import sonarjs from 'eslint-plugin-sonarjs';
 import unusedImports from 'eslint-plugin-unused-imports';
-import tseslint from 'typescript-eslint';
+import { configs as tsEsLintConfigs } from 'typescript-eslint';
+
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
@@ -28,7 +31,7 @@ export default defineConfig([
   {
     extends: [
       eslint.configs.recommended,
-      tseslint.configs.recommended,
+      tsEsLintConfigs.recommended,
       sonarjs.configs.recommended,
       ...eslintImport,
       eslintConfigPrettier,
