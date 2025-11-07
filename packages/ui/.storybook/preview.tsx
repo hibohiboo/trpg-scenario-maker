@@ -1,5 +1,5 @@
-import type { Preview } from '@storybook/react-vite';
 import { MemoryRouter } from 'react-router';
+import type { Preview } from '@storybook/react-vite';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore

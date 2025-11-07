@@ -1,9 +1,9 @@
-import type { Scenario } from '@trpg-scenario-maker/ui/scenario/types';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import { getCountSample, readScenarioAction } from '../actions/scenarioActions';
 import { scenariosSelector, scenarioSlice } from '../model/scenarioSlice';
+import type { Scenario } from '@trpg-scenario-maker/ui/scenario/types';
 
 export const useScenarioList = () => {
   const dispatch = useAppDispatch();

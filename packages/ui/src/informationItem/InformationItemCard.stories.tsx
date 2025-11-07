@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 import { InformationItemCard } from './InformationItemCard';
 import type { InformationItem } from './types';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {
   title: 'InformationItem/InformationItemCard',

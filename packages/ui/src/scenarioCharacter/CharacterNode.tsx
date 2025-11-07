@@ -1,7 +1,7 @@
 import { safeParseCharacterNodeData } from '@trpg-scenario-maker/schema';
 import { Handle, Position } from '@xyflow/react';
-import type { NodeProps } from '@xyflow/react';
 import { memo } from 'react';
+import type { NodeProps } from '@xyflow/react';
 
 /**
  * キャラクターノードコンポーネント

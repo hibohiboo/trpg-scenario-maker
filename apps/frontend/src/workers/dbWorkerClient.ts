@@ -1,6 +1,6 @@
 import { BaseWorkerClient } from './BaseWorkerClient';
-import type { DBWorkerRequest, DBWorkerResponse } from './db.worker';
 import DBWorker from './db.worker?worker';
+import type { DBWorkerRequest, DBWorkerResponse } from './db.worker';
 import type { GlobalRdbHandlerMap } from './types/handlerMaps';
 
 /**

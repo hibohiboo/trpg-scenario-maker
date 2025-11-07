@@ -1,5 +1,4 @@
 import { scenarioToString } from '@trpg-scenario-maker/schema';
-import type { Scenario } from '@trpg-scenario-maker/ui/scenario/types';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import { updateScenarioAction } from '../actions/scenarioActions';
 import {
@@ -9,6 +8,7 @@ import {
   closeEditModal,
   setEditTitle,
 } from '../model/scenarioSlice';
+import type { Scenario } from '@trpg-scenario-maker/ui/scenario/types';
 
 export const useEditScenario = () => {
   const dispatch = useAppDispatch();

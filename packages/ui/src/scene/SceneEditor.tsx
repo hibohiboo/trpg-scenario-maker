@@ -1,9 +1,9 @@
-import { Button, Modal, Tabs } from '..';
-import type { Tab } from '..';
-import { createEventHandlers } from './sceneEditorHelpers';
-import { SceneEventIcon } from './sceneEvent';
+import { Button, Modal, Tabs } from '../common';
 import { SceneFlowCanvas } from './SceneFlowCanvas';
 import { SceneForm } from './SceneForm';
+import { createEventHandlers } from './sceneEditorHelpers';
+import { SceneEventIcon } from './sceneEvent';
+import type { Tab } from '..';
 import type { SceneEditorProps, Scene } from './types';
 
 const getSceneEvents = ({

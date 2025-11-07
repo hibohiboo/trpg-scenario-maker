@@ -1,4 +1,3 @@
-import type { Relationship } from '@trpg-scenario-maker/schema';
 import { useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import { updateRelationshipAction } from '../actions/relationshipActions';
@@ -8,6 +7,7 @@ import {
   setEditRelationshipName,
   relationshipSlice,
 } from '../model/relationshipSlice';
+import type { Relationship } from '@trpg-scenario-maker/schema';
 
 /**
  * 関係性更新処理を行うHook

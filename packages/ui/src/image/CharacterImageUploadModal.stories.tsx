@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 import { CharacterImageUploadModal } from './CharacterImageUploadModal';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {
   title: 'Image/CharacterImageUploadModal',

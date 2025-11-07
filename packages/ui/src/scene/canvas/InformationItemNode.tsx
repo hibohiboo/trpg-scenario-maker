@@ -1,6 +1,6 @@
 import { Handle, Position } from '@xyflow/react';
-import type { NodeProps } from '@xyflow/react';
 import { memo } from 'react';
+import type { NodeProps } from '@xyflow/react';
 
 /**
  * カスタム情報項目ノードコンポーネント

@@ -1,4 +1,3 @@
-import type { SceneEvent } from '@trpg-scenario-maker/schema';
 import {
   useNodesState,
   useEdgesState,
@@ -11,6 +10,7 @@ import {
   type Node,
 } from '@xyflow/react';
 import { useState, useCallback, useEffect } from 'react';
+import { getLayoutedElements, scenesToNodes } from './index';
 import type {
   InformationItem,
   InformationItemConnection,
@@ -18,8 +18,7 @@ import type {
   SceneInformationConnection,
 } from '../../informationItem/types';
 import type { Scene, SceneConnection } from '../types';
-import '@xyflow/react/dist/style.css';
-import { getLayoutedElements, scenesToNodes } from './index';
+import type { SceneEvent } from '@trpg-scenario-maker/schema';
 
 export interface SceneFlowCanvasProps {
   scenes: Scene[];
@@ -133,19 +132,23 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
 
   useEffect(() => {
     const updatedSceneNodes: Node[] = scenesToNodes(scenes, nodes, events);
-    const updatedInformationNodes: Node[] = informationItems.map((item, index) => {
-      const existingNode = nodes.find((n) => n.id === `info-${item.id}`);
-      return {
-        id: `info-${item.id}`,
-        type: 'informationItemNode',
-        data: item,
-        position: existingNode?.position || {
-          x: 250 * ((index + scenes.length) % 3),
-          y: 150 * Math.floor((index + scenes.length) / 3),
-        },
-      };
-    });
+    const updatedInformationNodes: Node[] = informationItems.map(
+      (item, index) => {
+        const existingNode = nodes.find((n) => n.id === `info-${item.id}`);
+        return {
+          id: `info-${item.id}`,
+          type: 'informationItemNode',
+          data: item,
+          position: existingNode?.position || {
+            x: 250 * ((index + scenes.length) % 3),
+            y: 150 * Math.floor((index + scenes.length) / 3),
+          },
+        };
+      },
+    );
     setNodes([...updatedSceneNodes, ...updatedInformationNodes]);
+    // nodeも入れると無限ループになるので入れない
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenes, events, informationItems, setNodes]);
 
   useEffect(() => {
@@ -158,36 +161,36 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
       style: { stroke: '#6366f1', strokeWidth: 2 },
     }));
 
-    const updatedInformationEdges: Edge[] = informationConnections.map((conn) => ({
-      id: `info-conn-${conn.id}`,
-      source: `info-${conn.source}`,
-      target: `info-${conn.target}`,
-      type: 'smoothstep',
-      animated: false,
-      style: { stroke: '#f59e0b', strokeWidth: 2 },
-    }));
-
-    const updatedInformationToSceneEdges: Edge[] = informationToSceneConnections.map(
+    const updatedInformationEdges: Edge[] = informationConnections.map(
       (conn) => ({
+        id: `info-conn-${conn.id}`,
+        source: `info-${conn.source}`,
+        target: `info-${conn.target}`,
+        type: 'smoothstep',
+        animated: false,
+        style: { stroke: '#f59e0b', strokeWidth: 2 },
+      }),
+    );
+
+    const updatedInformationToSceneEdges: Edge[] =
+      informationToSceneConnections.map((conn) => ({
         id: `info-to-scene-${conn.id}`,
         source: `info-${conn.informationItemId}`,
         target: conn.sceneId,
         type: 'smoothstep',
         animated: false,
         style: { stroke: '#10b981', strokeWidth: 2, strokeDasharray: '5 5' },
-      }),
-    );
+      }));
 
-    const updatedSceneToInformationEdges: Edge[] = sceneInformationConnections.map(
-      (conn) => ({
+    const updatedSceneToInformationEdges: Edge[] =
+      sceneInformationConnections.map((conn) => ({
         id: `scene-to-info-${conn.id}`,
         source: conn.sceneId,
         target: `info-${conn.informationItemId}`,
         type: 'smoothstep',
         animated: false,
         style: { stroke: '#8b5cf6', strokeWidth: 2, strokeDasharray: '5 5' },
-      }),
-    );
+      }));
 
     setEdges([
       ...updatedSceneEdges,
@@ -263,26 +266,17 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
   const handleNodeClick = useCallback(
     (_event: React.MouseEvent, node: Node) => {
       const scene = scenes.find((s) => s.id === node.id);
+
       if (scene) {
         setSelectedScene(scene);
       }
     },
-    [scenes],
+    [scenes, setSelectedScene],
   );
 
   const handleCloseSidebar = useCallback(() => {
     setSelectedScene(null);
-  }, []);
-
-  // 選択中のシーンの情報を最新のscenesから更新
-  useEffect(() => {
-    if (selectedScene) {
-      const updatedScene = scenes.find((s) => s.id === selectedScene.id);
-      if (updatedScene) {
-        setSelectedScene(updatedScene);
-      }
-    }
-  }, [scenes, selectedScene]);
+  }, [setSelectedScene]);
 
   return {
     selectedScene,

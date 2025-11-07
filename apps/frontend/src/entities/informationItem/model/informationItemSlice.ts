@@ -1,11 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import type {
-  InformationItem,
-  InformationItemConnection,
-  InformationToSceneConnection,
-  SceneInformationConnection,
-} from '@trpg-scenario-maker/ui';
 import {
   createInformationConnectionAction,
   createInformationItemAction,
@@ -23,6 +16,13 @@ import {
   readSceneInformationConnectionsByScenarioIdConnectionsAction,
   updateInformationItemAction,
 } from '../actions/informationItemActions';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import type {
+  InformationItem,
+  InformationItemConnection,
+  InformationToSceneConnection,
+  SceneInformationConnection,
+} from '@trpg-scenario-maker/ui';
 
 export interface InformationItemState {
   items: InformationItem[];

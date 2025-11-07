@@ -1,5 +1,4 @@
 import { combineReducers, type UnknownAction } from '@reduxjs/toolkit';
-import { scenarioDetailSlice } from '@/page/scenarioDetail/models/scenarioDetailSlice';
 import { characterSlice, relationshipSlice } from '@/entities/character';
 import { imageSlice } from '@/entities/image';
 import { informationItemSlice } from '@/entities/informationItem';
@@ -7,6 +6,7 @@ import { scenarioSlice } from '@/entities/scenario';
 import { scenarioCharacterSlice } from '@/entities/scenarioCharacter';
 import { sceneSlice } from '@/entities/scene';
 import { sceneEventSlice } from '@/entities/sceneEvent';
+import { scenarioDetailSlice } from '@/page/scenarioDetail/models/scenarioDetailSlice';
 
 const combinedReducer = combineReducers({
   [scenarioSlice.reducerPath]: scenarioSlice.reducer,

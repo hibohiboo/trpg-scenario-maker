@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CharacterRelationshipGraph } from './CharacterRelationshipGraph';
 import type { CharacterWithRole, ScenarioCharacterRelationship } from './types';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {
   title: 'ScenarioCharacter/CharacterRelationshipGraph',

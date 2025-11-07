@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { fn } from 'storybook/test';
 import { ScenarioForm } from './ScenarioForm';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {
   title: 'Scenario/ScenarioForm',

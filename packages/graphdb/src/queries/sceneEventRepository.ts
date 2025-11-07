@@ -1,4 +1,4 @@
-import { executeQuery } from '..';
+import { executeQuery } from '../db';
 import { escapeCypherString } from '../utils/escapeCypherString';
 
 /**

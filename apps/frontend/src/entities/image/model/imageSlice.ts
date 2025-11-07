@@ -1,12 +1,12 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import type { Image } from '@trpg-scenario-maker/schema';
 import {
   fetchCharacterImagesAction,
   addImageAction,
   setPrimaryImageAction,
   deleteImageAction,
 } from '../actions/imageActions';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import type { Image } from '@trpg-scenario-maker/schema';
 
 /**
  * キャラクター画像の状態

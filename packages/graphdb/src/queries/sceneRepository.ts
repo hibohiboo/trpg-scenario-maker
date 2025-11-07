@@ -1,4 +1,4 @@
-import { executeQuery } from '..';
+import { executeQuery } from '../db';
 import { RELATION_DELIMITER } from '../utils/constants';
 import { escapeCypherString } from '../utils/escapeCypherString';
 

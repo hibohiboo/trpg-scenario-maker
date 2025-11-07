@@ -1,13 +1,13 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
 import { stringToScenario } from '@trpg-scenario-maker/schema';
-import type { SerializableScenario } from '@trpg-scenario-maker/schema';
 import {
   updateScenarioAction,
   readScenarioAction,
   deleteScenarioAction,
   createScenarioAction,
 } from '../actions/scenarioActions';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import type { SerializableScenario } from '@trpg-scenario-maker/schema';
 
 export interface ScenarioState {
   scenarios: SerializableScenario[];
@@ -97,6 +97,10 @@ export const scenarioSlice = createSlice({
         state.isSubmitting = false;
         // 楽観的UI更新: 作成したシナリオを先頭に追加
         state.scenarios.unshift(action.payload);
+
+        // closeCreateModal
+        state.isCreateModalOpen = false;
+        state.createTitle = '';
       })
       .addCase(createScenarioAction.rejected, (state) => {
         state.isSubmitting = false;
@@ -116,6 +120,10 @@ export const scenarioSlice = createSlice({
         if (index !== -1) {
           state.scenarios[index] = action.payload;
         }
+        // closeEditModal
+        state.isEditModalOpen = false;
+        state.editingScenario = null;
+        state.editTitle = '';
       })
       .addCase(updateScenarioAction.rejected, (state) => {
         state.isSubmitting = false;
@@ -132,6 +140,10 @@ export const scenarioSlice = createSlice({
         state.scenarios = state.scenarios.filter(
           (s) => s.id !== action.payload,
         );
+
+        // closeDeleteModal
+        state.isDeleteModalOpen = false;
+        state.deletingScenario = null;
       })
       .addCase(deleteScenarioAction.rejected, (state) => {
         state.isDeleting = false;

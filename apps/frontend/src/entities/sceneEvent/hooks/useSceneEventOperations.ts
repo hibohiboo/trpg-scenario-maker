@@ -1,4 +1,3 @@
-import type { SceneEvent, SceneEventType } from '@trpg-scenario-maker/schema';
 import { useCallback } from 'react';
 import { useAppDispatch } from '@/shared/lib/store';
 import {
@@ -8,6 +7,7 @@ import {
   updateEventOrderAction,
   readEventsAction,
 } from '../actions/sceneEventActions';
+import type { SceneEvent, SceneEventType } from '@trpg-scenario-maker/schema';
 
 export interface UseSceneEventOperationsResult {
   /**
@@ -160,7 +160,7 @@ export const useSceneEventOperations = (): UseSceneEventOperationsResult => {
 
       await reorderEvents(sceneId, newOrders);
     },
-    [dispatch, reorderEvents],
+    [reorderEvents],
   );
 
   const moveEventDown = useCallback(
@@ -181,7 +181,7 @@ export const useSceneEventOperations = (): UseSceneEventOperationsResult => {
 
       await reorderEvents(sceneId, newOrders);
     },
-    [dispatch, reorderEvents],
+    [reorderEvents],
   );
 
   return {

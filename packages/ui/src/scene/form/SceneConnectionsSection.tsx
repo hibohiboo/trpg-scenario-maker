@@ -1,6 +1,6 @@
+import { SceneConnectionSection } from './SceneConnectionSection';
 import type { Scene } from '../types';
 import type { SceneWithConnection } from './sceneConnectionHelpers';
-import { SceneConnectionSection } from './SceneConnectionSection';
 
 interface SceneConnectionsSectionProps {
   nextScenes: SceneWithConnection[];

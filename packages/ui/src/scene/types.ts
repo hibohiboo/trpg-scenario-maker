@@ -1,14 +1,14 @@
 import type {
-  SceneEvent,
-  SceneEventType as SchemaSceneEventType,
-} from '@trpg-scenario-maker/schema';
-import type { SceneConnection, Scene } from '@trpg-scenario-maker/schema/scene';
-import type {
   InformationItem,
   InformationItemConnection,
   InformationToSceneConnection,
   SceneInformationConnection,
 } from '../informationItem/types';
+import type {
+  SceneEvent,
+  SceneEventType as SchemaSceneEventType,
+} from '@trpg-scenario-maker/schema';
+import type { SceneConnection, Scene } from '@trpg-scenario-maker/schema/scene';
 
 export type { SceneConnection, Scene, SceneEvent };
 

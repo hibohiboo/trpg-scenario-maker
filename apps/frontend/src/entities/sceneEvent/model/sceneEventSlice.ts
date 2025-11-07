@@ -1,6 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import type { SceneEvent } from '@trpg-scenario-maker/ui';
 import {
   readEventsAction,
   createEventAction,
@@ -8,6 +6,8 @@ import {
   deleteEventAction,
   updateEventOrderAction,
 } from '../actions/sceneEventActions';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import type { SceneEvent } from '@trpg-scenario-maker/ui';
 
 export interface SceneEventState {
   eventsBySceneId: Record<string, SceneEvent[]>;

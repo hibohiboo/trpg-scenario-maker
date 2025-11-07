@@ -1,5 +1,5 @@
-import type { ScenarioCharacterRelationship } from '@trpg-scenario-maker/schema';
 import { graphdbWorkerClient } from '@/workers/graphdbWorkerClient';
+import type { ScenarioCharacterRelationship } from '@trpg-scenario-maker/schema';
 
 /**
  * シナリオ内キャラクター関係性グラフDB API

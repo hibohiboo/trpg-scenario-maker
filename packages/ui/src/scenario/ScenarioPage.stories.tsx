@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { fn } from 'storybook/test';
 import { Layout } from '../common';
 import { ScenarioPage } from './ScenarioPage';
 import type { Scenario } from './types';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {
   title: 'Scenario/ScenarioPage',

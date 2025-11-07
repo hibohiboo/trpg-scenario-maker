@@ -1,10 +1,10 @@
 import { graphDbSchemas } from '@trpg-scenario-maker/graphdb';
 import { BaseWorkerClient } from './BaseWorkerClient';
+import DBWorker from './graphdb.worker?worker';
 import type {
   GraphDBWorkerRequest,
   GraphDBWorkerResponse,
 } from './graphdb.worker';
-import DBWorker from './graphdb.worker?worker';
 import type { GlobalHandlerMap } from './types/handlerMaps';
 
 const { nodes, relationships } = graphDbSchemas;
