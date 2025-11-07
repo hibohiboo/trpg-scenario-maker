@@ -73,75 +73,73 @@ export function ScenarioCharacterEditModal({
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="キャラクターを編集">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label
-            htmlFor="edit-character-name"
-            className="block text-sm font-medium mb-1"
-          >
-            キャラクター名 <span className="text-red-500">*</span>
-          </label>
-          <input
-            id="edit-character-name"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="名前を入力"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
-          />
-        </div>
+      <div>
+        <label
+          htmlFor="edit-character-name"
+          className="block text-sm font-medium mb-1"
+        >
+          キャラクター名 <span className="text-red-500">*</span>
+        </label>
+        <input
+          id="edit-character-name"
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="名前を入力"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+        />
+      </div>
 
-        <div>
-          <label
-            htmlFor="edit-character-description"
-            className="block text-sm font-medium mb-1"
-          >
-            キャラクター説明
-          </label>
-          <textarea
-            id="edit-character-description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="説明を入力（省略可）"
-            rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
-          />
-        </div>
+      <div>
+        <label
+          htmlFor="edit-character-description"
+          className="block text-sm font-medium mb-1"
+        >
+          キャラクター説明
+        </label>
+        <textarea
+          id="edit-character-description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="説明を入力（省略可）"
+          rows={3}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+        />
+      </div>
 
-        <div>
-          <label
-            htmlFor="edit-character-role"
-            className="block text-sm font-medium mb-1"
-          >
-            役割
-          </label>
-          <input
-            id="edit-character-role"
-            type="text"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            placeholder="役割を入力（省略可）"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
-          />
-        </div>
+      <div>
+        <label
+          htmlFor="edit-character-role"
+          className="block text-sm font-medium mb-1"
+        >
+          役割
+        </label>
+        <input
+          id="edit-character-role"
+          type="text"
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          placeholder="役割を入力（省略可）"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+        />
+      </div>
 
-        {/* 画像管理エリア */}
-        {children && (
-          <div className="border-t border-gray-200 pt-4 mt-4">
-            <h3 className="text-sm font-medium mb-3">画像管理</h3>
-            {children}
-          </div>
-        )}
-
-        <div className="flex justify-end gap-2 pt-4">
-          <Button type="button" onClick={handleClose} variant="secondary">
-            キャンセル
-          </Button>
-          <Button type="submit" variant="primary">
-            更新
-          </Button>
+      {/* 画像管理エリア */}
+      {children && (
+        <div className="border-t border-gray-200 pt-4 mt-4">
+          <h3 className="text-sm font-medium mb-3">画像管理</h3>
+          {children}
         </div>
-      </form>
+      )}
+
+      <div className="flex justify-end gap-2 pt-4">
+        <Button type="button" onClick={handleClose} variant="secondary">
+          キャンセル
+        </Button>
+        <Button type="submit" variant="primary" onClick={handleSubmit}>
+          更新
+        </Button>
+      </div>
     </Modal>
   );
 }
