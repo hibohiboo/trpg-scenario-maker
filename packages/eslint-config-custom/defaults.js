@@ -3,10 +3,10 @@ import { fileURLToPath } from 'url';
 import { FlatCompat } from '@eslint/eslintrc';
 import eslint from '@eslint/js';
 import { defineConfig, globalIgnores } from 'eslint/config';
+import eslintConfigPrettier from 'eslint-config-prettier/flat';
 import sonarjs from 'eslint-plugin-sonarjs';
 import unusedImports from 'eslint-plugin-unused-imports';
 import tseslint from 'typescript-eslint';
-
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
@@ -27,6 +27,7 @@ export default defineConfig([
       tseslint.configs.recommended,
       sonarjs.configs.recommended,
       ...eslintImport,
+      eslintConfigPrettier,
     ],
     plugins: { 'unused-imports': unusedImports },
     rules: {
