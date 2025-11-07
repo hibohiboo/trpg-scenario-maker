@@ -23,23 +23,23 @@ export default defineConfig([
       ...compat.extends(
         'plugin:@conarti/eslint-plugin-feature-sliced/recommended',
       ),
+      reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
     ],
-    plugins: { 'react-hooks': reactHooks },
     rules: {
-      // 'react-refresh/only-export-components': [
-      //   'warn',
-      //   { allowConstantExport: true },
-      // ],
-      // 'no-alert': 'off',
-      // 'no-console': 'off',
-      // // Redux Toolkit uses immer internally to allow "mutating" state
-      // 'no-param-reassign': [
-      //   'error',
-      //   { props: true, ignorePropertyModificationsFor: ['state'] },
-      // ],
-      // // Allow TO DO comments for future implementation
-      // 'sonarjs/todo-tag': 'warn',
+      'react-refresh/only-export-components': [
+        'warn',
+        { allowConstantExport: true },
+      ],
+      'no-alert': 'off',
+      'no-console': 'off',
+      // Redux Toolkit uses immer internally to allow "mutating" state
+      'no-param-reassign': [
+        'error',
+        { props: true, ignorePropertyModificationsFor: ['state'] },
+      ],
+      // Allow TO DO comments for future implementation
+      'sonarjs/todo-tag': 'warn',
     },
     languageOptions: {
       ecmaVersion: 2022,
