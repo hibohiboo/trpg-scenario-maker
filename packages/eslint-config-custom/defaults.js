@@ -15,7 +15,11 @@ const compat = new FlatCompat({
 });
 const eslintImport = [
   ...compat.config({
-    extends: ['plugin:import/recommended', 'plugin:import/typescript'],
+    extends: [
+      'plugin:import/recommended',
+      'plugin:import/typescript',
+      'airbnb-base',
+    ],
   }),
 ];
 
