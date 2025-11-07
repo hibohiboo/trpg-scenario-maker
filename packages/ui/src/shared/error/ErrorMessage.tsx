@@ -1,4 +1,4 @@
-import { Button } from './Button';
+import { Button } from '../button';
 import type { ReactNode } from 'react';
 
 interface ErrorMessageProps {

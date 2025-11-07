@@ -1,5 +1,5 @@
-import { Navigation } from './Navigation';
-import type { NavigationItem } from './Navigation';
+import { Navigation } from '../navigation';
+import type { NavigationItem } from '../navigation';
 import type { ReactNode } from 'react';
 
 interface LayoutProps {
