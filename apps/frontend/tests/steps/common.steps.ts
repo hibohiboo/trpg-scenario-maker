@@ -61,7 +61,6 @@ When(
     // 複数のモーダルがある場合は最後のモーダル（最前面）を対象にする
     const modals = this.page.locator('[role="dialog"]');
     const modalCount = await modals.count();
-    console.log('mmodalCount', modalCount);
     const targetModal = modalCount > 1 ? modals.last() : modals;
 
     const button = targetModal.getByRole('button', {
