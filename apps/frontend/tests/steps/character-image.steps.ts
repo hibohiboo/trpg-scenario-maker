@@ -90,13 +90,12 @@ When(
   },
 );
 
-When(
-  '登場キャラクター {string} をクリックする',
-  async function (this: CustomWorld, characterName: string) {
-    const characterRow = this.page
-      .locator('.scenario-character-item')
-      .filter({ hasText: characterName });
-    await characterRow.click();
+Then(
+  'キャラクター編集モーダルが表示される',
+  async function (this: CustomWorld) {
+    await expect(
+      this.page.getByRole('heading', { name: 'キャラクターを編集' }),
+    ).toBeVisible();
   },
 );
 

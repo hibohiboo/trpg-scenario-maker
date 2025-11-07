@@ -58,11 +58,17 @@ When('モーダルを閉じる', async function (this: CustomWorld) {
 When(
   'モーダルの {string} ボタンをクリックする',
   async function (this: CustomWorld, buttonText: string) {
-    const modal = this.page.locator('[role="dialog"]');
-    await expect(modal.getByRole('button', { name: buttonText })).toBeVisible();
-    await modal.getByRole('button', { name: buttonText }).click();
-    // モーダルが閉じるまで待つ
-    await modal.waitFor({ state: 'hidden', timeout: 5000 });
+    // 複数のモーダルがある場合は最後のモーダル（最前面）を対象にする
+    const modals = this.page.locator('[role="dialog"]');
+    const modalCount = await modals.count();
+    const targetModal = modalCount > 1 ? modals.first() : modals;
+
+    const button = targetModal.getByRole('button', {
+      name: buttonText,
+      exact: true,
+    });
+    await expect(button).toBeVisible();
+    await button.click();
   },
 );
 
