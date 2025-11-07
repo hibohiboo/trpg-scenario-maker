@@ -142,6 +142,24 @@ export function useCharacterManagement(scenarioId: string) {
     }
   };
 
+  // モーダル制御
+  const handleOpenCharacterForm = () => {
+    setIsCharacterFormOpen(true);
+  };
+
+  const handleOpenEditCharacter = (character: CharacterWithRole) => {
+    setEditingCharacter(character);
+    setIsCharacterEditOpen(true);
+  };
+
+  const handleOpenRelationshipForm = () => {
+    setIsRelationshipFormOpen(true);
+  };
+
+  const handleCloseRelationshipForm = () => {
+    setIsRelationshipFormOpen(false);
+  };
+
   // 関係性作成
   const handleSubmitRelationship = async (params: {
     fromCharacterId: string;
@@ -190,24 +208,6 @@ export function useCharacterManagement(scenarioId: string) {
         alert('関係性の削除に失敗しました');
       }
     }
-  };
-
-  // モーダル制御
-  const handleOpenCharacterForm = () => {
-    setIsCharacterFormOpen(true);
-  };
-
-  const handleOpenEditCharacter = (character: CharacterWithRole) => {
-    setEditingCharacter(character);
-    setIsCharacterEditOpen(true);
-  };
-
-  const handleOpenRelationshipForm = () => {
-    setIsRelationshipFormOpen(true);
-  };
-
-  const handleCloseRelationshipForm = () => {
-    setIsRelationshipFormOpen(false);
   };
 
   const handleCharacterClick = (character: CharacterWithRole) => {

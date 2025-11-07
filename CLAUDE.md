@@ -36,6 +36,8 @@
   - パラメータ: `id`, `name`, `description`
 
 #### フロントエンド層（Feature-Sliced Design）
+
+**Entity層** - ドメインモデルのCRUD操作
 ```
 apps/frontend/src/entities/character/
 ├── api/
@@ -48,6 +50,34 @@ apps/frontend/src/entities/character/
 │   └── characterSlice.ts         # Redux状態管理
 └── actions/
     └── characterActions.ts       # Redux actions
+```
+
+**Feature層** - ビジネス機能単位（複数のentityを組み合わせ）
+```
+apps/frontend/src/feature/scenarioCharacterManagement/
+├── hooks/
+│   └── useCharacterManagement.ts  # キャラクター管理の統合ロジック
+├── ui/
+│   └── CharacterTabContent.tsx    # キャラクタータブのUIコンテナ
+└── index.ts
+```
+
+**Widget層** - 複合UIコンポーネント（featureを組み合わせ）
+```
+apps/frontend/src/widget/TabNavigationBar/
+├── ui/
+│   └── TabNavigationBar.tsx       # タブナビゲーションUI
+├── types.ts
+└── index.ts
+```
+
+**Page層** - ルーティング単位（widget/featureの組み立て）
+```
+apps/frontend/src/page/scenarioDetail/
+├── ui/
+│   └── Page.tsx                   # タブ切り替えのみ（約65行）
+└── models/
+    └── scenarioDetailSlice.ts     # タブ状態管理
 ```
 
 #### UI層
@@ -260,6 +290,104 @@ Redux State (imageSlice.characterImages)
   ↓ 表示
 UI: <img src={primaryImage.dataUrl} />
 ```
+
+---
+
+## フロントエンドアーキテクチャ（Feature-Sliced Design）
+
+### ディレクトリ構造
+
+```
+apps/frontend/src/
+├── app/                          # アプリケーション層（ルーティング・store）
+│   ├── App.tsx
+│   ├── Router.tsx
+│   └── store/
+│
+├── page/                         # ページ層（ルーティング単位）
+│   ├── agreement/
+│   ├── scenario/
+│   ├── character/
+│   └── scenarioDetail/
+│       ├── ui/
+│       │   └── Page.tsx          # タブナビゲーション + feature組み立てのみ
+│       └── models/
+│           └── scenarioDetailSlice.ts
+│
+├── feature/                      # ビジネス機能単位
+│   ├── scenarioSceneManagement/
+│   ├── scenarioCharacterManagement/
+│   └── scenarioInformationManagement/
+│
+├── widget/                       # 複合UIコンポーネント
+│   └── TabNavigationBar/
+│
+├── entities/                     # エンティティ層（ドメインモデル）
+│   ├── character/
+│   ├── image/
+│   ├── scenario/
+│   ├── scene/
+│   ├── scenarioCharacter/
+│   ├── sceneEvent/
+│   └── informationItem/
+│
+└── shared/                       # 共有層（汎用ユーティリティ）
+    └── lib/store/
+```
+
+### 依存関係ルール
+
+```
+page/
+  ↓ 依存可能: widget, feature, entities
+
+widget/
+  ↓ 依存可能: feature, entities
+
+feature/
+  ↓ 依存可能: entities のみ
+
+entities/
+  ↓ 依存可能: shared, API
+
+shared/
+  ↓ 依存不可（最下層）
+```
+
+### 各層の責務
+
+#### Entity層
+- **責務**: ドメインモデルのCRUD操作、API通信、Redux状態管理
+- **含めるもの**: 単一エンティティに特化したhooks、API、Redux slices
+- **例**: `useCharacterList()`, `characterGraphApi.create()`
+
+#### Feature層
+- **責務**: ビジネスロジックの統合、基本的なUI構造
+- **含めるもの**: 複数のentity hooksを組み合わせたカスタムフック、基本的なリスト/フォーム/モーダルUI
+- **依存可能**: entities のみ（widgetは使えない）
+- **例**: `useCharacterManagement()` - キャラクターCRUD + 関係性管理を統合
+
+#### Widget層
+- **責務**: 複雑なUI、複数のfeatureの組み合わせ、高度なビジュアライゼーション
+- **含めるもの**: 複数のfeatureを組み合わせた複合UI、グラフ表示、ギャラリー
+- **依存可能**: feature, entities
+- **例**: `TabNavigationBar` - 汎用タブナビゲーション
+
+#### Page層
+- **責務**: ルーティング、レイアウト、widget/featureの組み立て
+- **原則**: widgetを優先的に使い、シンプルなUIはfeatureを直接使う
+- **依存可能**: widget, feature, entities
+
+### リファクタリング成果（scenarioDetailページ）
+
+| 項目 | リファクタ前 | リファクタ後 |
+|------|-------------|-------------|
+| Page.tsx | 175行, 77 props | 65行, 0 props |
+| 最大hook行数 | 533行（GOD HOOK） | 約120行/feature |
+| feature層 | なし | 3 features |
+| widget層 | なし | 1 widget |
+| 再利用性 | 低い | 高い（feature単位） |
+| テスト容易性 | 困難 | 容易（feature独立） |
 
 ---
 

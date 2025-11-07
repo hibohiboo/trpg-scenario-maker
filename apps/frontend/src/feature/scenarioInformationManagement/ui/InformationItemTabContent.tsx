@@ -10,7 +10,7 @@ import { useSceneList } from '@/entities/scene';
 import { useInformationManagement } from '../hooks/useInformationManagement';
 
 interface InformationItemTabContentProps {
-  scenarioId: string;
+  scenarioId?: string;
 }
 
 /**
@@ -19,7 +19,7 @@ interface InformationItemTabContentProps {
  * 情報項目の作成・編集・削除、情報項目間の接続、シーンとの接続を行う
  */
 export function InformationItemTabContent({
-  scenarioId,
+  scenarioId: _scenarioId,
 }: InformationItemTabContentProps) {
   const {
     informationItems,
