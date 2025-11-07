@@ -147,6 +147,8 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
       },
     );
     setNodes([...updatedSceneNodes, ...updatedInformationNodes]);
+    // nodeも入れると無限ループになるので入れない
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenes, events, informationItems, setNodes]);
 
   useEffect(() => {
