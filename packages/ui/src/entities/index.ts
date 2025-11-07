@@ -13,3 +13,20 @@ export type {
   ScenarioListProps,
   DeleteConfirmModalProps,
 } from './scenario';
+export {
+  CharacterList,
+  CharacterForm,
+  RelationshipList,
+  RelationshipForm,
+  DeleteRelationshipModal,
+} from './character';
+export type {
+  Character,
+  Relationship,
+  RelationshipFormData,
+  CharacterListProps,
+  CharacterFormProps,
+  RelationshipListProps,
+  RelationshipFormProps,
+  DeleteRelationshipModalProps,
+} from './character';

@@ -9,6 +9,7 @@ export type {
 } from './scene';
 export {
   CharacterList,
+  CharacterForm,
   RelationshipList,
   RelationshipForm,
   DeleteRelationshipModal,
@@ -18,7 +19,15 @@ export type {
   Character,
   Relationship,
   RelationshipFormData,
+  CharacterListProps,
+  CharacterFormProps,
+  RelationshipListProps,
+  RelationshipFormProps,
+  DeleteRelationshipModalProps,
 } from './character';
+// 後方互換性のため
+export { CharacterForm as CharacterCreateModal } from './character';
+export type { CharacterFormProps as CharacterCreateModalProps } from './character';
 export {
   ScenarioCharacterList,
   ScenarioCharacterRelationshipList,
