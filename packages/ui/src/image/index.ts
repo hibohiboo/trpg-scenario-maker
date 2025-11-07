@@ -5,4 +5,5 @@ export type {
 } from './CharacterImageGallery';
 export { CharacterImageUploadModal } from './CharacterImageUploadModal';
 export type { CharacterImageUploadModalProps } from './CharacterImageUploadModal';
-export { default as ImageInput } from './ImageInput';
+// ImageInput は entities/image に移動しました
+export { ImageInput } from '../entities/image';

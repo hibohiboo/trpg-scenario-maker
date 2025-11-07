@@ -65,8 +65,13 @@ export { Tabs } from './shared/tabs';
 export type { Tab, TabsProps } from './shared/tabs';
 export { Navigation } from './shared/navigation';
 export type { NavigationItem, NavigationProps } from './shared/navigation';
+
+// Entities層（新構造）
+export { ImageInput } from './entities/image';
+
+// Image層（旧構造 - 後方互換性のため残す）
 export {
-  ImageInput,
+  ImageInput as ImageInputLegacy,
   CharacterImageGallery,
   CharacterImageUploadModal,
 } from './image';
