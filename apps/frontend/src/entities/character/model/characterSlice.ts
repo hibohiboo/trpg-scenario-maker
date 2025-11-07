@@ -109,6 +109,10 @@ export const characterSlice = createSlice({
       .addCase(createCharacterAction.fulfilled, (state, action) => {
         state.isSubmitting = false;
         state.characters.unshift(action.payload);
+        // closeCreateModal
+        state.isCreateModalOpen = false;
+        state.createName = '';
+        state.createDescription = '';
       })
       .addCase(createCharacterAction.rejected, (state) => {
         state.isSubmitting = false;
@@ -127,6 +131,12 @@ export const characterSlice = createSlice({
         if (index !== -1) {
           state.characters[index] = action.payload;
         }
+
+        // closeEditModal
+        state.isEditModalOpen = false;
+        state.editingCharacter = null;
+        state.editName = '';
+        state.editDescription = '';
       })
       .addCase(updateCharacterAction.rejected, (state) => {
         state.isSubmitting = false;
@@ -142,6 +152,9 @@ export const characterSlice = createSlice({
         state.characters = state.characters.filter(
           (c) => c.id !== action.payload,
         );
+        // closeDeleteModal
+        state.isDeleteModalOpen = false;
+        state.deletingCharacter = null;
       })
       .addCase(deleteCharacterAction.rejected, (state) => {
         state.isDeleting = false;
