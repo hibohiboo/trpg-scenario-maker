@@ -9,7 +9,6 @@ import {
   type Edge,
   type Node,
 } from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
 import { useCallback } from 'react';
 import { CharacterGraphToolbar } from './CharacterGraphToolbar';
 import { CharacterNode } from './CharacterNode';

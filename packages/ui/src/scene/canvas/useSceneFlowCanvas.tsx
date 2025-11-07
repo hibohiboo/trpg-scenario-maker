@@ -1,4 +1,3 @@
-import type { SceneEvent } from '@trpg-scenario-maker/schema';
 import {
   useNodesState,
   useEdgesState,
@@ -11,6 +10,7 @@ import {
   type Node,
 } from '@xyflow/react';
 import { useState, useCallback, useEffect } from 'react';
+import { getLayoutedElements, scenesToNodes } from './index';
 import type {
   InformationItem,
   InformationItemConnection,
@@ -18,8 +18,7 @@ import type {
   SceneInformationConnection,
 } from '../../informationItem/types';
 import type { Scene, SceneConnection } from '../types';
-import '@xyflow/react/dist/style.css';
-import { getLayoutedElements, scenesToNodes } from './index';
+import type { SceneEvent } from '@trpg-scenario-maker/schema';
 
 export interface SceneFlowCanvasProps {
   scenes: Scene[];
@@ -262,16 +261,19 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
     [onNodesChange, nodes, scenes, onNodesUpdate],
   );
 
-  const handleNodeClick = (_event: React.MouseEvent, node: Node) => {
-    const scene = scenes.find((s) => s.id === node.id);
-    if (scene) {
-      setSelectedScene(scene);
-    }
-  };
+  const handleNodeClick = useCallback(
+    (_event: React.MouseEvent, node: Node) => {
+      const scene = scenes.find((s) => s.id === node.id);
+      if (scene) {
+        setSelectedScene(scene);
+      }
+    },
+    [scenes, setSelectedScene],
+  );
 
-  const handleCloseSidebar = () => {
+  const handleCloseSidebar = useCallback(() => {
     setSelectedScene(null);
-  };
+  }, [setSelectedScene]);
 
   // 選択中のシーンの情報を最新のscenesから更新
   useEffect(() => {
@@ -281,7 +283,7 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
         setSelectedScene(updatedScene);
       }
     }
-  }, [scenes, selectedScene]);
+  }, [scenes, selectedScene, setSelectedScene]);
 
   return {
     selectedScene,

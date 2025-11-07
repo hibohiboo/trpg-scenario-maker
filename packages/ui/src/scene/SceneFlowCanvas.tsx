@@ -1,4 +1,3 @@
-import '@xyflow/react/dist/style.css';
 import { CanvasToolbar, FlowCanvas, SceneDetailSidebar } from './canvas';
 import {
   useSceneFlowCanvas,
