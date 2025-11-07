@@ -30,6 +30,12 @@ export default defineConfig([
     ],
     plugins: { 'unused-imports': unusedImports },
     rules: {
+      'linebreak-style': ['error', 'unix'],
+      semi: ['error', 'always'],
+      complexity: ['error', 7], // 複雑度の設定
+      // The typescript-eslint FAQ provides guidance here:
+      // https://typescript-eslint.io/troubleshooting/faqs/general/#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-typescript-errors
+      'no-undef': 'off',
       // unuserd-importsのrecommended設定を適用
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
