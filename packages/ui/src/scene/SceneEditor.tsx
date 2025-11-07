@@ -1,4 +1,4 @@
-import { Button, Modal, Tabs } from '..';
+import { Button, Modal, Tabs } from '../common';
 import { SceneFlowCanvas } from './SceneFlowCanvas';
 import { SceneForm } from './SceneForm';
 import { createEventHandlers } from './sceneEditorHelpers';

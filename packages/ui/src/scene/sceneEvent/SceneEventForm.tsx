@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '../../common';
 import type { SceneEvent, SceneEventType } from '@trpg-scenario-maker/schema';
 
@@ -34,13 +34,6 @@ export const SceneEventForm: React.FC<SceneEventFormProps> = ({
   );
   const [content, setContent] = useState(event?.content || '');
   const [error, setError] = useState<string>('');
-
-  useEffect(() => {
-    if (event) {
-      setType(event.type);
-      setContent(event.content);
-    }
-  }, [event]);
 
   const handleSubmit = () => {
     setError('');
@@ -89,18 +82,10 @@ export const SceneEventForm: React.FC<SceneEventFormProps> = ({
       </div>
 
       <div className="flex justify-end gap-2">
-        <Button
-          type="button"
-          onClick={onCancel}
-          variant="ghost"
-        >
+        <Button type="button" onClick={onCancel} variant="ghost">
           キャンセル
         </Button>
-        <Button
-          type="button"
-          onClick={handleSubmit}
-          variant="primary"
-        >
+        <Button type="button" onClick={handleSubmit} variant="primary">
           {event ? '更新' : '追加'}
         </Button>
       </div>
