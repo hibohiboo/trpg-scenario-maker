@@ -27,6 +27,43 @@ export default defineConfig([
       sonarjs.configs.recommended,
       ...eslintImport,
     ],
+    rules: {
+      'import/order': [
+        'warn',
+        {
+          groups: [
+            'builtin',
+            'external',
+            'internal',
+            'parent',
+            'sibling',
+            'index',
+            'object',
+            'type',
+          ], // importの並び順の設定
+          pathGroupsExcludedImportTypes: ['builtin'],
+          pathGroups: [
+            { pattern: '@src/**', group: 'parent', position: 'before' },
+          ], // エイリアスの位置を指定
+          alphabetize: { order: 'asc' }, // グループ内のソート順
+        },
+      ],
+      'import/prefer-default-export': ['off'],
+      'import/no-unresolved': [
+        'error',
+        {
+          ignore: ['^hono/.+'],
+        },
+      ],
+      'import/extensions': ['off'],
+    },
+    // https://www.npmjs.com/package/eslint-plugin-import#user-content-typescript
+    settings: {
+      'import/resolver': {
+        node: true,
+        typescript: true,
+      },
+    },
   },
 ]);
 

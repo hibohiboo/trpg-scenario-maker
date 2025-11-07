@@ -31,7 +31,6 @@ export default defineConfig([
       //   'warn',
       //   { allowConstantExport: true },
       // ],
-      // 'import/extensions': ['off'],
       // 'no-alert': 'off',
       // 'no-console': 'off',
       // // Redux Toolkit uses immer internally to allow "mutating" state

@@ -28,12 +28,12 @@
     "react-redux": "^9.2.0"
   },
   "devDependencies": {
-    "@types/node": "catalog:",
     "@cucumber/cucumber": "^12.2.0",
     "@playwright/test": "^1.56.1",
     "@tailwindcss/vite": "^4.1.16",
     "@trpg-scenario-maker/eslint-config-custom": "workspace:*",
     "@trpg-scenario-maker/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
     "eslint": "catalog:testing",
     "ts-node": "^10.9.2"
   }
