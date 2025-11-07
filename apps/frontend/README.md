@@ -53,43 +53,152 @@ TRPGシナリオメーカーのフロントエンドアプリケーション
                          └─────────────────┘
 ```
 
-### ディレクトリ構成
+### ディレクトリ構成（Feature-Sliced Design）
 
 ```
 src/
-├── workers/                    # Web Worker実装
-│   ├── db.worker.ts           # Workerメインファイル（ハンドラー登録）
-│   ├── dbWorkerClient.ts      # Workerクライアント（singleton）
-│   ├── BaseWorkerClient.ts    # 汎用Workerクライアント基底クラス
-│   └── types.ts               # Worker型定義
-│
-├── entities/                   # エンティティ層（DDD風）
-│   └── scenario/
-│       ├── workers/
-│       │   ├── scenarioHandlers.ts      # シナリオRDB操作ハンドラー
-│       │   └── scenarioGraphHandlers.ts # シナリオグラフDB操作ハンドラー
-│       ├── api/
-│       │   ├── scenarioApi.ts           # RDB API層（Worker呼び出し）
-│       │   └── scenarioGraphApi.ts      # GraphDB API層（Worker呼び出し）
-│       ├── store/
-│       │   ├── scenarioSlice.ts         # Redux Slice
-│       │   └── scenarioActions.ts       # Async Thunks
-│       └── actions/
-│           └── scenarioActions.ts       # 同期的なアクション
-│
-├── page/                       # ページコンポーネント
-│   └── scenarioDetail/
-│       ├── index.tsx          # ページコンポーネント
-│       ├── loader.ts          # React Routerのloaderロジック
-│       └── hooks/
-│           └── useScenarioDetailPage.ts
-│
-├── app/
+├── app/                          # アプリケーション層
+│   ├── App.tsx
+│   ├── Router.tsx
+│   ├── store/                   # Redux store設定
 │   └── routes/
-│       └── index.tsx          # ルーティング定義
+│       └── index.tsx            # ルーティング定義
 │
-└── main.tsx                    # エントリポイント（Worker初期化）
+├── page/                         # ページ層（ルーティング単位）
+│   ├── agreement/
+│   ├── scenario/
+│   ├── character/
+│   └── scenarioDetail/
+│       ├── ui/
+│       │   └── Page.tsx         # タブナビゲーション + feature組み立て（約65行）
+│       ├── models/
+│       │   └── scenarioDetailSlice.ts
+│       └── loader.ts            # React Routerのloaderロジック
+│
+├── feature/                      # Feature層（ビジネス機能単位）
+│   ├── scenarioSceneManagement/
+│   │   ├── hooks/
+│   │   │   └── useSceneManagement.ts     # シーン管理の統合ロジック
+│   │   ├── ui/
+│   │   │   └── SceneTabContent.tsx
+│   │   └── index.ts
+│   ├── scenarioCharacterManagement/
+│   │   ├── hooks/
+│   │   │   └── useCharacterManagement.ts # キャラクター管理の統合ロジック
+│   │   ├── ui/
+│   │   │   └── CharacterTabContent.tsx
+│   │   └── index.ts
+│   └── scenarioInformationManagement/
+│       ├── hooks/
+│       │   └── useInformationManagement.ts
+│       ├── ui/
+│       │   └── InformationItemTabContent.tsx
+│       └── index.ts
+│
+├── widget/                       # Widget層（複合UIコンポーネント）
+│   └── TabNavigationBar/
+│       ├── ui/
+│       │   └── TabNavigationBar.tsx
+│       ├── types.ts
+│       └── index.ts
+│
+├── entities/                     # Entity層（ドメインモデル）
+│   ├── character/
+│   │   ├── api/
+│   │   │   └── characterGraphApi.ts
+│   │   ├── hooks/
+│   │   │   ├── useCharacterList.ts
+│   │   │   └── useCreateCharacter.ts
+│   │   ├── model/
+│   │   │   └── characterSlice.ts
+│   │   ├── actions/
+│   │   │   └── characterActions.ts
+│   │   └── workers/
+│   │       └── characterHandlers.ts
+│   ├── scenario/
+│   │   ├── api/
+│   │   │   ├── scenarioApi.ts           # RDB API層（Worker呼び出し）
+│   │   │   └── scenarioGraphApi.ts      # GraphDB API層（Worker呼び出し）
+│   │   ├── model/
+│   │   │   └── scenarioSlice.ts         # Redux Slice
+│   │   ├── actions/
+│   │   │   └── scenarioActions.ts       # Redux Actions
+│   │   └── workers/
+│   │       ├── scenarioHandlers.ts      # RDB操作ハンドラー
+│   │       └── scenarioGraphHandlers.ts # GraphDB操作ハンドラー
+│   ├── scene/
+│   ├── image/
+│   ├── scenarioCharacter/
+│   ├── sceneEvent/
+│   └── informationItem/
+│
+├── shared/                       # 共有層（汎用ユーティリティ）
+│   └── lib/store/
+│
+├── workers/                      # Web Worker実装
+│   ├── db.worker.ts             # RDB Workerメインファイル
+│   ├── dbWorkerClient.ts        # RDB Workerクライアント
+│   ├── graphdb.worker.ts        # GraphDB Workerメインファイル
+│   ├── graphdbWorkerClient.ts   # GraphDB Workerクライアント
+│   ├── BaseWorkerClient.ts      # 汎用Workerクライアント基底クラス
+│   └── types.ts                 # Worker型定義
+│
+└── main.tsx                      # エントリポイント（Worker初期化）
 ```
+
+### Feature-Sliced Design の依存関係ルール
+
+```
+page/
+  ↓ 依存可能: widget, feature, entities
+
+widget/
+  ↓ 依存可能: feature, entities
+
+feature/
+  ↓ 依存可能: entities のみ
+
+entities/
+  ↓ 依存可能: shared, API
+
+shared/
+  ↓ 依存不可（最下層）
+```
+
+### 各層の責務
+
+#### Entity層
+- **責務**: ドメインモデルのCRUD操作、API通信、Redux状態管理
+- **含めるもの**: 単一エンティティに特化したhooks、API、Redux slices
+- **例**: `useCharacterList()`, `characterGraphApi.create()`
+
+#### Feature層
+- **責務**: ビジネスロジックの統合、基本的なUI構造
+- **含めるもの**: 複数のentity hooksを組み合わせたカスタムフック、基本的なリスト/フォーム/モーダルUI
+- **依存可能**: entities のみ（widgetは使えない）
+- **例**: `useCharacterManagement()` - キャラクターCRUD + 関係性管理を統合
+
+#### Widget層
+- **責務**: 複雑なUI、複数のfeatureの組み合わせ、高度なビジュアライゼーション
+- **含めるもの**: 複数のfeatureを組み合わせた複合UI、グラフ表示、ギャラリー
+- **依存可能**: feature, entities
+- **例**: `TabNavigationBar` - 汎用タブナビゲーション
+
+#### Page層
+- **責務**: ルーティング、レイアウト、widget/featureの組み立て
+- **原則**: widgetを優先的に使い、シンプルなUIはfeatureを直接使う
+- **依存可能**: widget, feature, entities
+
+### リファクタリング成果（scenarioDetailページ）
+
+| 項目 | リファクタ前 | リファクタ後 |
+|------|-------------|-------------|
+| Page.tsx | 175行, 77 props | 65行, 0 props |
+| 最大hook行数 | 533行（GOD HOOK） | 約120行/feature |
+| feature層 | なし | 3 features |
+| widget層 | なし | 1 widget |
+| 再利用性 | 低い | 高い（feature単位） |
+| テスト容易性 | 困難 | 容易（feature独立） |
 
 ## React Routerのloaderパターン
 
