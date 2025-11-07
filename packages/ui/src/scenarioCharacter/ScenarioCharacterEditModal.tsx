@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '../common/Button';
 import { Modal } from '../common/Modal';
 import type { CharacterWithRole } from './types';
+import type { ReactNode } from 'react';
 
 export interface ScenarioCharacterEditModalProps {
   /** モーダルの表示状態 */
@@ -18,6 +19,8 @@ export interface ScenarioCharacterEditModalProps {
     description: string;
     role: string;
   }) => Promise<void>;
+  /** 追加の子コンポーネント（画像管理など） */
+  children?: ReactNode;
 }
 
 /**
@@ -28,6 +31,7 @@ export function ScenarioCharacterEditModal({
   character,
   onClose,
   onSubmit,
+  children,
 }: ScenarioCharacterEditModalProps) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -120,6 +124,14 @@ export function ScenarioCharacterEditModal({
             className="w-full px-3 py-2 border border-gray-300 rounded-md"
           />
         </div>
+
+        {/* 画像管理エリア */}
+        {children && (
+          <div className="border-t border-gray-200 pt-4 mt-4">
+            <h3 className="text-sm font-medium mb-3">画像管理</h3>
+            {children}
+          </div>
+        )}
 
         <div className="flex justify-end gap-2 pt-4">
           <Button type="button" onClick={handleClose} variant="secondary">
