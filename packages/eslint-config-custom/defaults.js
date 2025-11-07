@@ -1,7 +1,22 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { FlatCompat } from '@eslint/eslintrc';
 import eslint from '@eslint/js';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import sonarjs from 'eslint-plugin-sonarjs';
 import tseslint from 'typescript-eslint';
+
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
+
+const compat = new FlatCompat({
+  baseDirectory: dirname,
+});
+const eslintImport = [
+  ...compat.config({
+    extends: ['plugin:import/recommended', 'plugin:import/typescript'],
+  }),
+];
 
 export default defineConfig([
   globalIgnores(['node_modules/', '.config/', 'dist/', 'tsconfig.json']),
@@ -10,13 +25,11 @@ export default defineConfig([
       eslint.configs.recommended,
       tseslint.configs.recommended,
       sonarjs.configs.recommended,
+      ...eslintImport,
     ],
   },
 ]);
 
-// import path from 'path';
-// import { fileURLToPath } from 'url';
-// import { FlatCompat } from '@eslint/eslintrc';
 // import js from '@eslint/js';
 // import { defineConfig } from 'eslint/config';
 // import prettierConfig from 'eslint-config-prettier';
