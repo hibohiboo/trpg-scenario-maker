@@ -6,54 +6,46 @@ import {
   type InformationItemConnectionDisplay,
 } from '@trpg-scenario-maker/ui';
 import { useMemo } from 'react';
-import type { useScenarioDetailPage } from '../hooks/useScenarioDetailPage';
+import { useSceneList } from '@/entities/scene';
+import { useInformationManagement } from '../hooks/useInformationManagement';
 
-type InformationItemTabContentProps = Pick<
-  ReturnType<typeof useScenarioDetailPage>,
-  | 'informationItems'
-  | 'informationConnections'
-  | 'informationToSceneConnections'
-  | 'scenes'
-  | 'isInformationItemsLoading'
-  | 'isInformationItemFormOpen'
-  | 'editingInformationItem'
-  | 'handleOpenInformationItemForm'
-  | 'handleCloseInformationItemForm'
-  | 'handleCreateInformationItem'
-  | 'handleUpdateInformationItem'
-  | 'handleDeleteInformationItem'
-  | 'handleEditInformationItem'
-  | 'isInformationConnectionModalOpen'
-  | 'handleOpenInformationConnectionModal'
-  | 'handleCloseInformationConnectionModal'
-  | 'handleCreateInformationConnection'
-  | 'handleRemoveInformationConnection'
-  | 'handleAddInformationToScene'
-  | 'handleRemoveInformationToScene'
->;
+interface InformationItemTabContentProps {
+  scenarioId?: string;
+}
 
+/**
+ * 情報項目タブコンテンツ
+ *
+ * 情報項目の作成・編集・削除、情報項目間の接続、シーンとの接続を行う
+ */
 export function InformationItemTabContent({
-  informationItems,
-  informationConnections,
-  informationToSceneConnections,
-  scenes,
-  isInformationItemsLoading,
-  isInformationItemFormOpen,
-  editingInformationItem,
-  handleOpenInformationItemForm,
-  handleCloseInformationItemForm,
-  handleCreateInformationItem,
-  handleUpdateInformationItem,
-  handleDeleteInformationItem,
-  handleEditInformationItem,
-  isInformationConnectionModalOpen,
-  handleOpenInformationConnectionModal,
-  handleCloseInformationConnectionModal,
-  handleCreateInformationConnection,
-  handleRemoveInformationConnection,
-  handleAddInformationToScene,
-  handleRemoveInformationToScene,
+  scenarioId: _scenarioId,
 }: InformationItemTabContentProps) {
+  const {
+    informationItems,
+    informationConnections,
+    informationToSceneConnections,
+    isInformationItemsLoading,
+    isInformationItemFormOpen,
+    editingInformationItem,
+    isInformationConnectionModalOpen,
+    handleCreateInformationItem,
+    handleUpdateInformationItem,
+    handleDeleteInformationItem,
+    handleOpenInformationItemForm,
+    handleCloseInformationItemForm,
+    handleEditInformationItem,
+    handleOpenInformationConnectionModal,
+    handleCloseInformationConnectionModal,
+    handleCreateInformationConnection,
+    handleRemoveInformationConnection,
+    handleAddInformationToScene,
+    handleRemoveInformationToScene,
+  } = useInformationManagement();
+
+  // シーンデータの取得（情報項目とシーンの接続表示に使用）
+  const { scenes } = useSceneList();
+
   // 接続データを表示用に変換
   const connectionDisplays: InformationItemConnectionDisplay[] = useMemo(
     () =>
@@ -74,6 +66,7 @@ export function InformationItemTabContent({
       }),
     [informationConnections, informationItems],
   );
+
   return (
     <div className="space-y-8 lg:flex gap-8">
       <div className="grid  grid-cols-1 lg:grid-cols-2 gap-8">

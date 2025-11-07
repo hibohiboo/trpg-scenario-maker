@@ -7,54 +7,40 @@ import {
   CharacterRelationshipGraph,
 } from '@trpg-scenario-maker/ui';
 import { CharacterImageManager } from '@/entities/image';
-import type { useScenarioDetailPage } from '../hooks/useScenarioDetailPage';
+import { useCharacterManagement } from '../hooks/useCharacterManagement';
 
-type CharacterTabContentProps = Pick<
-  ReturnType<typeof useScenarioDetailPage>,
-  | 'characters'
-  | 'isCharactersLoading'
-  | 'handleRemoveCharacter'
-  | 'isCharacterFormOpen'
-  | 'handleOpenCharacterForm'
-  | 'handleCloseCharacterForm'
-  | 'handleCreateNewCharacter'
-  | 'isCharacterEditOpen'
-  | 'editingCharacter'
-  | 'handleOpenEditCharacter'
-  | 'handleCloseEditCharacter'
-  | 'handleUpdateCharacter'
-  | 'handleAddExistingCharacter'
-  | 'characterRelations'
-  | 'isRelationsLoading'
-  | 'isRelationshipFormOpen'
-  | 'handleAddRelationship'
-  | 'handleCloseRelationshipForm'
-  | 'handleSubmitRelationship'
-  | 'handleRemoveRelationship'
->;
+interface CharacterTabContentProps {
+  scenarioId: string;
+}
 
-export function CharacterTabContent({
-  characters,
-  isCharactersLoading,
-  handleRemoveCharacter,
-  isCharacterFormOpen,
-  handleOpenCharacterForm,
-  handleCloseCharacterForm,
-  handleCreateNewCharacter,
-  isCharacterEditOpen,
-  editingCharacter,
-  handleOpenEditCharacter,
-  handleCloseEditCharacter,
-  handleUpdateCharacter,
-  handleAddExistingCharacter,
-  characterRelations,
-  isRelationsLoading,
-  isRelationshipFormOpen,
-  handleAddRelationship,
-  handleCloseRelationshipForm,
-  handleSubmitRelationship,
-  handleRemoveRelationship,
-}: CharacterTabContentProps) {
+/**
+ * キャラクタータブコンテンツ
+ *
+ * キャラクターの作成・編集・削除、関係性の管理、グラフ表示を行う
+ */
+export function CharacterTabContent({ scenarioId }: CharacterTabContentProps) {
+  const {
+    characters,
+    characterRelations,
+    isCharactersLoading,
+    isRelationsLoading,
+    isCharacterFormOpen,
+    isCharacterEditOpen,
+    isRelationshipFormOpen,
+    editingCharacter,
+    handleCreateNewCharacter,
+    handleUpdateCharacter,
+    handleRemoveCharacter,
+    handleOpenCharacterForm,
+    handleCloseCharacterForm,
+    handleOpenEditCharacter,
+    handleCloseEditCharacter,
+    handleSubmitRelationship,
+    handleRemoveRelationship,
+    handleOpenRelationshipForm,
+    handleCloseRelationshipForm,
+  } = useCharacterManagement(scenarioId);
+
   return (
     <>
       <div className="space-y-8">
@@ -67,7 +53,7 @@ export function CharacterTabContent({
               onEditCharacter={handleOpenEditCharacter}
               onRemoveCharacter={handleRemoveCharacter}
               onCreateNew={handleOpenCharacterForm}
-              onAddExisting={handleAddExistingCharacter}
+              onAddExisting={undefined}
             />
           </section>
 
@@ -75,7 +61,7 @@ export function CharacterTabContent({
             <ScenarioCharacterRelationshipList
               relations={characterRelations}
               isLoading={isRelationsLoading}
-              onAddRelationship={handleAddRelationship}
+              onAddRelationship={handleOpenRelationshipForm}
               onRemoveRelationship={handleRemoveRelationship}
             />
           </section>
