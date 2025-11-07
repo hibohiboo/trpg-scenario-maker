@@ -89,37 +89,3 @@ export default defineConfig([
     },
   },
 ]);
-
-// import js from '@eslint/js';
-// import { defineConfig } from 'eslint/config';
-// import prettierConfig from 'eslint-config-prettier';
-// import importPlugin from 'eslint-plugin-import';
-// import sonarjs from 'eslint-plugin-sonarjs';
-// import unuserdPlugin from 'eslint-plugin-unused-imports';
-// import tseslint from 'typescript-eslint';
-
-// const filename = fileURLToPath(import.meta.url);
-// const dirname = path.dirname(filename);
-
-// const compat = new FlatCompat({
-//   baseDirectory: dirname,
-// });
-
-// export default defineConfig({
-//   extends: [
-//     js.configs.recommended,
-//     ...tseslint.configs.recommended,
-//     ...compat.extends('airbnb-base'),
-
-//     prettierConfig,
-//   ],
-//   plugins: { import: importPlugin, 'unused-imports': unuserdPlugin, sonarjs },
-//   rules: {
-//     'linebreak-style': ['error', 'unix'],
-//     semi: ['error', 'always'],
-//     complexity: ['error', 7], // 複雑度の設定
-//     // The typescript-eslint FAQ provides guidance here:
-//     // https://typescript-eslint.io/troubleshooting/faqs/general/#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-typescript-errors
-//     'no-undef': 'off',
-
-// });
