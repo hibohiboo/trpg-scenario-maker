@@ -68,6 +68,20 @@ export type { NavigationItem, NavigationProps } from './shared/navigation';
 
 // Entities層（新構造）
 export { ImageInput } from './entities/image';
+export {
+  ScenarioCard,
+  ScenarioForm,
+  ScenarioList,
+  DeleteConfirmModal,
+} from './entities/scenario';
+export type {
+  Scenario,
+  ScenarioFormData,
+  ScenarioCardProps,
+  ScenarioFormProps,
+  ScenarioListProps,
+  DeleteConfirmModalProps,
+} from './entities/scenario';
 
 // Image層（旧構造 - 後方互換性のため残す）
 export {
