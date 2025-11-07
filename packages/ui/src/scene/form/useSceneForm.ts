@@ -1,11 +1,11 @@
-import type { SceneEvent, SceneEventType } from '@trpg-scenario-maker/schema';
 import { useState, type FormEvent, useMemo } from 'react';
+import { useSceneConnections } from './useSceneConnections';
 import type {
   InformationItem,
   SceneInformationConnection,
 } from '../../informationItem/types';
 import type { Scene, SceneConnection } from '../types';
-import { useSceneConnections } from './useSceneConnections';
+import type { SceneEvent, SceneEventType } from '@trpg-scenario-maker/schema';
 
 export interface SceneFormProps {
   scene?: Scene;

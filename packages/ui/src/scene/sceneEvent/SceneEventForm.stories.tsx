@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { SceneEvent } from '@trpg-scenario-maker/schema';
 import { fn } from 'storybook/test';
 import { SceneEventForm } from './SceneEventForm';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { SceneEvent } from '@trpg-scenario-maker/schema';
 
 const meta = {
   title: 'Scene/SceneEventForm',

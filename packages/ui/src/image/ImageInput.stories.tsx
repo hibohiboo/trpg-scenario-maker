@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 import ImageUploadDataUrlPreview from './ImageInput';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta: Meta<typeof ImageUploadDataUrlPreview> = {
   title: 'Components/ImageUploadDataUrlPreview',

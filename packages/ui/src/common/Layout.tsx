@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react';
 import { Navigation } from './Navigation';
 import type { NavigationItem } from './Navigation';
+import type { ReactNode } from 'react';
 
 interface LayoutProps {
   /**

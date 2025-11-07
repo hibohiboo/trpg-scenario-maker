@@ -1,4 +1,3 @@
-import type { SceneEvent, SceneEventType } from '@trpg-scenario-maker/schema';
 import { useState } from 'react';
 import {
   FaPlus,
@@ -9,6 +8,7 @@ import {
 } from 'react-icons/fa';
 import { Button } from '../../common';
 import { SceneEventForm, SceneEventIcon } from '../sceneEvent';
+import type { SceneEvent, SceneEventType } from '@trpg-scenario-maker/schema';
 
 export interface SceneEventsSectionProps {
   events: SceneEvent[];

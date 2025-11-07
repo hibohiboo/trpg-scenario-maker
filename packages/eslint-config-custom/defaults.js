@@ -73,7 +73,7 @@ export default defineConfig([
           ], // importの並び順の設定
           pathGroupsExcludedImportTypes: ['builtin'],
           pathGroups: [
-            { pattern: '@src/**', group: 'parent', position: 'before' },
+            { pattern: '@/**', group: 'parent', position: 'before' },
           ], // エイリアスの位置を指定
           alphabetize: { order: 'asc' }, // グループ内のソート順
         },

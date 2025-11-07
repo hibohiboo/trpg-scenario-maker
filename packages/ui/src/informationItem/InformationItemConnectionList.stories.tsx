@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
 import { InformationItemConnectionList } from './InformationItemConnectionList';
 import type { InformationItem } from './types';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const mockItems: InformationItem[] = [
   {

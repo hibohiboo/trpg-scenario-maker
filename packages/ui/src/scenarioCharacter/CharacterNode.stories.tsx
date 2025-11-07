@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { CharacterNodeData } from '@trpg-scenario-maker/schema';
 import { ReactFlowProvider } from '@xyflow/react';
 import { CharacterNode } from './CharacterNode';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { CharacterNodeData } from '@trpg-scenario-maker/schema';
 
 const meta = {
   title: 'ScenarioCharacter/CharacterNode',

@@ -1,10 +1,10 @@
-import type { Scene, SceneConnection } from '../types';
 import {
   getNextScenes,
   getPreviousScenes,
   getAvailableNextScenes,
   getAvailablePreviousScenes,
 } from './sceneConnectionHelpers';
+import type { Scene, SceneConnection } from '../types';
 
 interface UseSceneConnectionsParams {
   scene?: Scene;

@@ -12,8 +12,8 @@ import {
 import '@xyflow/react/dist/style.css';
 import { useCallback } from 'react';
 import { CharacterGraphToolbar } from './CharacterGraphToolbar';
-import { getLayoutedCharacterElements } from './characterGraphUtils';
 import { CharacterNode } from './CharacterNode';
+import { getLayoutedCharacterElements } from './characterGraphUtils';
 import type { CharacterWithRole, ScenarioCharacterRelationship } from './types';
 
 const nodeTypes = {

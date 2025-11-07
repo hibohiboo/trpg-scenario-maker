@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 import { SceneForm } from './SceneForm';
 import type { Scene, SceneConnection } from './types';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {
   title: 'Scene/SceneForm',

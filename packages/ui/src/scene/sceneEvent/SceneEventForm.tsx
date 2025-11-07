@@ -1,6 +1,6 @@
-import type { SceneEvent, SceneEventType } from '@trpg-scenario-maker/schema';
 import React, { useState, useEffect } from 'react';
 import { Button } from '../../common';
+import type { SceneEvent, SceneEventType } from '@trpg-scenario-maker/schema';
 
 export interface SceneEventFormProps {
   event?: SceneEvent;

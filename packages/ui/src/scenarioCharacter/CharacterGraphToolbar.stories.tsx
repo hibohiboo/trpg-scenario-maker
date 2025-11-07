@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CharacterGraphToolbar } from './CharacterGraphToolbar';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {
   title: 'ScenarioCharacter/CharacterGraphToolbar',

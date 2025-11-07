@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
+import { SceneFlowCanvas } from './SceneFlowCanvas';
 import {
   complexFlowConnections,
   complexFlowScenes,
@@ -9,7 +9,7 @@ import {
   sampleScenes,
   scenesWithEvents,
 } from './__fixtures__/scenes';
-import { SceneFlowCanvas } from './SceneFlowCanvas';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {
   title: 'Scene/SceneFlowCanvas',

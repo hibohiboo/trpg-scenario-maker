@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 import { RelationshipList } from './RelationshipList';
 import type { Character, Relationship } from './types';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {
   title: 'Character/RelationshipList',

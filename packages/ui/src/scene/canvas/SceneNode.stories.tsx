@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ReactFlowProvider } from '@xyflow/react';
-import type { Scene } from '../types';
 import { SceneNode } from './SceneNode';
+import type { Scene } from '../types';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {
   title: 'Scene/Canvas/SceneNode',

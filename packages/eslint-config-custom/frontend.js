@@ -19,12 +19,12 @@ export default defineConfig([
     files: ['**/*.ts', '**/*.tsx'],
     ignores: ['dist', 'public'],
     extends: [
-      ...customConfig,
       ...compat.extends(
         'plugin:@conarti/eslint-plugin-feature-sliced/recommended',
       ),
       reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
+      ...customConfig,
     ],
     rules: {
       'react-refresh/only-export-components': [
