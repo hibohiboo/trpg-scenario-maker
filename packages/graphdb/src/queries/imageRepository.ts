@@ -1,4 +1,4 @@
-import { executeQuery } from '..';
+import { executeQuery } from '../db';
 
 /**
  * 画像のグラフDB操作リポジトリ

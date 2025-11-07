@@ -1,4 +1,4 @@
-import { executeQuery } from '..';
+import { executeQuery } from '../db';
 import { escapeCypherString } from '../utils/escapeCypherString';
 
 /**
@@ -28,9 +28,7 @@ export const characterRelationshipGraphRepository = {
   /**
    * 関係性エッジを削除（idで特定）
    */
-  async delete(params: {
-    id: string;
-  }): Promise<void> {
+  async delete(params: { id: string }): Promise<void> {
     await executeQuery(`
       MATCH ()-[r:CHARACTER_RELATES_TO {id: '${params.id}'}]->()
       DELETE r
@@ -98,10 +96,7 @@ export const characterRelationshipGraphRepository = {
   /**
    * 関係性を更新（idで特定）
    */
-  async update(params: {
-    id: string;
-    relationshipName: string;
-  }) {
+  async update(params: { id: string; relationshipName: string }) {
     const escapedName = escapeCypherString(params.relationshipName);
 
     return executeQuery(`
