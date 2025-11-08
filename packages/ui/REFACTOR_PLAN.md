@@ -182,29 +182,36 @@ packages/ui/src/
 ## 実装手順
 
 ### フェーズ1: 新しいディレクトリ構造の作成
-- [ ] `shared/` ディレクトリ作成
-- [ ] `entities/` ディレクトリ作成（各entity別サブディレクトリ）
-- [ ] `features/` ディレクトリ作成（各feature別サブディレクトリ）
+- [x] `shared/` ディレクトリ作成
+- [x] `entities/` ディレクトリ作成（各entity別サブディレクトリ）
+- [x] `features/` ディレクトリ作成（各feature別サブディレクトリ）
 - [ ] `widgets/` ディレクトリ作成
 
 ### フェーズ2: ファイル移動
-- [ ] Shared層のコンポーネントを移動
-- [ ] Entities層のコンポーネントを移動
-- [ ] Features層のコンポーネントを移動
+- [x] Shared層のコンポーネントを移動
+- [x] Entities層のコンポーネントを移動
+- [進行中] Features層のコンポーネントを移動
+  - [x] scenarioSceneManagement
+  - [ ] scenarioCharacterManagement
+  - [ ] scenarioRelationshipManagement
+  - [ ] scenarioInformationManagement
 - [ ] Widgets層のコンポーネントを移動
 
 ### フェーズ3: インポートパスの修正
-- [ ] 各コンポーネント内のインポートパスを修正
-- [ ] `index.ts` のエクスポートを修正
-- [ ] Storybookの設定を更新
+- [x] Shared層のインポートパス修正完了
+- [x] Entities層のインポートパス修正完了
+- [進行中] Features層のインポートパス修正
+- [x] 後方互換性のための再エクスポート設定完了
 
 ### フェーズ4: フロントエンドのインポートパス修正
 - [ ] `apps/frontend/src/` 内の全てのインポートパスを更新
 
 ### フェーズ5: テスト・検証
+- [x] Entity層完了後のBDDテスト実行（全テスト通過）
+- [ ] Feature層完了後のBDDテスト実行
 - [ ] Storybook起動確認
 - [ ] フロントエンドのビルド確認
-- [ ] 型チェック実行
+- [x] 型チェック実行（通過）
 
 ## メリット
 
