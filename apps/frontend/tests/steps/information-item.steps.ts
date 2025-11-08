@@ -34,27 +34,22 @@ When(
 When(
   '情報項目 {string} の削除ボタンをクリックする',
   async function (this: CustomWorld, itemTitle: string) {
-    // 情報項目のカードを見つけて編集ボタンをクリック
-    const itemCard = this.page
-      .locator('div')
-      .filter({ hasText: itemTitle })
-      .first();
-    await itemCard.getByRole('button', { name: '編集' }).first().click();
-
-    // モーダルが開くまで待つ
-    const modal = this.page.locator('[role="dialog"]');
-    await modal.waitFor({ state: 'visible', timeout: 5000 });
-
     // window.confirmのモックを設定（常にtrueを返す）
     await this.page.evaluate(() => {
       window.confirm = (() => true) as typeof confirm;
     });
 
-    // モーダル内の削除ボタンをクリック
-    await modal.getByRole('button', { name: '削除' }).click();
+    // 情報項目のカードを見つける
+    const itemCard = this.page
+      .locator('div')
+      .filter({ hasText: itemTitle })
+      .first();
 
-    // モーダルが閉じるまで待つ
-    await modal.waitFor({ state: 'detached', timeout: 5000 });
+    // カード上の削除ボタンを直接クリック
+    await itemCard.getByRole('button', { name: '削除' }).click();
+
+    // 削除処理が完了するまで少し待つ
+    await this.page.waitForTimeout(1000);
   },
 );
 
