@@ -92,6 +92,27 @@ export type {
   DeleteConfirmModalProps,
 } from './entities/scenario';
 
+// Features層（新構造）
+export {
+  SceneEditor as SceneEditorFeature,
+  SceneFlowCanvas as SceneFlowCanvasFeature,
+  SceneConnectionSection,
+  SceneEventsSection,
+  SceneBasicFields,
+  SceneInformationSection,
+  SceneEventForm as SceneEventFormFeature,
+  SceneEventIcon as SceneEventIconFeature,
+  CanvasToolbar,
+  FlowCanvas as FlowCanvasFeature,
+  SceneDetailSidebar,
+} from './features';
+export type {
+  SceneEventsSectionProps,
+  SceneInformationSectionProps,
+  SceneEventFormProps as SceneEventFormPropsFeature,
+  SceneEventIconProps as SceneEventIconPropsFeature,
+} from './features';
+
 // Image層（旧構造 - 後方互換性のため残す）
 export {
   ImageInput as ImageInputLegacy,

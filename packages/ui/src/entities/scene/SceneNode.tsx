@@ -1,7 +1,7 @@
 import { safeParseSceneSchema } from '@trpg-scenario-maker/schema';
 import { Handle, Position } from '@xyflow/react';
 import { memo } from 'react';
-import { SceneEventIcon } from '../../scene/sceneEvent';
+import { SceneEventIcon } from './SceneEventIcon';
 import type { NodeProps } from '@xyflow/react';
 
 /**
