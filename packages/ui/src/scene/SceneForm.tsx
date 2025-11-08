@@ -1,9 +1,7 @@
 import { Button } from '../common';
-import {
-  SceneBasicFields,
-  SceneEventsSection,
-  SceneInformationSection,
-} from '../features/scenarioSceneManagement';
+import { SceneBasicFields } from '../features/scenarioSceneManagement/SceneBasicFields';
+import { SceneEventsSection } from '../features/scenarioSceneManagement/SceneEventsSection';
+import { SceneInformationSection } from '../features/scenarioSceneManagement/SceneInformationSection';
 import { SceneConnectionsSection } from './form/SceneConnectionsSection';
 import { useSceneForm, type SceneFormProps } from './form/useSceneForm';
 
