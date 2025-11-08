@@ -1,6 +1,6 @@
 import {
   InformationItemList,
-  InformationItemForm,
+  InformationItemFormWithSceneConnection,
   InformationItemConnectionList,
   InformationItemConnectionFormModal,
   type InformationItemConnectionDisplay,
@@ -85,11 +85,11 @@ export function InformationItemTabContent({
             <h2 className="text-xl font-semibold mb-4">
               {editingInformationItem ? '情報項目編集' : '情報項目作成'}
             </h2>
-            <InformationItemForm
+            <InformationItemFormWithSceneConnection
               item={editingInformationItem ?? undefined}
               onSubmit={
                 editingInformationItem
-                  ? (data) =>
+                  ? (data: { title: string; description: string }) =>
                       handleUpdateInformationItem(
                         editingInformationItem.id,
                         data,
@@ -104,7 +104,7 @@ export function InformationItemTabContent({
               informationToSceneConnections={informationToSceneConnections}
               onAddSceneConnection={
                 editingInformationItem
-                  ? (sceneId) =>
+                  ? (sceneId: string) =>
                       handleAddInformationToScene(
                         editingInformationItem.id,
                         sceneId,

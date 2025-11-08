@@ -10,6 +10,12 @@ export type { InformationItemFormWithSceneConnectionProps } from './InformationI
 export { SceneConnectionSection } from './SceneConnectionSection';
 export type { SceneConnectionSectionProps } from './SceneConnectionSection';
 
+// Modal components
+export { InformationItemFormModal } from './InformationItemFormModal';
+export type { InformationItemFormModalProps } from './InformationItemFormModal';
+export { InformationItemEditModal } from './InformationItemEditModal';
+export type { InformationItemEditModalProps } from './InformationItemEditModal';
+
 // Feature-specific: InformationItem connections
 export { InformationItemConnectionList } from './InformationItemConnectionList';
 export type { InformationItemConnectionListProps } from './InformationItemConnectionList';
