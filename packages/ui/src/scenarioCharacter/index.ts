@@ -1,11 +1,26 @@
-export * from './ScenarioCharacterList';
-export * from './ScenarioCharacterRelationshipList';
-export * from './ScenarioCharacterRelationshipFormModal';
-export * from './ScenarioCharacterFormModal';
-export * from './ScenarioCharacterEditModal';
-export * from './CharacterRelationshipGraph';
-export * from './CharacterNode';
-export * from './CharacterGraphToolbar';
+// Features層とWidgets層に移動しました
+export {
+  ScenarioCharacterList,
+  ScenarioCharacterFormModal,
+  ScenarioCharacterEditModal,
+  CharacterDetailPanel,
+} from '../features/scenarioCharacterManagement';
+export type {
+  ScenarioCharacterListProps,
+  CharacterDetailPanelProps,
+} from '../features/scenarioCharacterManagement';
+
+export {
+  ScenarioCharacterRelationshipList,
+  ScenarioCharacterRelationshipFormModal,
+} from '../features/scenarioRelationshipManagement';
+export type { ScenarioCharacterRelation } from '../features/scenarioRelationshipManagement';
+
+export {
+  CharacterRelationshipGraph,
+  CharacterNode,
+  CharacterGraphToolbar,
+} from '../widgets/characterRelationshipGraph';
+
 export * from './characterGraphUtils';
 export * from './types';
-export * from './CharacterDetailPanel';

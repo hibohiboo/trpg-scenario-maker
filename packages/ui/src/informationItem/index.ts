@@ -1,16 +1,19 @@
-export { InformationItemList } from './InformationItemList';
-export { InformationItemForm } from './InformationItemForm';
-export { InformationItemCard } from './InformationItemCard';
-export { InformationItemConnectionList } from './InformationItemConnectionList';
-export { InformationItemConnectionFormModal } from './InformationItemConnectionFormModal';
-export type { InformationItemListProps } from './InformationItemList';
-export type { InformationItemFormProps } from './InformationItemForm';
-export type { InformationItemCardProps } from './InformationItemCard';
+// Features層に移動しました
+export {
+  InformationItemList,
+  InformationItemForm,
+  InformationItemCard,
+  InformationItemConnectionList,
+  InformationItemConnectionFormModal,
+} from '../features/scenarioInformationManagement';
 export type {
+  InformationItemListProps,
+  InformationItemFormProps,
+  InformationItemCardProps,
   InformationItemConnectionListProps,
-  InformationItemConnectionDisplay,
-} from './InformationItemConnectionList';
-export type { InformationItemConnectionFormModalProps } from './InformationItemConnectionFormModal';
+  InformationItemConnectionFormModalProps,
+} from '../features/scenarioInformationManagement';
+export type { InformationItemConnectionDisplay } from './InformationItemConnectionList';
 export type {
   InformationItem,
   InformationItemConnection,

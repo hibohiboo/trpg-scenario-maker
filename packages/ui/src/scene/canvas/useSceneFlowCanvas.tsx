@@ -10,7 +10,7 @@ import {
   type Node,
 } from '@xyflow/react';
 import { useState, useCallback, useEffect } from 'react';
-import { getLayoutedElements, scenesToNodes } from './index';
+import { getLayoutedElements, scenesToNodes } from './flowUtils';
 import type {
   InformationItem,
   InformationItemConnection,

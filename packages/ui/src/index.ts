@@ -9,6 +9,7 @@ export type {
 } from './scene';
 export {
   CharacterList,
+  CharacterForm,
   RelationshipList,
   RelationshipForm,
   DeleteRelationshipModal,
@@ -18,7 +19,15 @@ export type {
   Character,
   Relationship,
   RelationshipFormData,
+  CharacterListProps,
+  CharacterFormProps,
+  RelationshipListProps,
+  RelationshipFormProps,
+  DeleteRelationshipModalProps,
 } from './character';
+// 後方互換性のため
+export { CharacterForm as CharacterCreateModal } from './character';
+export type { CharacterFormProps as CharacterCreateModalProps } from './character';
 export {
   ScenarioCharacterList,
   ScenarioCharacterRelationshipList,
@@ -31,6 +40,7 @@ export {
 } from './scenarioCharacter';
 export type {
   CharacterWithRole,
+  ScenarioCharacterRelationship,
   ScenarioCharacterRelation,
   CharacterDetailPanelProps,
 } from './scenarioCharacter';
@@ -41,6 +51,7 @@ export {
   InformationItemConnectionList,
   InformationItemConnectionFormModal,
 } from './informationItem';
+export { InformationItemFormWithSceneConnection } from './features/scenarioInformationManagement';
 export type {
   InformationItem,
   InformationItemConnection,
@@ -53,10 +64,90 @@ export type {
   InformationItemConnectionFormModalProps,
   InformationItemConnectionDisplay,
 } from './informationItem';
-export { Button, Loading, ErrorMessage, Layout, Modal, Tabs } from './common';
-export type { ButtonVariant, ButtonSize, Tab, TabsProps } from './common';
+export type { InformationItemFormWithSceneConnectionProps } from './features/scenarioInformationManagement';
+// Shared層（新構造）
+export { Button } from './shared/button';
+export type { ButtonVariant, ButtonSize } from './shared/button';
+export { Loading } from './shared/loading';
+export { ErrorMessage } from './shared/error';
+export { Layout } from './shared/layout';
+export { Modal } from './shared/modal';
+export type { ModalProps } from './shared/modal';
+export { Tabs } from './shared/tabs';
+export type { Tab, TabsProps } from './shared/tabs';
+export { Navigation } from './shared/navigation';
+export type { NavigationItem, NavigationProps } from './shared/navigation';
+
+// Entities層（新構造）
+export { ImageInput } from './entities/image';
 export {
-  ImageInput,
+  ScenarioCard,
+  ScenarioForm,
+  ScenarioList,
+  DeleteConfirmModal,
+} from './entities/scenario';
+export type {
+  Scenario,
+  ScenarioFormData,
+  ScenarioCardProps,
+  ScenarioFormProps,
+  ScenarioListProps,
+  DeleteConfirmModalProps,
+} from './entities/scenario';
+
+// Features層（新構造）
+export {
+  SceneEditor as SceneEditorFeature,
+  SceneFlowCanvas as SceneFlowCanvasFeature,
+  SceneConnectionSection,
+  SceneEventsSection,
+  SceneBasicFields,
+  SceneInformationSection,
+  SceneEventForm as SceneEventFormFeature,
+  SceneEventIcon as SceneEventIconFeature,
+  CanvasToolbar,
+  FlowCanvas as FlowCanvasFeature,
+  SceneDetailSidebar,
+  ScenarioCharacterList as ScenarioCharacterListFeature,
+  ScenarioCharacterFormModal as ScenarioCharacterFormModalFeature,
+  ScenarioCharacterEditModal as ScenarioCharacterEditModalFeature,
+  CharacterDetailPanel as CharacterDetailPanelFeature,
+  CharacterImageGallery as CharacterImageGalleryFeature,
+  CharacterImageUploadModal as CharacterImageUploadModalFeature,
+  ScenarioCharacterRelationshipList as ScenarioCharacterRelationshipListFeature,
+  ScenarioCharacterRelationshipFormModal as ScenarioCharacterRelationshipFormModalFeature,
+  InformationItemList as InformationItemListFeature,
+  InformationItemForm as InformationItemFormFeature,
+  InformationItemCard as InformationItemCardFeature,
+  InformationItemConnectionList as InformationItemConnectionListFeature,
+  InformationItemConnectionFormModal as InformationItemConnectionFormModalFeature,
+} from './features';
+export type {
+  SceneEventsSectionProps,
+  SceneInformationSectionProps,
+  SceneEventFormProps as SceneEventFormPropsFeature,
+  SceneEventIconProps as SceneEventIconPropsFeature,
+  ScenarioCharacterListProps as ScenarioCharacterListPropsFeature,
+  CharacterDetailPanelProps as CharacterDetailPanelPropsFeature,
+  CharacterImageGalleryProps as CharacterImageGalleryPropsFeature,
+  CharacterImageUploadModalProps as CharacterImageUploadModalPropsFeature,
+  InformationItemListProps as InformationItemListPropsFeature,
+  InformationItemFormProps as InformationItemFormPropsFeature,
+  InformationItemCardProps as InformationItemCardPropsFeature,
+  InformationItemConnectionListProps as InformationItemConnectionListPropsFeature,
+  InformationItemConnectionFormModalProps as InformationItemConnectionFormModalPropsFeature,
+} from './features';
+
+// Widgets層（新構造）
+export {
+  CharacterRelationshipGraph as CharacterRelationshipGraphWidget,
+  CharacterNode as CharacterNodeWidget,
+  CharacterGraphToolbar,
+} from './widgets';
+
+// Image層（旧構造 - 後方互換性のため残す）
+export {
+  ImageInput as ImageInputLegacy,
   CharacterImageGallery,
   CharacterImageUploadModal,
 } from './image';

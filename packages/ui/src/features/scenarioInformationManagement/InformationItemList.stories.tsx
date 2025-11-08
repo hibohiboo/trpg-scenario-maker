@@ -1,6 +1,6 @@
 import { fn } from 'storybook/test';
 import { InformationItemList } from './InformationItemList';
-import type { InformationItem } from './types';
+import type { InformationItem } from '../../informationItem/types';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {

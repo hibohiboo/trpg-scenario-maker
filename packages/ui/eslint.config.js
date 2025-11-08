@@ -14,6 +14,10 @@ export default defineConfig(
           'import/no-extraneous-dependencies': ['off'],
           'no-alert': ['off'],
           'no-console': ['off'],
+          // UI packageではbarrel exportsが必要なため、FSD public-apiルールを無効化
+          '@conarti/feature-sliced/public-api': ['off'],
+          // UI packageでは相対パスを許可
+          '@conarti/feature-sliced/absolute-relative': ['off'],
         },
       },
       {

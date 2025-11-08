@@ -1,6 +1,13 @@
-export { SceneEditor } from './SceneEditor';
-export { SceneFlowCanvas } from './SceneFlowCanvas';
+// SceneEditor, SceneFlowCanvas, SceneEventForm は features/scenarioSceneManagement に移動しました
+export {
+  SceneEditor,
+  SceneFlowCanvas,
+  SceneEventForm,
+  SceneEventIcon,
+} from '../features/scenarioSceneManagement';
+export type {
+  SceneEventFormProps,
+  SceneEventIconProps,
+} from '../features/scenarioSceneManagement';
 export { SceneForm } from './SceneForm';
-export { SceneEventForm } from './sceneEvent';
-export type { SceneEventFormProps } from './sceneEvent/SceneEventForm';
 export * from './types';
