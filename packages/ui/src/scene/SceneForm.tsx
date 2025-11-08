@@ -1,8 +1,10 @@
 import { Button } from '../common';
-import { SceneBasicFields } from './form/SceneBasicFields';
+import {
+  SceneBasicFields,
+  SceneEventsSection,
+  SceneInformationSection,
+} from '../features/scenarioSceneManagement';
 import { SceneConnectionsSection } from './form/SceneConnectionsSection';
-import { SceneEventsSection } from './form/SceneEventsSection';
-import { SceneInformationSection } from './form/SceneInformationSection';
 import { useSceneForm, type SceneFormProps } from './form/useSceneForm';
 
 const inputClassName =
