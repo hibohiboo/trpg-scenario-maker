@@ -7,6 +7,8 @@ export type { InformationItemCardProps } from '../../entities/informationItem';
 // Feature-specific: Scene connection
 export { InformationItemFormWithSceneConnection } from './InformationItemFormWithSceneConnection';
 export type { InformationItemFormWithSceneConnectionProps } from './InformationItemFormWithSceneConnection';
+export { SceneConnectionSection } from './SceneConnectionSection';
+export type { SceneConnectionSectionProps } from './SceneConnectionSection';
 
 // Feature-specific: InformationItem connections
 export { InformationItemConnectionList } from './InformationItemConnectionList';

@@ -2,7 +2,7 @@ import { Button } from '../../shared/button';
 import type { InformationItem, InformationToSceneConnection } from '../../informationItem/types';
 import type { Scene } from '../../scene/types';
 
-interface SceneConnectionSectionProps {
+export interface SceneConnectionSectionProps {
   item: InformationItem;
   scenes: Scene[];
   informationToSceneConnections: InformationToSceneConnection[];
