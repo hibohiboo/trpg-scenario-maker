@@ -16,7 +16,7 @@ import type {
   InformationItemConnection,
   InformationToSceneConnection,
   SceneInformationConnection,
-} from '../../informationItem/types';
+} from '../../../entities/informationItem/types';
 import type { Scene, SceneConnection } from '../types';
 import type { SceneEvent } from '@trpg-scenario-maker/schema';
 
@@ -97,7 +97,7 @@ export const useSceneFlowCanvas = (props: SceneFlowCanvasProps) => {
     }),
   );
 
-  // シーン→情報項目の接続エッジ（獲得できる情報）
+  // シーン→情報項目の接続エッジ(獲得できる情報)
   const sceneToInformationEdges: Edge[] = sceneInformationConnections.map(
     (conn) => ({
       id: `scene-to-info-${conn.id}`,

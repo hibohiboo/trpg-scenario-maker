@@ -1,6 +1,8 @@
 // Scene関連（entities/features層から）
-export { SceneEditor, SceneFlowCanvas } from './features/scenarioSceneManagement';
-export { SceneForm } from './scene';
+export {
+  SceneEditor,
+  SceneFlowCanvas,
+} from './features/scenarioSceneManagement';
 export type {
   Scene,
   SceneConnection,
@@ -170,9 +172,9 @@ export {
   ImageInput as ImageInputLegacy,
   CharacterImageGallery,
   CharacterImageUploadModal,
-} from './image';
+} from './features/scenarioCharacterManagement';
 export type {
   ImageData,
   CharacterImageGalleryProps,
   CharacterImageUploadModalProps,
-} from './image';
+} from './features/scenarioCharacterManagement';

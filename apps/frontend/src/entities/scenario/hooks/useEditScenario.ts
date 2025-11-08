@@ -8,7 +8,7 @@ import {
   closeEditModal,
   setEditTitle,
 } from '../model/scenarioSlice';
-import type { Scenario } from '@trpg-scenario-maker/ui/scenario/types';
+import type { Scenario } from '@trpg-scenario-maker/ui';
 
 export const useEditScenario = () => {
   const dispatch = useAppDispatch();

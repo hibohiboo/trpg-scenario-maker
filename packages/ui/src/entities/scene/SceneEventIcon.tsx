@@ -11,7 +11,7 @@ import {
   FaQuestion,
   FaSkullCrossbones,
 } from 'react-icons/fa';
-import type { SceneEventType } from '../../scene/types';
+import type { SceneEventType } from '../../features/scenarioSceneManagement/types';
 
 export interface SceneEventIconProps {
   type: SceneEventType;

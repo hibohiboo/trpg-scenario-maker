@@ -7,7 +7,7 @@ import {
   openDeleteModal,
   closeDeleteModal,
 } from '../model/scenarioSlice';
-import type { Scenario } from '@trpg-scenario-maker/ui/scenario/types';
+import type { Scenario } from '@trpg-scenario-maker/ui';
 
 export const useDeleteScenario = () => {
   const dispatch = useAppDispatch();

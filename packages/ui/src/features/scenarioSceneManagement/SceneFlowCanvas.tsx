@@ -1,8 +1,8 @@
+import { CanvasToolbar, FlowCanvas, SceneDetailSidebar } from './canvas';
 import {
   useSceneFlowCanvas,
   type SceneFlowCanvasProps,
-} from '../../scene/canvas/useSceneFlowCanvas';
-import { CanvasToolbar, FlowCanvas, SceneDetailSidebar } from './canvas';
+} from './canvas/useSceneFlowCanvas';
 
 export function SceneFlowCanvas(props: SceneFlowCanvasProps) {
   const {

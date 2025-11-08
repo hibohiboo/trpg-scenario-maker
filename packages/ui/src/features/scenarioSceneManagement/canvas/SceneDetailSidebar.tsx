@@ -2,7 +2,7 @@ import { FiX } from 'react-icons/fi';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Button } from '../../../shared/button';
-import type { Scene } from '../../../scene/types';
+import type { Scene } from '../types';
 
 interface SceneDetailSidebarProps {
   scene: Scene | null;

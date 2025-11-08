@@ -1,4 +1,4 @@
-import type { Scene, SceneConnection } from '../types';
+import type { Scene, SceneConnection } from './types';
 
 /**
  * シーンと接続情報のペア
@@ -9,7 +9,7 @@ export interface SceneWithConnection {
 }
 
 /**
- * 現在のシーンの次のシーン（接続先）を取得
+ * 現在のシーンの次のシーン(接続先)を取得
  */
 export function getNextScenes(
   sceneId: string,
@@ -26,7 +26,7 @@ export function getNextScenes(
 }
 
 /**
- * 現在のシーンの前のシーン（接続元）を取得
+ * 現在のシーンの前のシーン(接続元)を取得
  */
 export function getPreviousScenes(
   sceneId: string,
@@ -46,7 +46,7 @@ export function getPreviousScenes(
  * 次のシーンとして選択可能なシーンを取得
  * - 現在のシーンを除外
  * - 既に次のシーンとして接続済みのシーンを除外
- * - 前のシーンを除外（ループ防止）
+ * - 前のシーンを除外(ループ防止)
  */
 export function getAvailableNextScenes(
   currentScene: Scene,
@@ -66,7 +66,7 @@ export function getAvailableNextScenes(
  * 前のシーンとして選択可能なシーンを取得
  * - 現在のシーンを除外
  * - 既に前のシーンとして接続済みのシーンを除外
- * - 次のシーンを除外（ループ防止）
+ * - 次のシーンを除外(ループ防止)
  */
 export function getAvailablePreviousScenes(
   currentScene: Scene,

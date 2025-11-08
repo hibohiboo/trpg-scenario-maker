@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '../../shared/button';
-import type { SceneWithConnection } from '../../scene/form/sceneConnectionHelpers';
-import type { Scene } from '../../scene/types';
+import type { SceneWithConnection } from './sceneConnectionHelpers';
+import type { Scene } from './types';
 
 interface SceneConnectionSectionProps {
   title: string;

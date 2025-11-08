@@ -1,5 +1,5 @@
 import { Button } from '../../shared/button';
-import type { InformationItem, SceneInformationConnection } from '../../informationItem/types';
+import type { InformationItem, SceneInformationConnection } from '../../entities/informationItem/types';
 
 export interface SceneInformationSectionProps {
   /** シーンで獲得できる情報項目のID一覧 */
