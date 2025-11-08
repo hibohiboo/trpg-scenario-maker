@@ -32,3 +32,23 @@ export type {
   CharacterImageGalleryProps,
   CharacterImageUploadModalProps,
 } from './scenarioCharacterManagement';
+
+export {
+  ScenarioCharacterRelationshipList,
+  ScenarioCharacterRelationshipFormModal,
+} from './scenarioRelationshipManagement';
+
+export {
+  InformationItemList,
+  InformationItemForm,
+  InformationItemCard,
+  InformationItemConnectionList,
+  InformationItemConnectionFormModal,
+} from './scenarioInformationManagement';
+export type {
+  InformationItemListProps,
+  InformationItemFormProps,
+  InformationItemCardProps,
+  InformationItemConnectionListProps,
+  InformationItemConnectionFormModalProps,
+} from './scenarioInformationManagement';

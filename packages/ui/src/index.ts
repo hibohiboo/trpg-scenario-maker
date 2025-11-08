@@ -105,13 +105,42 @@ export {
   CanvasToolbar,
   FlowCanvas as FlowCanvasFeature,
   SceneDetailSidebar,
+  ScenarioCharacterList as ScenarioCharacterListFeature,
+  ScenarioCharacterFormModal as ScenarioCharacterFormModalFeature,
+  ScenarioCharacterEditModal as ScenarioCharacterEditModalFeature,
+  CharacterDetailPanel as CharacterDetailPanelFeature,
+  CharacterImageGallery as CharacterImageGalleryFeature,
+  CharacterImageUploadModal as CharacterImageUploadModalFeature,
+  ScenarioCharacterRelationshipList as ScenarioCharacterRelationshipListFeature,
+  ScenarioCharacterRelationshipFormModal as ScenarioCharacterRelationshipFormModalFeature,
+  InformationItemList as InformationItemListFeature,
+  InformationItemForm as InformationItemFormFeature,
+  InformationItemCard as InformationItemCardFeature,
+  InformationItemConnectionList as InformationItemConnectionListFeature,
+  InformationItemConnectionFormModal as InformationItemConnectionFormModalFeature,
 } from './features';
 export type {
   SceneEventsSectionProps,
   SceneInformationSectionProps,
   SceneEventFormProps as SceneEventFormPropsFeature,
   SceneEventIconProps as SceneEventIconPropsFeature,
+  ScenarioCharacterListProps as ScenarioCharacterListPropsFeature,
+  CharacterDetailPanelProps as CharacterDetailPanelPropsFeature,
+  CharacterImageGalleryProps as CharacterImageGalleryPropsFeature,
+  CharacterImageUploadModalProps as CharacterImageUploadModalPropsFeature,
+  InformationItemListProps as InformationItemListPropsFeature,
+  InformationItemFormProps as InformationItemFormPropsFeature,
+  InformationItemCardProps as InformationItemCardPropsFeature,
+  InformationItemConnectionListProps as InformationItemConnectionListPropsFeature,
+  InformationItemConnectionFormModalProps as InformationItemConnectionFormModalPropsFeature,
 } from './features';
+
+// Widgets層（新構造）
+export {
+  CharacterRelationshipGraph as CharacterRelationshipGraphWidget,
+  CharacterNode as CharacterNodeWidget,
+  CharacterGraphToolbar,
+} from './widgets';
 
 // Image層（旧構造 - 後方互換性のため残す）
 export {

@@ -1,9 +1,12 @@
-export { CharacterImageGallery } from './CharacterImageGallery';
+// CharacterImageGallery と CharacterImageUploadModal は features/scenarioCharacterManagement に移動しました
+export {
+  CharacterImageGallery,
+  CharacterImageUploadModal,
+} from '../features/scenarioCharacterManagement';
 export type {
   CharacterImageGalleryProps,
-  ImageData,
-} from './CharacterImageGallery';
-export { CharacterImageUploadModal } from './CharacterImageUploadModal';
-export type { CharacterImageUploadModalProps } from './CharacterImageUploadModal';
+  CharacterImageUploadModalProps,
+} from '../features/scenarioCharacterManagement';
+export type { ImageData } from './CharacterImageGallery';
 // ImageInput は entities/image に移動しました
 export { ImageInput } from '../entities/image';
