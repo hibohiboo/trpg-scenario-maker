@@ -51,6 +51,7 @@ export {
   InformationItemConnectionList,
   InformationItemConnectionFormModal,
 } from './informationItem';
+export { InformationItemFormWithSceneConnection } from './features/scenarioInformationManagement';
 export type {
   InformationItem,
   InformationItemConnection,
@@ -63,6 +64,7 @@ export type {
   InformationItemConnectionFormModalProps,
   InformationItemConnectionDisplay,
 } from './informationItem';
+export type { InformationItemFormWithSceneConnectionProps } from './features/scenarioInformationManagement';
 // Shared層（新構造）
 export { Button } from './shared/button';
 export type { ButtonVariant, ButtonSize } from './shared/button';

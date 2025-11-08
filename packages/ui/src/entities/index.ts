@@ -31,3 +31,13 @@ export type {
   DeleteRelationshipModalProps,
 } from './character';
 export { SceneNode, InformationItemNode } from './scene';
+export {
+  InformationItemCard,
+  InformationItemList,
+  InformationItemForm,
+} from './informationItem';
+export type {
+  InformationItemCardProps,
+  InformationItemListProps,
+  InformationItemFormProps,
+} from './informationItem';
