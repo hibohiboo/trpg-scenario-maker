@@ -169,12 +169,10 @@ export {
 
 // Image層（旧構造 - 後方互換性のため残す）
 export {
-  ImageInput as ImageInputLegacy,
   CharacterImageGallery,
   CharacterImageUploadModal,
 } from './features/scenarioCharacterManagement';
 export type {
-  ImageData,
   CharacterImageGalleryProps,
   CharacterImageUploadModalProps,
 } from './features/scenarioCharacterManagement';
