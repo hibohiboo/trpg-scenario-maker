@@ -245,3 +245,62 @@ packages/ui/src/
 
 ### Storybookの対応
 Storybookのストーリーファイルも移動する必要があります。
+
+## 実装履歴と既知の問題
+
+### 完了した作業（2025-11-08）
+
+#### Shared層の移動
+- Button, Modal, Loading, ErrorMessage, Layout, Tabs, Navigation を `shared/` に移動
+- 各コンポーネントごとにサブディレクトリを作成
+- インポートパスを `../../shared/button` 形式に統一
+
+#### Entities層の移動
+- **image**: ImageInput
+- **scenario**: ScenarioCard, ScenarioForm, ScenarioList, DeleteConfirmModal
+- **character**: CharacterList, CharacterForm, RelationshipList, RelationshipForm, DeleteRelationshipModal
+- **scene**: SceneNode, InformationItemNode, SceneEventIcon
+
+**重要な決定**: SceneEventIconはentities/sceneに配置
+- 理由: SceneNodeがSceneEventIconを使用しているため、entity層内で完結させる
+- SceneEventIconはシーンイベントの表示に特化したUIコンポーネント
+
+#### Features層の移動（進行中）
+**scenarioSceneManagement** (完了)
+- SceneEditor, SceneFlowCanvas
+- SceneConnectionSection, SceneEventsSection, SceneBasicFields, SceneInformationSection
+- SceneEventForm
+- CanvasToolbar, FlowCanvas, SceneDetailSidebar
+
+### 既知の問題
+
+#### 1. 循環依存（3件）
+**状況:**
+- `scene/SceneForm` ↔ `features/scenarioSceneManagement`
+
+**原因:**
+- SceneFormは `scene/` ディレクトリに残っており、features層のコンポーネントを使用
+- 一方、features層のSceneEditorがSceneFormを使用
+
+**影響:**
+- ESLint の `import/no-cycle` エラー
+- 機能的には問題なし（型チェックは通過）
+
+**解決方針:**
+全Feature層の移動完了後に、以下のいずれかの方法で解決：
+1. SceneFormをfeatures/scenarioSceneManagementに移動
+2. SceneFormで使用している共通コンポーネントを別の場所に切り出し
+
+#### 2. 後方互換性の維持
+- 全ての旧パスからの再エクスポートを実装済み
+- フロントエンド側のインポートパスは未変更で動作
+- Feature層移動完了後に、フロントエンド側も新パスに段階的に移行予定
+
+### 次のステップ
+1. scenarioCharacterManagement の移動
+2. scenarioRelationshipManagement の移動
+3. scenarioInformationManagement の移動
+4. Widgets層の移動
+5. 循環依存の解消
+6. フロントエンド側のインポートパス更新
+7. BDDテスト実行・検証
