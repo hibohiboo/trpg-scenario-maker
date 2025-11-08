@@ -134,9 +134,6 @@ packages/ui/src/
 | `scenario/ScenarioForm.tsx` | `entities/scenario/ScenarioForm.tsx` |
 | `scenario/ScenarioList.tsx` | `entities/scenario/ScenarioList.tsx` |
 | `scenario/DeleteConfirmModal.tsx` | `entities/scenario/DeleteConfirmModal.tsx` |
-| `informationItem/InformationItemCard.tsx` | `entities/informationItem/InformationItemCard.tsx` |
-| `informationItem/InformationItemForm.tsx` | `entities/informationItem/InformationItemForm.tsx` |
-| `informationItem/InformationItemList.tsx` | `entities/informationItem/InformationItemList.tsx` |
 | `image/ImageInput.tsx` | `entities/image/ImageInput.tsx` |
 
 ### Features層（複数entityを組み合わせたUI）
@@ -161,8 +158,13 @@ packages/ui/src/
 | `image/CharacterImageUploadModal.tsx` | `features/scenarioCharacterManagement/CharacterImageUploadModal.tsx` |
 | `scenarioCharacter/ScenarioCharacterRelationshipList.tsx` | `features/scenarioRelationshipManagement/ScenarioCharacterRelationshipList.tsx` |
 | `scenarioCharacter/ScenarioCharacterRelationshipFormModal.tsx` | `features/scenarioRelationshipManagement/ScenarioCharacterRelationshipFormModal.tsx` |
+| `informationItem/InformationItemCard.tsx` | `features/scenarioInformationManagement/InformationItemCard.tsx` |
+| `informationItem/InformationItemForm.tsx` | `features/scenarioInformationManagement/InformationItemForm.tsx` |
+| `informationItem/InformationItemList.tsx` | `features/scenarioInformationManagement/InformationItemList.tsx` |
 | `informationItem/InformationItemConnectionList.tsx` | `features/scenarioInformationManagement/InformationItemConnectionList.tsx` |
 | `informationItem/InformationItemConnectionFormModal.tsx` | `features/scenarioInformationManagement/InformationItemConnectionFormModal.tsx` |
+
+**Note**: InformationItem関連コンポーネントは、シーンとの結合があるため一旦Feature層に配置。後でCRUD部分を切り出してEntity層に移動するリファクタリングを検討。
 
 ### Widgets層（複雑なビジュアライゼーション）
 | 現在のパス | 移行先 |
