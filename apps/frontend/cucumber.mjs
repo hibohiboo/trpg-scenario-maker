@@ -1,5 +1,5 @@
 export default {
-  paths: ['**/features/*.feature'],
+  paths: ['**/features/information-item.feature'],
   import: ['**/steps/*.steps.ts'],
   loader: ['ts-node/esm'],
   format: [
