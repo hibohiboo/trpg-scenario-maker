@@ -7,7 +7,7 @@ export type {
   SceneEvent,
   SceneEventType,
   SceneEditorProps,
-} from './scene/types';
+} from './features/scenarioSceneManagement';
 
 // Character関連（entities層から）
 export {
@@ -50,8 +50,8 @@ export type {
   CharacterWithRole,
   ScenarioCharacterRelationship,
   ScenarioCharacterRelation,
-} from './scenarioCharacter/types';
-export type { CharacterDetailPanelProps } from './features/scenarioCharacterManagement';
+  CharacterDetailPanelProps,
+} from './features/scenarioCharacterManagement';
 
 // InformationItem関連（entities/features層から）
 export {
@@ -73,8 +73,6 @@ export type {
   InformationItemConnection,
   InformationToSceneConnection,
   SceneInformationConnection,
-} from './informationItem/types';
-export type {
   InformationItemListProps,
   InformationItemFormProps,
   InformationItemCardProps,
