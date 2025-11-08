@@ -30,3 +30,4 @@ export type {
   RelationshipFormProps,
   DeleteRelationshipModalProps,
 } from './character';
+export { SceneNode, InformationItemNode } from './scene';
