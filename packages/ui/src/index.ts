@@ -41,6 +41,7 @@ export {
 export type {
   CharacterWithRole,
   ScenarioCharacterRelationship,
+  ScenarioCharacterRelation,
   CharacterDetailPanelProps,
 } from './scenarioCharacter';
 export {

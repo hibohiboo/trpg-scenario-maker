@@ -14,6 +14,7 @@ export {
   ScenarioCharacterRelationshipList,
   ScenarioCharacterRelationshipFormModal,
 } from '../features/scenarioRelationshipManagement';
+export type { ScenarioCharacterRelation } from '../features/scenarioRelationshipManagement';
 
 export {
   CharacterRelationshipGraph,
