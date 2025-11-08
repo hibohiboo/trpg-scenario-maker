@@ -18,7 +18,10 @@ export type { InformationItemEditModalProps } from './InformationItemEditModal';
 
 // Feature-specific: InformationItem connections
 export { InformationItemConnectionList } from './InformationItemConnectionList';
-export type { InformationItemConnectionListProps } from './InformationItemConnectionList';
+export type {
+  InformationItemConnectionListProps,
+  InformationItemConnectionDisplay,
+} from './InformationItemConnectionList';
 export { InformationItemConnectionFormModal } from './InformationItemConnectionFormModal';
 export type { InformationItemConnectionFormModalProps } from './InformationItemConnectionFormModal';
 
