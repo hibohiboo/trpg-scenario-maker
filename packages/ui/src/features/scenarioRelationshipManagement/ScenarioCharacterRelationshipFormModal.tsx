@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Button } from '../common/Button';
-import { Modal } from '../common/Modal';
-import type { CharacterWithRole } from './types';
+import { Button } from '../../shared/button';
+import { Modal } from '../../shared/modal';
+import type { CharacterWithRole } from '../../scenarioCharacter/types';
 
 export interface ScenarioCharacterRelationshipFormModalProps {
   /** モーダルの表示状態 */

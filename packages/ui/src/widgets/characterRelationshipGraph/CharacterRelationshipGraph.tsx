@@ -10,10 +10,10 @@ import {
   type Node,
 } from '@xyflow/react';
 import { useCallback } from 'react';
+import { getLayoutedCharacterElements } from '../../scenarioCharacter/characterGraphUtils';
 import { CharacterGraphToolbar } from './CharacterGraphToolbar';
 import { CharacterNode } from './CharacterNode';
-import { getLayoutedCharacterElements } from './characterGraphUtils';
-import type { CharacterWithRole, ScenarioCharacterRelationship } from './types';
+import type { CharacterWithRole, ScenarioCharacterRelationship } from '../../scenarioCharacter/types';
 
 const nodeTypes = {
   characterNode: CharacterNode,

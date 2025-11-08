@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Button } from '../common/Button';
-import { Modal } from '../common/Modal';
-import type { InformationItem } from './types';
+import { Button } from '../../shared/button';
+import { Modal } from '../../shared/modal';
+import type { InformationItem } from '../../informationItem/types';
 
 export interface InformationItemConnectionFormModalProps {
   /** モーダルの表示状態 */

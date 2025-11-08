@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect } from 'react';
-import { Button } from '../common/Button';
-import { Modal } from '../common/Modal';
-import type { CharacterWithRole } from './types';
+import { Button } from '../../shared/button';
+import { Modal } from '../../shared/modal';
+import type { CharacterWithRole } from '../../scenarioCharacter/types';
 import type { ReactNode } from 'react';
 
 export interface ScenarioCharacterEditModalProps {

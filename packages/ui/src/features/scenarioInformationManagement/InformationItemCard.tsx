@@ -1,5 +1,5 @@
-import { Button } from '../common/Button';
-import type { InformationItem } from './types';
+import { Button } from '../../shared/button';
+import type { InformationItem } from '../../informationItem/types';
 
 export interface InformationItemCardProps {
   /** 情報項目 */

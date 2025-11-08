@@ -40,7 +40,7 @@ export {
 } from './scenarioCharacter';
 export type {
   CharacterWithRole,
-  ScenarioCharacterRelation,
+  ScenarioCharacterRelationship,
   CharacterDetailPanelProps,
 } from './scenarioCharacter';
 export {

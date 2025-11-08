@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect } from 'react';
-import { Button } from '../common/Button';
-import type { InformationItem, InformationToSceneConnection } from './types';
-import type { Scene } from '../scene/types';
+import { Button } from '../../shared/button';
+import type { InformationItem, InformationToSceneConnection } from '../../informationItem/types';
+import type { Scene } from '../../scene/types';
 
 export interface InformationItemFormProps {
   /** 編集対象の情報項目（新規作成時はundefined） */

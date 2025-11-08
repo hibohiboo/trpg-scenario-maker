@@ -1,5 +1,5 @@
-import { Button } from '../common/Button';
-import { Loading } from '../common/Loading';
+import { Button } from '../../shared/button';
+import { Loading } from '../../shared/loading';
 
 export interface ScenarioCharacterRelation {
   scenarioId: string;

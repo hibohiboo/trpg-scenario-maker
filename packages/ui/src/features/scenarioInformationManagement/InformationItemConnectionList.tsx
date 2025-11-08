@@ -1,6 +1,6 @@
-import { Button } from '../common/Button';
-import { Loading } from '../common/Loading';
-import type { InformationItem } from './types';
+import { Button } from '../../shared/button';
+import { Loading } from '../../shared/loading';
+import type { InformationItem } from '../../informationItem/types';
 
 export interface InformationItemConnectionDisplay {
   id: string;

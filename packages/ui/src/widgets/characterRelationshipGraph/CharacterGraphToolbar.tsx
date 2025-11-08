@@ -1,4 +1,4 @@
-import { Button } from '../common';
+import { Button } from '../../shared/button';
 
 interface CharacterGraphToolbarProps {
   onLayout: (direction: 'TB' | 'LR') => void;
