@@ -1,4 +1,4 @@
-import type { CharacterWithRole } from '../../scenarioCharacter/types';
+import type { CharacterWithRole } from './types';
 
 export interface CharacterDetailPanelProps {
   character: CharacterWithRole;

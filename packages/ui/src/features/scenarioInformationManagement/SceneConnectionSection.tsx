@@ -1,6 +1,6 @@
 import { Button } from '../../shared/button';
-import type { InformationItem, InformationToSceneConnection } from '../../informationItem/types';
-import type { Scene } from '../../scene/types';
+import type { InformationItem, InformationToSceneConnection } from '../../entities/informationItem/types';
+import type { Scene } from '../scenarioSceneManagement/types';
 
 export interface SceneConnectionSectionProps {
   item: InformationItem;

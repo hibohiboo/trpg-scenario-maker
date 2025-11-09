@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '../../shared/button';
 import { Modal } from '../../shared/modal';
-import type { CharacterWithRole } from '../../scenarioCharacter/types';
+import type { CharacterWithRole } from './types';
 import type { ReactNode } from 'react';
 
 export interface ScenarioCharacterEditModalProps {

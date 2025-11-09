@@ -10,7 +10,7 @@ Then(
   },
 );
 
-// 情報項目をクリックする（編集ボタンをクリック）
+// 情報項目をクリックする（編集ボタンをクリックしてモーダルを開く）
 When(
   '情報項目 {string} をクリックする',
   async function (this: CustomWorld, itemTitle: string) {
@@ -20,14 +20,13 @@ When(
       .filter({ hasText: itemTitle })
       .first();
     await itemCard.getByRole('button', { name: '編集' }).first().click();
-    // 編集フォームが開くまで待つ（「情報項目編集」タイトルが表示されるまで）
-    await this.page
-      .getByText('情報項目編集', { exact: true })
-      .waitFor({ state: 'visible', timeout: 5000 });
-    // フォームの入力欄が表示されるまで待つ
-    await this.page
-      .getByLabel('タイトル')
-      .waitFor({ state: 'visible', timeout: 5000 });
+
+    // モーダルが開くまで待つ
+    const modal = this.page.locator('[role="dialog"]');
+    await modal.waitFor({ state: 'visible', timeout: 5000 });
+
+    // モーダルのタイトルが表示されるまで待つ
+    await modal.getByText('情報項目を編集').waitFor({ state: 'visible', timeout: 5000 });
   },
 );
 
@@ -46,11 +45,11 @@ When(
       .filter({ hasText: itemTitle })
       .first();
 
-    // 削除ボタンをクリック
-    await itemCard.getByRole('button', { name: '削除' }).first().click();
+    // カード上の削除ボタンを直接クリック
+    await itemCard.getByRole('button', { name: '削除' }).click();
 
-    // 削除処理が完了してカードが消えるまで待つ
-    await itemCard.waitFor({ state: 'detached', timeout: 5000 });
+    // 削除処理が完了するまで少し待つ
+    await this.page.waitForTimeout(1000);
   },
 );
 
@@ -83,12 +82,19 @@ Given(
     // 新規作成ボタンをクリック
     await this.page.getByRole('button', { name: '新規作成' }).click();
 
+    // モーダルが開くまで待つ
+    const modal = this.page.locator('[role="dialog"]');
+    await modal.waitFor({ state: 'visible', timeout: 5000 });
+
     // タイトルと説明を入力
-    await this.page.getByLabel('タイトル').fill(itemTitle);
-    await this.page.getByLabel('説明').fill(`${itemTitle}の説明`);
+    await modal.getByLabel('タイトル').fill(itemTitle);
+    await modal.getByLabel('説明').fill(`${itemTitle}の説明`);
 
     // 作成ボタンをクリック
-    await this.page.getByRole('button', { name: '作成', exact: true }).click();
+    await modal.getByRole('button', { name: '作成', exact: true }).click();
+
+    // モーダルが閉じるまで待つ
+    await modal.waitFor({ state: 'detached', timeout: 5000 });
   },
 );
 
@@ -116,12 +122,19 @@ Given(
     // 新規作成ボタンをクリック
     await this.page.getByRole('button', { name: '新規作成' }).click();
 
+    // モーダルが開くまで待つ
+    const modal = this.page.locator('[role="dialog"]');
+    await modal.waitFor({ state: 'visible', timeout: 5000 });
+
     // タイトルと説明を入力
-    await this.page.getByLabel('タイトル').fill(itemTitle);
-    await this.page.getByLabel('説明').fill(description);
+    await modal.getByLabel('タイトル').fill(itemTitle);
+    await modal.getByLabel('説明').fill(description);
 
     // 作成ボタンをクリック
-    await this.page.getByRole('button', { name: '作成', exact: true }).click();
+    await modal.getByRole('button', { name: '作成', exact: true }).click();
+
+    // モーダルが閉じるまで待つ
+    await modal.waitFor({ state: 'detached', timeout: 5000 });
   },
 );
 
@@ -200,8 +213,9 @@ Given(
 When(
   '"指し示すシーン" セクションで {string} を選択する',
   async function (this: CustomWorld, sceneTitle: string) {
-    // 指し示すシーンセクションのselectを見つける
-    const select = this.page
+    // モーダル内の指し示すシーンセクションのselectを見つける
+    const modal = this.page.locator('[role="dialog"]');
+    const select = modal
       .locator('select')
       .filter({ hasText: 'シーンを選択' });
     await select.selectOption({ label: sceneTitle });
@@ -212,8 +226,9 @@ When(
 Then(
   '情報項目 {string} が指し示すシーンに {string} が表示される',
   async function (this: CustomWorld, _itemTitle: string, sceneTitle: string) {
-    // 指し示すシーンの一覧にシーンが表示されることを確認
-    const sceneRow = this.page
+    // モーダル内の指し示すシーンの一覧にシーンが表示されることを確認
+    const modal = this.page.locator('[role="dialog"]');
+    const sceneRow = modal
       .locator('.information-to-scene-connection-item')
       .filter({ hasText: sceneTitle });
     await expect(sceneRow).toBeVisible();

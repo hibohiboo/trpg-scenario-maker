@@ -1,20 +1,30 @@
-export { ScenarioPage } from './scenario/ScenarioPage';
-export { SceneEditor, SceneFlowCanvas, SceneForm } from './scene';
+// Scene関連（entities/features層から）
+export {
+  SceneEditor,
+  SceneFlowCanvas,
+  SceneForm,
+  SceneEventForm,
+  SceneEventIcon,
+} from './features/scenarioSceneManagement';
 export type {
   Scene,
   SceneConnection,
-  SceneEditorProps,
   SceneEvent,
   SceneEventType,
-} from './scene';
+  SceneEditorProps,
+  SceneFormProps,
+  SceneEventFormProps,
+  SceneEventIconProps,
+} from './features/scenarioSceneManagement';
+
+// Character関連（entities層から）
 export {
   CharacterList,
   CharacterForm,
   RelationshipList,
   RelationshipForm,
   DeleteRelationshipModal,
-  CharacterRelationshipPage,
-} from './character';
+} from './entities/character';
 export type {
   Character,
   Relationship,
@@ -24,34 +34,48 @@ export type {
   RelationshipListProps,
   RelationshipFormProps,
   DeleteRelationshipModalProps,
-} from './character';
+} from './entities/character';
 // 後方互換性のため
-export { CharacterForm as CharacterCreateModal } from './character';
-export type { CharacterFormProps as CharacterCreateModalProps } from './character';
+export { CharacterForm as CharacterCreateModal } from './entities/character';
+export type { CharacterFormProps as CharacterCreateModalProps } from './entities/character';
+
+// ScenarioCharacter関連（features/widgets層から）
 export {
   ScenarioCharacterList,
-  ScenarioCharacterRelationshipList,
-  ScenarioCharacterRelationshipFormModal,
   ScenarioCharacterFormModal,
   ScenarioCharacterEditModal,
+  CharacterDetailPanel,
+} from './features/scenarioCharacterManagement';
+export {
+  ScenarioCharacterRelationshipList,
+  ScenarioCharacterRelationshipFormModal,
+} from './features/scenarioRelationshipManagement';
+export {
   CharacterRelationshipGraph,
   CharacterNode,
-  CharacterDetailPanel,
-} from './scenarioCharacter';
+} from './widgets/characterRelationshipGraph';
 export type {
   CharacterWithRole,
   ScenarioCharacterRelationship,
   ScenarioCharacterRelation,
   CharacterDetailPanelProps,
-} from './scenarioCharacter';
+} from './features/scenarioCharacterManagement';
+
+// InformationItem関連（entities/features層から）
 export {
   InformationItemList,
   InformationItemForm,
   InformationItemCard,
+} from './entities/informationItem';
+export {
   InformationItemConnectionList,
   InformationItemConnectionFormModal,
-} from './informationItem';
-export { InformationItemFormWithSceneConnection } from './features/scenarioInformationManagement';
+} from './features/scenarioInformationManagement';
+export {
+  InformationItemFormWithSceneConnection,
+  InformationItemFormModal,
+  InformationItemEditModal,
+} from './features/scenarioInformationManagement';
 export type {
   InformationItem,
   InformationItemConnection,
@@ -60,11 +84,15 @@ export type {
   InformationItemListProps,
   InformationItemFormProps,
   InformationItemCardProps,
+} from './entities/informationItem';
+export type {
+  InformationItemConnectionDisplay,
   InformationItemConnectionListProps,
   InformationItemConnectionFormModalProps,
-  InformationItemConnectionDisplay,
-} from './informationItem';
-export type { InformationItemFormWithSceneConnectionProps } from './features/scenarioInformationManagement';
+  InformationItemFormWithSceneConnectionProps,
+  InformationItemFormModalProps,
+  InformationItemEditModalProps,
+} from './features/scenarioInformationManagement';
 // Shared層（新構造）
 export { Button } from './shared/button';
 export type { ButtonVariant, ButtonSize } from './shared/button';
@@ -147,12 +175,10 @@ export {
 
 // Image層（旧構造 - 後方互換性のため残す）
 export {
-  ImageInput as ImageInputLegacy,
   CharacterImageGallery,
   CharacterImageUploadModal,
-} from './image';
+} from './features/scenarioCharacterManagement';
 export type {
-  ImageData,
   CharacterImageGalleryProps,
   CharacterImageUploadModalProps,
-} from './image';
+} from './features/scenarioCharacterManagement';

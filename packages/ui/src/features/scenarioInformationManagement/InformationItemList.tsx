@@ -1,6 +1,6 @@
 import { Button } from '../../shared/button';
 import { Loading } from '../../shared/loading';
-import type { InformationItem } from '../../informationItem/types';
+import type { InformationItem } from '../../entities/informationItem/types';
 
 export interface InformationItemListProps {
   /** 情報項目のリスト */

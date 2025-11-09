@@ -1,6 +1,7 @@
 import {
   InformationItemList,
-  InformationItemForm,
+  InformationItemFormModal,
+  InformationItemEditModal,
   InformationItemConnectionList,
   InformationItemConnectionFormModal,
   type InformationItemConnectionDisplay,
@@ -80,41 +81,6 @@ export function InformationItemTabContent({
             onDelete={handleDeleteInformationItem}
           />
         </section>
-        {isInformationItemFormOpen && (
-          <section>
-            <h2 className="text-xl font-semibold mb-4">
-              {editingInformationItem ? '情報項目編集' : '情報項目作成'}
-            </h2>
-            <InformationItemForm
-              item={editingInformationItem ?? undefined}
-              onSubmit={
-                editingInformationItem
-                  ? (data) =>
-                      handleUpdateInformationItem(
-                        editingInformationItem.id,
-                        data,
-                      )
-                  : handleCreateInformationItem
-              }
-              onCancel={handleCloseInformationItemForm}
-              onDelete={
-                editingInformationItem ? handleDeleteInformationItem : undefined
-              }
-              scenes={scenes}
-              informationToSceneConnections={informationToSceneConnections}
-              onAddSceneConnection={
-                editingInformationItem
-                  ? (sceneId) =>
-                      handleAddInformationToScene(
-                        editingInformationItem.id,
-                        sceneId,
-                      )
-                  : undefined
-              }
-              onRemoveSceneConnection={handleRemoveInformationToScene}
-            />
-          </section>
-        )}
       </div>
 
       <section>
@@ -126,6 +92,33 @@ export function InformationItemTabContent({
           onRemoveConnection={handleRemoveInformationConnection}
         />
       </section>
+
+      {/* 新規作成モーダル */}
+      {!editingInformationItem && (
+        <InformationItemFormModal
+          isOpen={isInformationItemFormOpen}
+          onClose={handleCloseInformationItemForm}
+          onSubmit={handleCreateInformationItem}
+        />
+      )}
+
+      {/* 編集モーダル */}
+      {editingInformationItem && (
+        <InformationItemEditModal
+          isOpen={isInformationItemFormOpen}
+          item={editingInformationItem}
+          onClose={handleCloseInformationItemForm}
+          onSubmit={(data: { id: string; title: string; description: string }) =>
+            handleUpdateInformationItem(data.id, data)
+          }
+          scenes={scenes}
+          informationToSceneConnections={informationToSceneConnections}
+          onAddSceneConnection={(sceneId: string) =>
+            handleAddInformationToScene(editingInformationItem.id, sceneId)
+          }
+          onRemoveSceneConnection={handleRemoveInformationToScene}
+        />
+      )}
 
       <InformationItemConnectionFormModal
         isOpen={isInformationConnectionModalOpen}

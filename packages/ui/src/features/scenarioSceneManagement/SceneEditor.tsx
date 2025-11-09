@@ -1,12 +1,12 @@
 import { SceneEventIcon } from '../../entities/scene';
-import { SceneForm } from '../../scene/SceneForm';
-import { createEventHandlers } from '../../scene/sceneEditorHelpers';
 import { Button } from '../../shared/button';
 import { Modal } from '../../shared/modal';
 import { Tabs } from '../../shared/tabs';
 import { SceneFlowCanvas } from './SceneFlowCanvas';
+import { SceneForm } from './SceneForm';
+import { createEventHandlers } from './sceneEditorHelpers';
 import type { Tab } from '../..';
-import type { SceneEditorProps, Scene } from '../../scene/types';
+import type { SceneEditorProps, Scene } from './types';
 
 const getSceneEvents = ({
   editingScene,

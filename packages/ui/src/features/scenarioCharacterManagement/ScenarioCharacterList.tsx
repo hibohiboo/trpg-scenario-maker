@@ -1,6 +1,6 @@
 import { Button } from '../../shared/button';
 import { Loading } from '../../shared/loading';
-import type { CharacterWithRole } from '../../scenarioCharacter/types';
+import type { CharacterWithRole } from './types';
 
 export interface ScenarioCharacterListProps {
   /** シナリオに登場するキャラクターのリスト */

@@ -8,3 +8,10 @@ export { CharacterImageGallery } from './CharacterImageGallery';
 export type { CharacterImageGalleryProps } from './CharacterImageGallery';
 export { CharacterImageUploadModal } from './CharacterImageUploadModal';
 export type { CharacterImageUploadModalProps } from './CharacterImageUploadModal';
+
+// 型定義
+export type {
+  CharacterWithRole,
+  ScenarioCharacterRelationship,
+  ScenarioCharacterRelation,
+} from './types';

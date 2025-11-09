@@ -44,6 +44,8 @@ export {
   InformationItemCard,
   InformationItemConnectionList,
   InformationItemConnectionFormModal,
+  InformationItemFormModal,
+  InformationItemEditModal,
 } from './scenarioInformationManagement';
 export type {
   InformationItemListProps,
@@ -51,4 +53,6 @@ export type {
   InformationItemCardProps,
   InformationItemConnectionListProps,
   InformationItemConnectionFormModalProps,
+  InformationItemFormModalProps,
+  InformationItemEditModalProps,
 } from './scenarioInformationManagement';

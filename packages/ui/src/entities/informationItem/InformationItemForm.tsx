@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect } from 'react';
 import { Button } from '../../shared/button';
-import type { InformationItem } from '../../informationItem/types';
+import type { InformationItem } from './types';
 
 export interface InformationItemFormProps {
   /** 編集対象の情報項目（新規作成時はundefined） */
@@ -81,11 +81,7 @@ export function InformationItemForm({
       </div>
 
       {/* 追加機能エリア（Scene連携など） */}
-      {children && (
-        <div className="border-t pt-6">
-          {children}
-        </div>
-      )}
+      {children && <div className="border-t pt-6">{children}</div>}
 
       <div className="flex gap-2 items-center">
         <Button type="submit" variant="primary">

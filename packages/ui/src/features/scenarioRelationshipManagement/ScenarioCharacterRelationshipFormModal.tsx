@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '../../shared/button';
 import { Modal } from '../../shared/modal';
-import type { CharacterWithRole } from '../../scenarioCharacter/types';
+import type { CharacterWithRole } from '../scenarioCharacterManagement';
 
 export interface ScenarioCharacterRelationshipFormModalProps {
   /** モーダルの表示状態 */

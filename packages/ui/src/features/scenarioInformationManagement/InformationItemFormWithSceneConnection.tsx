@@ -1,8 +1,8 @@
 import { InformationItemForm } from '../../entities/informationItem';
 import { SceneConnectionSection } from './SceneConnectionSection';
 import type { InformationItemFormProps } from '../../entities/informationItem';
-import type { InformationToSceneConnection } from '../../informationItem/types';
-import type { Scene } from '../../scene/types';
+import type { InformationToSceneConnection } from '../../entities/informationItem/types';
+import type { Scene } from '../scenarioSceneManagement/types';
 
 export interface InformationItemFormWithSceneConnectionProps extends Omit<InformationItemFormProps, 'children'> {
   /** シーン一覧（指し示すシーン選択用） */
