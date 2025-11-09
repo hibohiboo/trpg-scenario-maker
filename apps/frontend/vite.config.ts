@@ -32,6 +32,7 @@ export default defineConfig({
   },
 
   build: {
+    chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
         manualChunks: (moduleId) => {
@@ -51,10 +52,12 @@ function chunkRule(moduleId: string) {
     return 'redux';
   if (moduleId.includes('react-router')) return 'router';
   if (moduleId.includes('react-icons')) return 'icons';
-  if (moduleId.includes('@xyflow/react')) return 'flow';
+  if (moduleId.includes('@xyflow/react')) return 'reactflow';
+  if (moduleId.includes('cytoscape')) return 'cytoscape';
   if (moduleId.includes('react-markdown') || moduleId.includes('remark-gfm'))
     return 'markdown';
   if (moduleId.includes('react')) return 'react';
   if (moduleId.includes('drizzle') || moduleId.includes('pglite')) return 'rdb';
+
   return 'vendor';
 }
