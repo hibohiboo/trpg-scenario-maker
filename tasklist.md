@@ -52,11 +52,10 @@ scenario_[scenarioTitle].zip
   - ImportDataSchema
   - パース関数
 
-- [ ] **A-2**: JSZipパッケージ追加
+- [ ] **A-2**: @zip.js/zip.jsパッケージ追加
   ```bash
   cd packages/utility
-  bun add jszip
-  bun add -D @types/jszip
+  bun add @zip.js/zip.js
   ```
 
 - [ ] **A-3**: `packages/utility/src/zip.ts` 作成
@@ -223,7 +222,7 @@ scenario_[scenarioTitle].zip
 
 ## 技術スタック
 
-- **ZIP圧縮**: JSZip
+- **ZIP圧縮**: @zip.js/zip.js (積極的にメンテナンスされている現代的なライブラリ)
 - **UUID生成**: crypto.randomUUID()
 - **ファイルダウンロード**: Blob + URL.createObjectURL()
 - **ファイルアップロード**: input type="file" + FileReader
@@ -237,6 +236,7 @@ scenario_[scenarioTitle].zip
 - 複数のJSONファイルを1つにまとめる
 - ブラウザでの扱いが容易（single file download/upload）
 - 将来的に画像を別ファイルとして保存する拡張性
+- @zip.js/zip.js: 2024年も活発に開発されている、Worker対応、ストリーム対応の現代的なライブラリ
 
 ### なぜID再発番か？
 
