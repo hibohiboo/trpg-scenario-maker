@@ -1,26 +1,11 @@
-import {
-  Background,
-  ConnectionMode,
-  Controls,
-  MiniMap,
-  ReactFlow,
-  useEdgesState,
-  useNodesState,
-  type Edge,
-  type Node,
-} from '@xyflow/react';
-import { useCallback } from 'react';
-import { getLayoutedCharacterElements } from '../../features/scenarioCharacterManagement/characterGraphUtils';
+import { useCallback, useRef } from 'react';
 import { CharacterGraphToolbar } from './CharacterGraphToolbar';
-import { CharacterNode } from './CharacterNode';
+import { getLayoutOptions } from './cytoscapeLayouts';
+import { useCytoscapeGraph } from './useCytoscapeGraph';
 import type {
   CharacterWithRole,
   ScenarioCharacterRelationship,
 } from '../../features/scenarioCharacterManagement';
-
-const nodeTypes = {
-  characterNode: CharacterNode,
-};
 
 export interface CharacterRelationshipGraphProps {
   /** キャラクター一覧 */
@@ -32,65 +17,27 @@ export interface CharacterRelationshipGraphProps {
 }
 
 /**
- * キャラクター関係性をReactFlowのノード形式に変換
- */
-function convertToNodes(characters: CharacterWithRole[]): Node[] {
-  return characters.map((character, index) => ({
-    id: character.characterId,
-    type: 'characterNode',
-    position: {
-      x: (index % 3) * 250,
-      y: Math.floor(index / 3) * 200,
-    },
-    data: {
-      name: character.name,
-      role: character.role,
-      description: character.description,
-    },
-  }));
-}
-
-/**
- * キャラクター関係性をReactFlowのエッジ形式に変換
- */
-function convertToEdges(relations: ScenarioCharacterRelationship[]): Edge[] {
-  return relations.map((relation, index) => ({
-    id: `edge-${index}`,
-    source: relation.fromCharacterId,
-    target: relation.toCharacterId,
-    label: relation.relationshipName,
-    type: 'default',
-    animated: true,
-    style: { stroke: '#3b82f6', strokeWidth: 2 },
-    labelStyle: { fill: '#1e40af', fontWeight: 600 },
-    labelBgStyle: { fill: '#eff6ff' },
-  }));
-}
-
-/**
  * キャラクター関係性グラフコンポーネント
- * ReactFlowを使用してキャラクター間の関係性を可視化
+ * Cytoscape.jsを使用してキャラクター間の関係性を可視化
+ * 相互関係のエッジは自動的にカーブして表示される
  */
 export function CharacterRelationshipGraph({
   characters,
   relations,
   isLoading,
 }: CharacterRelationshipGraphProps) {
-  const initialNodes = convertToNodes(characters);
-  const initialEdges = convertToEdges(relations);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const cyRef = useCytoscapeGraph(containerRef, characters, relations);
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-
+  // レイアウト変更ハンドラー
   const onLayout = useCallback(
-    (direction: 'TB' | 'LR') => {
-      const { nodes: layoutedNodes, edges: layoutedEdges } =
-        getLayoutedCharacterElements(nodes, edges, direction);
+    (layoutName: string) => {
+      if (!cyRef.current) return;
 
-      setNodes([...layoutedNodes]);
-      setEdges([...layoutedEdges]);
+      const layoutOptions = getLayoutOptions(layoutName);
+      cyRef.current.layout(layoutOptions).run();
     },
-    [nodes, edges, setNodes, setEdges],
+    [cyRef],
   );
 
   if (isLoading) {
@@ -116,47 +63,8 @@ export function CharacterRelationshipGraph({
 
   return (
     <div className="w-full h-[600px] border-2 border-gray-200 rounded-lg overflow-hidden relative">
-      <style>{`
-        .react-flow__handle {
-          width: 12px !important;
-          height: 12px !important;
-          border: 2px solid #3b82f6 !important;
-          background: white !important;
-        }
-        .react-flow__handle:hover {
-          width: 16px !important;
-          height: 16px !important;
-          background: #3b82f6 !important;
-        }
-        .react-flow__node:hover .react-flow__handle {
-          width: 14px !important;
-          height: 14px !important;
-        }
-
-        /* エッジのスタイル */
-        .react-flow__edge-path {
-          stroke: #3b82f6 !important;
-          stroke-width: 2px !important;
-        }
-        .react-flow__edge.selected .react-flow__edge-path {
-          stroke: #ef4444 !important;
-          stroke-width: 3px !important;
-        }
-      `}</style>
       <CharacterGraphToolbar onLayout={onLayout} />
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        connectionMode={ConnectionMode.Strict}
-        fitView
-      >
-        <Background />
-        <Controls />
-        <MiniMap />
-      </ReactFlow>
+      <div ref={containerRef} className="w-full h-full" />
     </div>
   );
 }
