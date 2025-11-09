@@ -1,6 +1,5 @@
 import cytoscape, { type Core } from 'cytoscape';
 import { useEffect, useRef } from 'react';
-import { defaultLayout } from './cytoscapeLayouts';
 import { cytoscapeStylesheet } from './cytoscapeStyles';
 import type {
   CharacterWithRole,
@@ -103,7 +102,6 @@ export function useCytoscapeGraph(
       container: containerRef.current,
       elements: { nodes, edges },
       style: cytoscapeStylesheet,
-      layout: defaultLayout,
       userZoomingEnabled: true,
       userPanningEnabled: true,
       boxSelectionEnabled: false,

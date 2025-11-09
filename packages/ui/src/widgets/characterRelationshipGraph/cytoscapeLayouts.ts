@@ -29,14 +29,6 @@ export const circleLayout = {
 };
 
 /**
- * デフォルトレイアウト（初期表示用）
- */
-export const defaultLayout = {
-  name: 'cose',
-  padding: 50,
-};
-
-/**
  * レイアウト名からレイアウト設定を取得
  */
 export function getLayoutOptions(layoutName: string) {
