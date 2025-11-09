@@ -88,9 +88,7 @@ export function CharacterTabContent({ scenarioId }: CharacterTabContentProps) {
         onSubmit={handleUpdateCharacter}
       >
         {editingCharacter && (
-          <CharacterImageManager
-            characterId={editingCharacter.characterId}
-          />
+          <CharacterImageManager characterId={editingCharacter.characterId} />
         )}
       </ScenarioCharacterEditModal>
       <ScenarioCharacterRelationshipFormModal
