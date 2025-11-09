@@ -87,7 +87,8 @@ export async function importFromZip(zipBlob: Blob): Promise<ExportData> {
     const fileMap = new Map<string, unknown>();
 
     for (const entry of entries) {
-      if (!entry.getData) {
+      // ディレクトリエントリをスキップ
+      if (entry.directory || !entry.getData) {
         continue;
       }
 

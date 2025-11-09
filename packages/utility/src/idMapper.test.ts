@@ -7,7 +7,10 @@ describe('idMapper', () => {
       // crypto.randomUUID() をモック
       let counter = 0;
       vi.spyOn(crypto, 'randomUUID').mockImplementation(() => {
-        return `new-uuid-${counter++}`;
+        // UUID形式の文字列を返す（型安全にするため）
+        const id = counter++;
+        const paddedId = id.toString().padStart(12, '0');
+        return `00000000-0000-0000-0000-${paddedId}` as `${string}-${string}-${string}-${string}-${string}`;
       });
     });
 
@@ -21,9 +24,9 @@ describe('idMapper', () => {
       const idMap = createIdMap(oldIds);
 
       expect(idMap.size).toBe(3);
-      expect(idMap.get('old-id-1')).toBe('new-uuid-0');
-      expect(idMap.get('old-id-2')).toBe('new-uuid-1');
-      expect(idMap.get('old-id-3')).toBe('new-uuid-2');
+      expect(idMap.get('old-id-1')).toBe('00000000-0000-0000-0000-000000000000');
+      expect(idMap.get('old-id-2')).toBe('00000000-0000-0000-0000-000000000001');
+      expect(idMap.get('old-id-3')).toBe('00000000-0000-0000-0000-000000000002');
     });
 
     it('重複したIDでも個別にマッピングを作成', () => {
@@ -32,8 +35,8 @@ describe('idMapper', () => {
 
       // 後勝ちで上書きされる
       expect(idMap.size).toBe(2);
-      expect(idMap.get('id-1')).toBe('new-uuid-1');
-      expect(idMap.get('id-2')).toBe('new-uuid-2');
+      expect(idMap.get('id-1')).toBe('00000000-0000-0000-0000-000000000001');
+      expect(idMap.get('id-2')).toBe('00000000-0000-0000-0000-000000000002');
     });
   });
 
