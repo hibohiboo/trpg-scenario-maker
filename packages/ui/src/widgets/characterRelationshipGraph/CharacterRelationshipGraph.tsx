@@ -30,7 +30,12 @@ export function CharacterRelationshipGraph({
   characterImages = {},
 }: CharacterRelationshipGraphProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const cyRef = useCytoscapeGraph(containerRef, characters, relations, characterImages);
+  const cyRef = useCytoscapeGraph(
+    containerRef,
+    characters,
+    relations,
+    characterImages,
+  );
 
   // レイアウト変更ハンドラー
   const onLayout = useCallback(

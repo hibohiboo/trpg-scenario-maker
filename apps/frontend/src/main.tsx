@@ -5,8 +5,7 @@ import { dbWorkerClient } from './workers/dbWorkerClient';
 import { graphdbWorkerClient } from './workers/graphdbWorkerClient';
 import './index.css';
 
-// awaitすると初期表示が遅くなる
-Promise.allSettled([
+await Promise.allSettled([
   // DBWorkerを初期化（マイグレーション自動実行）
   dbWorkerClient.initialize(),
   // GraphDBWorkerを初期化 ローカルストレージからデータを読み込み
