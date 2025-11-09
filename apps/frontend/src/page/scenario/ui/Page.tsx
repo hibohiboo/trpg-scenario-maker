@@ -15,6 +15,17 @@ export function ScenarioPage() {
         </a>
         を参考にさせていただきました。
       </p>
+      <p>
+        キャラクター画像のサンプルは
+        <a
+          href="https://cotoraya.booth.pm/items/2153988"
+          className="text-blue-900"
+          target="_blank"
+        >
+          エルフさんフリー素材
+        </a>
+        を利用させていただきました
+      </p>
     </>
   );
 }

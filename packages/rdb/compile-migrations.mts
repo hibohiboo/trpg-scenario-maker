@@ -7,14 +7,18 @@ const migrations = readMigrationFiles({ migrationsFolder: './migrations' });
 const processedMigrations = migrations.map((migration) => ({
   ...migration,
   sql: migration.sql.flatMap((sqlString) => {
-    // セミコロンで分割し、空文字列を除外
+    // )セミコロンで分割し、空文字列を除外(文字列に;が入っていても問題ないように)も含めて)
+    const delimiter = `);`;
     return sqlString
-      .split(';')
+      .split(delimiter)
       .map((stmt) => stmt.trim())
       .filter((stmt) => stmt.length > 0)
-      .map((stmt) => stmt + ';');
+      .map((stmt) => stmt + delimiter);
   }),
 }));
 
-await writeFile('./src/db/migrations.json', JSON.stringify(processedMigrations));
+await writeFile(
+  './src/db/migrations.json',
+  JSON.stringify(processedMigrations),
+);
 console.log('migrations.json generated');

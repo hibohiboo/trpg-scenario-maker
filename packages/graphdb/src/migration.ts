@@ -81,4 +81,16 @@ export const sampleData = [
     value:
       'e192c9a1-0850-4f0d-b0e9-bafb9effc079|28e1ee9a-c25e-4a31-befc-ca2c6b010f77|3f81c321-1941-4247-9f5d-37bb6a9e8e45|助ける\nb7f5f4f6-5cba-4106-94a8-ac2ecd6d1b13|5862ddfa-d99b-443c-9346-a0237d44e41c|3f81c321-1941-4247-9f5d-37bb6a9e8e45|逮捕する\n7f52a1b9-e7a8-4133-b6a6-297e518f6e51|55c0250a-6fac-450d-84c1-913ff098a9e5|3f81c321-1941-4247-9f5d-37bb6a9e8e45|事件を解決したい\n28e1ee9a-c25e-4a31-befc-ca2c6b010f77|e192c9a1-0850-4f0d-b0e9-bafb9effc079|3f81c321-1941-4247-9f5d-37bb6a9e8e45|助けを求める\n5862ddfa-d99b-443c-9346-a0237d44e41c|28e1ee9a-c25e-4a31-befc-ca2c6b010f77|3f81c321-1941-4247-9f5d-37bb6a9e8e45|利用する\n5862ddfa-d99b-443c-9346-a0237d44e41c|b7f5f4f6-5cba-4106-94a8-ac2ecd6d1b13|3f81c321-1941-4247-9f5d-37bb6a9e8e45|勧誘する\n',
   },
+  {
+    table: 'Image',
+    key: '/Image.csv',
+    value:
+      'fbb26120-3d68-4065-bde3-efebd8f2e552\ncffd1e55-fce7-4398-af98-90d42ef0b9f8\nc47120b7-4b0f-4206-af52-2a7fe16bd4c6\n',
+  },
+  {
+    table: 'HAS_IMAGE',
+    key: '/HAS_IMAGE.csv',
+    value:
+      '28e1ee9a-c25e-4a31-befc-ca2c6b010f77|fbb26120-3d68-4065-bde3-efebd8f2e552|True\n5862ddfa-d99b-443c-9346-a0237d44e41c|cffd1e55-fce7-4398-af98-90d42ef0b9f8|True\n55c0250a-6fac-450d-84c1-913ff098a9e5|c47120b7-4b0f-4206-af52-2a7fe16bd4c6|True\n',
+  },
 ];
