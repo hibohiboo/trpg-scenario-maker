@@ -167,13 +167,13 @@ async function getNextSceneRelationships(
 ): Promise<GraphRelationship[]> {
   const result = (await executeQuery(`
     MATCH (s:Scenario {id: '${scenarioId}'})-[:HAS_SCENE]->(scene1:Scene)-[r:NEXT_SCENE]->(scene2:Scene)
-    RETURN scene1.id AS from, scene2.id AS to
-  `)) as Array<{ from: string; to: string }>;
+    RETURN scene1.id AS fromId, scene2.id AS toId
+  `)) as Array<{ fromId: string; toId: string }>;
 
   return result.map((row) => ({
     type: 'NEXT_SCENE',
-    from: row.from,
-    to: row.to,
+    from: row.fromId,
+    to: row.toId,
     properties: {},
   }));
 }
@@ -183,13 +183,13 @@ async function getHasEventRelationships(
 ): Promise<GraphRelationship[]> {
   const result = (await executeQuery(`
     MATCH (s:Scenario {id: '${scenarioId}'})-[:HAS_SCENE]->(scene:Scene)-[r:HAS_EVENT]->(event:SceneEvent)
-    RETURN scene.id AS from, event.id AS to
-  `)) as Array<{ from: string; to: string }>;
+    RETURN scene.id AS fromId, event.id AS toId
+  `)) as Array<{ fromId: string; toId: string }>;
 
   return result.map((row) => ({
     type: 'HAS_EVENT',
-    from: row.from,
-    to: row.to,
+    from: row.fromId,
+    to: row.toId,
     properties: {},
   }));
 }
@@ -199,13 +199,13 @@ async function getAppearsInRelationships(
 ): Promise<GraphRelationship[]> {
   const result = (await executeQuery(`
     MATCH (c:Character)-[r:APPEARS_IN]->(s:Scenario {id: '${scenarioId}'})
-    RETURN c.id AS from, s.id AS to, r.role AS role
-  `)) as Array<{ from: string; to: string; role: string | null }>;
+    RETURN c.id AS fromId, s.id AS toId, r.role AS role
+  `)) as Array<{ fromId: string; toId: string; role: string | null }>;
 
   return result.map((row) => ({
     type: 'APPEARS_IN',
-    from: row.from,
-    to: row.to,
+    from: row.fromId,
+    to: row.toId,
     properties: { role: row.role ?? '' },
   }));
 }
@@ -215,13 +215,13 @@ async function getRelatesInScenarioRelationships(
 ): Promise<GraphRelationship[]> {
   const result = (await executeQuery(`
     MATCH (c1:Character)-[r:RELATES_IN_SCENARIO {scenarioId: '${scenarioId}'}]->(c2:Character)
-    RETURN c1.id AS from, c2.id AS to, r.relationshipName AS relationshipName
-  `)) as Array<{ from: string; to: string; relationshipName: string }>;
+    RETURN c1.id AS fromId, c2.id AS toId, r.relationshipName AS relationshipName
+  `)) as Array<{ fromId: string; toId: string; relationshipName: string }>;
 
   return result.map((row) => ({
     type: 'RELATES_IN_SCENARIO',
-    from: row.from,
-    to: row.to,
+    from: row.fromId,
+    to: row.toId,
     properties: {
       scenarioId,
       relationshipName: row.relationshipName,
@@ -235,13 +235,13 @@ async function getHasImageRelationships(
   const result = (await executeQuery(`
     MATCH (c:Character)-[:APPEARS_IN]->(s:Scenario {id: '${scenarioId}'})
     MATCH (c)-[r:HAS_IMAGE]->(img:Image)
-    RETURN c.id AS from, img.id AS to, r.isPrimary AS isPrimary
-  `)) as Array<{ from: string; to: string; isPrimary: boolean }>;
+    RETURN c.id AS fromId, img.id AS toId, r.isPrimary AS isPrimary
+  `)) as Array<{ fromId: string; toId: string; isPrimary: boolean }>;
 
   return result.map((row) => ({
     type: 'HAS_IMAGE',
-    from: row.from,
-    to: row.to,
+    from: row.fromId,
+    to: row.toId,
     properties: { isPrimary: row.isPrimary },
   }));
 }
@@ -251,13 +251,13 @@ async function getHasInformationRelationships(
 ): Promise<GraphRelationship[]> {
   const result = (await executeQuery(`
     MATCH (s:Scenario {id: '${scenarioId}'})-[r:HAS_INFORMATION]->(info:InformationItem)
-    RETURN s.id AS from, info.id AS to
-  `)) as Array<{ from: string; to: string }>;
+    RETURN s.id AS fromId, info.id AS toId
+  `)) as Array<{ fromId: string; toId: string }>;
 
   return result.map((row) => ({
     type: 'HAS_INFORMATION',
-    from: row.from,
-    to: row.to,
+    from: row.fromId,
+    to: row.toId,
     properties: {},
   }));
 }
@@ -267,13 +267,13 @@ async function getInformationRelatedToRelationships(
 ): Promise<GraphRelationship[]> {
   const result = (await executeQuery(`
     MATCH (s:Scenario {id: '${scenarioId}'})-[:HAS_INFORMATION]->(info1:InformationItem)-[r:INFORMATION_RELATED_TO]->(info2:InformationItem)
-    RETURN info1.id AS from, info2.id AS to, r.id AS relationshipId
-  `)) as Array<{ from: string; to: string; relationshipId: string }>;
+    RETURN info1.id AS fromId, info2.id AS toId, r.id AS relationshipId
+  `)) as Array<{ fromId: string; toId: string; relationshipId: string }>;
 
   return result.map((row) => ({
     type: 'INFORMATION_RELATED_TO',
-    from: row.from,
-    to: row.to,
+    from: row.fromId,
+    to: row.toId,
     properties: { id: row.relationshipId },
   }));
 }
@@ -283,13 +283,13 @@ async function getSceneHasInfoRelationships(
 ): Promise<GraphRelationship[]> {
   const result = (await executeQuery(`
     MATCH (s:Scenario {id: '${scenarioId}'})-[:HAS_SCENE]->(scene:Scene)-[r:SCENE_HAS_INFO]->(info:InformationItem)
-    RETURN scene.id AS from, info.id AS to, r.id AS relationshipId
-  `)) as Array<{ from: string; to: string; relationshipId: string }>;
+    RETURN scene.id AS fromId, info.id AS toId, r.id AS relationshipId
+  `)) as Array<{ fromId: string; toId: string; relationshipId: string }>;
 
   return result.map((row) => ({
     type: 'SCENE_HAS_INFO',
-    from: row.from,
-    to: row.to,
+    from: row.fromId,
+    to: row.toId,
     properties: { id: row.relationshipId },
   }));
 }
@@ -299,13 +299,13 @@ async function getInfoPointsToSceneRelationships(
 ): Promise<GraphRelationship[]> {
   const result = (await executeQuery(`
     MATCH (s:Scenario {id: '${scenarioId}'})-[:HAS_INFORMATION]->(info:InformationItem)-[r:INFO_POINTS_TO_SCENE]->(scene:Scene)
-    RETURN info.id AS from, scene.id AS to, r.id AS relationshipId
-  `)) as Array<{ from: string; to: string; relationshipId: string }>;
+    RETURN info.id AS fromId, scene.id AS toId, r.id AS relationshipId
+  `)) as Array<{ fromId: string; toId: string; relationshipId: string }>;
 
   return result.map((row) => ({
     type: 'INFO_POINTS_TO_SCENE',
-    from: row.from,
-    to: row.to,
+    from: row.fromId,
+    to: row.toId,
     properties: { id: row.relationshipId },
   }));
 }
