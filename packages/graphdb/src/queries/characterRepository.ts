@@ -60,4 +60,26 @@ export const characterGraphRepository = {
       RETURN c.id AS id, c.name AS name, c.description AS description
     `);
   },
+
+  /**
+   * メイン画像IDを含むキャラクター情報を取得
+   */
+  async findByIdWithPrimaryImage(id: string) {
+    return executeQuery(`
+      MATCH (c:Character {id: '${id}'})
+      OPTIONAL MATCH (c)-[r:HAS_IMAGE {isPrimary: true}]->(i:Image)
+      RETURN c.id AS id, c.name AS name, c.description AS description, i.id AS primaryImageId
+    `);
+  },
+
+  /**
+   * 全キャラクターをメイン画像IDと共に取得
+   */
+  async findAllWithPrimaryImage() {
+    return executeQuery(`
+      MATCH (c:Character)
+      OPTIONAL MATCH (c)-[r:HAS_IMAGE {isPrimary: true}]->(i:Image)
+      RETURN c.id AS id, c.name AS name, c.description AS description, i.id AS primaryImageId
+    `);
+  },
 } as const;

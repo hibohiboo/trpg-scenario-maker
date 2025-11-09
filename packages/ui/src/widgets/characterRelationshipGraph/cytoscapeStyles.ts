@@ -6,20 +6,30 @@ export const cytoscapeStylesheet = [
   {
     selector: 'node',
     style: {
-      'background-color': '#ffffff',
+      'background-color': '#e5e7eb',
       'border-width': 2,
       'border-color': '#3b82f6',
       label: 'data(label)',
-      'text-valign': 'center',
+      'text-valign': 'bottom',
       'text-halign': 'center',
+      'text-margin-y': 5,
       color: '#1f2937',
       'font-size': '14px',
       'font-weight': 'bold',
-      width: 120,
+      width: 80,
       height: 80,
-      shape: 'roundrectangle',
+      shape: 'ellipse',
       'text-wrap': 'wrap',
       'text-max-width': '100px',
+    },
+  } as const,
+  // 画像があるノードのスタイル
+  {
+    selector: 'node[imageUrl]',
+    style: {
+      'background-image': 'data(imageUrl)',
+      'background-fit': 'cover',
+      'background-clip': 'node',
     },
   } as const,
   // ノードのホバースタイル

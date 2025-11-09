@@ -10,13 +10,17 @@ import type {
 /**
  * キャラクターデータをCytoscapeノードに変換
  */
-function convertToNodes(characters: CharacterWithRole[]) {
+function convertToNodes(
+  characters: CharacterWithRole[],
+  characterImages: Record<string, string | null>,
+) {
   return characters.map((character) => ({
     data: {
       id: character.characterId,
       label: character.name,
       role: character.role,
       description: character.description,
+      imageUrl: characterImages[character.characterId] || null,
     },
   }));
 }
@@ -75,6 +79,7 @@ export function useCytoscapeGraph(
   containerRef: React.RefObject<HTMLDivElement | null>,
   characters: CharacterWithRole[],
   relations: ScenarioCharacterRelationship[],
+  characterImages: Record<string, string | null> = {},
 ) {
   const cyRef = useRef<Core | null>(null);
 
@@ -89,7 +94,7 @@ export function useCytoscapeGraph(
     }
 
     // データ変換
-    const nodes = convertToNodes(characters);
+    const nodes = convertToNodes(characters, characterImages);
     const characterIds = new Set(characters.map((c) => c.characterId));
     const edges = convertToEdges(relations, characterIds);
 
@@ -115,7 +120,7 @@ export function useCytoscapeGraph(
       cy.destroy();
       cyRef.current = null;
     };
-  }, [containerRef, characters, relations]);
+  }, [containerRef, characters, relations, characterImages]);
 
   return cyRef;
 }

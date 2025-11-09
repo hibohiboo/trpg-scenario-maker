@@ -1,5 +1,6 @@
 import { Button } from '../../shared/button';
 import { Loading } from '../../shared/loading';
+import { CharacterAvatar } from './CharacterAvatar';
 import type { Character } from './types';
 
 export interface CharacterListProps {
@@ -11,6 +12,8 @@ export interface CharacterListProps {
   onCharacterClick?: (character: Character) => void;
   /** 新規作成ボタンクリック時のコールバック */
   onCreateNew?: (fromCharacterId?: string) => void;
+  /** キャラクターIDごとのメイン画像URL */
+  characterImages?: Record<string, string | null>;
 }
 
 /**
@@ -21,6 +24,7 @@ export function CharacterList({
   isLoading,
   onCharacterClick,
   onCreateNew,
+  characterImages = {},
 }: CharacterListProps) {
   if (isLoading) {
     return <Loading />;
@@ -51,13 +55,20 @@ export function CharacterList({
               variant="ghost"
               className="w-full text-left p-4 border border-gray-300 justify-start"
             >
-              <div className="w-full">
-                <h3 className="font-bold text-lg">{character.name}</h3>
-                {character.description && (
-                  <p className="text-gray-600 text-sm mt-1">
-                    {character.description}
-                  </p>
-                )}
+              <div className="flex items-center gap-3 w-full">
+                <CharacterAvatar
+                  imageUrl={characterImages[character.id] ?? null}
+                  name={character.name}
+                  size={40}
+                />
+                <div className="flex-1">
+                  <h3 className="font-bold text-lg">{character.name}</h3>
+                  {character.description && (
+                    <p className="text-gray-600 text-sm mt-1">
+                      {character.description}
+                    </p>
+                  )}
+                </div>
               </div>
             </Button>
           ))}

@@ -8,4 +8,6 @@ export { RelationshipForm } from './RelationshipForm';
 export type { RelationshipFormProps } from './RelationshipForm';
 export { DeleteRelationshipModal } from './DeleteRelationshipModal';
 export type { DeleteRelationshipModalProps } from './DeleteRelationshipModal';
+export { CharacterAvatar } from './CharacterAvatar';
+export type { CharacterAvatarProps } from './CharacterAvatar';
 export type { Character, Relationship, RelationshipFormData } from './types';

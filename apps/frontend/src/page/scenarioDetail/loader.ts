@@ -34,24 +34,28 @@ export const scenarioDetailLoader = async ({ params }: LoaderFunctionArgs) => {
   }
 
   const scenarioId = existingScenario.id;
-  dispatch(setCurrentScenarioId(scenarioId));
-  dispatch(readConnectionsAction(scenarioId));
-  dispatch(setInformationCurrentScenarioId(scenarioId));
+  const promises = [
+    dispatch(setCurrentScenarioId(scenarioId)),
+    dispatch(readConnectionsAction(scenarioId)),
+    dispatch(setInformationCurrentScenarioId(scenarioId)),
 
-  // シナリオで使用するキャラクターを読み込み
-  dispatch(readScenarioCharactersAction({ scenarioId }));
+    // シナリオで使用するキャラクターを読み込み
+    dispatch(readScenarioCharactersAction({ scenarioId })),
 
-  // シナリオIDを情報項目のステートに設定し、情報項目を読込
-  dispatch(readInformationItemsAction(scenarioId));
-  dispatch(readSceneInformationConnectionsAction(scenarioId));
-  dispatch(readInformationConnectionsAction(scenarioId));
-  dispatch(readInformationToSceneByScenarioIdConnectionsAction(scenarioId));
-  dispatch(
-    readSceneInformationConnectionsByScenarioIdConnectionsAction(scenarioId),
-  );
+    // シナリオIDを情報項目のステートに設定し、情報項目を読込
+    dispatch(readInformationItemsAction(scenarioId)),
+    dispatch(readSceneInformationConnectionsAction(scenarioId)),
+    dispatch(readInformationConnectionsAction(scenarioId)),
+    dispatch(readInformationToSceneByScenarioIdConnectionsAction(scenarioId)),
+    dispatch(
+      readSceneInformationConnectionsByScenarioIdConnectionsAction(scenarioId),
+    ),
+  ];
+
   const scenes = await dispatch(readScenesAction(scenarioId)).unwrap();
-  await Promise.all(
-    scenes.map((scene) => dispatch(readEventsAction(scene.id))),
-  );
+  await Promise.all([
+    ...scenes.map((scene) => dispatch(readEventsAction(scene.id))),
+    ...promises,
+  ]);
   return existingScenario;
 };

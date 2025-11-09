@@ -1,3 +1,4 @@
+import { CharacterAvatar } from '../../entities/character';
 import { Button } from '../../shared/button';
 import { Loading } from '../../shared/loading';
 import type { CharacterWithRole } from './types';
@@ -17,6 +18,8 @@ export interface ScenarioCharacterListProps {
   onCreateNew?: () => void;
   /** 既存キャラクター追加ボタンクリック時のコールバック */
   onAddExisting?: () => void;
+  /** キャラクターIDごとのメイン画像URL */
+  characterImages?: Record<string, string | null>;
 }
 
 /**
@@ -30,6 +33,7 @@ export function ScenarioCharacterList({
   onRemoveCharacter,
   onCreateNew,
   onAddExisting,
+  characterImages = {},
 }: ScenarioCharacterListProps) {
   if (isLoading) {
     return <Loading />;
@@ -69,19 +73,28 @@ export function ScenarioCharacterList({
                 onClick={() => onCharacterClick?.(character)}
                 className="flex-1 text-left"
               >
-                <div className="flex items-baseline gap-2">
-                  <h3 className="font-bold text-lg">{character.name}</h3>
-                  {character.role && (
-                    <span className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded">
-                      {character.role}
-                    </span>
-                  )}
+                <div className="flex items-center gap-3">
+                  <CharacterAvatar
+                    imageUrl={characterImages[character.characterId] ?? null}
+                    name={character.name}
+                    size={40}
+                  />
+                  <div className="flex-1">
+                    <div className="flex items-baseline gap-2">
+                      <h3 className="font-bold text-lg">{character.name}</h3>
+                      {character.role && (
+                        <span className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded">
+                          {character.role}
+                        </span>
+                      )}
+                    </div>
+                    {character.description && (
+                      <p className="text-gray-600 text-sm mt-1">
+                        {character.description}
+                      </p>
+                    )}
+                  </div>
                 </div>
-                {character.description && (
-                  <p className="text-gray-600 text-sm mt-1">
-                    {character.description}
-                  </p>
-                )}
               </button>
               <div className="flex gap-2 ml-2">
                 {onEditCharacter && (
