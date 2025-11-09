@@ -2,6 +2,9 @@
 export {
   SceneEditor,
   SceneFlowCanvas,
+  SceneForm,
+  SceneEventForm,
+  SceneEventIcon,
 } from './features/scenarioSceneManagement';
 export type {
   Scene,
@@ -9,6 +12,9 @@ export type {
   SceneEvent,
   SceneEventType,
   SceneEditorProps,
+  SceneFormProps,
+  SceneEventFormProps,
+  SceneEventIconProps,
 } from './features/scenarioSceneManagement';
 
 // Character関連（entities層から）
