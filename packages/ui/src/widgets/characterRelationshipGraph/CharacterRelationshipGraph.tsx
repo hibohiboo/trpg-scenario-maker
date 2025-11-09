@@ -14,6 +14,8 @@ export interface CharacterRelationshipGraphProps {
   relations: ScenarioCharacterRelationship[];
   /** ローディング状態 */
   isLoading?: boolean;
+  /** キャラクターIDごとのメイン画像URL */
+  characterImages?: Record<string, string | null>;
 }
 
 /**
@@ -25,9 +27,10 @@ export function CharacterRelationshipGraph({
   characters,
   relations,
   isLoading,
+  characterImages = {},
 }: CharacterRelationshipGraphProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const cyRef = useCytoscapeGraph(containerRef, characters, relations);
+  const cyRef = useCytoscapeGraph(containerRef, characters, relations, characterImages);
 
   // レイアウト変更ハンドラー
   const onLayout = useCallback(

@@ -5,6 +5,7 @@ export { imageGraphHandlers } from './workers/imageGraphHandlers';
 export type { ImageRdbHandlerMap } from './workers/imageRdbHandlers';
 export type { ImageGraphHandlerMap } from './workers/imageGraphHandlers';
 export { useCharacterImages } from './hooks/useCharacterImages';
+export { useMultipleCharacterImages } from './hooks/useMultipleCharacterImages';
 export { imageSlice } from './model/imageSlice';
 export {
   fetchCharacterImagesAction,

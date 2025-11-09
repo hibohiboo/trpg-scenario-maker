@@ -6,7 +6,8 @@ import {
   ScenarioCharacterEditModal,
   CharacterRelationshipGraph,
 } from '@trpg-scenario-maker/ui';
-import { CharacterImageManager } from '@/entities/image';
+import { useMemo } from 'react';
+import { CharacterImageManager, useMultipleCharacterImages } from '@/entities/image';
 import { useCharacterManagement } from '../hooks/useCharacterManagement';
 
 interface CharacterTabContentProps {
@@ -41,6 +42,15 @@ export function CharacterTabContent({ scenarioId }: CharacterTabContentProps) {
     handleCloseRelationshipForm,
   } = useCharacterManagement(scenarioId);
 
+  // キャラクターIDの配列を作成
+  const characterIds = useMemo(
+    () => characters.map((c) => c.characterId),
+    [characters],
+  );
+
+  // 複数キャラクターの画像を取得
+  const { characterImages } = useMultipleCharacterImages(characterIds);
+
   return (
     <>
       <div className="space-y-8">
@@ -54,6 +64,7 @@ export function CharacterTabContent({ scenarioId }: CharacterTabContentProps) {
               onRemoveCharacter={handleRemoveCharacter}
               onCreateNew={handleOpenCharacterForm}
               onAddExisting={undefined}
+              characterImages={characterImages}
             />
           </section>
 
@@ -73,6 +84,7 @@ export function CharacterTabContent({ scenarioId }: CharacterTabContentProps) {
             characters={characters}
             relations={characterRelations}
             isLoading={isCharactersLoading || isRelationsLoading}
+            characterImages={characterImages}
           />
         </section>
       </div>

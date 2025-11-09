@@ -1,6 +1,7 @@
 import {
   parseToCharacterList,
   parseToRelationshipList,
+  parseToCharacterWithImagesList,
 } from '@trpg-scenario-maker/schema';
 import { generateUUID } from '@trpg-scenario-maker/utility';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
@@ -450,6 +451,146 @@ describe('characterGraphRepository', () => {
 
       // rel1は削除されている
       expect(outgoing.find((r) => r.id === rel1.id)).toBeUndefined();
+    });
+  });
+
+  describe('メイン画像ID取得', () => {
+    it('メイン画像IDを含むキャラクター情報を取得できる', async () => {
+      // Arrange
+      const characterId = generateUUID();
+      const imageId = generateUUID();
+
+      // キャラクター作成
+      await characterGraphRepository.create({
+        id: characterId,
+        name: '画像テストキャラ',
+        description: '画像付きキャラクター',
+      });
+
+      // 画像ノード作成
+      await executeQuery(`
+        CREATE (i:Image {id: '${imageId}'})
+      `);
+
+      // HAS_IMAGEリレーション作成
+      await executeQuery(`
+        MATCH (c:Character {id: '${characterId}'})
+        MATCH (i:Image {id: '${imageId}'})
+        CREATE (c)-[:HAS_IMAGE {isPrimary: true}]->(i)
+      `);
+
+      // Act
+      const result = await characterGraphRepository.findByIdWithPrimaryImage(characterId);
+
+      // Assert
+      const [char] = parseToCharacterWithImagesList(result);
+      expect(char.id).toBe(characterId);
+      expect(char.name).toBe('画像テストキャラ');
+      expect(char.primaryImageId).toBe(imageId);
+    });
+
+    it('メイン画像がない場合はprimaryImageIdが空文字列になる', async () => {
+      // Arrange
+      const characterId = generateUUID();
+
+      await characterGraphRepository.create({
+        id: characterId,
+        name: '画像なしキャラ',
+        description: '画像なし',
+      });
+
+      // Act
+      const result = await characterGraphRepository.findByIdWithPrimaryImage(characterId);
+
+      // Assert
+      const [char] = parseToCharacterWithImagesList(result);
+      expect(char.id).toBe(characterId);
+      expect(char.primaryImageId).toBe('');
+    });
+
+    it('全キャラクターをメイン画像IDと共に取得できる', async () => {
+      // Arrange
+      const char1Id = generateUUID();
+      const char2Id = generateUUID();
+      const image1Id = generateUUID();
+
+      // キャラクター作成
+      await characterGraphRepository.create({
+        id: char1Id,
+        name: '画像ありキャラ',
+        description: 'メイン画像あり',
+      });
+      await characterGraphRepository.create({
+        id: char2Id,
+        name: '画像なしキャラ',
+        description: 'メイン画像なし',
+      });
+
+      // 画像ノードとリレーション作成（char1のみ）
+      await executeQuery(`
+        CREATE (i:Image {id: '${image1Id}'})
+      `);
+      await executeQuery(`
+        MATCH (c:Character {id: '${char1Id}'})
+        MATCH (i:Image {id: '${image1Id}'})
+        CREATE (c)-[:HAS_IMAGE {isPrimary: true}]->(i)
+      `);
+
+      // Act
+      const result = await characterGraphRepository.findAllWithPrimaryImage();
+
+      // Assert
+      const characters = parseToCharacterWithImagesList(result);
+      expect(characters.length).toBeGreaterThanOrEqual(2);
+
+      const char1 = characters.find((c) => c.id === char1Id);
+      const char2 = characters.find((c) => c.id === char2Id);
+
+      expect(char1).toBeDefined();
+      expect(char1?.primaryImageId).toBe(image1Id);
+
+      expect(char2).toBeDefined();
+      expect(char2?.primaryImageId).toBe('');
+    });
+
+    it('isPrimaryがfalseの画像はメイン画像として取得されない', async () => {
+      // Arrange
+      const characterId = generateUUID();
+      const image1Id = generateUUID();
+      const image2Id = generateUUID();
+
+      await characterGraphRepository.create({
+        id: characterId,
+        name: '複数画像キャラ',
+        description: 'メイン画像とサブ画像',
+      });
+
+      // 2つの画像ノード作成
+      await executeQuery(`
+        CREATE (i1:Image {id: '${image1Id}'}),
+               (i2:Image {id: '${image2Id}'})
+      `);
+
+      // isPrimary: falseの画像
+      await executeQuery(`
+        MATCH (c:Character {id: '${characterId}'})
+        MATCH (i:Image {id: '${image1Id}'})
+        CREATE (c)-[:HAS_IMAGE {isPrimary: false}]->(i)
+      `);
+
+      // isPrimary: trueの画像
+      await executeQuery(`
+        MATCH (c:Character {id: '${characterId}'})
+        MATCH (i:Image {id: '${image2Id}'})
+        CREATE (c)-[:HAS_IMAGE {isPrimary: true}]->(i)
+      `);
+
+      // Act
+      const result = await characterGraphRepository.findByIdWithPrimaryImage(characterId);
+
+      // Assert
+      const [char] = parseToCharacterWithImagesList(result);
+      expect(char.primaryImageId).toBe(image2Id);
     });
   });
 });
