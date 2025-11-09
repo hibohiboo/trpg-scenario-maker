@@ -1,7 +1,7 @@
 import { Button } from '../../shared/button';
 
 interface CharacterGraphToolbarProps {
-  onLayout: (direction: 'TB' | 'LR') => void;
+  onLayout: (layoutName: string) => void;
 }
 
 export function CharacterGraphToolbar({
@@ -14,25 +14,34 @@ export function CharacterGraphToolbar({
         <ul className="mt-1 space-y-1 text-gray-600">
           <li>• マウスホイールでズーム</li>
           <li>• ドラッグで画面移動</li>
+          <li>• エッジをクリックで選択</li>
         </ul>
       </div>
       <div className="flex flex-col gap-2 rounded-lg bg-white p-3 shadow-md">
-        <p className="text-sm font-semibold text-gray-700">自動整列：</p>
+        <p className="text-sm font-semibold text-gray-700">レイアウト：</p>
         <Button
-          onClick={() => onLayout('TB')}
+          onClick={() => onLayout('cose')}
           variant="primary"
           size="sm"
           type="button"
         >
-          縦方向
+          自動配置
         </Button>
         <Button
-          onClick={() => onLayout('LR')}
+          onClick={() => onLayout('breadthfirst')}
           variant="primary"
           size="sm"
           type="button"
         >
-          横方向
+          階層表示
+        </Button>
+        <Button
+          onClick={() => onLayout('circle')}
+          variant="primary"
+          size="sm"
+          type="button"
+        >
+          円形配置
         </Button>
       </div>
     </div>

@@ -50,10 +50,7 @@ export {
   ScenarioCharacterRelationshipList,
   ScenarioCharacterRelationshipFormModal,
 } from './features/scenarioRelationshipManagement';
-export {
-  CharacterRelationshipGraph,
-  CharacterNode,
-} from './widgets/characterRelationshipGraph';
+export { CharacterRelationshipGraph } from './widgets/characterRelationshipGraph';
 export type {
   CharacterWithRole,
   ScenarioCharacterRelationship,
@@ -169,7 +166,6 @@ export type {
 // Widgets層（新構造）
 export {
   CharacterRelationshipGraph as CharacterRelationshipGraphWidget,
-  CharacterNode as CharacterNodeWidget,
   CharacterGraphToolbar,
 } from './widgets';
 

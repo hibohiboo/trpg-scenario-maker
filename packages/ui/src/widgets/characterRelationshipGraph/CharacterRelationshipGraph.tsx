@@ -1,26 +1,10 @@
-import {
-  Background,
-  ConnectionMode,
-  Controls,
-  MiniMap,
-  ReactFlow,
-  useEdgesState,
-  useNodesState,
-  type Edge,
-  type Node,
-} from '@xyflow/react';
-import { useCallback } from 'react';
-import { getLayoutedCharacterElements } from '../../features/scenarioCharacterManagement/characterGraphUtils';
+import cytoscape, { type Core, type LayoutOptions } from 'cytoscape';
+import { useCallback, useEffect, useRef } from 'react';
 import { CharacterGraphToolbar } from './CharacterGraphToolbar';
-import { CharacterNode } from './CharacterNode';
 import type {
   CharacterWithRole,
   ScenarioCharacterRelationship,
 } from '../../features/scenarioCharacterManagement';
-
-const nodeTypes = {
-  characterNode: CharacterNode,
-};
 
 export interface CharacterRelationshipGraphProps {
   /** キャラクター一覧 */
@@ -32,66 +16,203 @@ export interface CharacterRelationshipGraphProps {
 }
 
 /**
- * キャラクター関係性をReactFlowのノード形式に変換
- */
-function convertToNodes(characters: CharacterWithRole[]): Node[] {
-  return characters.map((character, index) => ({
-    id: character.characterId,
-    type: 'characterNode',
-    position: {
-      x: (index % 3) * 250,
-      y: Math.floor(index / 3) * 200,
-    },
-    data: {
-      name: character.name,
-      role: character.role,
-      description: character.description,
-    },
-  }));
-}
-
-/**
- * キャラクター関係性をReactFlowのエッジ形式に変換
- */
-function convertToEdges(relations: ScenarioCharacterRelationship[]): Edge[] {
-  return relations.map((relation, index) => ({
-    id: `edge-${index}`,
-    source: relation.fromCharacterId,
-    target: relation.toCharacterId,
-    label: relation.relationshipName,
-    type: 'default',
-    animated: true,
-    style: { stroke: '#3b82f6', strokeWidth: 2 },
-    labelStyle: { fill: '#1e40af', fontWeight: 600 },
-    labelBgStyle: { fill: '#eff6ff' },
-  }));
-}
-
-/**
  * キャラクター関係性グラフコンポーネント
- * ReactFlowを使用してキャラクター間の関係性を可視化
+ * Cytoscape.jsを使用してキャラクター間の関係性を可視化
+ * 相互関係のエッジは自動的にカーブして表示される
  */
 export function CharacterRelationshipGraph({
   characters,
   relations,
   isLoading,
 }: CharacterRelationshipGraphProps) {
-  const initialNodes = convertToNodes(characters);
-  const initialEdges = convertToEdges(relations);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const cyRef = useRef<Core | null>(null);
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  // Cytoscapeインスタンスの初期化と更新
+  useEffect(() => {
+    if (!containerRef.current || characters.length === 0) {
+      return undefined;
+    }
 
-  const onLayout = useCallback(
-    (direction: 'TB' | 'LR') => {
-      const { nodes: layoutedNodes, edges: layoutedEdges } =
-        getLayoutedCharacterElements(nodes, edges, direction);
+    // 既存のインスタンスを破棄
+    if (cyRef.current) {
+      cyRef.current.destroy();
+    }
 
-      setNodes([...layoutedNodes]);
-      setEdges([...layoutedEdges]);
-    },
-    [nodes, edges, setNodes, setEdges],
-  );
+    // ノードデータの作成
+    const nodes = characters.map((character) => ({
+      data: {
+        id: character.characterId,
+        label: character.name,
+        role: character.role,
+        description: character.description,
+      },
+    }));
+
+    // キャラクターIDのセットを作成（存在チェック用）
+    const characterIds = new Set(characters.map((c) => c.characterId));
+
+    // エッジデータの作成（存在するノード間のみ）
+    const edges = relations
+      .filter(
+        (relation) =>
+          characterIds.has(relation.fromCharacterId) &&
+          characterIds.has(relation.toCharacterId),
+      )
+      .map((relation, index) => ({
+        data: {
+          id: `edge-${index}`,
+          source: relation.fromCharacterId,
+          target: relation.toCharacterId,
+          label: relation.relationshipName,
+        },
+      }));
+
+    // Cytoscapeインスタンスを作成
+    const cy = cytoscape({
+      container: containerRef.current,
+      elements: {
+        nodes,
+        edges,
+      },
+      style: [
+        {
+          selector: 'node',
+          style: {
+            'background-color': '#ffffff',
+            'border-width': 2,
+            'border-color': '#3b82f6',
+            label: 'data(label)',
+            'text-valign': 'center',
+            'text-halign': 'center',
+            color: '#1f2937',
+            'font-size': '14px',
+            'font-weight': 'bold',
+            width: 120,
+            height: 80,
+            shape: 'roundrectangle',
+            'text-wrap': 'wrap',
+            'text-max-width': '100px',
+          },
+        },
+        {
+          selector: 'node:hover',
+          style: {
+            'border-color': '#2563eb',
+            'border-width': 3,
+          },
+        },
+        {
+          selector: 'edge',
+          style: {
+            width: 2,
+            'line-color': '#3b82f6',
+            'target-arrow-color': '#3b82f6',
+            'target-arrow-shape': 'triangle',
+            'curve-style': 'bezier',
+            label: 'data(label)',
+            'font-size': '12px',
+            color: '#1e40af',
+            'text-background-color': '#eff6ff',
+            'text-background-opacity': 1,
+            'text-background-padding': '4px',
+            'text-background-shape': 'roundrectangle',
+          },
+        },
+        {
+          selector: 'edge:hover',
+          style: {
+            width: 3,
+            'line-color': '#2563eb',
+            'target-arrow-color': '#2563eb',
+          },
+        },
+        {
+          selector: 'edge.selected',
+          style: {
+            width: 3,
+            'line-color': '#ef4444',
+            'target-arrow-color': '#ef4444',
+          },
+        },
+      ],
+      layout: {
+        name: 'cose',
+        padding: 50,
+      } as LayoutOptions,
+      userZoomingEnabled: true,
+      userPanningEnabled: true,
+      boxSelectionEnabled: false,
+      wheelSensitivity: 0.2,
+    });
+
+    // エッジクリックでselectedクラスをトグル
+    cy.on('tap', 'edge', (evt) => {
+      const edge = evt.target;
+      if (edge.hasClass('selected')) {
+        edge.removeClass('selected');
+      } else {
+        cy.$('edge').removeClass('selected');
+        edge.addClass('selected');
+      }
+    });
+
+    // 背景クリックで選択解除
+    cy.on('tap', (evt) => {
+      if (evt.target === cy) {
+        cy.$('edge').removeClass('selected');
+      }
+    });
+
+    cyRef.current = cy;
+
+    // クリーンアップ
+    return () => {
+      cy.destroy();
+      cyRef.current = null;
+    };
+  }, [characters, relations]);
+
+  // レイアウト変更ハンドラー
+  const onLayout = useCallback((layoutName: string) => {
+    if (!cyRef.current) return;
+
+    if (layoutName === 'cose') {
+      cyRef.current
+        .layout({
+          name: 'cose',
+          padding: 50,
+          nodeRepulsion: 8000,
+          idealEdgeLength: 100,
+          edgeElasticity: 100,
+        } as LayoutOptions)
+        .run();
+    } else if (layoutName === 'breadthfirst') {
+      cyRef.current
+        .layout({
+          name: 'breadthfirst',
+          padding: 50,
+          directed: true,
+          spacingFactor: 1.5,
+        } as LayoutOptions)
+        .run();
+    } else if (layoutName === 'circle') {
+      cyRef.current
+        .layout({
+          name: 'circle',
+          padding: 50,
+          spacingFactor: 1.5,
+        } as LayoutOptions)
+        .run();
+    } else {
+      cyRef.current
+        .layout({
+          name: layoutName,
+          padding: 50,
+        } as LayoutOptions)
+        .run();
+    }
+  }, []);
 
   if (isLoading) {
     return (
@@ -116,47 +237,8 @@ export function CharacterRelationshipGraph({
 
   return (
     <div className="w-full h-[600px] border-2 border-gray-200 rounded-lg overflow-hidden relative">
-      <style>{`
-        .react-flow__handle {
-          width: 12px !important;
-          height: 12px !important;
-          border: 2px solid #3b82f6 !important;
-          background: white !important;
-        }
-        .react-flow__handle:hover {
-          width: 16px !important;
-          height: 16px !important;
-          background: #3b82f6 !important;
-        }
-        .react-flow__node:hover .react-flow__handle {
-          width: 14px !important;
-          height: 14px !important;
-        }
-
-        /* エッジのスタイル */
-        .react-flow__edge-path {
-          stroke: #3b82f6 !important;
-          stroke-width: 2px !important;
-        }
-        .react-flow__edge.selected .react-flow__edge-path {
-          stroke: #ef4444 !important;
-          stroke-width: 3px !important;
-        }
-      `}</style>
       <CharacterGraphToolbar onLayout={onLayout} />
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        connectionMode={ConnectionMode.Strict}
-        fitView
-      >
-        <Background />
-        <Controls />
-        <MiniMap />
-      </ReactFlow>
+      <div ref={containerRef} className="w-full h-full" />
     </div>
   );
 }
