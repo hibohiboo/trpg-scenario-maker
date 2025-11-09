@@ -1,3 +1,4 @@
+import { parseGraphDBData } from '@trpg-scenario-maker/schema';
 import { generateUUID } from '@trpg-scenario-maker/utility';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { initializeDatabase, closeDatabase, executeQuery } from '../db';
@@ -35,6 +36,9 @@ describe('exportRepository / importRepository', () => {
 
     const exported = await exportScenarioGraph(scenarioId);
 
+    // スキーマ検証
+    expect(() => parseGraphDBData(exported)).not.toThrow();
+
     expect(exported.nodes.length).toBe(1); // Scenarioノードのみ
     expect(exported.relationships.length).toBe(0);
 
@@ -61,6 +65,9 @@ describe('exportRepository / importRepository', () => {
     });
 
     const exported = await exportScenarioGraph(scenarioId);
+
+    // スキーマ検証
+    expect(() => parseGraphDBData(exported)).not.toThrow();
 
     // ノード検証
     expect(exported.nodes.length).toBe(2); // Scenario + Scene
@@ -89,6 +96,9 @@ describe('exportRepository / importRepository', () => {
     // Act: エクスポート実行
     const exported = await exportScenarioGraph(ids.scenarioId);
 
+    // Assert: スキーマ検証
+    expect(() => parseGraphDBData(exported)).not.toThrow();
+
     // Assert: 全ノードタイプの存在確認
     assertAllNodeTypesExist(exported, ids);
 
@@ -102,6 +112,9 @@ describe('exportRepository / importRepository', () => {
 
     // エクスポート
     const exported = await exportScenarioGraph(originalScenarioId);
+
+    // スキーマ検証
+    expect(() => parseGraphDBData(exported)).not.toThrow();
 
     // 新しいIDでインポート
     const newScenarioId = generateUUID();
@@ -122,6 +135,9 @@ describe('exportRepository / importRepository', () => {
 
     // 再エクスポートして検証
     const reExported = await exportScenarioGraph(newScenarioId);
+
+    // スキーマ検証
+    expect(() => parseGraphDBData(reExported)).not.toThrow();
 
     expect(reExported.nodes.length).toBe(10);
     expect(reExported.nodes[0].id).toBe(newScenarioId);
