@@ -151,13 +151,13 @@ async function getHasSceneRelationships(
 ): Promise<GraphRelationship[]> {
   const result = (await executeQuery(`
     MATCH (s:Scenario {id: '${scenarioId}'})-[r:HAS_SCENE]->(scene:Scene)
-    RETURN s.id AS from, scene.id AS to
-  `)) as Array<{ from: string; to: string }>;
+    RETURN s.id AS fromId, scene.id AS toId
+  `)) as Array<{ fromId: string; toId: string }>;
 
   return result.map((row) => ({
     type: 'HAS_SCENE',
-    from: row.from,
-    to: row.to,
+    from: row.fromId,
+    to: row.toId,
     properties: {},
   }));
 }
@@ -339,7 +339,6 @@ async function getScenarioRelationships(
     getSceneHasInfoRelationships(scenarioId),
     getInfoPointsToSceneRelationships(scenarioId),
   ]);
-
   return [
     ...hasSceneRels,
     ...nextSceneRels,
@@ -360,6 +359,5 @@ async function getScenarioRelationships(
 export const exportScenarioGraph = async (scenarioId: string) => {
   const nodes = await getScenarioNodes(scenarioId);
   const relationships = await getScenarioRelationships(scenarioId);
-
   return { nodes, relationships };
 };
