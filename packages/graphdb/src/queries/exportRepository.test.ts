@@ -1,4 +1,3 @@
-/* eslint-disable no-use-before-define */
 import { generateUUID } from '@trpg-scenario-maker/utility';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { initializeDatabase, closeDatabase, executeQuery } from '../db';
@@ -83,13 +82,23 @@ describe('exportRepository / importRepository', () => {
     expect(hasSceneRel?.to).toBe(scene1Id);
   });
 
+  it('全ノードタイプと全リレーションタイプを含むシナリオをエクスポートできる', async () => {
+    // Arrange: 包括的なシナリオデータを作成
+    const ids = await createComprehensiveScenario();
+
+    // Act: エクスポート実行
+    const exported = await exportScenarioGraph(ids.scenarioId);
+
+    // Assert: 全ノードタイプの存在確認
+    assertAllNodeTypesExist(exported, ids);
+
+    // Assert: 全リレーションタイプの存在確認
+    assertAllRelationshipTypesExist(exported, ids);
+  });
   it('エクスポート→インポートで往復できる', async () => {
     // シナリオ作成
-    const originalScenarioId = generateUUID();
-    await scenarioGraphRepository.create({
-      id: originalScenarioId,
-      title: '元のシナリオ',
-    });
+    const { scenarioId: originalScenarioId } =
+      await createComprehensiveScenario();
 
     // エクスポート
     const exported = await exportScenarioGraph(originalScenarioId);
@@ -114,23 +123,10 @@ describe('exportRepository / importRepository', () => {
     // 再エクスポートして検証
     const reExported = await exportScenarioGraph(newScenarioId);
 
-    expect(reExported.nodes.length).toBe(1);
+    expect(reExported.nodes.length).toBe(10);
     expect(reExported.nodes[0].id).toBe(newScenarioId);
-    expect(reExported.nodes[0].properties.title).toBe('元のシナリオ');
-  });
-
-  it('全ノードタイプと全リレーションタイプを含むシナリオをエクスポートできる', async () => {
-    // Arrange: 包括的なシナリオデータを作成
-    const ids = await createComprehensiveScenario();
-
-    // Act: エクスポート実行
-    const exported = await exportScenarioGraph(ids.scenarioId);
-
-    // Assert: 全ノードタイプの存在確認
-    assertAllNodeTypesExist(exported, ids);
-
-    // Assert: 全リレーションタイプの存在確認
-    assertAllRelationshipTypesExist(exported, ids);
+    expect(reExported.nodes[0].properties.title).toBe('包括的テストシナリオ');
+    expect(reExported.relationships.length).toBe(18);
   });
 });
 
