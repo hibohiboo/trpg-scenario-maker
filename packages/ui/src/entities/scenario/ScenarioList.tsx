@@ -1,4 +1,4 @@
-import { FiPlus } from 'react-icons/fi';
+import { FiPlus, FiUpload } from 'react-icons/fi';
 import { Button } from '../../shared/button';
 import { ScenarioCard } from './ScenarioCard';
 import type { Scenario } from './types';
@@ -14,6 +14,8 @@ export interface ScenarioListProps {
   onDelete?: (scenario: Scenario) => void;
   /** シナリオエクスポート時のコールバック */
   onExport?: (scenario: Scenario) => void;
+  /** シナリオインポート時のコールバック */
+  onImport?: () => void;
   /** シナリオクリック時のコールバック */
   onClick?: (scenario: Scenario) => void;
   /** ローディング状態 */
@@ -67,7 +69,7 @@ function ScenarioListBody({
  * シナリオの一覧を表示し、CRUD操作を提供
  */
 export function ScenarioList(props: ScenarioListProps) {
-  const { onCreateNew, isLoading = false } = props;
+  const { onCreateNew, onImport, isLoading = false } = props;
 
   if (isLoading) {
     return (
@@ -81,17 +83,30 @@ export function ScenarioList(props: ScenarioListProps) {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900">シナリオ一覧</h2>
-        {onCreateNew && (
-          <Button
-            type="button"
-            onClick={onCreateNew}
-            variant="primary"
-            className="flex items-center gap-2"
-          >
-            <FiPlus size={20} />
-            新規作成
-          </Button>
-        )}
+        <div className="flex gap-2">
+          {onImport && (
+            <Button
+              type="button"
+              onClick={onImport}
+              variant="secondary"
+              className="flex items-center gap-2"
+            >
+              <FiUpload size={20} />
+              インポート
+            </Button>
+          )}
+          {onCreateNew && (
+            <Button
+              type="button"
+              onClick={onCreateNew}
+              variant="primary"
+              className="flex items-center gap-2"
+            >
+              <FiPlus size={20} />
+              新規作成
+            </Button>
+          )}
+        </div>
       </div>
       <ScenarioListBody {...props} />
     </div>
