@@ -1,7 +1,10 @@
 import { BlobWriter, ZipWriter } from '@zip.js/zip.js';
 import { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { exportScenarioAction } from '../actions/scenarioExportActions';
+import {
+  exportScenarioAction,
+  getScenarioImageIdsAction,
+} from '../actions/scenarioExportActions';
 import type { Scenario } from '@trpg-scenario-maker/schema';
 
 /**
@@ -16,20 +19,14 @@ export const useExportScenario = () => {
       try {
         setIsExporting(true);
 
-        // GraphDBから画像IDを取得
-        const result = await dispatch(
-          exportScenarioAction({
+        // シナリオに関連する画像IDを取得
+        const imageIds = await dispatch(
+          getScenarioImageIdsAction({
             scenarioId: scenario.id,
-            imageIds: [], // 画像IDはGraphDBデータから抽出
           }),
         ).unwrap();
 
-        // GraphDBデータから画像IDを抽出
-        const imageIds = result.graphData.nodes
-          .filter((node) => node.label === 'Image')
-          .map((node) => node.id);
-
-        // 画像データも含めて再度エクスポート
+        // 完全なシナリオデータ（GraphDB + RDB）をエクスポート
         const fullResult = await dispatch(
           exportScenarioAction({
             scenarioId: scenario.id,

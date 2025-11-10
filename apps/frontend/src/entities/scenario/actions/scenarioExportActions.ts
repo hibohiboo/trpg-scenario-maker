@@ -4,6 +4,21 @@ import { scenarioGraphApi } from '../api/scenarioGraphApi';
 import type { GraphDBData, RDBData } from '@trpg-scenario-maker/schema';
 
 /**
+ * シナリオに関連する画像IDを取得
+ */
+export const getScenarioImageIdsAction = createAsyncThunk<
+  string[],
+  { scenarioId: string }
+>('scenario/getImageIds', async (payload) => {
+  const graphData = await scenarioGraphApi.exportScenario(payload.scenarioId);
+  // GraphDBデータから画像IDを抽出
+  const imageIds = graphData.nodes
+    .filter((node) => node.label === 'Image')
+    .map((node) => node.id);
+  return imageIds;
+});
+
+/**
  * シナリオのGraphDBデータをエクスポート
  */
 export const exportScenarioGraphAction = createAsyncThunk<
