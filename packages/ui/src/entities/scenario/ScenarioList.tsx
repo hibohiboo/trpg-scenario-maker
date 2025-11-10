@@ -12,6 +12,8 @@ export interface ScenarioListProps {
   onEdit?: (scenario: Scenario) => void;
   /** シナリオ削除時のコールバック */
   onDelete?: (scenario: Scenario) => void;
+  /** シナリオエクスポート時のコールバック */
+  onExport?: (scenario: Scenario) => void;
   /** シナリオクリック時のコールバック */
   onClick?: (scenario: Scenario) => void;
   /** ローディング状態 */
@@ -23,6 +25,7 @@ function ScenarioListBody({
   onCreateNew,
   onEdit,
   onDelete,
+  onExport,
   onClick,
 }: ScenarioListProps) {
   if (scenarios.length === 0) {
@@ -51,6 +54,7 @@ function ScenarioListBody({
           scenario={scenario}
           onEdit={onEdit}
           onDelete={onDelete}
+          onExport={onExport}
           onClick={onClick}
         />
       ))}

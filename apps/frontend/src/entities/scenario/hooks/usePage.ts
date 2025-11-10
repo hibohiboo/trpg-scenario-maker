@@ -1,6 +1,7 @@
 import { useCreateScenario } from './useCreateScenario';
 import { useDeleteScenario } from './useDeleteScenario';
 import { useEditScenario } from './useEditScenario';
+import { useExportScenario } from './useExportScenario';
 import { useScenarioList } from './useScenarioList';
 
 /**
@@ -13,6 +14,7 @@ export const usePage = () => {
   const create = useCreateScenario();
   const edit = useEditScenario();
   const deleteScenario = useDeleteScenario();
+  const exportScenario = useExportScenario();
 
   return {
     // 一覧表示
@@ -45,5 +47,9 @@ export const usePage = () => {
     onDelete: deleteScenario.open,
     onCloseDeleteModal: deleteScenario.close,
     onDeleteConfirm: deleteScenario.confirm,
+
+    // エクスポート
+    onExport: exportScenario.exportScenario,
+    isExporting: exportScenario.isExporting,
   };
 };

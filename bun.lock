@@ -30,6 +30,7 @@
         "@trpg-scenario-maker/schema": "workspace:*",
         "@trpg-scenario-maker/ui": "workspace:*",
         "@trpg-scenario-maker/utility": "workspace:*",
+        "@zip.js/zip.js": "^2.8.10",
         "coi-serviceworker": "^0.1.7",
         "date-fns": "catalog:",
         "react": "catalog:",

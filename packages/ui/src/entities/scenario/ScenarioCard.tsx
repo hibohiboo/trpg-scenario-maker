@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { FiEdit2, FiTrash2 } from 'react-icons/fi';
+import { FiEdit2, FiTrash2, FiDownload } from 'react-icons/fi';
 import { Button } from '../../shared/button';
 import type { Scenario } from './types';
 
@@ -10,6 +10,8 @@ export interface ScenarioCardProps {
   onEdit?: (scenario: Scenario) => void;
   /** 削除ボタンクリック時のコールバック */
   onDelete?: (scenario: Scenario) => void;
+  /** エクスポートボタンクリック時のコールバック */
+  onExport?: (scenario: Scenario) => void;
   /** クリック時のコールバック */
   onClick?: (scenario: Scenario) => void;
 }
@@ -22,6 +24,7 @@ export function ScenarioCard({
   scenario,
   onEdit,
   onDelete,
+  onExport,
   onClick,
 }: ScenarioCardProps) {
   const handleEdit = (e: React.MouseEvent) => {
@@ -32,6 +35,11 @@ export function ScenarioCard({
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
     onDelete?.(scenario);
+  };
+
+  const handleExport = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onExport?.(scenario);
   };
 
   const handleClick = () => {
@@ -55,6 +63,18 @@ export function ScenarioCard({
           {scenario.title}
         </h3>
         <div className="flex gap-2">
+          {onExport && (
+            <Button
+              type="button"
+              onClick={handleExport}
+              variant="ghost"
+              size="sm"
+              className="p-1! text-gray-600 hover:text-green-600"
+              aria-label="シナリオをエクスポート"
+            >
+              <FiDownload size={18} />
+            </Button>
+          )}
           {onEdit && (
             <Button
               type="button"

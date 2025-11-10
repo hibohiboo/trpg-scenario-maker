@@ -15,6 +15,7 @@ export const Page = () => {
         onCreateNew={vm.onCreateNew}
         onEdit={vm.onEdit}
         onDelete={vm.onDelete}
+        onExport={vm.onExport}
         onClick={vm.onClick}
       />
 
