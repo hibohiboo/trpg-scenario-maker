@@ -34,4 +34,16 @@ export const scenarioGraphApi = {
   save: async () => {
     await graphdbWorkerClient.save();
   },
+
+  /**
+   * シナリオのGraphDBデータをエクスポート
+   */
+  exportScenario: (scenarioId: string) =>
+    graphdbWorkerClient.request('exportScenarioGraph', { scenarioId }),
+
+  /**
+   * シナリオのGraphDBデータをインポート
+   */
+  importScenario: (params: { nodes: unknown[]; relationships: unknown[] }) =>
+    graphdbWorkerClient.request('importScenarioGraph', params),
 } as const;

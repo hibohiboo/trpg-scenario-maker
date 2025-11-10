@@ -12,6 +12,7 @@ import { characterGraphHandlers } from '@/entities/character/workers/characterGr
 import { characterRelationGraphHandlers } from '@/entities/character/workers/characterRelationGraphHandlers';
 import { imageGraphHandlers } from '@/entities/image/workers/imageGraphHandlers';
 import { informationItemGraphHandlers } from '@/entities/informationItem/workers/informationItemGraphHandlers';
+import { scenarioExportHandlers } from '@/entities/scenario/workers/scenarioExportHandlers';
 import { scenarioGraphHandlers } from '@/entities/scenario/workers/scenarioGraphHandlers';
 import { scenarioCharacterGraphHandlers } from '@/entities/scenarioCharacter/workers/scenarioCharacterGraphHandlers';
 import { scenarioCharacterRelationGraphHandlers } from '@/entities/scenarioCharacter/workers/scenarioCharacterRelationGraphHandlers';
@@ -165,6 +166,11 @@ scenarioCharacterRelationGraphHandlers.forEach(({ type, handler }) => {
 
 // 情報項目グラフハンドラーを登録
 informationItemGraphHandlers.forEach(({ type, handler }) => {
+  handlers.set(type, handler);
+});
+
+// シナリオエクスポートハンドラーを登録
+scenarioExportHandlers.forEach(({ type, handler }) => {
   handlers.set(type, handler);
 });
 

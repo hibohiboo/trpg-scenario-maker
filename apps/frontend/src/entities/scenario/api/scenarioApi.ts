@@ -31,4 +31,16 @@ export const scenarioApi = {
    * シナリオを削除
    */
   delete: (id: string) => dbWorkerClient.request('scenario:delete', { id }),
+
+  /**
+   * シナリオのRDBデータをエクスポート
+   */
+  exportScenario: (params: { scenarioId: string; imageIds: string[] }) =>
+    dbWorkerClient.request('exportScenarioRdb', params),
+
+  /**
+   * シナリオのRDBデータをインポート
+   */
+  importScenario: (params: { scenario: unknown; images: unknown[] }) =>
+    dbWorkerClient.request('importScenarioRdb', params),
 } as const;

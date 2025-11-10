@@ -20,6 +20,9 @@ export default defineConfig([
       'no-restricted-syntax': ['off'],
       'no-await-in-loop': ['off'],
       'no-plusplus': ['off'],
+      '@typescript-eslint/no-use-before-define': ['off'],
+      'no-use-before-define': ['off'],
+      complexity: ['off'],
     },
   },
   {
