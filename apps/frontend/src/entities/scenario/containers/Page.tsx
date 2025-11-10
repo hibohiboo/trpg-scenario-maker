@@ -2,6 +2,7 @@ import {
   DeleteConfirmModal,
   ScenarioForm,
   ScenarioList,
+  ScenarioImportModal,
 } from '@trpg-scenario-maker/ui';
 import { usePage } from '../hooks/usePage';
 
@@ -17,6 +18,9 @@ export const Page = () => {
         onDelete={vm.onDelete}
         onExport={vm.onExport}
         onClick={vm.onClick}
+        onImport={() => {
+          vm.onImportStart(true);
+        }}
       />
 
       {/* 新規作成モーダル */}
@@ -98,6 +102,17 @@ export const Page = () => {
           onConfirm={vm.onDeleteConfirm}
           onCancel={vm.onCloseDeleteModal}
           isDeleting={vm.isDeleting}
+        />
+      )}
+
+      {/* インポート用モーダル */}
+      {vm.isImportModalOpen && (
+        <ScenarioImportModal
+          onImport={vm.onImport}
+          isImporting={vm.isImporting}
+          onCancel={() => {
+            vm.onImportStart(false);
+          }}
         />
       )}
     </>

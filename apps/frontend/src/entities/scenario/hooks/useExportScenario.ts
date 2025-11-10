@@ -1,3 +1,4 @@
+import { parseExportData, type Scenario } from '@trpg-scenario-maker/schema';
 import { BlobWriter, ZipWriter } from '@zip.js/zip.js';
 import { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -5,7 +6,8 @@ import {
   exportScenarioAction,
   getScenarioImageIdsAction,
 } from '../actions/scenarioExportActions';
-import type { Scenario } from '@trpg-scenario-maker/schema';
+
+export const isIncluceImage = false;
 
 /**
  * シナリオエクスポート機能のフック
@@ -33,28 +35,29 @@ export const useExportScenario = () => {
             imageIds,
           }),
         ).unwrap();
+        console.log('fullResult', fullResult);
 
         // ZIPファイルを作成
         const zipWriter = new ZipWriter(new BlobWriter('application/zip'));
 
         // scenario.json を追加
-        const exportData = {
-          version: '1.0.0',
-          exportedAt: new Date().toISOString(),
+        const exportData = parseExportData({
+          metadata: {
+            version: '1.0.0',
+            exportedAt: new Date().toISOString(),
+            scenarioId: scenario.id,
+            scenarioTitle: scenario.title,
+          },
           scenario: {
             id: scenario.id,
             title: scenario.title,
           },
-          graphData: fullResult.graphData,
-          rdbData: {
+          graphdb: fullResult.graphData,
+          rdb: {
             scenario: fullResult.rdbData.scenario,
-            // 画像データは別ファイルとして保存するため除外
-            images: fullResult.rdbData.images.map((img) => ({
-              id: img.id,
-              createdAt: img.createdAt,
-            })),
+            images: fullResult.rdbData.images,
           },
-        };
+        });
 
         await zipWriter.add(
           'scenario.json',
@@ -63,25 +66,29 @@ export const useExportScenario = () => {
           }).stream(),
         );
 
-        // 画像ファイルを追加
-        await Promise.all(
-          fullResult.rdbData.images.map(async (image) => {
-            // data URL から拡張子を取得
-            const match = image.dataUrl.match(/^data:image\/(\w+);base64,(.+)$/);
-            if (match) {
-              const [, ext, base64Data] = match;
-              const binaryString = atob(base64Data);
-              const bytes = new Uint8Array(binaryString.length);
-              Array.from({ length: binaryString.length }).forEach((_, i) => {
-                bytes[i] = binaryString.charCodeAt(i);
-              });
-              await zipWriter.add(
-                `images/${image.id}.${ext}`,
-                new Blob([bytes], { type: `image/${ext}` }).stream(),
+        if (isIncluceImage) {
+          // 画像ファイルを追加
+          await Promise.all(
+            fullResult.rdbData.images.map(async (image) => {
+              // data URL から拡張子を取得
+              const match = image.dataUrl.match(
+                /^data:image\/(\w+);base64,(.+)$/,
               );
-            }
-          }),
-        );
+              if (match) {
+                const [, ext, base64Data] = match;
+                const binaryString = atob(base64Data);
+                const bytes = new Uint8Array(binaryString.length);
+                Array.from({ length: binaryString.length }).forEach((_, i) => {
+                  bytes[i] = binaryString.charCodeAt(i);
+                });
+                await zipWriter.add(
+                  `images/${image.id}.${ext}`,
+                  new Blob([bytes], { type: `image/${ext}` }).stream(),
+                );
+              }
+            }),
+          );
+        }
 
         // ZIPファイルをダウンロード
         const zipBlob = await zipWriter.close();

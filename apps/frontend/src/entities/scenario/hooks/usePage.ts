@@ -55,5 +55,7 @@ export const usePage = () => {
     isExporting: exportScenario.isExporting,
     onImport: importScenario.importScenario,
     isImporting: importScenario.isImporting,
+    isImportModalOpen: importScenario.isOpen,
+    onImportStart: importScenario.setIsOpen,
   };
 };

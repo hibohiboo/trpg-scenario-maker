@@ -151,3 +151,13 @@ export const parseGraphDBData = (data: unknown): GraphDBData => {
 export const parseRDBData = (data: unknown): RDBData => {
   return v.parse(RDBDataSchema, data);
 };
+
+/**
+ * RDBエクスポート用のPayloadをパース
+ */
+const RDBExportPayloadSchema = v.object({
+  scenarioId: v.string(),
+  imageIds: v.array(v.string()),
+});
+export const parseRDBExportPayload = (t: unknown) =>
+  v.parse(RDBExportPayloadSchema, t);
