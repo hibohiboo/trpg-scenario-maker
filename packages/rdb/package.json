@@ -23,6 +23,7 @@
     "eslint": "catalog:testing"
   },
   "dependencies": {
+    "@trpg-scenario-maker/schema": "workspace:*",
     "@electric-sql/pglite": "^0.3.14",
     "drizzle-orm": "^0.44.7",
     "@trpg-scenario-maker/utility": "workspace:*"
