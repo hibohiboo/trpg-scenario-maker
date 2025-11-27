@@ -17,7 +17,7 @@
   "devDependencies": {
     "cross-env": "^10.1.0",
     "dotenv": "^17.2.3",
-    "drizzle-kit": "^0.31.6",
+    "drizzle-kit": "^0.31.7",
     "@trpg-scenario-maker/eslint-config-custom": "workspace:*",
     "@trpg-scenario-maker/tsconfig": "workspace:*",
     "eslint": "catalog:testing"
