@@ -27,7 +27,7 @@ Given(
 
     // シナリオが作成されたことを確認。Github Actionsでは10秒ほどかかる
     await expect(this.page.getByText(scenarioTitle)).toBeVisible({
-      timeout: 10000,
+      timeout: 15000,
     });
   },
 );
