@@ -51,7 +51,10 @@ if (typeof window === 'undefined') {
     event.respondWith(
       (async () => {
         const cached = await caches.match(event.request);
-        if (cached) return cached;
+        if (cached) {
+          console.debug('cached', event.request.url);
+          return cached;
+        }
         return fetch(request)
           .then((response) => {
             if (response.status === 0) {
