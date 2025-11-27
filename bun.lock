@@ -124,7 +124,7 @@
     "packages/ui": {
       "name": "@trpg-scenario-maker/ui",
       "dependencies": {
-        "@dagrejs/dagre": "^2.0.0",
+        "@dagrejs/dagre": "^1.1.8",
         "@trpg-scenario-maker/schema": "workspace:*",
         "@trpg-scenario-maker/utility": "workspace:*",
         "@types/cytoscape": "^3.31.0",
@@ -296,7 +296,7 @@
 
     "@cucumber/tag-expressions": ["@cucumber/tag-expressions@6.2.0", "", {}, "sha512-KIF0eLcafHbWOuSDWFw0lMmgJOLdDRWjEL1kfXEWrqHmx2119HxVAr35WuEd9z542d3Yyg+XNqSr+81rIKqEdg=="],
 
-    "@dagrejs/dagre": ["@dagrejs/dagre@2.0.0", "", { "dependencies": { "@dagrejs/graphlib": "2.2.4" } }, "sha512-L87v5pFRQDjTSXULl5HbJyMfGZRS2fqvbQsmROt9pmy7CeoC54n7kRBsYs4AmvVnNdChIWuE1F9EEWAL+ZJNGw=="],
+    "@dagrejs/dagre": ["@dagrejs/dagre@1.1.8", "", { "dependencies": { "@dagrejs/graphlib": "2.2.4" } }, "sha512-5SEDlndt4W/LaVzPYJW+bSmSEZc9EzTf8rJ20WCKvjS5EAZAN0b+x0Yww7VMT4R3Wootkg+X9bUfUxazYw6Blw=="],
 
     "@dagrejs/graphlib": ["@dagrejs/graphlib@2.2.4", "", {}, "sha512-mepCf/e9+SKYy1d02/UkvSy6+6MoyXhVxP8lLDfA7BPE1X1d4dR0sZznmbM8/XVJ1GPM+Svnx7Xj6ZweByWUkw=="],
 
@@ -2007,6 +2007,8 @@
     "@testing-library/jest-dom/dom-accessibility-api": ["dom-accessibility-api@0.6.3", "", {}, "sha512-7ZgogeTnjuHbo+ct10G9Ffp0mif17idi0IyWNVA/wcwcm7NPOD/WEHVP3n7n3MhXqxoIYm8d6MuZohYWIZ4T3w=="],
 
     "@trpg-scenario-maker/frontend/@types/node": ["@types/node@24.10.0", "", { "dependencies": { "undici-types": "~7.16.0" } }, "sha512-qzQZRBqkFsYyaSWXuEHc2WR9c0a0CXwiE5FWUvn7ZM+vdy1uZLfCunD38UzhuB7YN/J11ndbDBcTmOdxJo9Q7A=="],
+
+    "@trpg-scenario-maker/ui/@vitest/browser": ["@vitest/browser@4.0.14", "", { "dependencies": { "@vitest/mocker": "4.0.14", "@vitest/utils": "4.0.14", "magic-string": "^0.30.21", "pixelmatch": "7.1.0", "pngjs": "^7.0.0", "sirv": "^3.0.2", "tinyrainbow": "^3.0.3", "ws": "^8.18.3" }, "peerDependencies": { "vitest": "4.0.14" } }, "sha512-vO0uqR8SnPTd8ykp14yaIuUyMZ9HEBYuoZrVdUp7RrEp76VEnkrX9fDkGnK0NyBdfWXB6cqp7BmqVekd8yKHFQ=="],
 
     "@typescript-eslint/eslint-plugin/@typescript-eslint/utils": ["@typescript-eslint/utils@8.46.2", "", { "dependencies": { "@eslint-community/eslint-utils": "^4.7.0", "@typescript-eslint/scope-manager": "8.46.2", "@typescript-eslint/types": "8.46.2", "@typescript-eslint/typescript-estree": "8.46.2" }, "peerDependencies": { "eslint": "^8.57.0 || ^9.0.0", "typescript": ">=4.8.4 <6.0.0" } }, "sha512-sExxzucx0Tud5tE0XqR0lT0psBQvEpnpiul9XbGUB1QwpWJJAps1O/Z7hJxLGiZLBKMCutjTzDgmd1muEhBnVg=="],
 

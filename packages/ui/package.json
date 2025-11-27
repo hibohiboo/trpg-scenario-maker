@@ -17,7 +17,7 @@
     "build-storybook": "storybook build -o ../../apps/frontend/dist/tsm-components-catalog"
   },
   "dependencies": {
-    "@dagrejs/dagre": "^2.0.0",
+    "@dagrejs/dagre": "^1.1.8",
     "@trpg-scenario-maker/schema": "workspace:*",
     "@trpg-scenario-maker/utility": "workspace:*",
     "@types/cytoscape": "^3.31.0",
