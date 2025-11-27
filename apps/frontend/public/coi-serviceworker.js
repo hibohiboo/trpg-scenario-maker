@@ -1,20 +1,7 @@
 /*! coi-serviceworker v0.1.7 - Guido Zuidhof and contributors, licensed under MIT */
 let coepCredentialless = false;
-const CACHE_NAME = 'trpg-scenario-maker-cache';
-const CACHE_FILES = [
-  '/trpg-scenario-maker/assets/kuzu-wasm-BUT_xfTd.wasm',
-  '/trpg-scenario-maker/assets/pglite-DuuwwZqb.wasm',
-];
-
 if (typeof window === 'undefined') {
-  self.addEventListener('install', (event) => {
-    self.skipWaiting();
-    const preCache = async () => {
-      const cache = await caches.open(CACHE_NAME);
-      return cache.addAll(CACHE_FILES);
-    };
-    event.waitUntil(preCache());
-  });
+  self.addEventListener('install', () => self.skipWaiting());
   self.addEventListener('activate', (event) =>
     event.waitUntil(self.clients.claim()),
   );
@@ -49,36 +36,29 @@ if (typeof window === 'undefined') {
           })
         : r;
     event.respondWith(
-      (async () => {
-        const cached = await caches.match(event.request);
-        if (cached) {
-          console.debug('cached', event.request.url);
-          return cached;
-        }
-        return fetch(request)
-          .then((response) => {
-            if (response.status === 0) {
-              return response;
-            }
+      fetch(request)
+        .then((response) => {
+          if (response.status === 0) {
+            return response;
+          }
 
-            const newHeaders = new Headers(response.headers);
-            newHeaders.set(
-              'Cross-Origin-Embedder-Policy',
-              coepCredentialless ? 'credentialless' : 'require-corp',
-            );
-            if (!coepCredentialless) {
-              newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
-            }
-            newHeaders.set('Cross-Origin-Opener-Policy', 'same-origin');
+          const newHeaders = new Headers(response.headers);
+          newHeaders.set(
+            'Cross-Origin-Embedder-Policy',
+            coepCredentialless ? 'credentialless' : 'require-corp',
+          );
+          if (!coepCredentialless) {
+            newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
+          }
+          newHeaders.set('Cross-Origin-Opener-Policy', 'same-origin');
 
-            return new Response(response.body, {
-              status: response.status,
-              statusText: response.statusText,
-              headers: newHeaders,
-            });
-          })
-          .catch((e) => console.error(e));
-      })(),
+          return new Response(response.body, {
+            status: response.status,
+            statusText: response.statusText,
+            headers: newHeaders,
+          });
+        })
+        .catch((e) => console.error(e)),
     );
   });
 } else {
